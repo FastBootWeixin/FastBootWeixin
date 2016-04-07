@@ -8,17 +8,17 @@ import java.util.Set;
 import org.springframework.util.StringUtils;
 
 import com.example.myproject.annotation.WXMenu;
-import com.example.myproject.module.WXButton;
+import com.example.myproject.module.WXMenuItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WXMenuManager {
 
-	private Map<String, WXButton> menuNameMap = new HashMap<>();
+	private Map<String, WXMenuItem> menuNameMap = new HashMap<>();
 	
-	private Map<String, WXButton> menuIdMap = new HashMap<>();
+	private Map<String, WXMenuItem> menuIdMap = new HashMap<>();
 	
-	private Map<String, WXButton> menuMap = new HashMap<>();
+	private Map<String, WXMenuItem> menuMap = new HashMap<>();
 	
 	private String menuJsonCache;
 	
@@ -30,7 +30,7 @@ public class WXMenuManager {
 		return instance;
 	}
 	
-	public void add(WXButton button) {
+	public void add(WXMenuItem button) {
 		if (!StringUtils.isEmpty(button.getKey())) {
 			menuIdMap.put(button.getKey(), button);
 		}
@@ -38,13 +38,13 @@ public class WXMenuManager {
 	}
 	
 	public void add(WXMenu menu) {
-		WXButton button = new WXButton();
-		button.setKey(StringUtils.isEmpty(menu.key()) ? null : menu.key());
-		button.setMediaId(StringUtils.isEmpty(menu.mediaId()) ? null : menu.mediaId());
-		button.setName(StringUtils.isEmpty(menu.name()) ? null : menu.name());
-		button.setUrl(StringUtils.isEmpty(menu.url()) ? null : menu.url());
-		button.setSubButtonString(menu.subMenu());
-		button.setType(menu.type());
+		WXMenuItem button = WXMenuItem.create()
+				.setKey(menu.key())
+				.setMediaId(menu.mediaId())
+				.setName(menu.name())
+				.setUrl(menu.url())
+				.setSubMenuStrings(menu.subMenu())
+				.setType(menu.type()).build();
 		menuNameMap.put(button.getName(), button);
 	}
 	
@@ -52,10 +52,10 @@ public class WXMenuManager {
 	public String getMenuJson() {
 		if (menuJsonCache == null) {
 			Set<String> subMenus = new HashSet<>();
-			for (WXButton button : menuNameMap.values()) {
-				if (button.getSubButtonString().length > 0) {
-					for (String buttonString : button.getSubButtonString()) {
-						button.addSubButton(menuNameMap.get(buttonString));
+			for (WXMenuItem button : menuNameMap.values()) {
+				if (button.getSubMenuStrings().length > 0) {
+					for (String buttonString : button.getSubMenuStrings()) {
+						button.addSubMenu(menuNameMap.get(buttonString));
 						subMenus.add(buttonString);
 						//之前被误插入子菜单的移除掉
 						menuMap.remove(buttonString);
