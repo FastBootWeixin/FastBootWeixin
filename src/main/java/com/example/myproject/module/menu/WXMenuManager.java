@@ -53,7 +53,7 @@ public class WXMenuManager {
 		if (menuJsonCache == null) {
 			Set<String> subMenus = new HashSet<>();
 			for (WXMenuItem button : menuNameMap.values()) {
-				if (button.getSubMenuStrings().length > 0) {
+				if (button.getSubMenuStrings() != null && button.getSubMenuStrings().length > 0) {
 					for (String buttonString : button.getSubMenuStrings()) {
 						button.addSubMenu(menuNameMap.get(buttonString));
 						subMenus.add(buttonString);

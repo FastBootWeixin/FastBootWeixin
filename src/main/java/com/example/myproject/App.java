@@ -5,10 +5,14 @@ import org.springframework.boot.SpringApplication;
 import com.example.myproject.annotation.WXApplication;
 import com.example.myproject.annotation.WXMenu;
 import com.example.myproject.module.menu.WXMenuManager;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Hello world!
- *
  */
 @WXApplication
 public class App {
@@ -18,23 +22,29 @@ public class App {
         SpringApplication.run(App.class, args);
         System.out.println(WXMenuManager.getInstance().getMenuJson());
     }
-    
-    @WXMenu(name = "a", subMenu = {"a1", "a2", "a3"})
-    public void a() {}
-    
-    @WXMenu(name = "b")
-    public void b() {}
-    
-    @WXMenu(name = "c")
-    public void c() {}
-    
-    @WXMenu(name = "a1")
-    public void a1() {}
-    
-    @WXMenu(name = "a2")
-    public void a2() {}
-    
-    @WXMenu(name = "a3")
-    public void a3() {}
+
+    @WXMenu(name = "a", key = "a", subMenu = {"a1", "a2", "a3"})
+    public void a() {
+    }
+
+    @WXMenu(name = "b", key = "b")
+    public void b() {
+    }
+
+    @WXMenu(name = "c", key = "c")
+    public void c() {
+    }
+
+    @WXMenu(name = "a1", key = "a1")
+    public void a1() {
+    }
+
+    @WXMenu(name = "a2", key = "a2")
+    public void a2() {
+    }
+
+    @WXMenu(name = "a3", key = "a3")
+    public void a3() {
+    }
 
 }

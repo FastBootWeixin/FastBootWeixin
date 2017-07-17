@@ -11,12 +11,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WXMenuItem {
 	
 	@JsonProperty("sub_button")
+	@JsonInclude(Include.NON_EMPTY)
 	private Set<WXMenuItem> subMenus;
 	
 	@JsonIgnore
@@ -82,6 +81,7 @@ public class WXMenuItem {
 	
 	WXMenuItem(String[] subMenuStrings, MenuType type, String name,
 			String key, String url, String mediaId) {
+		this();
 		this.subMenuStrings = subMenuStrings;
 		this.type = type;
 		this.name = name;
@@ -155,11 +155,11 @@ public class WXMenuItem {
 		}
 
 		public WXMenuItem build() {
-			Assert.isTrue(this.type == MenuType.click && this.key == null, 
+			Assert.isTrue(this.type != MenuType.click || this.key != null, 
 					"click类型必须有key");
-			Assert.isTrue(this.type == MenuType.view && this.url == null, 
+			Assert.isTrue(this.type != MenuType.view || this.url != null, 
 					"view类型必须有url");
-			Assert.isTrue((this.type == MenuType.media_id || this.type == MenuType.view_limited) && this.mediaId == null, 
+			Assert.isTrue(!((this.type == MenuType.media_id || this.type == MenuType.view_limited) && this.mediaId == null), 
 					"media_id类型和view_limited类型必须有mediaId");
             return new WXMenuItem(
             		subMenuStrings,
