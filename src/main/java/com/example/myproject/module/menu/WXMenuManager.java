@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.example.myproject.annotation.WXMenu;
@@ -53,7 +54,7 @@ public class WXMenuManager {
 		if (menuJsonCache == null) {
 			Set<String> subMenus = new HashSet<>();
 			for (WXMenuItem button : menuNameMap.values()) {
-				if (button.getSubMenuStrings().length > 0) {
+				if (button.getSubMenuStrings() != null) {
 					for (String buttonString : button.getSubMenuStrings()) {
 						button.addSubMenu(menuNameMap.get(buttonString));
 						subMenus.add(buttonString);

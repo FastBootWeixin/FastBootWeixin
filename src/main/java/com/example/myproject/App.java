@@ -19,22 +19,22 @@ public class App {
         System.out.println(WXMenuManager.getInstance().getMenuJson());
     }
     
-    @WXMenu(name = "a", subMenu = {"a1", "a2", "a3"})
+    @WXMenu(name = "a", key = "a", subMenu = {"a1", "a2", "a3"})
     public void a() {}
     
-    @WXMenu(name = "b")
+    @WXMenu(name = "b", key = "a")
     public void b() {}
     
-    @WXMenu(name = "c")
+    @WXMenu(name = "c", key = "a")
     public void c() {}
     
-    @WXMenu(name = "a1")
+    @WXMenu(name = "a1", key = "a")
     public void a1() {}
     
-    @WXMenu(name = "a2")
+    @WXMenu(name = "a2", key = "a")
     public void a2() {}
     
-    @WXMenu(name = "a3")
+    @WXMenu(name = "a3", key = "a")
     public void a3() {}
 
 }

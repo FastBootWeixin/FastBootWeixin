@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WXMenuItem {
 	
 	@JsonProperty("sub_button")
-	private Set<WXMenuItem> subMenus;
+	private Set<WXMenuItem> subMenus = new HashSet<>();
 	
 	@JsonIgnore
 	private String[] subMenuStrings;
@@ -155,11 +155,11 @@ public class WXMenuItem {
 		}
 
 		public WXMenuItem build() {
-			Assert.isTrue(this.type == MenuType.click && this.key == null, 
+			Assert.isTrue(this.type != MenuType.click || this.key != null,
 					"click类型必须有key");
-			Assert.isTrue(this.type == MenuType.view && this.url == null, 
+			Assert.isTrue(this.type != MenuType.view || this.url != null,
 					"view类型必须有url");
-			Assert.isTrue((this.type == MenuType.media_id || this.type == MenuType.view_limited) && this.mediaId == null, 
+			Assert.isTrue((this.type != MenuType.media_id && this.type != MenuType.view_limited) || this.mediaId != null,
 					"media_id类型和view_limited类型必须有mediaId");
             return new WXMenuItem(
             		subMenuStrings,
