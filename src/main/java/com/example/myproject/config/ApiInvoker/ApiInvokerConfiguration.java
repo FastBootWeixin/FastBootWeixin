@@ -88,8 +88,7 @@ public class ApiInvokerConfiguration {
 	public RestTemplate apiInvokeRestTemplate() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
 		// 关闭自动检查RequestFactory
-		builder.detectRequestFactory(false).requestFactory(getClientHttpRequestFactory())
-		.errorHandler(new DefaultResponseErrorHandler());
+		builder.requestFactory(getClientHttpRequestFactory()).errorHandler(new DefaultResponseErrorHandler());
 		HttpMessageConverters converters = this.messageConverters.getIfUnique();
 		if (converters != null) {
 			builder = builder.messageConverters(converters.getConverters());
@@ -105,25 +104,7 @@ public class ApiInvokerConfiguration {
 	}
 
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
-		// 长连接保持30秒
-		PoolingHttpClientConnectionManager pollingConnectionManager = new PoolingHttpClientConnectionManager(apiInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
-		// 总连接数
-		pollingConnectionManager.setMaxTotal(apiInvokerProperties.getMaxTotal());
-		// 同路由的并发数
-		pollingConnectionManager.setDefaultMaxPerRoute(apiInvokerProperties.getMaxPerRoute());
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-		httpClientBuilder.setConnectionManager(pollingConnectionManager);
-		// 重试次数，默认是2次，没有开启
-		httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(apiInvokerProperties.getRetryCount(), apiInvokerProperties.isRequestSentRetryEnabled()));
-		// 保持长连接配置，需要在头添加Keep-Alive
-		httpClientBuilder.setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE);
-		List<Header> headers = new ArrayList<>();
-		headers.add(new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537.36"));
-		headers.add(new BasicHeader("Accept-Encoding", "gzip,deflate"));
-		headers.add(new BasicHeader("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6"));
-		headers.add(new BasicHeader("Connection", "keep-alive"));
-		httpClientBuilder.setDefaultHeaders(headers);
-		HttpClient httpClient = httpClientBuilder.build();
+		HttpClient httpClient = getHttpClient();
 		// httpClient连接配置，底层是配置RequestConfig
 		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		// 连接超时
@@ -179,10 +160,7 @@ public class ApiInvokerConfiguration {
 		headers.add(new BasicHeader("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6"));
 		headers.add(new BasicHeader("Connection", "keep-alive"));
 		builder.setDefaultHeaders(headers);
-
-		CloseableHttpClient client = builder.setConnectionManager(pollingConnectionManager).build();
-
-		return client;
+		return builder.build();
 	}
 
 }
