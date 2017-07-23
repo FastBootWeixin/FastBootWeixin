@@ -1,21 +1,7 @@
-/*
- * Copyright 2012-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.myproject.config.ApiInvoker;
 
+import com.example.myproject.common.BeanNames;
+import com.example.myproject.support.AccessTokenManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -26,7 +12,6 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -37,6 +22,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -59,22 +45,31 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
+@EnableConfigurationProperties({ApiVerifyProperties.class, ApiInvokerProperties.class, ApiUrlProperties.class})
 @ConditionalOnClass(RestTemplate.class)
 public class ApiInvokerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final ObjectProvider<HttpMessageConverters> messageConverters;
-
 	private final ApiInvokerProperties apiInvokerProperties;
+
+	private final ApiUrlProperties apiUrlProperties;
+
+	private final ObjectProvider<HttpMessageConverters> messageConverters;
 
 	private final ObjectProvider<List<RestTemplateCustomizer>> restTemplateCustomizers;
 
+	private static final String HTTPS = "https://";
+
+	private static final String HTTP = "http://";
+
 	public ApiInvokerConfiguration(
 			ApiInvokerProperties apiInvokerProperties,
+			ApiUrlProperties apiUrlProperties,
 			ObjectProvider<HttpMessageConverters> messageConverters,
 			ObjectProvider<List<RestTemplateCustomizer>> restTemplateCustomizers) {
 		this.apiInvokerProperties = apiInvokerProperties;
+		this.apiUrlProperties = apiUrlProperties;
 		this.messageConverters = messageConverters;
 		this.restTemplateCustomizers = restTemplateCustomizers;
 	}
@@ -83,18 +78,18 @@ public class ApiInvokerConfiguration {
 	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
 	 * @return
      */
-	@Bean
-	@ConditionalOnMissingBean
-	public RestTemplate apiInvokeRestTemplate() {
+	@Bean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
+	@ConditionalOnMissingBean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
+	public RestTemplate apiInvokerRestTemplate() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
-		// 关闭自动检查RequestFactory
-		builder.requestFactory(getClientHttpRequestFactory()).errorHandler(new DefaultResponseErrorHandler());
+		builder = builder.requestFactory(getClientHttpRequestFactory()).errorHandler(new DefaultResponseErrorHandler());
 		HttpMessageConverters converters = this.messageConverters.getIfUnique();
 		if (converters != null) {
 			builder = builder.messageConverters(converters.getConverters());
 		}
-		List<RestTemplateCustomizer> customizers = this.restTemplateCustomizers
-				.getIfAvailable();
+		builder = builder.rootUri((this.apiInvokerProperties.isEnableHttps() ? HTTPS : HTTP) + apiUrlProperties.getHost());
+		List<RestTemplateCustomizer> customizers = this.restTemplateCustomizers.getIfAvailable();
+
 		if (!CollectionUtils.isEmpty(customizers)) {
 			customizers = new ArrayList<>(customizers);
 			AnnotationAwareOrderComparator.sort(customizers);
@@ -103,6 +98,15 @@ public class ApiInvokerConfiguration {
 		return builder.build();
 	}
 
+	@Bean
+	public ApiInvoker apiInvoker(AccessTokenManager accessTokenManager) {
+		return new ApiInvoker(apiInvokerRestTemplate(), accessTokenManager, apiUrlProperties);
+	}
+
+	/**
+	 * 获取连接工厂
+	 * @return
+	 */
 	private ClientHttpRequestFactory getClientHttpRequestFactory() {
 		HttpClient httpClient = getHttpClient();
 		// httpClient连接配置，底层是配置RequestConfig
@@ -116,6 +120,10 @@ public class ApiInvokerConfiguration {
 		return clientHttpRequestFactory;
 	}
 
+	/**
+	 * 获取HttpClient，判断是否启用HTTPS
+	 * @return
+	 */
 	private HttpClient getHttpClient() {
 		HttpClientBuilder builder = HttpClientBuilder.create();
 		// 长连接保持30秒

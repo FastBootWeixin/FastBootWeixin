@@ -1,10 +1,13 @@
 package com.example.myproject;
 
+import com.example.myproject.config.ApiInvoker.ApiInvoker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 
 import com.example.myproject.annotation.WXApplication;
 import com.example.myproject.annotation.WXMenu;
 import com.example.myproject.module.menu.WXMenuManager;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -15,12 +18,22 @@ import javax.servlet.http.HttpServletRequest;
  * Hello world!
  */
 @WXApplication
+@Controller
 public class App {
+
+    @Autowired
+    ApiInvoker apiInvoker;
 
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
         SpringApplication.run(App.class, args);
         System.out.println(WXMenuManager.getInstance().getMenuJson());
+    }
+
+    @RequestMapping("test")
+    @ResponseBody
+    public String test() {
+        return apiInvoker.getCallbackIp();
     }
 
     @WXMenu(name = "a", key = "a", subMenu = {"a1", "a2", "a3"})
