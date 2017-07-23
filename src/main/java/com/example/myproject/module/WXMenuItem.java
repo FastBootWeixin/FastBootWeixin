@@ -13,26 +13,27 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class WXMenuItem {
-	
+
 	@JsonProperty("sub_button")
+
 	@JsonInclude(Include.NON_EMPTY)
 	private Set<WXMenuItem> subMenus;
-	
+
 	@JsonIgnore
 	private String[] subMenuStrings;
-	
+
 	@JsonInclude(Include.NON_NULL)
 	private MenuType type;
-	
+
 	@JsonInclude(Include.NON_NULL)
 	private String name;
-	
+
 	@JsonInclude(Include.NON_NULL)
 	private String key;
-	
+
 	@JsonInclude(Include.NON_NULL)
 	private String url;
-	
+
 	@JsonInclude(Include.NON_NULL)
 	@JsonProperty("mediaId")
 	private String mediaId;
@@ -69,7 +70,7 @@ public class WXMenuItem {
 		this.subMenus.add(item);
 		return this;
 	}
-	
+
 	WXMenuItem() {
 		this.subMenus = new HashSet<>();
 		this.type = MenuType.click;
@@ -78,7 +79,7 @@ public class WXMenuItem {
 		this.url = null;
 		this.key = null;
 	}
-	
+
 	WXMenuItem(String[] subMenuStrings, MenuType type, String name,
 			String key, String url, String mediaId) {
 		this();
@@ -89,25 +90,25 @@ public class WXMenuItem {
 		this.url = url;
 		this.mediaId = mediaId;
 	}
-	
+
 	public Set<WXMenuItem> addSubMenus(WXMenuItem button) {
 		this.subMenus.add(button);
 		return this.subMenus;
 	}
-	
+
 	public static WXMenuItem.Builder create() {
         return new Builder();
     }
-	
+
 	public static class Builder {
-		
+
 		private String[] subMenuStrings;
 		private MenuType type;
 		private String name;
 		private String key;
 		private String url;
 		private String mediaId;
-		
+
 		Builder() {
             super();
             this.subMenuStrings = null;
@@ -117,7 +118,7 @@ public class WXMenuItem {
             this.url = null;
             this.mediaId = null;
         }
-		
+
 		public Builder setSubMenuStrings(String[] subMenuStrings) {
 			if (subMenuStrings != null && subMenuStrings.length > 0) {
 				this.subMenuStrings = subMenuStrings;
@@ -155,11 +156,11 @@ public class WXMenuItem {
 		}
 
 		public WXMenuItem build() {
-			Assert.isTrue(this.type != MenuType.click || this.key != null, 
+			Assert.isTrue(this.type != MenuType.click || this.key != null,
 					"click类型必须有key");
-			Assert.isTrue(this.type != MenuType.view || this.url != null, 
+			Assert.isTrue(this.type != MenuType.view || this.url != null,
 					"view类型必须有url");
-			Assert.isTrue(!((this.type == MenuType.media_id || this.type == MenuType.view_limited) && this.mediaId == null), 
+			Assert.isTrue((this.type != MenuType.media_id && this.type != MenuType.view_limited) || this.mediaId != null,
 					"media_id类型和view_limited类型必须有mediaId");
             return new WXMenuItem(
             		subMenuStrings,
@@ -169,7 +170,7 @@ public class WXMenuItem {
             		url,
             		mediaId);
         }
-		
+
 	}
-	
+
 }

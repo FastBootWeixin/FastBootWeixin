@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.example.myproject.annotation.WXMenu;
@@ -15,28 +16,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WXMenuManager {
 
 	private Map<String, WXMenuItem> menuNameMap = new HashMap<>();
-	
+
 	private Map<String, WXMenuItem> menuIdMap = new HashMap<>();
-	
+
 	private Map<String, WXMenuItem> menuMap = new HashMap<>();
-	
+
 	private String menuJsonCache;
-	
+
 	private WXMenuManager() {}
-	
+
 	private static WXMenuManager instance = new WXMenuManager();
-	
+
 	public static WXMenuManager getInstance() {
 		return instance;
 	}
-	
+
 	public void add(WXMenuItem button) {
 		if (!StringUtils.isEmpty(button.getKey())) {
 			menuIdMap.put(button.getKey(), button);
 		}
 		menuNameMap.put(button.getName(), button);
 	}
-	
+
 	public void add(WXMenu menu) {
 		WXMenuItem button = WXMenuItem.create()
 				.setKey(menu.key())
@@ -47,7 +48,7 @@ public class WXMenuManager {
 				.setType(menu.type()).build();
 		menuNameMap.put(button.getName(), button);
 	}
-	
+
 	//有空了改成lambda表达式，先用老循环
 	public String getMenuJson() {
 		if (menuJsonCache == null) {
@@ -77,5 +78,5 @@ public class WXMenuManager {
 		}
 		return menuJsonCache;
 	}
-	
+
 }
