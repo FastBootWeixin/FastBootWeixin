@@ -5,10 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.example.myproject.annotation.WXMenu;
+import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.WXMenuItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +37,7 @@ public class WXMenuManager {
 		menuNameMap.put(button.getName(), button);
 	}
 
-	public void add(WXMenu menu) {
+	public void add(WxButton menu) {
 		WXMenuItem button = WXMenuItem.create()
 				.setKey(menu.key())
 				.setMediaId(menu.mediaId())

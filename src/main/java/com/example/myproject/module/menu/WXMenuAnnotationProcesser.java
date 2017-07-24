@@ -7,7 +7,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.example.myproject.annotation.WXMenu;
+import com.example.myproject.annotation.WxButton;
 
 @Component
 public class WXMenuAnnotationProcesser implements BeanPostProcessor {
@@ -21,9 +21,9 @@ public class WXMenuAnnotationProcesser implements BeanPostProcessor {
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		Class<?> targetClass = AopUtils.getTargetClass(bean);
 		ReflectionUtils.doWithMethods(targetClass, method -> {
-			WXMenu wxMenu = AnnotationUtils.getAnnotation(method, WXMenu.class);
-			if (wxMenu != null) {
-				WXMenuManager.getInstance().add(wxMenu);
+			WxButton wxButton = AnnotationUtils.getAnnotation(method, WxButton.class);
+			if (wxButton != null) {
+				WXMenuManager.getInstance().add(wxButton);
 			}
 		});
 		return bean;

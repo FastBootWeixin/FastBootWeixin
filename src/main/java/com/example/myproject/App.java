@@ -4,20 +4,17 @@ import com.example.myproject.config.ApiInvoker.ApiInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 
-import com.example.myproject.annotation.WXApplication;
-import com.example.myproject.annotation.WXMenu;
+import com.example.myproject.annotation.WxApplication;
+import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.menu.WXMenuManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Hello world!
  */
-@WXApplication
+@WxApplication
 @Controller
 public class App {
 
@@ -36,27 +33,27 @@ public class App {
         return apiInvoker.getCallbackIp();
     }
 
-    @WXMenu(name = "a", key = "a", subMenu = {"a1", "a2", "a3"})
+    @WxButton(name = "a", key = "a")
     public void a() {
     }
 
-    @WXMenu(name = "b", key = "b")
+    @WxButton(name = "b", key = "b")
     public void b() {
     }
 
-    @WXMenu(name = "c", key = "c")
+    @WxButton(name = "c", key = "c")
     public void c() {
     }
 
-    @WXMenu(name = "a1", key = "a1")
+    @WxButton(name = "a1", key = "a1")
     public void a1() {
     }
 
-    @WXMenu(name = "a2", key = "a2")
+    @WxButton(name = "a2", key = "a2")
     public void a2() {
     }
 
-    @WXMenu(name = "a3", key = "a3")
+    @WxButton(name = "a3", key = "a3")
     public void a3() {
     }
 

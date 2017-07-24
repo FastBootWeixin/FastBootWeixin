@@ -6,16 +6,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.example.myproject.module.menu.MenuType;
+import com.example.myproject.module.menu.Button;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface WXMenu {
+public @interface WxButton {
 
-	String[] subMenu() default {};
+	Button parent() default Button.none;
 	
-	MenuType type() default MenuType.click;
+	Button.Type type() default Button.Type.click;
 	
 	String name() default "";
 	

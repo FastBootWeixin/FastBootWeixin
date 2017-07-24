@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Documented
 @Inherited
 @SpringBootApplication
-public @interface WXApplication {
+public @interface WxApplication {
 
 	String value() default "";
 	

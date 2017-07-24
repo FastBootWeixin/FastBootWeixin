@@ -3,7 +3,7 @@ package com.example.myproject.module;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.example.myproject.module.menu.MenuType;
+import com.example.myproject.module.menu.Button;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -20,7 +20,7 @@ public class WXButton {
 	private String[] subButtonString;
 	
 	@JsonInclude(Include.NON_NULL)
-	private MenuType type;
+	private Button type;
 	
 	@JsonInclude(Include.NON_NULL)
 	private String name;
@@ -51,11 +51,11 @@ public class WXButton {
 		this.subButtonString = subButtonString;
 	}
 
-	public MenuType getType() {
+	public Button getType() {
 		return type;
 	}
 
-	public void setType(MenuType type) {
+	public void setType(Button type) {
 		this.type = type;
 	}
 
@@ -93,7 +93,7 @@ public class WXButton {
 	
 	public WXButton() {
 		this.subButton = new HashSet<>();
-		this.type = MenuType.click;
+		this.type = Button.click;
 		this.name = null;
 		this.mediaId = null;
 		this.url = null;

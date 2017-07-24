@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.example.myproject.module.menu.MenuType;
+import com.example.myproject.module.menu.Button;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -23,7 +23,7 @@ public class WXMenuItem {
 	private String[] subMenuStrings;
 
 	@JsonInclude(Include.NON_NULL)
-	private MenuType type;
+	private Button type;
 
 	@JsonInclude(Include.NON_NULL)
 	private String name;
@@ -46,7 +46,7 @@ public class WXMenuItem {
 		return subMenuStrings;
 	}
 
-	public MenuType getType() {
+	public Button getType() {
 		return type;
 	}
 
@@ -73,15 +73,15 @@ public class WXMenuItem {
 
 	WXMenuItem() {
 		this.subMenus = new HashSet<>();
-		this.type = MenuType.click;
+		this.type = Button.click;
 		this.name = null;
 		this.mediaId = null;
 		this.url = null;
 		this.key = null;
 	}
 
-	WXMenuItem(String[] subMenuStrings, MenuType type, String name,
-			String key, String url, String mediaId) {
+	WXMenuItem(String[] subMenuStrings, Button type, String name,
+			   String key, String url, String mediaId) {
 		this();
 		this.subMenuStrings = subMenuStrings;
 		this.type = type;
@@ -103,7 +103,7 @@ public class WXMenuItem {
 	public static class Builder {
 
 		private String[] subMenuStrings;
-		private MenuType type;
+		private Button type;
 		private String name;
 		private String key;
 		private String url;
@@ -112,7 +112,7 @@ public class WXMenuItem {
 		Builder() {
             super();
             this.subMenuStrings = null;
-            this.type = MenuType.click;
+            this.type = Button.click;
             this.name = null;
             this.key = null;
             this.url = null;
@@ -126,7 +126,7 @@ public class WXMenuItem {
 			return this;
 		}
 
-		public Builder setType(MenuType type) {
+		public Builder setType(Button type) {
 			Assert.notNull(type, "菜单必须有类型");
 			this.type = type;
 			return this;
@@ -156,11 +156,11 @@ public class WXMenuItem {
 		}
 
 		public WXMenuItem build() {
-			Assert.isTrue(this.type != MenuType.click || this.key != null,
+			Assert.isTrue(this.type != Button.click || this.key != null,
 					"click类型必须有key");
-			Assert.isTrue(this.type != MenuType.view || this.url != null,
+			Assert.isTrue(this.type != Button.view || this.url != null,
 					"view类型必须有url");
-			Assert.isTrue((this.type != MenuType.media_id && this.type != MenuType.view_limited) || this.mediaId != null,
+			Assert.isTrue((this.type != Button.media_id && this.type != Button.view_limited) || this.mediaId != null,
 					"media_id类型和view_limited类型必须有mediaId");
             return new WXMenuItem(
             		subMenuStrings,
