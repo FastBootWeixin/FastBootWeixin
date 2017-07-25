@@ -1,35 +1,39 @@
 package com.example.myproject.module.menu;
 
-public enum Button {
-    left,
+public interface Button {
 
-    middle,
+    // 哪个按钮组
+    enum Group {
+        LEFT, MIDDLE, RIGHT
+    }
 
-    right,
+    // 顺序，最多五个
+    enum Order {
+        FIRST, SECOND, THIRD, FORTH, FIFTH
+    }
 
-    none;
+    // 类型
+    enum Type {
 
-    public enum Type {
+        CLICK("点击推事件"),
 
-        click("点击推事件"),
+        VIEW("跳转URL"),
 
-        view("跳转URL"),
+        SCANCODE_PUSH("扫码推事件"),
 
-        scancode_push("扫码推事件"),
+        SCANCODE_WAITMSG("扫码推事件且弹出“消息接收中”提示框"),
 
-        scancode_waitmsg("扫码推事件且弹出“消息接收中”提示框"),
+        PIC_SYSPHOTO("弹出系统拍照发图"),
 
-        pic_sysphoto("弹出系统拍照发图"),
+        PIC_PHOTO_OR_ALBUM("弹出拍照或者相册发图"),
 
-        pic_photo_or_album("弹出拍照或者相册发图"),
+        PIC_WEIXIN("弹出微信相册发图器"),
 
-        pic_weixin("弹出微信相册发图器"),
+        LOCATION_SELECT("弹出地理位置选择器"),
 
-        location_select("弹出地理位置选择器"),
+        MEDIA_ID("下发消息（除文本消息）"),
 
-        media_id("下发消息（除文本消息）"),
-
-        view_limited("跳转图文消息URL");
+        VIEW_LIMITED("跳转图文消息URL");
 
         public String descript;
 
@@ -37,6 +41,10 @@ public enum Button {
             this.descript = descript;
         }
 
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
     }
 
 }

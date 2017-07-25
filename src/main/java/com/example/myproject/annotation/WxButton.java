@@ -13,10 +13,14 @@ import com.example.myproject.module.menu.Button;
 @Documented
 public @interface WxButton {
 
-	Button parent() default Button.none;
-	
-	Button.Type type() default Button.Type.click;
-	
+	// 按钮属于哪一组
+	Button.Group group();
+
+	Button.Type type() default Button.Type.CLICK;
+
+	// 是否是主菜单(下面的菜单)
+	boolean main() default false;
+
 	String name() default "";
 	
 	String key() default "";
