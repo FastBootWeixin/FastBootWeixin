@@ -47,8 +47,16 @@ public class App {
     public void b() {
     }
 
+    @WxButton(group = Button.Group.MIDDLE, name = "b1", key = "b1")
+    public void b1() {
+    }
+
     @WxButton(group = Button.Group.RIGHT, main = true, name = "c", key = "c")
     public void c() {
+    }
+
+    @WxButton(group = Button.Group.RIGHT, name = "c1", key = "c1")
+    public void c1() {
     }
 
     @WxButton(group = Button.Group.LEFT, name = "a1", key = "a1")

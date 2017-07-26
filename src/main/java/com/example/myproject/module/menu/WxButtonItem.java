@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -85,6 +86,10 @@ public class WxButtonItem {
         return this;
     }
 
+    WxButtonItem() {
+        super();
+    }
+
     WxButtonItem(Button.Group group, Button.Type type, boolean main, Button.Order order, String name,
                  String key, String url, String mediaId) {
         super();
@@ -96,6 +101,47 @@ public class WxButtonItem {
         this.key = key;
         this.url = url;
         this.mediaId = mediaId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WxButtonItem)) return false;
+
+        WxButtonItem that = (WxButtonItem) o;
+
+        // 子菜单数量不同，直接不相等
+        if (this.getSubButtons().size() != that.getSubButtons().size()) {
+            return false;
+        }
+
+        // 父菜单只比较name和子
+        if (this.getSubButtons().size() > 0 && that.getSubButtons().size() > 0) {
+            if (this.getSubButtons().containsAll(that.getSubButtons()) && that.getSubButtons().containsAll(this.getSubButtons())) {
+                return getName().equals(that.getName());
+            }
+            return false;
+        }
+        // 非父菜单，全部比较
+        if (getType() != that.getType()) return false;
+        if (!getName().equals(that.getName())) return false;
+        if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
+        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) return false;
+        return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getSubButtons() != null ? getSubButtons().hashCode() : 0;
+        result = 31 * result + getGroup().hashCode();
+        result = 31 * result + getType().hashCode();
+        result = 31 * result + getName().hashCode();
+        result = 31 * result + (isMain() ? 1 : 0);
+        result = 31 * result + (getOrder() != null ? getOrder().hashCode() : 0);
+        result = 31 * result + (getKey() != null ? getKey().hashCode() : 0);
+        result = 31 * result + (getUrl() != null ? getUrl().hashCode() : 0);
+        result = 31 * result + (getMediaId() != null ? getMediaId().hashCode() : 0);
+        return result;
     }
 
     public static WxButtonItem.Builder create() {
