@@ -1,10 +1,5 @@
 package com.example.myproject.support;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.lang.invoke.MethodHandles;
-
 /**
  * FastBootWeixin  TokenStore
  * 注意考虑分布式存储，或许需要加一个lock，因为获取之后上一个会失效，所以不能完全交给setToken方法自己加锁

@@ -43,4 +43,12 @@ public class ApiInvoker {
         return this.apiInvokerRestTemplate.getForObject(parseUrl(apiUrlProperties.getGetCallbackIp()), String.class, accessTokenManager.getToken());
     }
 
+    public String getMenu() {
+        return this.apiInvokerRestTemplate.getForObject(parseUrl(apiUrlProperties.getGetMenu()), String.class, accessTokenManager.getToken());
+    }
+
+    public String createMenu(String menuJson) {
+        return this.apiInvokerRestTemplate.postForObject(parseUrl(apiUrlProperties.getCreateMenu()), menuJson, String.class, accessTokenManager.getToken());
+    }
+
 }

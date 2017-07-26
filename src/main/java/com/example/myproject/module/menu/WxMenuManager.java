@@ -1,23 +1,35 @@
 package com.example.myproject.module.menu;
 
-import java.lang.invoke.MethodHandles;
-import java.util.*;
-
+import com.example.myproject.annotation.WxButton;
+import com.example.myproject.config.ApiInvoker.ApiInvoker;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartingEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.WxButtonItem;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class WxMenuManager {
+@Component
+public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
+    @Autowired
+    private ApiInvoker apiInvoker;
 
     private Map<Button.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
@@ -29,20 +41,14 @@ public class WxMenuManager {
 
     private String menuJsonCache;
 
-    private static WxMenuManager instance = new WxMenuManager();
-
-    private WxMenuManager() {
-    }
-
-    public static WxMenuManager getInstance() {
-        return instance;
-    }
+    private Menu menu;
 
     public void add(WxButton button) {
         WxButtonItem buttonItem = WxButtonItem.create()
                 .setGroup(button.group())
                 .setType(button.type())
                 .setMain(button.main())
+                .setOrder(button.order())
                 .setKey(button.key())
                 .setMediaId(button.mediaId())
                 .setName(button.name())
@@ -61,21 +67,17 @@ public class WxMenuManager {
 
     //有空了改成lambda表达式，先用老循环
     public String getMenuJson() {
-        if (menuJsonCache == null) {
-            for (WxButtonItem button : buttons) {
-                if (!button.isMain()) {
-                    WxButtonItem parent = mainButtonLookup.get(button.getGroup());
-                    if (parent == null) {
-                        logger.warn(parent.toString() + "没有对应的一级菜单");
-                    } else {
-                        parent.addSubButton(button);
-                    }
-                }
-            }
-            Map<String, Object> map = new HashMap<>();
-            map.put("button", mainButtonLookup.values());
+        if (menu == null) {
+            menu = new Menu();
+            mainButtonLookup.entrySet().stream().sorted((e1, e2) -> e1.getKey().ordinal() - e2.getKey().ordinal())
+                    .forEach(m -> {
+                        groupButtonLookup.getOrDefault(m.getKey(), new ArrayList<>()).stream()
+                                .sorted((w1, w2) -> w1.getOrder().ordinal() - w2.getOrder().ordinal())
+                                .forEach(b -> m.getValue().addSubButton(b));
+                        menu.add(m.getValue());
+                    });
             try {
-                menuJsonCache = new ObjectMapper().writeValueAsString(map);
+                menuJsonCache = new ObjectMapper().writeValueAsString(menu);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
                 // TODO: 2017/7/25 加入自己的异常体系
@@ -83,6 +85,21 @@ public class WxMenuManager {
             }
         }
         return menuJsonCache;
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        String result = apiInvoker.createMenu(this.getMenuJson());
+        logger.info(result);
+    }
+
+    private static class Menu {
+        @JsonProperty("button")
+        public List<WxButtonItem> mainButtons = new ArrayList<>();
+
+        public void add(WxButtonItem button) {
+            mainButtons.add(button);
+        }
     }
 
 }

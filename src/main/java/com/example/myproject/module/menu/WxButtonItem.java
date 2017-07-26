@@ -1,22 +1,23 @@
-package com.example.myproject.module;
+package com.example.myproject.module.menu;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-
-import com.example.myproject.module.menu.Button;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WxButtonItem {
 
     @JsonProperty("sub_button")
     @JsonInclude(Include.NON_EMPTY)
-    private Set<WxButtonItem> subButtons = new HashSet<>();
+    private List<WxButtonItem> subButtons = new ArrayList<>();
 
     @JsonIgnore
     private Button.Group group;
@@ -30,6 +31,9 @@ public class WxButtonItem {
     @JsonIgnore
     private boolean main;
 
+    @JsonIgnore
+    private Button.Order order;
+
     @JsonInclude(Include.NON_NULL)
     private String key;
 
@@ -40,12 +44,16 @@ public class WxButtonItem {
     @JsonProperty("mediaId")
     private String mediaId;
 
-    public Set<WxButtonItem> getsubMenus() {
+    public List<WxButtonItem> getSubButtons() {
         return subButtons;
     }
 
     public Button.Type getType() {
         return type;
+    }
+
+    public Button.Order getOrder() {
+        return order;
     }
 
     public boolean isMain() {
@@ -77,12 +85,13 @@ public class WxButtonItem {
         return this;
     }
 
-    WxButtonItem(Button.Group group, Button.Type type, boolean main, String name,
+    WxButtonItem(Button.Group group, Button.Type type, boolean main, Button.Order order, String name,
                  String key, String url, String mediaId) {
         super();
         this.group = group;
         this.type = type;
         this.main = main;
+        this.order = order;
         this.name = name;
         this.key = key;
         this.url = url;
@@ -98,6 +107,7 @@ public class WxButtonItem {
         private Button.Type type;
         private Button.Group group;
         private boolean main;
+        private Button.Order order;
         private String name;
         private String key;
         private String url;
@@ -119,6 +129,11 @@ public class WxButtonItem {
 
         public Builder setMain(boolean main) {
             this.main = main;
+            return this;
+        }
+
+        public Builder setOrder(Button.Order order) {
+            this.order = order;
             return this;
         }
 
@@ -157,7 +172,7 @@ public class WxButtonItem {
                     "view类型必须有url");
             Assert.isTrue((this.type != Button.Type.MEDIA_ID && this.type != Button.Type.VIEW_LIMITED) || this.mediaId != null,
                     "media_id类型和view_limited类型必须有mediaId");
-            return new WxButtonItem(group, type, main, name, key, url, mediaId);
+            return new WxButtonItem(group, type, main, order, name, key, url, mediaId);
         }
 
     }

@@ -17,12 +17,14 @@ public @interface WxButton {
 	Button.Group group();
 
 	Button.Type type() default Button.Type.CLICK;
-
 	// 是否是主菜单(下面的菜单)
 	boolean main() default false;
 
+	// 顺序
+	Button.Order order() default Button.Order.FIRST;
+
 	String name() default "";
-	
+
 	String key() default "";
 	
 	String url() default "";
