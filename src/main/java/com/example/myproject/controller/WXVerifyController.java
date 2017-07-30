@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * @since 2017/7/16 23:37
  */
 @RestController
-public class WXVerifyController {
+public class WxVerifyController {
 
     @Autowired
     private ApiVerifyProperties apiVerifyProperties;

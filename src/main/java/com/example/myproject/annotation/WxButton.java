@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 import com.example.myproject.module.menu.Button;
 
+// 待支持：参数从变量中取
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

@@ -39,35 +39,35 @@ public class App {
         return apiInvoker.getMenu();
     }
 
-    @WxButton(group = Button.Group.LEFT, main = true, name = "a", key = "a")
+    @WxButton(group = Button.Group.LEFT, main = true, name = "一级菜单左", key = "left")
     public void a() {
     }
 
-    @WxButton(group = Button.Group.MIDDLE, main = true, name = "b", key = "b")
+    @WxButton(group = Button.Group.MIDDLE, main = true, name = "一级菜单中", key = "middle")
     public void b() {
     }
 
-    @WxButton(group = Button.Group.MIDDLE, name = "b1", key = "b1")
+    @WxButton(group = Button.Group.MIDDLE, name = "二级菜单中一", key = "middle_1")
     public void b1() {
     }
 
-    @WxButton(group = Button.Group.RIGHT, main = true, name = "c", key = "c")
+    @WxButton(group = Button.Group.RIGHT, main = true, name = "一级菜单右", key = "right")
     public void c() {
     }
 
-    @WxButton(group = Button.Group.RIGHT, name = "c1", key = "c1")
+    @WxButton(group = Button.Group.RIGHT, name = "二级菜单右一", key = "right_1")
     public void c1() {
     }
 
-    @WxButton(group = Button.Group.LEFT, name = "a1", key = "a1")
+    @WxButton(group = Button.Group.LEFT, name = "二级菜单左一", key = "left_1")
     public void a1() {
     }
 
-    @WxButton(group = Button.Group.LEFT, name = "a2", key = "a2")
+    @WxButton(group = Button.Group.LEFT, name = "二级菜单左二", key = "left_2")
     public void a2() {
     }
 
-    @WxButton(group = Button.Group.LEFT, name = "a3", key = "a3")
+    @WxButton(group = Button.Group.LEFT, name = "二级菜单左三", key = "left_3")
     public void a3() {
     }
 
