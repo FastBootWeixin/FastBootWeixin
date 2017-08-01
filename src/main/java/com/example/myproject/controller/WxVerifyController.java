@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
@@ -20,17 +21,19 @@ import java.util.stream.Stream;
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/16 23:37
  */
-@RestController
 public class WxVerifyController {
 
-    @Autowired
     private ApiVerifyProperties apiVerifyProperties;
 
-    @GetMapping(params = {"signature", "timestamp", "nonce", "echostr"})
-    public String verifyServer(@RequestParam(value = "signature", required = true) String signature,
-                               @RequestParam(value = "timestamp", required = true) String timestamp,
-                               @RequestParam(value = "nonce", required = true) String nonce,
-                               @RequestParam(value = "echostr", required = true) String echostr) {
+    public WxVerifyController(ApiVerifyProperties apiVerifyProperties) {
+        this.apiVerifyProperties = apiVerifyProperties;
+    }
+
+    @ResponseBody
+    public String verify(@RequestParam(value = "signature", required = true) String signature,
+                         @RequestParam(value = "timestamp", required = true) String timestamp,
+                         @RequestParam(value = "nonce", required = true) String nonce,
+                         @RequestParam(value = "echostr", required = true) String echostr) {
         String rawString = Stream.of(apiVerifyProperties.getToken(), timestamp, nonce).sorted().collect(Collectors.joining());
         if (signature.equals(DigestUtils.sha1Hex(rawString))) {
             return echostr;
