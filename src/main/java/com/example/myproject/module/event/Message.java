@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 所有消息都是通过Msg推送的
  */
-public interface MsgEvent {
+public interface Message {
+
+    enum Group {
+        BUTTON, MESSAGE, EVENT
+    }
 
     enum Type {
         @JsonProperty("event")EVENT,

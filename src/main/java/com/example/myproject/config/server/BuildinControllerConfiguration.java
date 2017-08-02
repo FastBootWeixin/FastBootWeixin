@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 
 import java.lang.invoke.MethodHandles;
 
