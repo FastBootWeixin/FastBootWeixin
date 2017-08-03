@@ -2,9 +2,7 @@ package com.example.myproject.module.message.reveive;
 
 import lombok.Data;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 /**
@@ -18,6 +16,7 @@ import java.util.List;
  */
 @Data
 @XmlRootElement(name = "xml")
+@XmlAccessorType(XmlAccessType.NONE)
 public class RawWxMessage {
 
     /**
@@ -207,7 +206,7 @@ public class RawWxMessage {
     /**
      * 地理位置经度
      */
-    @XmlElement(name = "Ticket")
+    @XmlElement(name = "Longitude")
     private Double longitude;
 
     /**
@@ -227,7 +226,8 @@ public class RawWxMessage {
      * 扫描信息
      */
     @Data
-//    @XmlRootElement(name = "ScanCodeInfo")
+    @XmlRootElement(name = "ScanCodeInfo")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class ScanCodeInfo {
 
         /**
@@ -248,7 +248,8 @@ public class RawWxMessage {
      * 发送的图片信息
      */
     @Data
-//    @XmlRootElement(name = "SendPicsInfo")
+    @XmlRootElement(name = "SendPicsInfo")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class SendPicsInfo {
 
         /**
@@ -265,6 +266,7 @@ public class RawWxMessage {
 
         @Data
         @XmlRootElement(name = "item")
+        @XmlAccessorType(XmlAccessType.NONE)
         public static class Item {
             /**
              * 图片的MD5值，开发者若需要，可用于验证接收到图片
@@ -278,7 +280,8 @@ public class RawWxMessage {
      * 发送的位置信息
      */
     @Data
-//    @XmlRootElement(name = "SendLocationInfo")
+    @XmlRootElement(name = "SendLocationInfo")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class SendLocationInfo {
 
         /**
