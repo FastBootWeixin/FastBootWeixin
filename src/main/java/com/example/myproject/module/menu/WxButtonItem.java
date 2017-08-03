@@ -1,5 +1,6 @@
 package com.example.myproject.module.menu;
 
+import com.example.myproject.annotation.WxButton;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,10 +22,10 @@ public class WxButtonItem {
     private List<WxButtonItem> subButtons = new ArrayList<>();
 
     @JsonIgnore
-    private Button.Group group;
+    private WxButton.Group group;
 
     @JsonInclude(Include.NON_NULL)
-    private Button.Type type;
+    private WxButton.Type type;
 
     @JsonInclude(Include.NON_NULL)
     private String name;
@@ -33,7 +34,7 @@ public class WxButtonItem {
     private boolean main;
 
     @JsonIgnore
-    private Button.Order order;
+    private WxButton.Order order;
 
     @JsonInclude(Include.NON_NULL)
     private String key;
@@ -49,11 +50,11 @@ public class WxButtonItem {
         return subButtons;
     }
 
-    public Button.Type getType() {
+    public WxButton.Type getType() {
         return type;
     }
 
-    public Button.Order getOrder() {
+    public WxButton.Order getOrder() {
         return order;
     }
 
@@ -77,7 +78,7 @@ public class WxButtonItem {
         return mediaId;
     }
 
-    public Button.Group getGroup() {
+    public WxButton.Group getGroup() {
         return group;
     }
 
@@ -90,7 +91,7 @@ public class WxButtonItem {
         super();
     }
 
-    WxButtonItem(Button.Group group, Button.Type type, boolean main, Button.Order order, String name,
+    WxButtonItem(WxButton.Group group, WxButton.Type type, boolean main, WxButton.Order order, String name,
                  String key, String url, String mediaId) {
         super();
         this.group = group;
@@ -101,6 +102,33 @@ public class WxButtonItem {
         this.key = key;
         this.url = url;
         this.mediaId = mediaId;
+    }
+
+    public boolean equalsBak(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WxButtonItem)) return false;
+
+        WxButtonItem that = (WxButtonItem) o;
+
+        // 子菜单数量不同，直接不相等
+        if (this.getSubButtons().size() != that.getSubButtons().size()) {
+            return false;
+        }
+
+        // 父菜单只比较name和子
+        if (this.getSubButtons().size() > 0 && that.getSubButtons().size() > 0) {
+            if (this.getSubButtons().equals(that.getSubButtons())) {
+                return getName().equals(that.getName());
+            }
+            return false;
+        }
+        // 非父菜单，全部比较，要把每个类型的比较摘出来，不想摘了
+        if (getType() != that.getType()) return false;
+        if (!getName().equals(that.getName())) return false;
+        // VIEW会自动抹掉key，所以不是VIEW的时候才判断key
+        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null)) return false;
+        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) return false;
+        return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
     }
 
     @Override
@@ -117,17 +145,19 @@ public class WxButtonItem {
 
         // 父菜单只比较name和子
         if (this.getSubButtons().size() > 0 && that.getSubButtons().size() > 0) {
-            if (this.getSubButtons().containsAll(that.getSubButtons()) && that.getSubButtons().containsAll(this.getSubButtons())) {
+            if (this.getSubButtons().equals(that.getSubButtons())) {
                 return getName().equals(that.getName());
             }
             return false;
         }
-        // 非父菜单，全部比较
+        // 非父菜单，全部比较，要把每个类型的比较摘出来，不想摘了
         if (getType() != that.getType()) return false;
         if (!getName().equals(that.getName())) return false;
-        if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) return false;
-        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) return false;
-        return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
+        // VIEW会自动抹掉key，只有两个key都非null的时候才做下一步判断
+        if (getKey() != null && that.getKey() != null && !getKey().equals(that.getKey())) return false;
+        // 同上
+        if (getUrl() != null && that.getUrl() != null && !getUrl().equals(that.getUrl())) return false;
+        return getMediaId() == null || that.getMediaId() == null || getMediaId().equals(that.getMediaId());
     }
 
     @Override
@@ -150,10 +180,10 @@ public class WxButtonItem {
 
     public static class Builder {
 
-        private Button.Type type;
-        private Button.Group group;
+        private WxButton.Type type;
+        private WxButton.Group group;
         private boolean main;
-        private Button.Order order;
+        private WxButton.Order order;
         private String name;
         private String key;
         private String url;
@@ -163,12 +193,12 @@ public class WxButtonItem {
             super();
         }
 
-        public Builder setGroup(Button.Group group) {
+        public Builder setGroup(WxButton.Group group) {
             this.group = group;
             return this;
         }
 
-        public Builder setType(Button.Type type) {
+        public Builder setType(WxButton.Type type) {
             this.type = type;
             return this;
         }
@@ -178,7 +208,7 @@ public class WxButtonItem {
             return this;
         }
 
-        public Builder setOrder(Button.Order order) {
+        public Builder setOrder(WxButton.Order order) {
             this.order = order;
             return this;
         }
@@ -212,11 +242,11 @@ public class WxButtonItem {
             Assert.isTrue(key == null || key.getBytes().length <= 128, "key不能过长");
             Assert.notNull(type, "菜单必须有类型");
             Assert.notNull(group, "菜单必须有分组");
-            Assert.isTrue(this.type != Button.Type.CLICK || this.key != null,
+            Assert.isTrue(this.type != WxButton.Type.CLICK || this.key != null,
                     "click类型必须有key");
-            Assert.isTrue(this.type != Button.Type.VIEW || this.url != null,
+            Assert.isTrue(this.type != WxButton.Type.VIEW || this.url != null,
                     "view类型必须有url");
-            Assert.isTrue((this.type != Button.Type.MEDIA_ID && this.type != Button.Type.VIEW_LIMITED) || this.mediaId != null,
+            Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || this.mediaId != null,
                     "media_id类型和view_limited类型必须有mediaId");
             return new WxButtonItem(group, type, main, order, name, key, url, mediaId);
         }

@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.context.event.ApplicationStartingEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -20,7 +19,6 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent> {
@@ -30,9 +28,9 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     @Autowired
     private ApiInvoker apiInvoker;
 
-    private Map<Button.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
+    private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
-    private MultiValueMap<Button.Group, WxButtonItem> groupButtonLookup = new LinkedMultiValueMap<>();
+    private MultiValueMap<WxButton.Group, WxButtonItem> groupButtonLookup = new LinkedMultiValueMap<>();
 
     private Map<String, WxButtonItem> buttonKeyLookup = new HashMap<>();
 
@@ -94,6 +92,11 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         String newMenuJson = this.getMenuJson();
         try {
             Menus oldMenus = objectMapper.readValue(oldMenuJson, Menus.class);
+            // 排序后比较--根本就没有顺序
+            // oldMenus.menu.mainButtons.forEach(m -> {
+            //    Collections.sort(m.getSubButtons(), Comparator.comparingInt(i -> i.getOrder().ordinal()));
+            //});
+            //Collections.sort(oldMenus.menu.mainButtons, Comparator.comparingInt(i -> i.getGroup().ordinal()));
             if (isMenuChanged(oldMenus)) {
                 String result = apiInvoker.createMenu(newMenuJson);
                 logger.info("==============================================================");
@@ -129,7 +132,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             if (this == o) return true;
             if (!(o instanceof Menu)) return false;
             Menu that = (Menu)o;
-            return that.mainButtons.containsAll(this.mainButtons) && this.mainButtons.containsAll(that.mainButtons);
+            return that.mainButtons.equals(this.mainButtons);
         }
     }
 

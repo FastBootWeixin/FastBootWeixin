@@ -1,7 +1,8 @@
 package com.example.myproject.framework;
 
 import com.example.myproject.controller.WxVerifyController;
-import com.example.myproject.module.event.WxMessage;
+import com.example.myproject.module.message.reveive.RawWxMessage;
+import com.example.myproject.module.message.reveive.WxMessage;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
@@ -54,9 +55,9 @@ public class WxRequestMappingHandlerMapping extends AbstractHandlerMapping {
         }
         if (isWxPostRequest(request)) {
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
-            if (xmlConverter.canRead(WxMessage.class, inputMessage.getHeaders().getContentType())) {
+            if (xmlConverter.canRead(RawWxMessage.class, inputMessage.getHeaders().getContentType())) {
                 try {
-                    WxMessage wxMessage = (WxMessage) xmlConverter.read(WxMessage.class, inputMessage);
+                    RawWxMessage wxMessage = (RawWxMessage) xmlConverter.read(RawWxMessage.class, inputMessage);
                     System.out.println(wxMessage);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
