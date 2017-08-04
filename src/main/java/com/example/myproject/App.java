@@ -1,12 +1,11 @@
 package com.example.myproject;
 
-import com.example.myproject.config.ApiInvoker.ApiInvoker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
-import org.springframework.stereotype.Controller;
+import com.example.myproject.config.ApiInvoker.ApiInvoker;
+import com.example.myproject.mvc.annotation.WxController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Hello world!
  */
 @WxApplication
-@Controller
+@WxController
 public class App {
 
     @Autowired
@@ -43,7 +42,6 @@ public class App {
      * 2、msgType:location类型，主动推送，用户发送的消息
      * 3、msgType:event-eventType:location事件 系统事件推送
      */
-
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左", key = "left")
     public void left() {
     }

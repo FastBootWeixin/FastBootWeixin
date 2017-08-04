@@ -49,7 +49,7 @@ public class WxMessage {
     /**
      * 个人定义的类目
      */
-    enum Category {
+    public enum Category {
         /**
          * 收到用户消息
          */
@@ -60,17 +60,21 @@ public class WxMessage {
          */
         EVENT,
         /**
+         * 用户按钮事件
+         */
+        BUTTON,
+        /**
          * 系统事件
          */
         SYSTEM
     }
 
-    enum Type {
+    public enum Type {
 
         /**
          * 收到Button事件
          */
-        EVENT(Category.EVENT),
+        EVENT(Category.EVENT, Category.BUTTON),
 
         /**
          * 文本消息
@@ -107,14 +111,14 @@ public class WxMessage {
          */
         LINK(Category.MESSAGE);
 
-        private Category category;
+        private Category[] categories;
 
-        Type(Category category) {
-            this.category = category;
+        Type(Category... categories) {
+            this.categories = categories;
         }
 
-        public Category getCategory() {
-            return category;
+        public Category[] getCategories() {
+            return categories;
         }
     }
 

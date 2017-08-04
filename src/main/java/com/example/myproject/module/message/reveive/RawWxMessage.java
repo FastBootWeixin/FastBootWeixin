@@ -1,8 +1,14 @@
 package com.example.myproject.module.message.reveive;
 
+import com.example.myproject.annotation.WxButton;
+import com.example.myproject.module.event.WxEvent;
 import lombok.Data;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +23,7 @@ import java.util.List;
 @Data
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.NONE)
+// XmlAccessorType指定属性访问方式，在Class中为指定任何注解时，可以按照这里定义的方式来获取属性。当使用@XmlElement方式指定后，Type最好指定为None
 public class RawWxMessage {
 
     /**
@@ -37,22 +44,118 @@ public class RawWxMessage {
      * 通用
      * 消息创建时间 （整型）
      */
+    @XmlJavaTypeAdapter(CreateTimeAdaptor.class)
     @XmlElement(name = "CreateTime")
-    private String createTime;
+    private Date createTime;
+
+    /**
+     * 日期转换
+     */
+    private static class CreateTimeAdaptor extends XmlAdapter<Long, Date> {
+        @Override
+        public Date unmarshal(Long i) throws Exception {
+            return new Date(i * 1000);
+        }
+
+        @Override
+        public Long marshal(Date d) throws Exception {
+            return d.getTime() / 1000;
+        }
+    }
 
     /**
      * 通用
      * 消息类型
      */
+    @XmlJavaTypeAdapter(MsgTypeAdaptor.class)
     @XmlElement(name = "MsgType")
-    private String msgType;
+    private WxMessage.Type messageType;
+
+    /**
+     * 缓存消息类别
+     */
+    private WxMessage.Category category;
+    /**
+     * 事件的类别
+     */
+    public WxMessage.Category getCategory() {
+        if (category != null) {
+            return category;
+        }
+        if (this.messageType == WxMessage.Type.EVENT) {
+            // 有button类型，则是button
+            if (this.getButtonType() != null) {
+                category = WxMessage.Category.BUTTON;
+            } else {
+                // 否则是事件
+                category = WxMessage.Category.EVENT;
+            }
+        } else {
+            // 否则就是消息
+            // category = this.messageType.getCategories()[0];
+            category = WxMessage.Category.MESSAGE;
+        }
+        return category;
+    }
+
+    /**
+     * 类型转换
+     */
+    private static class MsgTypeAdaptor extends XmlAdapter<String, WxMessage.Type> {
+        @Override
+        public WxMessage.Type unmarshal(String s) throws Exception {
+            return WxMessage.Type.valueOf(s.toUpperCase());
+        }
+
+        @Override
+        public String marshal(WxMessage.Type type) throws Exception {
+            return type.toString();
+        }
+    }
 
     /**
      * event类型有
      * 事件类型
      */
+    @XmlJavaTypeAdapter(EventAdaptor.class)
     @XmlElement(name = "Event")
-    private String event;
+    private WxEvent.Type eventType;
+
+    /**
+     * 类型转换
+     */
+    private static class EventAdaptor extends XmlAdapter<String, WxEvent.Type> {
+        @Override
+        public WxEvent.Type unmarshal(String s) throws Exception {
+            return WxEvent.Type.valueOf(s.toUpperCase());
+        }
+
+        @Override
+        public String marshal(WxEvent.Type type) throws Exception {
+            return type.toString();
+        }
+    }
+
+    /**
+     * 按钮类型
+     */
+    private WxButton.Type buttonType;
+
+    /**
+     * button事件的类型
+     */
+    public WxButton.Type getButtonType() {
+        if (this.buttonType != null) {
+            return this.buttonType;
+        }
+        // 只有msgType是event时才是buttonType
+        if (this.messageType == WxMessage.Type.EVENT) {
+            this.buttonType = Arrays.stream(WxButton.Type.values())
+                                    .filter(t -> t.name().equals(this.eventType.name()))
+                                    .findFirst().orElse(null);
+        }
+        return this.buttonType;
+    }
 
     /**
      * event类型有
@@ -67,7 +170,7 @@ public class RawWxMessage {
      * subscribe:事件KEY值，qrscene_为前缀，后面为二维码的参数值
      * unsubscribe:事件KEY值，qrscene_为前缀，后面为二维码的参数值
      * SCAN:事件KEY值，是一个32位无符号整数，即创建二维码时的二维码scene_id
-     * LOCATION:上报地理位置事件(进入公众号每五秒上报一次)
+     * LOCATION:无
      */
     @XmlElement(name = "EventKey")
     private String eventKey;
@@ -261,7 +364,8 @@ public class RawWxMessage {
         /**
          * 图片列表
          */
-        @XmlElements(@XmlElement(name = "PicList", type = Item.class))
+        @XmlElementWrapper(name = "PicList")
+        @XmlElements(@XmlElement(name = "item", type = Item.class))
         private List<Item> picList;
 
         @Data
