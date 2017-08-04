@@ -1,22 +1,5 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.myproject.mvc.condition;
 
-import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.message.reveive.RawWxMessage;
 import com.example.myproject.mvc.WxMappingUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,7 +82,7 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
 		}
 		else if (this.enums.size() == 1) {
 			// 以第一个元素算
-			return this.enums.stream().findFirst().get().ordinal() - other.enums.stream().sorted().findFirst().map(e -> e.ordinal()).orElse(0);
+			return this.enums.stream().findFirst().get().ordinal() - other.enums.stream().sorted().findFirst().map(e -> e.ordinal()).orElse(-1);
 		}
 		return 0;
 	}

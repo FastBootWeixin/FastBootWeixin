@@ -22,6 +22,8 @@ import com.example.myproject.module.message.reveive.WxMessage;
 import com.example.myproject.mvc.condition.WxButtonTypeCondition;
 import com.example.myproject.mvc.condition.WxCategoryCondition;
 import com.example.myproject.mvc.condition.WxEventTypeCondition;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMetho
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 /**
@@ -51,7 +54,11 @@ import java.util.List;
  */
 public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
+	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
 	private final String name;
+
+	private final String eventKey;
 
 	private final WxCategoryCondition wxCategoryCondition;
 
@@ -60,10 +67,12 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	private final WxEventTypeCondition wxEventTypeCondition;
 
 	public WxMappingInfo(String name,
+						 String eventKey,
 						 WxCategoryCondition categories,
 						 WxButtonTypeCondition buttonTypes,
 						 WxEventTypeCondition eventTypes) {
-		this.name = (StringUtils.hasText(name) ? name : null);
+		this.name = (name != null ? name : "");
+		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
 		this.wxCategoryCondition = (categories != null ? categories : new WxCategoryCondition());
 		this.wxButtonTypeCondition = (buttonTypes != null ? buttonTypes : new WxButtonTypeCondition());
 		this.wxEventTypeCondition = (eventTypes != null ? eventTypes : new WxEventTypeCondition());
@@ -74,6 +83,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	public String getEventKey() {
+		return eventKey;
 	}
 
 	public WxCategoryCondition getWxCategoryCondition() {
@@ -100,7 +113,16 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxButtonTypeCondition buttonTypes = this.wxButtonTypeCondition.combine(other.wxButtonTypeCondition);
 		WxEventTypeCondition eventTypes = this.wxEventTypeCondition.combine(other.wxEventTypeCondition);
 
-		return new WxMappingInfo(name, categories, buttonTypes, eventTypes);
+		return new WxMappingInfo(name, eventKey, categories, buttonTypes, eventTypes);
+	}
+
+	private String combineEventKeys(WxMappingInfo other) {
+		if (!StringUtils.isEmpty(this.eventKey) && !StringUtils.isEmpty(other.eventKey)) {
+			logger.warn("两个合并时都包括eventKey，强制忽略other的eventKey");
+			return this.eventKey;
+		} else {
+			return StringUtils.isEmpty(this.eventKey) ? other.eventKey : this.eventKey;
+		}
 	}
 
 	private String combineNames(WxMappingInfo other) {
@@ -125,28 +147,15 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	 */
 	@Override
 	public WxMappingInfo getMatchingCondition(HttpServletRequest request) {
-		RequestMethodsRequestCondition methods = this.methodsCondition.getMatchingCondition(request);
-		ParamsRequestCondition params = this.paramsCondition.getMatchingCondition(request);
-		HeadersRequestCondition headers = this.headersCondition.getMatchingCondition(request);
-		ConsumesRequestCondition consumes = this.consumesCondition.getMatchingCondition(request);
-		ProducesRequestCondition produces = this.producesCondition.getMatchingCondition(request);
 
-		if (methods == null || params == null || headers == null || consumes == null || produces == null) {
+		WxCategoryCondition categories = (WxCategoryCondition) this.wxCategoryCondition.getMatchingCondition(request);
+		WxButtonTypeCondition buttonTypes = (WxButtonTypeCondition) this.wxButtonTypeCondition.getMatchingCondition(request);
+		WxEventTypeCondition eventTypes = (WxEventTypeCondition) this.wxEventTypeCondition.getMatchingCondition(request);
+
+		if (categories == null) {
 			return null;
 		}
-
-		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request);
-		if (patterns == null) {
-			return null;
-		}
-
-		RequestConditionHolder custom = this.customConditionHolder.getMatchingCondition(request);
-		if (custom == null) {
-			return null;
-		}
-
-		return new WxMappingInfo(this.name, patterns,
-				methods, params, headers, consumes, produces, custom.getCondition());
+		return new WxMappingInfo(this.name, this.eventKey, categories, buttonTypes, eventTypes);
 	}
 
 	/**
@@ -158,39 +167,15 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	@Override
 	public int compareTo(WxMappingInfo other, HttpServletRequest request) {
 		int result;
-		// Automatic vs explicit HTTP HEAD mapping
-		if (HttpMethod.HEAD.matches(request.getMethod())) {
-			result = this.methodsCondition.compareTo(other.getMethodsCondition(), request);
-			if (result != 0) {
-				return result;
-			}
-		}
-		result = this.patternsCondition.compareTo(other.getPatternsCondition(), request);
+		result = this.wxCategoryCondition.compareTo(other.getWxCategoryCondition(), request);
 		if (result != 0) {
 			return result;
 		}
-		result = this.paramsCondition.compareTo(other.getParamsCondition(), request);
+		result = this.wxButtonTypeCondition.compareTo(other.getWxButtonTypeCondition(), request);
 		if (result != 0) {
 			return result;
 		}
-		result = this.headersCondition.compareTo(other.getHeadersCondition(), request);
-		if (result != 0) {
-			return result;
-		}
-		result = this.consumesCondition.compareTo(other.getConsumesCondition(), request);
-		if (result != 0) {
-			return result;
-		}
-		result = this.producesCondition.compareTo(other.getProducesCondition(), request);
-		if (result != 0) {
-			return result;
-		}
-		// Implicit (no method) vs explicit HTTP method mappings
-		result = this.methodsCondition.compareTo(other.getMethodsCondition(), request);
-		if (result != 0) {
-			return result;
-		}
-		result = this.customConditionHolder.compareTo(other.customConditionHolder, request);
+		result = this.wxEventTypeCondition.compareTo(other.getWxEventTypeCondition(), request);
 		if (result != 0) {
 			return result;
 		}
@@ -206,44 +191,27 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 			return false;
 		}
 		WxMappingInfo otherInfo = (WxMappingInfo) other;
-		return (this.patternsCondition.equals(otherInfo.patternsCondition) &&
-				this.methodsCondition.equals(otherInfo.methodsCondition) &&
-				this.paramsCondition.equals(otherInfo.paramsCondition) &&
-				this.headersCondition.equals(otherInfo.headersCondition) &&
-				this.consumesCondition.equals(otherInfo.consumesCondition) &&
-				this.producesCondition.equals(otherInfo.producesCondition) &&
-				this.customConditionHolder.equals(otherInfo.customConditionHolder));
+		return (this.name.equals(otherInfo.name) &&
+				this.wxCategoryCondition.equals(otherInfo.wxCategoryCondition) &&
+				this.wxEventTypeCondition.equals(otherInfo.wxEventTypeCondition) &&
+				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition));
 	}
 
 	@Override
 	public int hashCode() {
-		return (this.patternsCondition.hashCode() * 31 +  // primary differentiation
-				this.methodsCondition.hashCode() + this.paramsCondition.hashCode() +
-				this.headersCondition.hashCode() + this.consumesCondition.hashCode() +
-				this.producesCondition.hashCode() + this.customConditionHolder.hashCode());
+		return (this.name.hashCode() * 31 +  // primary differentiation
+				this.wxCategoryCondition.hashCode() + this.wxEventTypeCondition.hashCode() + this.wxButtonTypeCondition.hashCode());
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("{");
-		builder.append(this.patternsCondition);
-		if (!this.methodsCondition.isEmpty()) {
-			builder.append(",methods=").append(this.methodsCondition);
+		builder.append(this.wxCategoryCondition);
+		if (!this.wxEventTypeCondition.isEmpty()) {
+			builder.append(",events=").append(this.wxEventTypeCondition);
 		}
-		if (!this.paramsCondition.isEmpty()) {
-			builder.append(",params=").append(this.paramsCondition);
-		}
-		if (!this.headersCondition.isEmpty()) {
-			builder.append(",headers=").append(this.headersCondition);
-		}
-		if (!this.consumesCondition.isEmpty()) {
-			builder.append(",consumes=").append(this.consumesCondition);
-		}
-		if (!this.producesCondition.isEmpty()) {
-			builder.append(",produces=").append(this.producesCondition);
-		}
-		if (!this.customConditionHolder.isEmpty()) {
-			builder.append(",custom=").append(this.customConditionHolder);
+		if (!this.wxButtonTypeCondition.isEmpty()) {
+			builder.append(",buttonss=").append(this.wxButtonTypeCondition);
 		}
 		builder.append('}');
 		return builder.toString();
@@ -274,6 +242,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		Builder mappingName(String name);
 
+		Builder eventKey(String eventKey);
+
 		Builder options(WxMappingInfo.BuilderConfiguration options);
 
 		WxMappingInfo build();
@@ -292,6 +262,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		private WxEvent.Type[] eventTypes;
 
 		private String mappingName;
+
+		private String eventKey;
 
 		private BuilderConfiguration options = new BuilderConfiguration();
 
@@ -324,6 +296,12 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		}
 
 		@Override
+		public DefaultBuilder eventKey(String eventKey) {
+			this.eventKey = eventKey;
+			return this;
+		}
+
+		@Override
 		public Builder options(BuilderConfiguration options) {
 			this.options = options;
 			return this;
@@ -331,7 +309,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		@Override
 		public WxMappingInfo build() {
-			return new WxMappingInfo(mappingName,
+			return new WxMappingInfo(mappingName, eventKey,
 					new WxCategoryCondition(category),
 					new WxButtonTypeCondition(buttonTypes),
 					new WxEventTypeCondition(eventTypes));

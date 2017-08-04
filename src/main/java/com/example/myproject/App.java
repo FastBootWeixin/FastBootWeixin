@@ -44,10 +44,12 @@ public class App {
      */
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左", key = "left")
     public void left() {
+        System.out.println(1);
     }
 
     @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "一级菜单中", key = "middle")
     public void middle() {
+        System.out.println(1);
     }
 
     @WxButton(group = WxButton.Group.RIGHT, main = true, name = "一级菜单右", key = "right")
@@ -56,6 +58,7 @@ public class App {
 
     @WxButton(type = WxButton.Type.CLICK, group = WxButton.Group.LEFT, order = WxButton.Order.FIRST, name = "二级菜单左一", key = "left_1")
     public void click() {
+        System.out.println(1);
     }
 
     @WxButton(type = WxButton.Type.LOCATION_SELECT, group = WxButton.Group.LEFT, order = WxButton.Order.SECOND, name = "二级菜单左二", key = "left_2")

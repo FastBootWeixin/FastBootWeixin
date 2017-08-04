@@ -78,17 +78,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return wxVerifyMethodHandler;
         }
         if (isWxPostRequest(request)) {
-            HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
-            if (xmlConverter.canRead(RawWxMessage.class, inputMessage.getHeaders().getContentType())) {
-                try {
-                    RawWxMessage rawWxMessage = (RawWxMessage) xmlConverter.read(RawWxMessage.class, inputMessage);
-                    WxMappingUtils.setRawWxMessageToRequest(request, rawWxMessage);
-                    System.out.println(rawWxMessage);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-            return null;
+            return lookupHandlerMethod(lookupPath, request);
         }
         return null;
     }
@@ -110,14 +100,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.mappingRegistry.acquireReadLock();
         try {
             return Collections.unmodifiableMap(this.mappingRegistry.getMappings());
-        }
-        finally {
+        } finally {
             this.mappingRegistry.releaseReadLock();
         }
     }
 
     /**
      * Return the handler methods for the given mapping name.
+     *
      * @param mappingName the mapping name
      * @return a list of matching HandlerMethod's or {@code null}; the returned
      * list will never be modified and is safe to iterate.
@@ -138,9 +128,10 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * Register the given mapping.
      * <p>This method may be invoked at runtime after initialization has completed.
+     *
      * @param mapping the mapping for the handler method
      * @param handler the handler
-     * @param method the method
+     * @param method  the method
      */
     @Override
     public void registerMapping(WxMappingInfo mapping, Object handler, Method method) {
@@ -150,6 +141,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * Un-register the given mapping.
      * <p>This method may be invoked at runtime after initialization has completed.
+     *
      * @param mapping the mapping to unregister
      */
     @Override
@@ -159,17 +151,34 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     /**
      * 父类中只有getHandlerInternal方法有使用
-     *
+     * <p>
      * Look up the best-matching handler method for the current request.
      * If multiple matches are found, the best match is selected.
+     *
      * @param lookupPath mapping lookup path within the current servlet mapping
-     * @param request the current request
+     * @param request    the current request
      * @return the best-matching handler method, or {@code null} if no match
      * @see #handleMatch(Object, String, HttpServletRequest)
      * @see #handleNoMatch(Set, String, HttpServletRequest)
      */
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
-        return null;
+        this.mappingRegistry.acquireReadLock();
+        try {
+            HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
+            RawWxMessage rawWxMessage = (RawWxMessage) xmlConverter.read(RawWxMessage.class, inputMessage);
+            WxMappingUtils.setRawWxMessageToRequest(request, rawWxMessage);
+            HandlerMethod handlerMethod = null;
+            if (rawWxMessage.getCategory() == WxMessage.Category.BUTTON) {
+                handlerMethod = lookupButtonHandlerMethod(rawWxMessage);
+            }
+            return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
+        } finally {
+            this.mappingRegistry.releaseReadLock();
+        }
+    }
+
+    private HandlerMethod lookupButtonHandlerMethod(RawWxMessage rawWxMessage) {
+        return mappingRegistry.getMappingByEventKey(rawWxMessage.getEventKey());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -179,11 +188,12 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * Register a handler method and its unique mapping. Invoked at startup for
      * each detected handler method.
+     *
      * @param handler the bean name of the handler or the handler instance
-     * @param method the method to register
+     * @param method  the method to register
      * @param mapping the mapping conditions associated with the handler method
      * @throws IllegalStateException if another method was already registered
-     * under the same mapping
+     *                               under the same mapping
      */
     protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
         this.mappingRegistry.register(mapping, handler, method);
@@ -191,8 +201,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     /**
      * Create the HandlerMethod instance.
+     *
      * @param handler either a bean name or an actual handler instance
-     * @param method the target method
+     * @param method  the target method
      * @return the created HandlerMethod
      */
     protected HandlerMethod createHandlerMethod(Object handler, Method method) {
@@ -201,8 +212,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             String beanName = (String) handler;
             handlerMethod = new HandlerMethod(beanName,
                     getApplicationContext().getAutowireCapableBeanFactory(), method);
-        }
-        else {
+        } else {
             handlerMethod = new HandlerMethod(handler, method);
         }
         return handlerMethod;
@@ -210,7 +220,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     @Override
     protected Set<String> getMappingPathPatterns(WxMappingInfo info) {
-        return info.getPatternsCondition().getPatterns();
+        return Collections.singleton("/");
     }
 
     @Override
@@ -226,14 +236,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * Uses method and type-level @{@link RequestMapping} annotations to create
      * the RequestMappingInfo.
+     *
      * @return the created RequestMappingInfo, or {@code null} if the method
      * does not have a {@code @RequestMapping} annotation.
      */
     @Override
     protected WxMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-        WxMappingInfo info = createRequestMappingInfo(method);
+        WxMappingInfo info = createWxMappingInfo(method);
         if (info != null) {
-            WxMappingInfo typeInfo = createRequestMappingInfo(handlerType);
+            WxMappingInfo typeInfo = createWxMappingInfo(handlerType);
             if (typeInfo != null) {
                 info = typeInfo.combine(info);
             }
@@ -241,20 +252,24 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return info;
     }
 
-    private WxMappingInfo createRequestMappingInfo(AnnotatedElement element) {
+    private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
         WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
+        if (wxButton == null) {
+            return null;
+        }
         return WxMappingInfo
                 .category(WxMessage.Category.BUTTON)
+                .eventKey(wxButton.key())
+                .mappingName(wxButton.name())
                 .buttonTypes(wxButton.type())
                 .build();
     }
 
 
-
     /**
      * A registry that maintains all mappings to handler methods, exposing methods
      * to perform lookups and providing concurrent access.
-     *
+     * <p>
      * <p>Package-private for testing purposes.
      */
     class MappingRegistry {
@@ -264,6 +279,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         private final Map<WxMappingInfo, HandlerMethod> mappingLookup = new LinkedHashMap<>();
 
         private final MultiValueMap<String, WxMappingInfo> urlLookup = new LinkedMultiValueMap<>();
+
+        private final Map<String, HandlerMethod> eventKeyLookup = new LinkedHashMap<>();
 
         private final Map<String, List<HandlerMethod>> nameLookup =
                 new ConcurrentHashMap<String, List<HandlerMethod>>();
@@ -275,6 +292,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         /**
          * Return all mappings and handler methods. Not thread-safe.
+         *
          * @see #acquireReadLock()
          */
         public Map<WxMappingInfo, HandlerMethod> getMappings() {
@@ -283,10 +301,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         /**
          * Return matches for the given URL path. Not thread-safe.
+         *
          * @see #acquireReadLock()
          */
         public List<WxMappingInfo> getMappingsByUrl(String urlPath) {
             return this.urlLookup.get(urlPath);
+        }
+
+        public HandlerMethod getMappingByEventKey(String eventKey) {
+            return this.eventKeyLookup.get(eventKey);
         }
 
         /**
@@ -294,14 +317,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
          */
         public List<HandlerMethod> getHandlerMethodsByMappingName(String mappingName) {
             return this.nameLookup.get(mappingName);
-        }
-
-        /**
-         * Return CORS configuration. Thread-safe for concurrent use.
-         */
-        public CorsConfiguration getCorsConfiguration(HandlerMethod handlerMethod) {
-            HandlerMethod original = handlerMethod.getResolvedFromHandlerMethod();
-            return this.corsLookup.get(original != null ? original : handlerMethod);
         }
 
         /**
@@ -334,6 +349,10 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                     this.urlLookup.add(url, mapping);
                 }
 
+                if (mapping.getEventKey() != null) {
+                    eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
+                }
+
                 String name = null;
 //                if (getNamingStrategy() != null) {
 //                    name = getNamingStrategy().getName(handlerMethod, mapping);
@@ -341,8 +360,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 //                }
 
                 this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, directUrls, name));
-            }
-            finally {
+            } finally {
                 this.readWriteLock.writeLock().unlock();
             }
         }
@@ -351,14 +369,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             HandlerMethod handlerMethod = this.mappingLookup.get(mapping);
             if (handlerMethod != null && !handlerMethod.equals(newHandlerMethod)) {
                 throw new IllegalStateException(
-                        "Ambiguous mapping. Cannot map '" +	newHandlerMethod.getBean() + "' method \n" +
+                        "Ambiguous mapping. Cannot map '" + newHandlerMethod.getBean() + "' method \n" +
                                 newHandlerMethod + "\nto " + mapping + ": There is already '" +
                                 handlerMethod.getBean() + "' bean method\n" + handlerMethod + " mapped.");
             }
         }
 
         private List<String> getDirectUrls(WxMappingInfo mapping) {
-            List<String> urls = new ArrayList<String>(1);
+            List<String> urls = new ArrayList<>(1);
             for (String path : getMappingPathPatterns(mapping)) {
                 if (!getPathMatcher().isPattern(path)) {
                     urls.add(path);
@@ -416,11 +434,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                     }
                 }
 
+                if (mapping.getEventKey() != null) {
+                    eventKeyLookup.remove(mapping.getEventKey());
+                }
+
                 removeMappingName(definition);
 
                 this.corsLookup.remove(definition.getHandlerMethod());
-            }
-            finally {
+            } finally {
                 this.readWriteLock.writeLock().unlock();
             }
         }
