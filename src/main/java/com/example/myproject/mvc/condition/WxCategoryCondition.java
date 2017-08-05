@@ -16,8 +16,8 @@
 
 package com.example.myproject.mvc.condition;
 
-import com.example.myproject.module.message.receive.RawWxMessage;
-import com.example.myproject.module.message.receive.WxMessage;
+import com.example.myproject.module.Wx;
+import com.example.myproject.module.message.RawWxMessage;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -33,14 +33,14 @@ import java.util.Set;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
-public final class WxCategoryCondition extends AbstractWxEnumCondition<WxMessage.Category> {
+public final class WxCategoryCondition extends AbstractWxEnumCondition<Wx.Category> {
 
 
-	public WxCategoryCondition(WxMessage.Category... types) {
+	public WxCategoryCondition(Wx.Category... types) {
 		super(types);
 	}
 
-	protected WxCategoryCondition(Collection<WxMessage.Category> types) {
+	protected WxCategoryCondition(Collection<Wx.Category> types) {
 		super(Collections.unmodifiableSet(new LinkedHashSet<>(types)));
 	}
 
@@ -50,14 +50,14 @@ public final class WxCategoryCondition extends AbstractWxEnumCondition<WxMessage
 	 */
 	@Override
 	public WxCategoryCondition combine(AbstractWxEnumCondition other) {
-		Set<WxMessage.Category> set = new LinkedHashSet(this.enums);
+		Set<Wx.Category> set = new LinkedHashSet(this.enums);
 		set.addAll(other.enums);
 		return new WxCategoryCondition(set);
 	}
 
 	@Override
 	protected WxCategoryCondition matchEnum(RawWxMessage rawWxMessage) {
-		WxMessage.Category wxCategory = rawWxMessage.getCategory();
+		Wx.Category wxCategory = rawWxMessage.getCategory();
 		if (getEnums().contains(wxCategory)) {
 			return new WxCategoryCondition(wxCategory);
 		}

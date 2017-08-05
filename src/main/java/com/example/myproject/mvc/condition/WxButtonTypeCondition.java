@@ -17,7 +17,7 @@
 package com.example.myproject.mvc.condition;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.message.receive.RawWxMessage;
+import com.example.myproject.module.message.RawWxMessage;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;

@@ -4,10 +4,14 @@ import com.example.myproject.config.ApiInvoker.ApiVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxButtonArgumentResolver;
+import com.example.myproject.support.DefaultUserProvider;
+import com.example.myproject.support.UserProvider;
+import org.apache.catalina.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -44,19 +48,25 @@ public class BuildinControllerConfiguration {
 	}
 
 	@Bean
-	public WxMvcConfigurer wxButtonArgumentResolver() {
-		return new WxMvcConfigurer(beanFactory);
+	@ConditionalOnMissingBean
+	public UserProvider userProvider() {
+		return new DefaultUserProvider();
+	}
+
+	@Bean
+	public WxMvcConfigurer wxButtonArgumentResolver(UserProvider userProvider) {
+		return new WxMvcConfigurer(userProvider, beanFactory);
 	}
 
 	public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
 
 		private HandlerMethodArgumentResolver handlerMethodArgumentResolver;
 
-		public WxMvcConfigurer(BeanFactory beanFactory) {
+		public WxMvcConfigurer(UserProvider userProvider, BeanFactory beanFactory) {
 			if (beanFactory instanceof ConfigurableBeanFactory) {
 				this.handlerMethodArgumentResolver = new WxButtonArgumentResolver((ConfigurableBeanFactory) beanFactory);
 			} else {
-				this.handlerMethodArgumentResolver = new WxButtonArgumentResolver();
+				this.handlerMethodArgumentResolver = new WxButtonArgumentResolver(userProvider);
 			}
 		}
 

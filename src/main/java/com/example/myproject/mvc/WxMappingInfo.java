@@ -17,8 +17,9 @@
 package com.example.myproject.mvc;
 
 import com.example.myproject.annotation.WxButton;
+import com.example.myproject.module.Wx;
 import com.example.myproject.module.event.WxEvent;
-import com.example.myproject.module.message.receive.WxMessage;
+import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.condition.WxButtonTypeCondition;
 import com.example.myproject.mvc.condition.WxCategoryCondition;
 import com.example.myproject.mvc.condition.WxEventTypeCondition;
@@ -222,7 +223,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	 * @param category the paths to use
 	 * @since 4.2
 	 */
-	public static Builder category(WxMessage.Category category) {
+	public static Builder category(Wx.Category category) {
 		return new DefaultBuilder(category);
 	}
 
@@ -252,7 +253,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	private static class DefaultBuilder implements Builder {
 
-		private WxMessage.Category category;
+		private Wx.Category category;
 
 		private WxButton.Type[] buttonTypes;
 
@@ -266,7 +267,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		private BuilderConfiguration options = new BuilderConfiguration();
 
-		public DefaultBuilder(WxMessage.Category category) {
+		public DefaultBuilder(Wx.Category category) {
 			this.category = category;
 		}
 

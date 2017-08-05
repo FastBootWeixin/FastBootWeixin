@@ -2,10 +2,10 @@ package com.example.myproject.mvc.annotation;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.WxVerifyController;
-import com.example.myproject.module.message.receive.RawWxMessage;
-import com.example.myproject.module.message.receive.WxMessage;
+import com.example.myproject.module.Wx;
+import com.example.myproject.module.message.RawWxMessage;
 import com.example.myproject.mvc.WxMappingInfo;
-import com.example.myproject.mvc.WxMappingUtils;
+import com.example.myproject.mvc.WxUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpInputMessage;
@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
@@ -164,17 +165,24 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
         this.mappingRegistry.acquireReadLock();
         try {
+            // ServletWebRequest
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
             RawWxMessage rawWxMessage = (RawWxMessage) xmlConverter.read(RawWxMessage.class, inputMessage);
-            WxMappingUtils.setRawWxMessageToRequest(request, rawWxMessage);
+            WxUtils.setRawWxMessageToRequest(request, rawWxMessage);
             HandlerMethod handlerMethod = null;
-            if (rawWxMessage.getCategory() == WxMessage.Category.BUTTON) {
+            if (rawWxMessage.getCategory() == Wx.Category.BUTTON) {
                 handlerMethod = lookupButtonHandlerMethod(rawWxMessage);
             }
+            handleMatch(handlerMethod, request);
             return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
         } finally {
             this.mappingRegistry.releaseReadLock();
         }
+    }
+
+    protected void handleMatch(HandlerMethod handlerMethod, HttpServletRequest request) {
+        // 返回XML
+        request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
     }
 
     private HandlerMethod lookupButtonHandlerMethod(RawWxMessage rawWxMessage) {
@@ -258,7 +266,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return null;
         }
         return WxMappingInfo
-                .category(WxMessage.Category.BUTTON)
+                .category(Wx.Category.BUTTON)
                 .eventKey(wxButton.key())
                 .mappingName(wxButton.name())
                 .buttonTypes(wxButton.type())

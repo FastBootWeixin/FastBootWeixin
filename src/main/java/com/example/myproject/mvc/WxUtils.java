@@ -1,6 +1,6 @@
 package com.example.myproject.mvc;
 
-import com.example.myproject.module.message.receive.RawWxMessage;
+import com.example.myproject.module.message.RawWxMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Random;
@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * 绑定一些参数
  */
-public class WxMappingUtils {
+public class WxUtils {
 
     private static final String RAW_WX_MESSAGE_REQUEST_ATTRIBUTE = "RAW_WX_MESSAGE_REQUEST_ATTRIBUTE";
 

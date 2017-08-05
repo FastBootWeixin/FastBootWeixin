@@ -3,15 +3,16 @@ package com.example.myproject;
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.config.ApiInvoker.ApiInvoker;
-import com.example.myproject.module.message.receive.RawWxMessage;
-import com.example.myproject.mvc.WxMappingUtils;
+import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.annotation.WxController;
+import com.example.myproject.support.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Hello world!
@@ -42,9 +43,9 @@ public class App {
 
     /**
      * 一次选择位置共推送了以下事件：
-     * 1、msgType:event-eventType:location_select事件，菜单主动触发
-     * 2、msgType:location类型，主动推送，用户发送的消息
-     * 3、msgType:event-eventType:location事件 系统事件推送
+     * 1、messageType:event-eventType:location_select事件，菜单主动触发
+     * 2、messageType:location类型，主动推送，用户发送的消息
+     * 3、messageType:event-eventType:location事件 系统事件推送
      */
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左", key = "left")
     public String left() {
@@ -57,6 +58,9 @@ public class App {
                 "</xml>";
     }
 
+    /**
+     * 回复消息一定要有fromUser，且是gh_930e3941e6f7
+     */
     @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "一级菜单中", key = "middle")
     public void middle() {
         System.out.println(1);
@@ -67,14 +71,14 @@ public class App {
     }
 
     @WxButton(type = WxButton.Type.CLICK, group = WxButton.Group.LEFT, order = WxButton.Order.FIRST, name = "二级菜单左一", key = "left_1")
-    public String click(RawWxMessage rawWxMessage) {
-        return "<xml>\n" +
-                "<ToUserName><![CDATA[" + rawWxMessage.getFromUserName() + "]]></ToUserName>\n" +
-                "<FromUserName><![CDATA[" + rawWxMessage.getToUserName() + "]]></FromUserName>\n" +
-                "<CreateTime>12345678</CreateTime>\n" +
-                "<MsgType><![CDATA[text]]></MsgType>\n" +
-                "<Content><![CDATA[你好]]></Content>\n" +
-                "</xml>";
+    public WxMessage click(RawWxMessage rawWxMessage, String fromUser, String toUser, WxUser wxUser) {
+        return WxMessage.Text.builder()
+                .content("我是一条测试消息")
+                .fromUserName(wxUser.getToUserName())
+                .toUserName(wxUser.getFromUserName())
+                .createTime(new Date())
+                .msgType(WxMessage.Type.TEXT)
+                .build();
     }
 
     @WxButton(type = WxButton.Type.LOCATION_SELECT, group = WxButton.Group.LEFT, order = WxButton.Order.SECOND, name = "二级菜单左二", key = "left_2")

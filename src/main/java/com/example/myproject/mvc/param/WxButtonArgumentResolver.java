@@ -1,8 +1,11 @@
 package com.example.myproject.mvc.param;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.message.receive.RawWxMessage;
-import com.example.myproject.mvc.WxMappingUtils;
+import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.mvc.WxUtils;
+import com.example.myproject.support.UserProvider;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -54,8 +57,22 @@ import java.util.Map;
  */
 public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
-	public WxButtonArgumentResolver() {
+	// 是否有更好的方式？有空参看源码
+	@Autowired
+	private UserProvider userProvider;
+
+	// 从谁发的
+	public static final String WX_FROM_USER = "fromUser";
+
+	// 默认同上，另外一个参数名
+	public static final String WX_USER = "user";
+
+	// 发给谁的
+	public static final String WX_TO_USER = "toUser";
+
+	public WxButtonArgumentResolver(UserProvider userProvider) {
 		super();
+		this.userProvider = userProvider;
 	}
 
 	/**
@@ -65,6 +82,7 @@ public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentRe
 	 */
 	public WxButtonArgumentResolver(ConfigurableBeanFactory beanFactory) {
 		super(beanFactory);
+		this.userProvider = beanFactory.getBean(UserProvider.class);
 	}
 
 
@@ -100,12 +118,36 @@ public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentRe
 	@Override
 	protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
 		HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-		RawWxMessage rawWxMessage = WxMappingUtils.getRawWxMessageFromRequest(servletRequest);
+		RawWxMessage rawWxMessage = WxUtils.getRawWxMessageFromRequest(servletRequest);
 		// 类型匹配，直接返回
 		if (parameter.getParameterType() == RawWxMessage.class) {
 			return rawWxMessage;
 		}
+		// 如果可以获取用户则返回用户
+		Object user = getUser(parameter, rawWxMessage);
+		if (user != null) {
+			return user;
+		}
 		return rawWxMessage.getParameterValue(name);
+	}
+
+	private Object getUser(MethodParameter parameter, RawWxMessage rawWxMessage) {
+		// 类型不匹配直接返回
+		if (!userProvider.isMatch(parameter.getParameterType())) {
+			return null;
+		}
+		if (WX_TO_USER.equals(parameter.getParameterName())) {
+			// 尝试转换toUser
+			return userProvider.getToUser(rawWxMessage.getToUserName());
+		} else if (WX_FROM_USER.equals(parameter.getParameterName())) {
+			// 尝试转换fromUser
+			return userProvider.getFromUser(rawWxMessage.getFromUserName());
+		} else if (WX_USER.equals(parameter.getParameterName()) || !BeanUtils.isSimpleProperty(parameter.getParameterType())) {
+			// 两个都转换失败时，判断是否是简单属性，如果不是，则尝试转换为用户
+			// 因为此时无法得知是要获取to还是from，所以取对于用户来说更需要的from
+			return userProvider.getUser(rawWxMessage.getFromUserName(), rawWxMessage.getToUserName());
+		}
+		return null;
 	}
 
 	@Override
