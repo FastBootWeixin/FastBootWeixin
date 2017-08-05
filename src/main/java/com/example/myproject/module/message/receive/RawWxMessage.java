@@ -1,12 +1,17 @@
-package com.example.myproject.module.message.reveive;
+package com.example.myproject.module.message.receive;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.event.WxEvent;
 import lombok.Data;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeanUtils;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.beans.PropertyDescriptor;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +30,8 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 // XmlAccessorType指定属性访问方式，在Class中为指定任何注解时，可以按照这里定义的方式来获取属性。当使用@XmlElement方式指定后，Type最好指定为None
 public class RawWxMessage {
+
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     /**
      * 通用
@@ -418,6 +425,25 @@ public class RawWxMessage {
          */
         @XmlElement(name = "Poiname")
         private String poiname;
+    }
+
+    /**
+     *
+     * @param paramName
+     * @return
+     */
+    public Object getParameterValue(String paramName) {
+        PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(this.getClass(), paramName);
+        if (propertyDescriptor != null) {
+            Object value =null ;
+            try {
+                value = propertyDescriptor.getReadMethod().invoke(this.getClass(), new Object[]{});//调用方法获取方法的返回值
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return value;
+        }
+        return null;
     }
 
 }

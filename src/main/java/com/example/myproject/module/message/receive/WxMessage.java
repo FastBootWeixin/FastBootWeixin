@@ -1,4 +1,4 @@
-package com.example.myproject.module.message.reveive;
+package com.example.myproject.module.message.receive;
 
 import com.example.myproject.annotation.WxButton;
 

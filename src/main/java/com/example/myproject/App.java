@@ -3,11 +3,15 @@ package com.example.myproject;
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.config.ApiInvoker.ApiInvoker;
+import com.example.myproject.module.message.receive.RawWxMessage;
+import com.example.myproject.mvc.WxMappingUtils;
 import com.example.myproject.mvc.annotation.WxController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Hello world!
@@ -43,8 +47,14 @@ public class App {
      * 3、msgType:event-eventType:location事件 系统事件推送
      */
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左", key = "left")
-    public void left() {
-        System.out.println(1);
+    public String left() {
+        return "<xml>\n" +
+                "<ToUserName><![CDATA[toUser]]></ToUserName>\n" +
+                "<FromUserName><![CDATA[fromUser]]></FromUserName>\n" +
+                "<CreateTime>12345678</CreateTime>\n" +
+                "<MsgType><![CDATA[text]]></MsgType>\n" +
+                "<Content><![CDATA[你好]]></Content>\n" +
+                "</xml>";
     }
 
     @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "一级菜单中", key = "middle")
@@ -57,8 +67,14 @@ public class App {
     }
 
     @WxButton(type = WxButton.Type.CLICK, group = WxButton.Group.LEFT, order = WxButton.Order.FIRST, name = "二级菜单左一", key = "left_1")
-    public void click() {
-        System.out.println(1);
+    public String click(RawWxMessage rawWxMessage) {
+        return "<xml>\n" +
+                "<ToUserName><![CDATA[" + rawWxMessage.getFromUserName() + "]]></ToUserName>\n" +
+                "<FromUserName><![CDATA[" + rawWxMessage.getToUserName() + "]]></FromUserName>\n" +
+                "<CreateTime>12345678</CreateTime>\n" +
+                "<MsgType><![CDATA[text]]></MsgType>\n" +
+                "<Content><![CDATA[你好]]></Content>\n" +
+                "</xml>";
     }
 
     @WxButton(type = WxButton.Type.LOCATION_SELECT, group = WxButton.Group.LEFT, order = WxButton.Order.SECOND, name = "二级菜单左二", key = "left_2")

@@ -17,7 +17,7 @@
 package com.example.myproject.mvc.condition;
 
 import com.example.myproject.module.event.WxEvent;
-import com.example.myproject.module.message.reveive.RawWxMessage;
+import com.example.myproject.module.message.receive.RawWxMessage;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;

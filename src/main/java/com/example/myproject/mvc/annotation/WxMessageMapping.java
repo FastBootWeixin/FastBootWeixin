@@ -1,6 +1,6 @@
 package com.example.myproject.mvc.annotation;
 
-import com.example.myproject.module.message.reveive.WxMessage;
+import com.example.myproject.module.message.receive.WxMessage;
 
 /**
  * 微信请求绑定

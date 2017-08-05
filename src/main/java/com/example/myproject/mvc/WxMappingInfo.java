@@ -18,13 +18,12 @@ package com.example.myproject.mvc;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.event.WxEvent;
-import com.example.myproject.module.message.reveive.WxMessage;
+import com.example.myproject.module.message.receive.WxMessage;
 import com.example.myproject.mvc.condition.WxButtonTypeCondition;
 import com.example.myproject.mvc.condition.WxCategoryCondition;
 import com.example.myproject.mvc.condition.WxEventTypeCondition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.http.HttpMethod;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.accept.ContentNegotiationManager;

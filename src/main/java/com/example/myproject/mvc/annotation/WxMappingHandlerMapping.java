@@ -2,8 +2,8 @@ package com.example.myproject.mvc.annotation;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.WxVerifyController;
-import com.example.myproject.module.message.reveive.RawWxMessage;
-import com.example.myproject.module.message.reveive.WxMessage;
+import com.example.myproject.module.message.receive.RawWxMessage;
+import com.example.myproject.module.message.receive.WxMessage;
 import com.example.myproject.mvc.WxMappingInfo;
 import com.example.myproject.mvc.WxMappingUtils;
 import org.springframework.beans.factory.InitializingBean;

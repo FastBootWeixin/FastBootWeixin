@@ -17,16 +17,9 @@
 package com.example.myproject.mvc.condition;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.message.reveive.RawWxMessage;
-import com.example.myproject.mvc.WxMappingUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
+import com.example.myproject.module.message.receive.RawWxMessage;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
