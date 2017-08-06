@@ -583,6 +583,8 @@ public class WxMessage {
             // 是叫items呢还是articles呢
             protected LinkedList<Item> items;
 
+            protected Item lastItem;
+
             Builder() {
                 items = new LinkedList<>();
             }
@@ -620,12 +622,26 @@ public class WxMessage {
                 return this;
             }
 
+            public Builder lastItem(Item item) {
+                this.lastItem = item;
+                return this;
+            }
+
+            // 这里关于最后项目的判断应该能优化一下，今天太累了，明天改2017年8月7日00:18:52
             public News build() {
                 // 这里可能不是一个好的代码习惯，可能会造成items变量名混乱。
                 List<Item> items = this.items;
-                if (this.items.size() > 8) {
-                    logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
-                    items = this.items.subList(0, 8);
+                if (this.items.size() > 7) {
+                    if (this.lastItem != null) {
+                        logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
+                        items = this.items.subList(0, 7);
+                        items.add(this.lastItem);
+                    } else if (this.items.size() > 8) {
+                        logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
+                        items = this.items.subList(0, 8);
+                    }
+                } else if (this.lastItem != null) {
+                    items.add(this.lastItem);
                 }
                 return new News(toUserName, fromUserName, createTime, messageType, items);
             }
