@@ -27,12 +27,15 @@ public @interface WxButton {
 
     String name() default "";
 
+    /**
+     * 这里可以写一个自动生成key的策略
+     * @return
+     */
     String key() default "";
 
     String url() default "";
 
     String mediaId() default "";
-
 
     // 哪个按钮组
     enum Group {
