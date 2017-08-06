@@ -1,7 +1,7 @@
 package com.example.myproject.mvc.condition;
 
-import com.example.myproject.module.message.RawWxMessage;
-import com.example.myproject.mvc.WxUtils;
+import com.example.myproject.module.WxRequest;
+import com.example.myproject.mvc.WxRequestUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
@@ -59,10 +59,10 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
 	 */
 	@Override
 	public AbstractWxEnumCondition getMatchingCondition(HttpServletRequest request) {
-		return matchEnum(WxUtils.getRawWxMessageFromRequest(request));
+		return matchEnum(WxRequestUtils.getWxRequestFromRequestAttribute(request));
 	}
 
-	protected abstract AbstractWxEnumCondition matchEnum(RawWxMessage rawWxMessage);
+	protected abstract AbstractWxEnumCondition matchEnum(WxRequest wxRequest);
 
 	/**
 	 * Returns:

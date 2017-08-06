@@ -13,4 +13,10 @@ public @interface WxEventMapping {
      */
     WxEvent.Type type();
 
+    /**
+     * 名称
+     * @return
+     */
+    String name() default "";
+
 }

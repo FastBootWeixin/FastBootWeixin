@@ -23,6 +23,7 @@ import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.condition.WxButtonTypeCondition;
 import com.example.myproject.mvc.condition.WxCategoryCondition;
 import com.example.myproject.mvc.condition.WxEventTypeCondition;
+import com.example.myproject.mvc.condition.WxMessageTypeCondition;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.PathMatcher;
@@ -66,16 +67,20 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	private final WxEventTypeCondition wxEventTypeCondition;
 
+	private final WxMessageTypeCondition wxMessageTypeCondition;
+
 	public WxMappingInfo(String name,
 						 String eventKey,
 						 WxCategoryCondition categories,
 						 WxButtonTypeCondition buttonTypes,
-						 WxEventTypeCondition eventTypes) {
+						 WxEventTypeCondition eventTypes,
+						 WxMessageTypeCondition messageTypes) {
 		this.name = (name != null ? name : "");
 		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
 		this.wxCategoryCondition = (categories != null ? categories : new WxCategoryCondition());
 		this.wxButtonTypeCondition = (buttonTypes != null ? buttonTypes : new WxButtonTypeCondition());
 		this.wxEventTypeCondition = (eventTypes != null ? eventTypes : new WxEventTypeCondition());
+		this.wxMessageTypeCondition = (messageTypes != null ? messageTypes : new WxMessageTypeCondition());
 	}
 
 	/**
@@ -112,8 +117,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxCategoryCondition categories = this.wxCategoryCondition.combine(other.wxCategoryCondition);
 		WxButtonTypeCondition buttonTypes = this.wxButtonTypeCondition.combine(other.wxButtonTypeCondition);
 		WxEventTypeCondition eventTypes = this.wxEventTypeCondition.combine(other.wxEventTypeCondition);
-
-		return new WxMappingInfo(name, eventKey, categories, buttonTypes, eventTypes);
+		WxMessageTypeCondition messageTypes = this.wxMessageTypeCondition.combine(other.wxMessageTypeCondition);
+		return new WxMappingInfo(name, eventKey, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	private String combineEventKeys(WxMappingInfo other) {
@@ -151,11 +156,11 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxCategoryCondition categories = (WxCategoryCondition) this.wxCategoryCondition.getMatchingCondition(request);
 		WxButtonTypeCondition buttonTypes = (WxButtonTypeCondition) this.wxButtonTypeCondition.getMatchingCondition(request);
 		WxEventTypeCondition eventTypes = (WxEventTypeCondition) this.wxEventTypeCondition.getMatchingCondition(request);
-
+		WxMessageTypeCondition messageTypes = (WxMessageTypeCondition) this.wxMessageTypeCondition.getMatchingCondition(request);
 		if (categories == null) {
 			return null;
 		}
-		return new WxMappingInfo(this.name, this.eventKey, categories, buttonTypes, eventTypes);
+		return new WxMappingInfo(this.name, this.eventKey, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	/**
@@ -194,13 +199,17 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		return (this.name.equals(otherInfo.name) &&
 				this.wxCategoryCondition.equals(otherInfo.wxCategoryCondition) &&
 				this.wxEventTypeCondition.equals(otherInfo.wxEventTypeCondition) &&
-				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition));
+				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition) &&
+				this.wxMessageTypeCondition.equals(otherInfo.wxMessageTypeCondition));
 	}
 
 	@Override
 	public int hashCode() {
 		return (this.name.hashCode() * 31 +  // primary differentiation
-				this.wxCategoryCondition.hashCode() + this.wxEventTypeCondition.hashCode() + this.wxButtonTypeCondition.hashCode());
+				this.wxCategoryCondition.hashCode() +
+				this.wxEventTypeCondition.hashCode() +
+				this.wxButtonTypeCondition.hashCode() +
+				this.wxMessageTypeCondition.hashCode());
 	}
 
 	@Override
@@ -312,7 +321,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 			return new WxMappingInfo(mappingName, eventKey,
 					new WxCategoryCondition(category),
 					new WxButtonTypeCondition(buttonTypes),
-					new WxEventTypeCondition(eventTypes));
+					new WxEventTypeCondition(eventTypes),
+					new WxMessageTypeCondition(messageTypes));
 		}
 	}
 

@@ -3,9 +3,9 @@ package com.example.myproject.mvc.annotation;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.module.Wx;
-import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.module.WxRequest;
 import com.example.myproject.mvc.WxMappingInfo;
-import com.example.myproject.mvc.WxUtils;
+import com.example.myproject.mvc.WxRequestUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpInputMessage;
@@ -14,12 +14,9 @@ import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConvert
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
@@ -167,11 +164,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         try {
             // ServletWebRequest
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
-            RawWxMessage rawWxMessage = (RawWxMessage) xmlConverter.read(RawWxMessage.class, inputMessage);
-            WxUtils.setRawWxMessageToRequest(request, rawWxMessage);
+            WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
+            WxRequestUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
-            if (rawWxMessage.getCategory() == Wx.Category.BUTTON) {
-                handlerMethod = lookupButtonHandlerMethod(rawWxMessage);
+            if (wxRequest.getCategory() == Wx.Category.BUTTON) {
+                handlerMethod = lookupButtonHandlerMethod(wxRequest);
             }
             handleMatch(handlerMethod, request);
             return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
@@ -185,8 +182,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
     }
 
-    private HandlerMethod lookupButtonHandlerMethod(RawWxMessage rawWxMessage) {
-        return mappingRegistry.getMappingByEventKey(rawWxMessage.getEventKey());
+    private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
+        return mappingRegistry.getMappingByEventKey(wxRequest.getEventKey());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -262,9 +259,22 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
         WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
-        if (wxButton == null) {
-            return null;
+        // 由于这个机制，所以无法为同一个方法绑定多个WxButton、WxEventMapping、WxMessageMapping
+        if (wxButton != null) {
+            return createWxButtonMappingInfo(wxButton);
         }
+        WxMessageMapping wxMessageMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxMessageMapping.class);
+        if (wxMessageMapping != null) {
+            return createWxMessageMappingInfo(wxMessageMapping);
+        }
+        WxEventMapping wxEventMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxEventMapping.class);
+        if (wxEventMapping != null) {
+            return createWxEventMappingInfo(wxEventMapping);
+        }
+        return null;
+    }
+
+    private WxMappingInfo createWxButtonMappingInfo(WxButton wxButton) {
         return WxMappingInfo
                 .category(Wx.Category.BUTTON)
                 .eventKey(wxButton.key())
@@ -273,6 +283,21 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .build();
     }
 
+    private WxMappingInfo createWxMessageMappingInfo(WxMessageMapping wxMessageMapping) {
+        return WxMappingInfo
+                .category(Wx.Category.MESSAGE)
+                .messageTypes(wxMessageMapping.type())
+                .mappingName(wxMessageMapping.name())
+                .build();
+    }
+
+    private WxMappingInfo createWxEventMappingInfo(WxEventMapping wxEventMapping) {
+        return WxMappingInfo
+                .category(Wx.Category.EVENT)
+                .eventTypes(wxEventMapping.type())
+                .mappingName(wxEventMapping.name())
+                .build();
+    }
 
     /**
      * A registry that maintains all mappings to handler methods, exposing methods
@@ -285,8 +310,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         private final Map<WxMappingInfo, MappingRegistration<WxMappingInfo>> registry = new HashMap<>();
 
         private final Map<WxMappingInfo, HandlerMethod> mappingLookup = new LinkedHashMap<>();
-
-        private final MultiValueMap<String, WxMappingInfo> urlLookup = new LinkedMultiValueMap<>();
 
         private final Map<String, HandlerMethod> eventKeyLookup = new LinkedHashMap<>();
 
@@ -305,15 +328,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
          */
         public Map<WxMappingInfo, HandlerMethod> getMappings() {
             return this.mappingLookup;
-        }
-
-        /**
-         * Return matches for the given URL path. Not thread-safe.
-         *
-         * @see #acquireReadLock()
-         */
-        public List<WxMappingInfo> getMappingsByUrl(String urlPath) {
-            return this.urlLookup.get(urlPath);
         }
 
         public HandlerMethod getMappingByEventKey(String eventKey) {
@@ -352,11 +366,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 }
                 this.mappingLookup.put(mapping, handlerMethod);
 
-                List<String> directUrls = getDirectUrls(mapping);
-                for (String url : directUrls) {
-                    this.urlLookup.add(url, mapping);
-                }
-
                 if (mapping.getEventKey() != null) {
                     eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
                 }
@@ -366,8 +375,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 //                    name = getNamingStrategy().getName(handlerMethod, mapping);
 //                    addMappingName(name, handlerMethod);
 //                }
-
-                this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, directUrls, name));
+                this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, name));
             } finally {
                 this.readWriteLock.writeLock().unlock();
             }
@@ -381,16 +389,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                                 newHandlerMethod + "\nto " + mapping + ": There is already '" +
                                 handlerMethod.getBean() + "' bean method\n" + handlerMethod + " mapped.");
             }
-        }
-
-        private List<String> getDirectUrls(WxMappingInfo mapping) {
-            List<String> urls = new ArrayList<>(1);
-            for (String path : getMappingPathPatterns(mapping)) {
-                if (!getPathMatcher().isPattern(path)) {
-                    urls.add(path);
-                }
-            }
-            return urls;
         }
 
         private void addMappingName(String name, HandlerMethod handlerMethod) {
@@ -431,16 +429,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 }
 
                 this.mappingLookup.remove(definition.getMapping());
-
-                for (String url : definition.getDirectUrls()) {
-                    List<WxMappingInfo> list = this.urlLookup.get(url);
-                    if (list != null) {
-                        list.remove(definition.getMapping());
-                        if (list.isEmpty()) {
-                            this.urlLookup.remove(url);
-                        }
-                    }
-                }
 
                 if (mapping.getEventKey() != null) {
                     eventKeyLookup.remove(mapping.getEventKey());
@@ -484,16 +472,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         private final HandlerMethod handlerMethod;
 
-        private final List<String> directUrls;
-
         private final String mappingName;
 
-        public MappingRegistration(T mapping, HandlerMethod handlerMethod, List<String> directUrls, String mappingName) {
+        public MappingRegistration(T mapping, HandlerMethod handlerMethod, String mappingName) {
             Assert.notNull(mapping, "Mapping must not be null");
             Assert.notNull(handlerMethod, "HandlerMethod must not be null");
             this.mapping = mapping;
             this.handlerMethod = handlerMethod;
-            this.directUrls = (directUrls != null ? directUrls : Collections.<String>emptyList());
             this.mappingName = mappingName;
         }
 
@@ -503,10 +488,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         public HandlerMethod getHandlerMethod() {
             return this.handlerMethod;
-        }
-
-        public List<String> getDirectUrls() {
-            return this.directUrls;
         }
 
         public String getMappingName() {

@@ -17,7 +17,7 @@
 package com.example.myproject.mvc.condition;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.module.WxRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.*;
@@ -53,8 +53,8 @@ public final class WxButtonTypeCondition extends AbstractWxEnumCondition<WxButto
 	}
 
 	@Override
-	protected WxButtonTypeCondition matchEnum(RawWxMessage rawWxMessage) {
-		WxButton.Type wxButtonType = rawWxMessage.getButtonType();
+	protected WxButtonTypeCondition matchEnum(WxRequest wxRequest) {
+		WxButton.Type wxButtonType = wxRequest.getButtonType();
 		if (getEnums().contains(wxButtonType)) {
 			return new WxButtonTypeCondition(wxButtonType);
 		}

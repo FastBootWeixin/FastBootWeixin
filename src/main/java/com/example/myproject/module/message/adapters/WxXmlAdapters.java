@@ -43,7 +43,7 @@ public class WxXmlAdapters {
 
         @Override
         public String marshal(WxMessage.Type type) throws Exception {
-            return type.name().toUpperCase();
+            return type.name().toLowerCase();
         }
     }
 

@@ -19,4 +19,10 @@ public @interface WxMessageMapping {
      */
     String pattern() default "";
 
+    /**
+     * 名称
+     * @return
+     */
+    String name() default "";
+
 }

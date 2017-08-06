@@ -17,7 +17,7 @@
 package com.example.myproject.mvc.condition;
 
 import com.example.myproject.module.Wx;
-import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.module.WxRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -56,8 +56,8 @@ public final class WxCategoryCondition extends AbstractWxEnumCondition<Wx.Catego
 	}
 
 	@Override
-	protected WxCategoryCondition matchEnum(RawWxMessage rawWxMessage) {
-		Wx.Category wxCategory = rawWxMessage.getCategory();
+	protected WxCategoryCondition matchEnum(WxRequest wxRequest) {
+		Wx.Category wxCategory = wxRequest.getCategory();
 		if (getEnums().contains(wxCategory)) {
 			return new WxCategoryCondition(wxCategory);
 		}

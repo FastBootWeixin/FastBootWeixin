@@ -1,8 +1,8 @@
-package com.example.myproject.module.message;
+package com.example.myproject.module;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.module.Wx;
 import com.example.myproject.module.event.WxEvent;
+import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.module.message.adapters.WxXmlAdapters;
 import lombok.Data;
 import org.apache.commons.logging.Log;
@@ -18,11 +18,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * FastBootWeixin  RawWxMessage
+ * FastBootWeixin  WxRequest
  * 包含了全部的消息内容，最原始的类型
+ * 注意默认情况下如果一个值为null，JAXB不会为其生成XML节点，要想控制这个行为，需要使用其他插件如XmlNullPolicy
  *
  * @author Guangshan
- * @summary FastBootWeixin  RawWxMessage
+ * @summary FastBootWeixin  WxRequest
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 23:38
  */
@@ -30,7 +31,7 @@ import java.util.List;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.NONE)
 // XmlAccessorType指定属性访问方式，在Class中为指定任何注解时，可以按照这里定义的方式来获取属性。当使用@XmlElement方式指定后，Type最好指定为None
-public class RawWxMessage {
+public class WxRequest {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -38,14 +39,14 @@ public class RawWxMessage {
      * 通用
      * 开发者微信号
      */
-    @XmlElement(name = "ToUserName")
+    @XmlElement(name = "ToUserName", required = true)
     private String toUserName;
 
     /**
      * 通用
      * 发送方帐号（一个OpenID）
      */
-    @XmlElement(name = "FromUserName")
+    @XmlElement(name = "FromUserName", required = true)
     private String fromUserName;
 
     /**
@@ -53,7 +54,7 @@ public class RawWxMessage {
      * 消息创建时间 （整型）
      */
     @XmlJavaTypeAdapter(WxXmlAdapters.CreateTimeAdaptor.class)
-    @XmlElement(name = "CreateTime")
+    @XmlElement(name = "CreateTime", required = true)
     private Date createTime;
 
 
@@ -62,7 +63,7 @@ public class RawWxMessage {
      * 消息类型
      */
     @XmlJavaTypeAdapter(WxXmlAdapters.MsgTypeAdaptor.class)
-    @XmlElement(name = "MsgType")
+    @XmlElement(name = "MsgType", required = true)
     private WxMessage.Type messageType;
 
     /**

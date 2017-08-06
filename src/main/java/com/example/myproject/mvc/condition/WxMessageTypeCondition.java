@@ -16,8 +16,9 @@
 
 package com.example.myproject.mvc.condition;
 
-import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.WxRequest;
+import com.example.myproject.module.event.WxEvent;
+import com.example.myproject.module.message.WxMessage;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Collection;
@@ -33,14 +34,14 @@ import java.util.Set;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
-public final class WxEventTypeCondition extends AbstractWxEnumCondition<WxEvent.Type> {
+public final class WxMessageTypeCondition extends AbstractWxEnumCondition<WxMessage.Type> {
 
 
-	public WxEventTypeCondition(WxEvent.Type... types) {
+	public WxMessageTypeCondition(WxMessage.Type... types) {
 		super(types);
 	}
 
-	protected WxEventTypeCondition(Collection<WxEvent.Type> types) {
+	protected WxMessageTypeCondition(Collection<WxMessage.Type> types) {
 		super(Collections.unmodifiableSet(new LinkedHashSet<>(types)));
 	}
 
@@ -49,17 +50,17 @@ public final class WxEventTypeCondition extends AbstractWxEnumCondition<WxEvent.
 	 * from "this" and the "other" instance.
 	 */
 	@Override
-	public WxEventTypeCondition combine(AbstractWxEnumCondition other) {
-		Set<WxEvent.Type> set = new LinkedHashSet(this.enums);
+	public WxMessageTypeCondition combine(AbstractWxEnumCondition other) {
+		Set<WxMessage.Type> set = new LinkedHashSet(this.enums);
 		set.addAll(other.enums);
-		return new WxEventTypeCondition(set);
+		return new WxMessageTypeCondition(set);
 	}
 
 	@Override
-	protected WxEventTypeCondition matchEnum(WxRequest wxRequest) {
-		WxEvent.Type wxEventType = wxRequest.getEventType();
-		if (getEnums().contains(wxEventType)) {
-			return new WxEventTypeCondition(wxEventType);
+	protected WxMessageTypeCondition matchEnum(WxRequest wxRequest) {
+		WxMessage.Type wxMessageType = wxRequest.getMessageType();
+		if (getEnums().contains(wxMessageType)) {
+			return new WxMessageTypeCondition(wxMessageType);
 		}
 		return null;
 	}

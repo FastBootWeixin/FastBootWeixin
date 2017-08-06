@@ -3,7 +3,7 @@ package com.example.myproject;
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.config.ApiInvoker.ApiInvoker;
-import com.example.myproject.module.message.RawWxMessage;
+import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.support.WxUser;
@@ -71,14 +71,54 @@ public class App {
     }
 
     @WxButton(type = WxButton.Type.CLICK, group = WxButton.Group.LEFT, order = WxButton.Order.FIRST, name = "二级菜单左一", key = "left_1")
-    public WxMessage click(RawWxMessage rawWxMessage, String fromUser, String toUser, WxUser wxUser) {
-        return WxMessage.Text.builder()
-                .content("我是一条测试消息")
+    public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
+        return WxMessage.News.builder()
                 .fromUserName(wxUser.getToUserName())
                 .toUserName(wxUser.getFromUserName())
-                .createTime(new Date())
-                .msgType(WxMessage.Type.TEXT)
+                .mainItem("我是一条图文测试消息", "测试哈哈哈哈",
+                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是二条图文测试消息", "测试哈哈哈哈",
+                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是三条图文测试消息", "测试哈哈哈哈",
+                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是四条图文测试消息", "测试哈哈哈哈",
+                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是五条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是六条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是七条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是八条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是九条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
                 .build();
+//        return WxMessage.Text.builder()
+//                .fromUserName(wxUser.getToUserName())
+//                .toUserName(wxUser.getFromUserName())
+//                .createTime(new Date())
+//                .content("我是一条文本测试消息")
+//                .build();
     }
 
     @WxButton(type = WxButton.Type.LOCATION_SELECT, group = WxButton.Group.LEFT, order = WxButton.Order.SECOND, name = "二级菜单左二", key = "left_2")
