@@ -82,6 +82,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		return eventKey;
 	}
 
+	public Wx.Category getCategory() {
+		return category;
+	}
+
 	public WxCategoryCondition getWxCategoryCondition() {
 		return wxCategoryCondition;
 	}

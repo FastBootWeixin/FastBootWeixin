@@ -3,6 +3,7 @@ package com.example.myproject.mvc.param;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.mvc.WxRequestUtils;
+import com.example.myproject.mvc.annotation.WxEventMapping;
 import com.example.myproject.support.UserProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,7 +105,7 @@ public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentRe
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		// 只有method上有注解WxButton时才支持解析
-		if (!AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxButton.class)) {
+		if (!AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxButton.class) && !AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxEventMapping.class)) {
 			return false;
 		}
 		return true;

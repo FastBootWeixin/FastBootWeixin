@@ -8,7 +8,7 @@
     },
     {
       "name": "wx.menu.auto-create",
-      "type": "java.lang.String",
+      "type": "java.lang.Boolean",
       "description": "Description for wx.api.menu.autoCreate."
     },
     {

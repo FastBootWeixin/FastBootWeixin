@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 // 待支持：参数从变量中取
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface WxButton {

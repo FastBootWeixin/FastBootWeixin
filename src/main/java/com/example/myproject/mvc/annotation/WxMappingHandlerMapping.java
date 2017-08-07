@@ -4,6 +4,7 @@ import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.module.Wx;
 import com.example.myproject.module.WxRequest;
+import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.menu.WxButtonItem;
 import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.mvc.method.WxMappingHandlerMethodNamingStrategy;
@@ -16,9 +17,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
@@ -181,7 +180,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 case BUTTON:
                     handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
                 case EVENT:
-                    handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
+                    handlerMethod = lookupEventHandlerMethod(wxRequest);break;
                 case MESSAGE:
                     handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
             }
@@ -201,6 +200,10 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
         return mappingRegistry.getMappingButtonByEventKey(wxRequest.getEventKey());
+    }
+
+    private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
+        return mappingRegistry.getMappingEventByEventType(wxRequest.getEventType());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -314,11 +317,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         private final Map<String, HandlerMethod> eventKeyLookup = new LinkedHashMap<>();
 
-        private final Map<String, List<HandlerMethod>> nameLookup =
-                new ConcurrentHashMap<String, List<HandlerMethod>>();
+        private final Map<WxEvent.Type, HandlerMethod> eventTypeLookup = new LinkedHashMap<>();
 
-        private final Map<HandlerMethod, CorsConfiguration> corsLookup =
-                new ConcurrentHashMap<HandlerMethod, CorsConfiguration>();
+        private final MultiValueMap<Wx.Category, WxMappingInfo> categoryLookup = new LinkedMultiValueMap<>();
+
+        private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
+
+        private final Map<HandlerMethod, CorsConfiguration> corsLookup = new ConcurrentHashMap<HandlerMethod, CorsConfiguration>();
 
         private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
@@ -333,6 +338,10 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         public HandlerMethod getMappingButtonByEventKey(String eventKey) {
             return this.eventKeyLookup.get(eventKey);
+        }
+
+        public HandlerMethod getMappingEventByEventType(WxEvent.Type eventType) {
+            return this.eventTypeLookup.get(eventType);
         }
 
         /**
@@ -367,8 +376,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 }
                 this.mappingLookup.put(mapping, handlerMethod);
 
-                if (StringUtils.hasLength(mapping.getEventKey())) {
+                this.categoryLookup.add(mapping.getCategory(), mapping);
+
+                if (!StringUtils.isEmpty(mapping.getEventKey())) {
                     eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
+                }
+                if (!mapping.getWxEventTypeCondition().isEmpty()) {
+                    mapping.getWxEventTypeCondition().getEnums().forEach(
+                            e -> eventTypeLookup.put(e, handlerMethod)
+                    );
                 }
 
                 String name = null;

@@ -10,6 +10,10 @@ import org.springframework.util.ReflectionUtils;
 
 import com.example.myproject.annotation.WxButton;
 
+/**
+ * 不需要了，用WxMappingHandlerMaping代替了
+ */
+
 public class WxMenuAnnotationProcesser implements BeanPostProcessor {
 
 	@Autowired

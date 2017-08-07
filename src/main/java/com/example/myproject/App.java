@@ -4,8 +4,10 @@ import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.config.invoker.ApiInvoker;
 import com.example.myproject.module.WxRequest;
+import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.annotation.WxController;
+import com.example.myproject.mvc.annotation.WxEventMapping;
 import com.example.myproject.support.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -185,4 +187,8 @@ public class App {
     public void c1() {
     }
 
+    @WxEventMapping(type = WxEvent.Type.UNSUBSCRIBE)
+    public void unsubscribe(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
+        System.out.println(wxRequest);
+    }
 }
