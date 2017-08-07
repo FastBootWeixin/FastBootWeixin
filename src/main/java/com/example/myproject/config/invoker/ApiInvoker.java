@@ -1,11 +1,8 @@
-package com.example.myproject.config.ApiInvoker;
+package com.example.myproject.config.invoker;
 
-import com.example.myproject.module.token.AccessToken;
 import com.example.myproject.support.AccessTokenManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;

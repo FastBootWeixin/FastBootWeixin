@@ -1,4 +1,4 @@
-package com.example.myproject.config.ApiInvoker;
+package com.example.myproject.config.invoker;
 
 import com.example.myproject.common.BeanNames;
 import com.example.myproject.support.AccessTokenManager;

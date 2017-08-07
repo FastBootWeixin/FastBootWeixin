@@ -597,12 +597,12 @@ public class WxMessage {
              * @param url
              * @return
              */
-            public Builder mainItem(String title, String description, String picUrl, String url) {
+            public Builder firstItem(String title, String description, String picUrl, String url) {
                 this.items.addFirst(new Item(title, description, picUrl, url));
                 return this;
             }
 
-            public Builder mainItem(Item item) {
+            public Builder firstItem(Item item) {
                 this.items.addFirst(item);
                 return this;
             }

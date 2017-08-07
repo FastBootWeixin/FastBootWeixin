@@ -63,6 +63,12 @@
             <version>1.16.18</version>
             <scope>provided</scope>
         </dependency>
+        <!--自动生成spring-configuration-metadata-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
     </dependencies>
     <!-- Package as an executable jar -->

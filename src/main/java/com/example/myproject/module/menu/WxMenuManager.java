@@ -1,7 +1,7 @@
 package com.example.myproject.module.menu;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.ApiInvoker.ApiInvoker;
+import com.example.myproject.config.invoker.ApiInvoker;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -161,7 +161,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             if (wxButton.main()) {
                 return wxButton.group().name();
             } else {
-                String key = wxButton.group().name() + "_" + wxButton.order().ordinal();
+                String key = wxButton.group().name() + "_" + (wxButton.order().ordinal() + 1);
                 if (nameMap.containsKey(key)) {
                     int count = nameMap.get(key) + 1;
                     nameMap.put(key, count);

@@ -1,9 +1,8 @@
 package com.example.myproject.support;
 
-import com.example.myproject.config.Token.TokenServer;
+import com.example.myproject.config.token.TokenServer;
 import com.example.myproject.module.token.AccessToken;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;

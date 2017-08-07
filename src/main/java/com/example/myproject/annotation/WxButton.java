@@ -17,6 +17,13 @@ public @interface WxButton {
     // 按钮属于哪一组
     Group group();
 
+    /**
+     * 显示名称
+     * @return
+     */
+    String name();
+
+    // 菜单类型
     Type type() default Type.CLICK;
 
     // 是否是主菜单(下面的菜单)
@@ -24,8 +31,6 @@ public @interface WxButton {
 
     // 顺序
     Order order() default Order.FIRST;
-
-    String name() default "";
 
     /**
      * 这里可以写一个自动生成key的策略

@@ -1,4 +1,4 @@
-package com.example.myproject.config.ApiInvoker;
+package com.example.myproject.config.invoker;
 
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;

@@ -1,7 +1,7 @@
-package com.example.myproject.config.Token;
+package com.example.myproject.config.token;
 
-import com.example.myproject.config.ApiInvoker.ApiUrlProperties;
-import com.example.myproject.config.ApiInvoker.ApiVerifyProperties;
+import com.example.myproject.config.invoker.ApiUrlProperties;
+import com.example.myproject.config.invoker.ApiVerifyProperties;
 import com.example.myproject.module.token.AccessToken;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

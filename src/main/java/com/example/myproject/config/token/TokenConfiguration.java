@@ -1,9 +1,9 @@
-package com.example.myproject.config.Token;
+package com.example.myproject.config.token;
 
 import com.example.myproject.common.BeanNames;
-import com.example.myproject.config.ApiInvoker.ApiInvokerProperties;
-import com.example.myproject.config.ApiInvoker.ApiUrlProperties;
-import com.example.myproject.config.ApiInvoker.ApiVerifyProperties;
+import com.example.myproject.config.invoker.ApiInvokerProperties;
+import com.example.myproject.config.invoker.ApiUrlProperties;
+import com.example.myproject.config.invoker.ApiVerifyProperties;
 import com.example.myproject.support.AccessTokenManager;
 import com.example.myproject.support.MemoryTokenStore;
 import com.example.myproject.support.TokenStore;
