@@ -13,8 +13,8 @@ public class ApiUrlProperties {
 
     private String getCallbackIp = "cgi-bin/getcallbackip?access_token={accessToken}";
 
-    private String getMenu = "cgi-bin/menu/get?access_token={accessToken}";
+    private String getMenu = "cgi-bin/wxMenu/get?access_token={accessToken}";
 
-    private String createMenu = "cgi-bin/menu/create?access_token={accessToken}";
+    private String createMenu = "cgi-bin/wxMenu/builder?access_token={accessToken}";
 
 }

@@ -140,14 +140,14 @@ public class ApiInvokerConfiguration {
 			//      -- use SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
 			HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
 			// here's the special part:
-			//      -- need to create an SSL Socket Factory, to use our weakened "trust strategy";
-			//      -- and create a Registry, to register it.
+			//      -- need to builder an SSL Socket Factory, to use our weakened "trust strategy";
+			//      -- and builder a Registry, to register it.
 			SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
 			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
 					.register("http", PlainConnectionSocketFactory.getSocketFactory())
 					.register("https", sslSocketFactory)
 					.build();
-			// now, we create connection-manager using our Registry.
+			// now, we builder connection-manager using our Registry.
 			//      -- allows multi-threaded use
 			pollingConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, null, null, null, apiInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
 		} else {

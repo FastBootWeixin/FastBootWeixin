@@ -4,9 +4,13 @@ import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.module.Wx;
 import com.example.myproject.module.WxRequest;
-import com.example.myproject.mvc.WxMappingInfo;
+import com.example.myproject.module.menu.WxButtonItem;
+import com.example.myproject.module.menu.WxMenuManager;
+import com.example.myproject.mvc.method.WxMappingHandlerMethodNamingStrategy;
+import com.example.myproject.mvc.method.WxMappingInfo;
 import com.example.myproject.mvc.WxRequestUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
@@ -14,6 +18,7 @@ import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConvert
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
@@ -59,10 +64,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     // 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
     private final MappingRegistry mappingRegistry = new MappingRegistry();
 
+    // 可以加一个开关功能
+    @Autowired
+    private WxMenuManager wxMenuManager;
+
     public WxMappingHandlerMapping(WxVerifyController wxVerifyController) {
         super();
         this.wxVerifyMethodHandler = new HandlerMethod(wxVerifyController, WX_VERIFY_METHOD);
         this.xmlConverter = new Jaxb2RootElementHttpMessageConverter();
+        this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
     }
 
     @Override
@@ -167,8 +177,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
             WxRequestUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
-            if (wxRequest.getCategory() == Wx.Category.BUTTON) {
-                handlerMethod = lookupButtonHandlerMethod(wxRequest);
+            switch (wxRequest.getCategory()) {
+                case BUTTON:
+                    handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
+                case EVENT:
+                    handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
+                case MESSAGE:
+                    handlerMethod = lookupButtonHandlerMethod(wxRequest);break;
             }
             handleMatch(handlerMethod, request);
             return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
@@ -179,11 +194,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     protected void handleMatch(HandlerMethod handlerMethod, HttpServletRequest request) {
         // 返回XML
-        request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
+        if (handlerMethod != null) {
+            request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
+        }
     }
 
     private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getMappingByEventKey(wxRequest.getEventKey());
+        return mappingRegistry.getMappingButtonByEventKey(wxRequest.getEventKey());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -204,25 +221,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.mappingRegistry.register(mapping, handler, method);
     }
 
-    /**
-     * Create the HandlerMethod instance.
-     *
-     * @param handler either a bean name or an actual handler instance
-     * @param method  the target method
-     * @return the created HandlerMethod
-     */
-    protected HandlerMethod createHandlerMethod(Object handler, Method method) {
-        HandlerMethod handlerMethod;
-        if (handler instanceof String) {
-            String beanName = (String) handler;
-            handlerMethod = new HandlerMethod(beanName,
-                    getApplicationContext().getAutowireCapableBeanFactory(), method);
-        } else {
-            handlerMethod = new HandlerMethod(handler, method);
-        }
-        return handlerMethod;
-    }
-
     @Override
     protected Set<String> getMappingPathPatterns(WxMappingInfo info) {
         return Collections.singleton("/");
@@ -239,7 +237,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     /**
-     * Uses method and type-level @{@link RequestMapping} annotations to create
+     * Uses method and type-level @{@link RequestMapping} annotations to builder
      * the RequestMappingInfo.
      *
      * @return the created RequestMappingInfo, or {@code null} if the method
@@ -275,9 +273,12 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     private WxMappingInfo createWxButtonMappingInfo(WxButton wxButton) {
+        // 在这里加上菜单管理是否启用的判断
+        WxButtonItem wxButtonItem = wxMenuManager.add(wxButton);
         return WxMappingInfo
                 .category(Wx.Category.BUTTON)
-                .eventKey(wxButton.key())
+                // eventKey是url，如果类型是VIEW的话
+                .eventKey(wxButtonItem.getKey())
                 .mappingName(wxButton.name())
                 .buttonTypes(wxButton.type())
                 .build();
@@ -330,7 +331,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return this.mappingLookup;
         }
 
-        public HandlerMethod getMappingByEventKey(String eventKey) {
+        public HandlerMethod getMappingButtonByEventKey(String eventKey) {
             return this.eventKeyLookup.get(eventKey);
         }
 
@@ -366,15 +367,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 }
                 this.mappingLookup.put(mapping, handlerMethod);
 
-                if (mapping.getEventKey() != null) {
+                if (StringUtils.hasLength(mapping.getEventKey())) {
                     eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
                 }
 
                 String name = null;
-//                if (getNamingStrategy() != null) {
-//                    name = getNamingStrategy().getName(handlerMethod, mapping);
-//                    addMappingName(name, handlerMethod);
-//                }
+                if (getNamingStrategy() != null) {
+                    name = getNamingStrategy().getName(handlerMethod, mapping);
+                    addMappingName(name, handlerMethod);
+                }
                 this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, name));
             } finally {
                 this.readWriteLock.writeLock().unlock();

@@ -36,47 +36,51 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private List<WxButtonItem> buttons = new ArrayList<>();
 
+    private WxButtonEventKeyStrategy wxButtonEventKeyStrategy = new WxButtonEventKeyStrategy();
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     private String menuJsonCache;
 
-    private Menu menu;
+    private WxMenu wxMenu;
 
-    public void add(WxButton button) {
-        WxButtonItem buttonItem = WxButtonItem.create()
-                .setGroup(button.group())
-                .setType(button.type())
-                .setMain(button.main())
-                .setOrder(button.order())
-                .setKey(button.key())
-                .setMediaId(button.mediaId())
-                .setName(button.name())
-                .setUrl(button.url()).build();
-        if (button.main()) {
-            Assert.isNull(mainButtonLookup.get(button.group()), String.format("已经存在该分组的主菜单，分组是%s", button.group()));
-            mainButtonLookup.put(button.group(), buttonItem);
+    public WxButtonItem add(WxButton wxButton) {
+        WxButtonItem buttonItem = WxButtonItem.builder()
+                .setGroup(wxButton.group())
+                .setType(wxButton.type())
+                .setMain(wxButton.main())
+                .setOrder(wxButton.order())
+                .setKey(wxButtonEventKeyStrategy.getEventKey(wxButton))
+                .setMediaId(wxButton.mediaId())
+                .setName(wxButton.name())
+                .setUrl(wxButton.url()).build();
+        if (wxButton.main()) {
+            Assert.isNull(mainButtonLookup.get(wxButton.group()), String.format("已经存在该分组的主菜单，分组是%s", wxButton.group()));
+            mainButtonLookup.put(wxButton.group(), buttonItem);
         } else {
-            groupButtonLookup.add(button.group(), buttonItem);
+            // 可以校验不要超过五个，或者忽略最后的
+            groupButtonLookup.add(wxButton.group(), buttonItem);
         }
-        if (!StringUtils.isEmpty(button.key())) {
-            buttonKeyLookup.put(button.key(), buttonItem);
+        if (!StringUtils.isEmpty(wxButton.key())) {
+            buttonKeyLookup.put(wxButton.key(), buttonItem);
         }
         buttons.add(buttonItem);
+        return buttonItem;
     }
 
     //有空了改成lambda表达式，先用老循环
     public String getMenuJson() {
-        if (menu == null) {
-            menu = new Menu();
+        if (wxMenu == null) {
+            wxMenu = new WxMenu();
             mainButtonLookup.entrySet().stream().sorted(Comparator.comparingInt(e2 -> e2.getKey().ordinal()))
                     .forEach(m -> {
                         groupButtonLookup.getOrDefault(m.getKey(), new ArrayList<>()).stream()
                                 .sorted(Comparator.comparingInt(w -> w.getOrder().ordinal()))
                                 .forEach(b -> m.getValue().addSubButton(b));
-                        menu.add(m.getValue());
+                        wxMenu.add(m.getValue());
                     });
             try {
-                menuJsonCache = objectMapper.writeValueAsString(menu);
+                menuJsonCache = objectMapper.writeValueAsString(wxMenu);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
                 // TODO: 2017/7/25 加入自己的异常体系
@@ -91,13 +95,8 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         String oldMenuJson = apiInvoker.getMenu();
         String newMenuJson = this.getMenuJson();
         try {
-            Menus oldMenus = objectMapper.readValue(oldMenuJson, Menus.class);
-            // 排序后比较--根本就没有顺序
-            // oldMenus.menu.mainButtons.forEach(m -> {
-            //    Collections.sort(m.getSubButtons(), Comparator.comparingInt(i -> i.getOrder().ordinal()));
-            //});
-            //Collections.sort(oldMenus.menu.mainButtons, Comparator.comparingInt(i -> i.getGroup().ordinal()));
-            if (isMenuChanged(oldMenus)) {
+            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
+            if (isMenuChanged(oldWxMenus)) {
                 String result = apiInvoker.createMenu(newMenuJson);
                 logger.info("==============================================================");
                 logger.info("            执行创建菜单操作       ");
@@ -115,11 +114,11 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         }
     }
 
-    private boolean isMenuChanged(Menus menus) {
-        return !this.menu.equals(menus.menu);
+    private boolean isMenuChanged(WxMenus wxMenus) {
+        return !this.wxMenu.equals(wxMenus.wxMenu);
     }
 
-    private static class Menu {
+    private static class WxMenu {
         @JsonProperty("button")
         public List<WxButtonItem> mainButtons = new ArrayList<>();
 
@@ -130,19 +129,50 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof Menu)) return false;
-            Menu that = (Menu)o;
+            if (!(o instanceof WxMenu)) return false;
+            WxMenu that = (WxMenu)o;
             return that.mainButtons.equals(this.mainButtons);
         }
     }
 
-    private static class Menus {
+    private static class WxMenus {
 
         @JsonProperty("menu")
-        public Menu menu;
+        public WxMenu wxMenu;
 
         @JsonProperty("conditionalmenu")
-        public List<Menu> conditionalMenu;
+        public List<WxMenu> conditionalWxMenu;
+    }
+
+    /**
+     * 关于eventKey生成，只有在启用菜单自动生成时才有效，故加在这里面
+     */
+    private class WxButtonEventKeyStrategy {
+
+        private Map<String, Integer> nameMap = new HashMap<>();
+
+        public String getEventKey(WxButton wxButton) {
+            if (wxButton.type() == WxButton.Type.VIEW) {
+                return wxButton.url();
+            }
+            if (!StringUtils.isEmpty(wxButton.key())) {
+                return wxButton.key();
+            }
+            if (wxButton.main()) {
+                return wxButton.group().name();
+            } else {
+                String key = wxButton.group().name() + "_" + wxButton.order().ordinal();
+                if (nameMap.containsKey(key)) {
+                    int count = nameMap.get(key) + 1;
+                    nameMap.put(key, count);
+                    return key + "_" + count;
+                } else {
+                    nameMap.put(key, 1);
+                    return key;
+                }
+            }
+        }
+
     }
 
 }

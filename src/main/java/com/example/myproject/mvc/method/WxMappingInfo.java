@@ -1,20 +1,4 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.example.myproject.mvc;
+package com.example.myproject.mvc.method;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.Wx;
@@ -30,7 +14,6 @@ import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.mvc.condition.*;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMethodMappingNamingStrategy;
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +44,9 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	private final String eventKey;
 
+	private final Wx.Category category;
+
+	// 暂时没用
 	private final WxCategoryCondition wxCategoryCondition;
 
 	private final WxButtonTypeCondition wxButtonTypeCondition;
@@ -71,12 +57,14 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	public WxMappingInfo(String name,
 						 String eventKey,
+						 Wx.Category category,
 						 WxCategoryCondition categories,
 						 WxButtonTypeCondition buttonTypes,
 						 WxEventTypeCondition eventTypes,
 						 WxMessageTypeCondition messageTypes) {
 		this.name = (name != null ? name : "");
 		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
+		this.category = category;
 		this.wxCategoryCondition = (categories != null ? categories : new WxCategoryCondition());
 		this.wxButtonTypeCondition = (buttonTypes != null ? buttonTypes : new WxButtonTypeCondition());
 		this.wxEventTypeCondition = (eventTypes != null ? eventTypes : new WxEventTypeCondition());
@@ -106,6 +94,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		return wxEventTypeCondition;
 	}
 
+	public WxMessageTypeCondition getWxMessageTypeCondition() {
+		return wxMessageTypeCondition;
+	}
+
 	/**
 	 * Combines "this" request mapping info (i.e. the current instance) with another request mapping info instance.
 	 * <p>Example: combine type- and method-level request mappings.
@@ -114,11 +106,13 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	@Override
 	public WxMappingInfo combine(WxMappingInfo other) {
 		String name = combineNames(other);
+		String eventKey = combineEventKeys(other);
+		// category不能合并
 		WxCategoryCondition categories = this.wxCategoryCondition.combine(other.wxCategoryCondition);
 		WxButtonTypeCondition buttonTypes = this.wxButtonTypeCondition.combine(other.wxButtonTypeCondition);
 		WxEventTypeCondition eventTypes = this.wxEventTypeCondition.combine(other.wxEventTypeCondition);
 		WxMessageTypeCondition messageTypes = this.wxMessageTypeCondition.combine(other.wxMessageTypeCondition);
-		return new WxMappingInfo(name, eventKey, categories, buttonTypes, eventTypes, messageTypes);
+		return new WxMappingInfo(name, eventKey, category, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	private String combineEventKeys(WxMappingInfo other) {
@@ -132,7 +126,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	private String combineNames(WxMappingInfo other) {
 		if (this.name != null && other.name != null) {
-			String separator = RequestMappingInfoHandlerMethodMappingNamingStrategy.SEPARATOR;
+			String separator = WxMappingHandlerMethodNamingStrategy.SEPARATOR;
 			return this.name + separator + other.name;
 		}
 		else if (this.name != null) {
@@ -160,7 +154,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		if (categories == null) {
 			return null;
 		}
-		return new WxMappingInfo(this.name, this.eventKey, categories, buttonTypes, eventTypes, messageTypes);
+		return new WxMappingInfo(this.name, this.eventKey, this.category, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	/**
@@ -184,6 +178,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		if (result != 0) {
 			return result;
 		}
+		result = this.wxMessageTypeCondition.compareTo(other.getWxMessageTypeCondition(), request);
+		if (result != 0) {
+			return result;
+		}
 		return 0;
 	}
 
@@ -197,6 +195,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		}
 		WxMappingInfo otherInfo = (WxMappingInfo) other;
 		return (this.name.equals(otherInfo.name) &&
+				this.category == otherInfo.category &&
 				this.wxCategoryCondition.equals(otherInfo.wxCategoryCondition) &&
 				this.wxEventTypeCondition.equals(otherInfo.wxEventTypeCondition) &&
 				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition) &&
@@ -206,6 +205,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	@Override
 	public int hashCode() {
 		return (this.name.hashCode() * 31 +  // primary differentiation
+				this.category.hashCode() +
 				this.wxCategoryCondition.hashCode() +
 				this.wxEventTypeCondition.hashCode() +
 				this.wxButtonTypeCondition.hashCode() +
@@ -215,12 +215,19 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("{");
-		builder.append(this.wxCategoryCondition);
+		builder.append(this.name);
+		builder.append(",category=").append(this.category);
+		if (StringUtils.hasText(this.eventKey)) {
+			builder.append(",eventKey=").append(this.eventKey);
+		}
 		if (!this.wxEventTypeCondition.isEmpty()) {
 			builder.append(",events=").append(this.wxEventTypeCondition);
 		}
 		if (!this.wxButtonTypeCondition.isEmpty()) {
-			builder.append(",buttonss=").append(this.wxButtonTypeCondition);
+			builder.append(",buttons=").append(this.wxButtonTypeCondition);
+		}
+		if (!this.wxMessageTypeCondition.isEmpty()) {
+			builder.append(",buttons=").append(this.wxMessageTypeCondition);
 		}
 		builder.append('}');
 		return builder.toString();
@@ -318,7 +325,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		@Override
 		public WxMappingInfo build() {
-			return new WxMappingInfo(mappingName, eventKey,
+			return new WxMappingInfo(mappingName, eventKey, category,
 					new WxCategoryCondition(category),
 					new WxButtonTypeCondition(buttonTypes),
 					new WxEventTypeCondition(eventTypes),
@@ -329,7 +336,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	/**
 	 * Container for configuration options used for request mapping purposes.
-	 * Such configuration is required to create WxMappingInfo instances but
+	 * Such configuration is required to builder WxMappingInfo instances but
 	 * is typically used across all WxMappingInfo instances.
 	 * @since 4.2
 	 * @see Builder#options

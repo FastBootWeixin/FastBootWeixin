@@ -10,7 +10,6 @@ import org.springframework.util.ReflectionUtils;
 
 import com.example.myproject.annotation.WxButton;
 
-@Component
 public class WxMenuAnnotationProcesser implements BeanPostProcessor {
 
 	@Autowired

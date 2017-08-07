@@ -3,7 +3,8 @@ package com.example.myproject.mvc.annotation;
 import com.example.myproject.module.message.WxMessage;
 
 /**
- * 微信请求绑定
+ * 微信消息请求绑定
+ * 暂时不想做pattern匹配
  */
 public @interface WxMessageMapping {
 

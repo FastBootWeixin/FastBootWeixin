@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 public class WxButtonItem {
 
     @JsonProperty("sub_button")
@@ -85,10 +87,6 @@ public class WxButtonItem {
     public WxButtonItem addSubButton(WxButtonItem item) {
         this.subButtons.add(item);
         return this;
-    }
-
-    WxButtonItem() {
-        super();
     }
 
     WxButtonItem(WxButton.Group group, WxButton.Type type, boolean main, WxButton.Order order, String name,
@@ -174,7 +172,7 @@ public class WxButtonItem {
         return result;
     }
 
-    public static WxButtonItem.Builder create() {
+    public static WxButtonItem.Builder builder() {
         return new Builder();
     }
 
@@ -242,11 +240,11 @@ public class WxButtonItem {
             Assert.isTrue(key == null || key.getBytes().length <= 128, "key不能过长");
             Assert.notNull(type, "菜单必须有类型");
             Assert.notNull(group, "菜单必须有分组");
-            Assert.isTrue(this.type != WxButton.Type.CLICK || this.key != null,
+            Assert.isTrue(this.type != WxButton.Type.CLICK || !StringUtils.isEmpty(this.key),
                     "click类型必须有key");
-            Assert.isTrue(this.type != WxButton.Type.VIEW || this.url != null,
+            Assert.isTrue(this.type != WxButton.Type.VIEW || !StringUtils.isEmpty(this.url),
                     "view类型必须有url");
-            Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || this.mediaId != null,
+            Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || !StringUtils.isEmpty(this.mediaId),
                     "media_id类型和view_limited类型必须有mediaId");
             return new WxButtonItem(group, type, main, order, name, key, url, mediaId);
         }
