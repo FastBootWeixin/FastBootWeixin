@@ -200,6 +200,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxMappingInfo otherInfo = (WxMappingInfo) other;
 		return (this.name.equals(otherInfo.name) &&
 				this.category == otherInfo.category &&
+				this.eventKey == otherInfo.eventKey &&
 				this.wxCategoryCondition.equals(otherInfo.wxCategoryCondition) &&
 				this.wxEventTypeCondition.equals(otherInfo.wxEventTypeCondition) &&
 				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition) &&
@@ -210,6 +211,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	public int hashCode() {
 		return (this.name.hashCode() * 31 +  // primary differentiation
 				this.category.hashCode() +
+				this.eventKey.hashCode() +
 				this.wxCategoryCondition.hashCode() +
 				this.wxEventTypeCondition.hashCode() +
 				this.wxButtonTypeCondition.hashCode() +

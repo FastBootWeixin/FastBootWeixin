@@ -1,6 +1,6 @@
 package com.example.myproject.config.server;
 
-import com.example.myproject.config.ApiInvoker.ApiVerifyProperties;
+import com.example.myproject.config.invoker.ApiVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxArgumentResolver;

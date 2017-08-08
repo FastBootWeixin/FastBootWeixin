@@ -2,6 +2,8 @@ package com.example.myproject.module.message;
 
 import com.example.myproject.module.Wx;
 import com.example.myproject.module.message.adapters.WxXmlAdapters;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 
 /**
  * 所有消息都是通过Msg推送的
+ * 坑啊，主动发消息竟然是json格式
  * FastBootWeixin  WxMessage
  *
  * @author Guangshan
@@ -116,6 +119,7 @@ public class WxMessage {
      * 开发者微信号
      */
     @XmlElement(name = "ToUserName", required = true)
+    @JsonProperty("touser")
     protected String toUserName;
 
     /**
@@ -123,6 +127,7 @@ public class WxMessage {
      * 发送方帐号（一个OpenID）
      */
     @XmlElement(name = "FromUserName", required = true)
+    @JsonIgnore
     protected String fromUserName;
 
     /**
@@ -131,6 +136,7 @@ public class WxMessage {
      */
     @XmlJavaTypeAdapter(WxXmlAdapters.CreateTimeAdaptor.class)
     @XmlElement(name = "CreateTime", required = true)
+    @JsonIgnore
     protected Date createTime;
 
     /**
@@ -139,6 +145,7 @@ public class WxMessage {
      */
     @XmlJavaTypeAdapter(WxXmlAdapters.MsgTypeAdaptor.class)
     @XmlElement(name = "MsgType", required = true)
+    @JsonProperty("msgtype")
     protected Type messageType;
 
     WxMessage(String toUserName, String fromUserName, Date createTime, Type messageType) {
