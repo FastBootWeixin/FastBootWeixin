@@ -1,9 +1,9 @@
 package com.example.myproject.config.server;
 
-import com.example.myproject.config.invoker.ApiVerifyProperties;
+import com.example.myproject.config.ApiInvoker.ApiVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
-import com.example.myproject.mvc.param.WxButtonArgumentResolver;
+import com.example.myproject.mvc.param.WxArgumentResolver;
 import com.example.myproject.support.DefaultUserProvider;
 import com.example.myproject.support.UserProvider;
 import org.apache.commons.logging.Log;
@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -22,19 +21,15 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(WxMenuProperties.class)
 public class BuildinControllerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-
-	private final WxMenuProperties wxMenuProperties;
 
 	private final ApiVerifyProperties apiVerifyProperties;
 
 	private final BeanFactory beanFactory;
 
-	public BuildinControllerConfiguration(WxMenuProperties wxMenuProperties, ApiVerifyProperties apiVerifyProperties, BeanFactory beanFactory) {
-		this.wxMenuProperties = wxMenuProperties;
+	public BuildinControllerConfiguration(ApiVerifyProperties apiVerifyProperties, BeanFactory beanFactory) {
 		this.apiVerifyProperties = apiVerifyProperties;
 		this.beanFactory = beanFactory;
 	}
@@ -68,9 +63,9 @@ public class BuildinControllerConfiguration {
 
 		public WxMvcConfigurer(UserProvider userProvider, BeanFactory beanFactory) {
 			if (beanFactory instanceof ConfigurableBeanFactory) {
-				this.handlerMethodArgumentResolver = new WxButtonArgumentResolver((ConfigurableBeanFactory) beanFactory);
+				this.handlerMethodArgumentResolver = new WxArgumentResolver((ConfigurableBeanFactory) beanFactory);
 			} else {
-				this.handlerMethodArgumentResolver = new WxButtonArgumentResolver(userProvider);
+				this.handlerMethodArgumentResolver = new WxArgumentResolver(userProvider);
 			}
 		}
 

@@ -285,6 +285,26 @@ public class WxRequest {
     private Double precision;
 
     /**
+     * 有效期 (整形)，指的是时间戳，将于该时间戳认证过期
+     */
+    @XmlJavaTypeAdapter(WxXmlAdapters.CreateTimeAdaptor.class)
+    @XmlElement(name = "ExpiredTime")
+    private Date expiredTime;
+
+    /**
+     * 失败发生时间 (整形)，时间戳
+     */
+    @XmlJavaTypeAdapter(WxXmlAdapters.CreateTimeAdaptor.class)
+    @XmlElement(name = "FailTime")
+    private Date failTime;
+
+    /**
+     * 认证失败的原因
+     */
+    @XmlElement(name = "FailReason")
+    private String failReason;
+
+    /**
      * 用户消息类型才有
      * 消息id，64位整型
      */

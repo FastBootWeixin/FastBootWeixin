@@ -56,7 +56,7 @@ import java.util.Map;
  * @see RequestParamMapMethodArgumentResolver
  * implements UriComponentsContributor 这个东西可能在写ApiInvoker调用时有用
  */
-public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
 	// 是否有更好的方式？有空参看源码
 	@Autowired
@@ -71,7 +71,7 @@ public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentRe
 	// 发给谁的
 	public static final String WX_TO_USER = "toUser";
 
-	public WxButtonArgumentResolver(UserProvider userProvider) {
+	public WxArgumentResolver(UserProvider userProvider) {
 		super();
 		this.userProvider = userProvider;
 	}
@@ -81,7 +81,7 @@ public class WxButtonArgumentResolver extends AbstractNamedValueMethodArgumentRe
 	 * and #{...} SpEL expressions in default values, or {@code null} if default
 	 * values are not expected to contain expressions
 	 */
-	public WxButtonArgumentResolver(ConfigurableBeanFactory beanFactory) {
+	public WxArgumentResolver(ConfigurableBeanFactory beanFactory) {
 		super(beanFactory);
 		this.userProvider = beanFactory.getBean(UserProvider.class);
 	}
