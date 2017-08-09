@@ -2,7 +2,8 @@ package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.invoker.ApiInvoker;
+import com.example.myproject.config.invoker.WxInvokerController;
+import com.example.myproject.config.invoker.WxInvokerTemplate;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.message.WxMessage;
@@ -19,26 +20,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @WxApplication
 @WxController
-public class App {
+public class WxApp {
 
     @Autowired
-    ApiInvoker apiInvoker;
+    WxInvokerTemplate wxInvokerTemplate;
+
+    @Autowired
+    WxInvokerController wxInvokerController;
 
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(App.class, args);
+        SpringApplication.run(WxApp.class, args);
     }
 
     @RequestMapping("test")
     @ResponseBody
     public String test() {
-        return apiInvoker.getCallbackIp();
+        return wxInvokerTemplate.getCallbackIp();
     }
 
     @RequestMapping("menu")
     @ResponseBody
     public String menu() {
-        return apiInvoker.getMenu();
+        return wxInvokerTemplate.getMenu();
     }
 
     /**
@@ -75,6 +79,7 @@ public class App {
             order = WxButton.Order.FIRST,
             name = "二级菜单左一")
     public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
+        System.out.println(wxInvokerController.getMenu());
         return WxMessage.News.builder()
                 .fromUserName(wxUser.getToUserName())
                 .toUserName(wxUser.getFromUserName())
@@ -119,7 +124,6 @@ public class App {
 //        return WxMessage.Text.builder()
 //                .fromUserName(wxUser.getToUserName())
 //                .toUserName(wxUser.getFromUserName())
-//                .createTime(new Date())
 //                .content("我是一条文本测试消息")
 //                .build();
     }

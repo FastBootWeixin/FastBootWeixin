@@ -1,7 +1,7 @@
 package com.example.myproject.module.menu;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.invoker.ApiInvoker;
+import com.example.myproject.config.invoker.WxInvokerTemplate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +26,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     @Autowired
-    private ApiInvoker apiInvoker;
+    private WxInvokerTemplate wxInvokerTemplate;
 
     private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
@@ -92,12 +92,12 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        String oldMenuJson = apiInvoker.getMenu();
+        String oldMenuJson = wxInvokerTemplate.getMenu();
         String newMenuJson = this.getMenuJson();
         try {
             WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
             if (isMenuChanged(oldWxMenus)) {
-                String result = apiInvoker.createMenu(newMenuJson);
+                String result = wxInvokerTemplate.createMenu(newMenuJson);
                 logger.info("==============================================================");
                 logger.info("            执行创建菜单操作       ");
                 logger.info("            操作结果：" + result);

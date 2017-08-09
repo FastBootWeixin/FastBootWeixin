@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "wx.api.verify")
-public class ApiVerifyProperties {
+public class WxVerifyProperties {
 
     private String token;
 

@@ -24,13 +24,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,33 +42,29 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableConfigurationProperties({ApiVerifyProperties.class, ApiInvokerProperties.class, ApiUrlProperties.class})
+@EnableConfigurationProperties({WxVerifyProperties.class, WxInvokerProperties.class, WxUrlProperties.class})
 @ConditionalOnClass(RestTemplate.class)
-public class ApiInvokerConfiguration {
+public class WxInvokerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final ApiInvokerProperties apiInvokerProperties;
+	private final WxInvokerProperties wxInvokerProperties;
 
-	private final ApiUrlProperties apiUrlProperties;
+	private final WxUrlProperties wxUrlProperties;
 
 	private final ObjectProvider<HttpMessageConverters> messageConverters;
-
-	private final ObjectProvider<List<RestTemplateCustomizer>> restTemplateCustomizers;
 
 	private static final String HTTPS = "https://";
 
 	private static final String HTTP = "http://";
 
-	public ApiInvokerConfiguration(
-			ApiInvokerProperties apiInvokerProperties,
-			ApiUrlProperties apiUrlProperties,
-			ObjectProvider<HttpMessageConverters> messageConverters,
-			ObjectProvider<List<RestTemplateCustomizer>> restTemplateCustomizers) {
-		this.apiInvokerProperties = apiInvokerProperties;
-		this.apiUrlProperties = apiUrlProperties;
+	public WxInvokerConfiguration(
+			WxInvokerProperties wxInvokerProperties,
+			WxUrlProperties wxUrlProperties,
+			ObjectProvider<HttpMessageConverters> messageConverters) {
+		this.wxInvokerProperties = wxInvokerProperties;
+		this.wxUrlProperties = wxUrlProperties;
 		this.messageConverters = messageConverters;
-		this.restTemplateCustomizers = restTemplateCustomizers;
 	}
 
 	/**
@@ -80,27 +73,25 @@ public class ApiInvokerConfiguration {
      */
 	@Bean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
 	@ConditionalOnMissingBean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
-	public RestTemplate apiInvokerRestTemplate() {
+	public RestTemplate wxInvokerRestTemplate() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
 		builder = builder.requestFactory(getClientHttpRequestFactory()).errorHandler(new DefaultResponseErrorHandler());
 		HttpMessageConverters converters = this.messageConverters.getIfUnique();
 		if (converters != null) {
 			builder = builder.messageConverters(converters.getConverters());
 		}
-		builder = builder.rootUri((this.apiInvokerProperties.isEnableHttps() ? HTTPS : HTTP) + apiUrlProperties.getHost());
-		List<RestTemplateCustomizer> customizers = this.restTemplateCustomizers.getIfAvailable();
-
-		if (!CollectionUtils.isEmpty(customizers)) {
-			customizers = new ArrayList<>(customizers);
-			AnnotationAwareOrderComparator.sort(customizers);
-			builder = builder.customizers(customizers);
-		}
+		builder = builder.rootUri((this.wxInvokerProperties.isEnableHttps() ? HTTPS : HTTP) + wxUrlProperties.getHost());
 		return builder.build();
 	}
 
 	@Bean
-	public ApiInvoker apiInvoker(AccessTokenManager accessTokenManager) {
-		return new ApiInvoker(apiInvokerRestTemplate(), accessTokenManager, apiUrlProperties);
+	public WxInvokerTemplate wxInvoker(AccessTokenManager accessTokenManager) {
+		return new WxInvokerTemplate(wxInvokerRestTemplate(), accessTokenManager, wxUrlProperties);
+	}
+
+	@Bean
+	public WxInvokerProxyFactory wxInvokerProxyFactory() {
+		return new WxInvokerProxyFactory();
 	}
 
 	/**
@@ -112,11 +103,11 @@ public class ApiInvokerConfiguration {
 		// httpClient连接配置，底层是配置RequestConfig
 		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		// 连接超时
-		clientHttpRequestFactory.setConnectTimeout(apiInvokerProperties.getConnectTimeout());
+		clientHttpRequestFactory.setConnectTimeout(wxInvokerProperties.getConnectTimeout());
 		// 数据读取超时时间，即SocketTimeout
-		clientHttpRequestFactory.setReadTimeout(apiInvokerProperties.getReadTimeout());
+		clientHttpRequestFactory.setReadTimeout(wxInvokerProperties.getReadTimeout());
 		// 连接不够用的等待时间，不宜过长，必须设置，比如连接不够用时，时间过长将是灾难性的
-		clientHttpRequestFactory.setConnectionRequestTimeout(apiInvokerProperties.getConnectionRequestTimeout());
+		clientHttpRequestFactory.setConnectionRequestTimeout(wxInvokerProperties.getConnectionRequestTimeout());
 		return clientHttpRequestFactory;
 	}
 
@@ -128,7 +119,7 @@ public class ApiInvokerConfiguration {
 		HttpClientBuilder builder = HttpClientBuilder.create();
 		// 长连接保持30秒
 		PoolingHttpClientConnectionManager pollingConnectionManager;
-		if (apiInvokerProperties.isEnableHttps()) {
+		if (wxInvokerProperties.isEnableHttps()) {
 			SSLContext sslContext;
 			try {
 				sslContext = new SSLContextBuilder().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
@@ -149,17 +140,17 @@ public class ApiInvokerConfiguration {
 					.build();
 			// now, we builder connection-manager using our Registry.
 			//      -- allows multi-threaded use
-			pollingConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, null, null, null, apiInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
+			pollingConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, null, null, null, wxInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
 		} else {
-			pollingConnectionManager = new PoolingHttpClientConnectionManager(apiInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
+			pollingConnectionManager = new PoolingHttpClientConnectionManager(wxInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
 		}
 		// 总连接数
-		pollingConnectionManager.setMaxTotal(apiInvokerProperties.getMaxTotal());
+		pollingConnectionManager.setMaxTotal(wxInvokerProperties.getMaxTotal());
 		// 同路由的并发数
-		pollingConnectionManager.setDefaultMaxPerRoute(apiInvokerProperties.getMaxPerRoute());
+		pollingConnectionManager.setDefaultMaxPerRoute(wxInvokerProperties.getMaxPerRoute());
 		builder.setConnectionManager(pollingConnectionManager);
 		// 重试次数，默认是2次，没有开启
-		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(apiInvokerProperties.getRetryCount(), apiInvokerProperties.isRequestSentRetryEnabled()));
+		builder.setRetryHandler(new DefaultHttpRequestRetryHandler(wxInvokerProperties.getRetryCount(), wxInvokerProperties.isRequestSentRetryEnabled()));
 		// 保持长连接配置，需要在头添加Keep-Alive
 		builder.setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE);
 		List<Header> headers = new ArrayList<>();

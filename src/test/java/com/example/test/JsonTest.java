@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 /**
  * FastBootWeixin  JsonTest
  *
@@ -24,7 +26,7 @@ public class JsonTest {
     @AllArgsConstructor
     public static class Test {
 
-        @JsonFormat(shape = JsonFormat.Shape.OBJECT)
+        @XmlElementWrapper(name = "test")
         private String a;
 
         @JsonProperty("b")

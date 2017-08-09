@@ -1,9 +1,9 @@
 package com.example.myproject.config.token;
 
 import com.example.myproject.common.BeanNames;
-import com.example.myproject.config.invoker.ApiInvokerProperties;
-import com.example.myproject.config.invoker.ApiUrlProperties;
-import com.example.myproject.config.invoker.ApiVerifyProperties;
+import com.example.myproject.config.invoker.WxInvokerProperties;
+import com.example.myproject.config.invoker.WxUrlProperties;
+import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.support.AccessTokenManager;
 import com.example.myproject.support.MemoryTokenStore;
 import com.example.myproject.support.TokenStore;
@@ -21,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.invoke.MethodHandles;
 
 @Configuration
-@EnableConfigurationProperties({ApiVerifyProperties.class, ApiInvokerProperties.class, ApiUrlProperties.class})
+@EnableConfigurationProperties({WxVerifyProperties.class, WxInvokerProperties.class, WxUrlProperties.class})
 @ConditionalOnClass(RestTemplate.class)
 public class TokenConfiguration {
 
@@ -29,17 +29,17 @@ public class TokenConfiguration {
 
 	private final RestTemplate apiInvokerRestTemplate;
 
-	private final ApiUrlProperties apiUrlProperties;
+	private final WxUrlProperties wxUrlProperties;
 
-	private final ApiVerifyProperties apiVerifyProperties;
+	private final WxVerifyProperties wxVerifyProperties;
 
 	public TokenConfiguration(
 			@Autowired @Qualifier(BeanNames.API_INVOKER_REST_TEMPLATE_NAME) RestTemplate apiInvokerRestTemplate,
-			ApiVerifyProperties apiVerifyProperties,
-			ApiUrlProperties apiUrlProperties) {
+			WxVerifyProperties wxVerifyProperties,
+			WxUrlProperties wxUrlProperties) {
 		this.apiInvokerRestTemplate = apiInvokerRestTemplate;
-		this.apiVerifyProperties = apiVerifyProperties;
-		this.apiUrlProperties = apiUrlProperties;
+		this.wxVerifyProperties = wxVerifyProperties;
+		this.wxUrlProperties = wxUrlProperties;
 	}
 
 	@Bean
@@ -50,7 +50,7 @@ public class TokenConfiguration {
 
 	@Bean
 	public TokenServer tokenServer() {
-		return new TokenServer(apiInvokerRestTemplate, apiVerifyProperties, apiUrlProperties);
+		return new TokenServer(apiInvokerRestTemplate, wxVerifyProperties, wxUrlProperties);
 	}
 
 	@Bean

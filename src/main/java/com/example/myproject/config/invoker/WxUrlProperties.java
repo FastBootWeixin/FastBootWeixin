@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "wx.api.url")
-public class ApiUrlProperties {
+public class WxUrlProperties {
 
     private String host = "api.weixin.qq.com";
 

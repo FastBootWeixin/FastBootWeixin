@@ -56,15 +56,15 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	private final WxMessageTypeCondition wxMessageTypeCondition;
 
 	public WxMappingInfo(String name,
-						 String eventKey,
 						 Wx.Category category,
+						 String eventKey,
 						 WxCategoryCondition categories,
 						 WxButtonTypeCondition buttonTypes,
 						 WxEventTypeCondition eventTypes,
 						 WxMessageTypeCondition messageTypes) {
 		this.name = (name != null ? name : "");
-		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
 		this.category = category;
+		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
 		this.wxCategoryCondition = (categories != null ? categories : new WxCategoryCondition());
 		this.wxButtonTypeCondition = (buttonTypes != null ? buttonTypes : new WxButtonTypeCondition());
 		this.wxEventTypeCondition = (eventTypes != null ? eventTypes : new WxEventTypeCondition());
@@ -116,7 +116,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxButtonTypeCondition buttonTypes = this.wxButtonTypeCondition.combine(other.wxButtonTypeCondition);
 		WxEventTypeCondition eventTypes = this.wxEventTypeCondition.combine(other.wxEventTypeCondition);
 		WxMessageTypeCondition messageTypes = this.wxMessageTypeCondition.combine(other.wxMessageTypeCondition);
-		return new WxMappingInfo(name, eventKey, category, categories, buttonTypes, eventTypes, messageTypes);
+		return new WxMappingInfo(name, category, eventKey, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	private String combineEventKeys(WxMappingInfo other) {
@@ -158,7 +158,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		if (categories == null) {
 			return null;
 		}
-		return new WxMappingInfo(this.name, this.eventKey, this.category, categories, buttonTypes, eventTypes, messageTypes);
+		return new WxMappingInfo(this.name, this.category, this.eventKey, categories, buttonTypes, eventTypes, messageTypes);
 	}
 
 	/**
@@ -211,7 +211,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	public int hashCode() {
 		return (this.name.hashCode() * 31 +  // primary differentiation
 				this.category.hashCode() +
-				this.eventKey.hashCode() +
+				(StringUtils.isEmpty(this.eventKey) ? "" : this.eventKey).hashCode() +
 				this.wxCategoryCondition.hashCode() +
 				this.wxEventTypeCondition.hashCode() +
 				this.wxButtonTypeCondition.hashCode() +
@@ -331,7 +331,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		@Override
 		public WxMappingInfo build() {
-			return new WxMappingInfo(mappingName, eventKey, category,
+			return new WxMappingInfo(mappingName, category, eventKey,
 					new WxCategoryCondition(category),
 					new WxButtonTypeCondition(buttonTypes),
 					new WxEventTypeCondition(eventTypes),

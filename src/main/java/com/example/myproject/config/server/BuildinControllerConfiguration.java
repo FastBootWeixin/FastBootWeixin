@@ -1,6 +1,6 @@
 package com.example.myproject.config.server;
 
-import com.example.myproject.config.invoker.ApiVerifyProperties;
+import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxArgumentResolver;
@@ -25,18 +25,18 @@ public class BuildinControllerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final ApiVerifyProperties apiVerifyProperties;
+	private final WxVerifyProperties wxVerifyProperties;
 
 	private final BeanFactory beanFactory;
 
-	public BuildinControllerConfiguration(ApiVerifyProperties apiVerifyProperties, BeanFactory beanFactory) {
-		this.apiVerifyProperties = apiVerifyProperties;
+	public BuildinControllerConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory) {
+		this.wxVerifyProperties = wxVerifyProperties;
 		this.beanFactory = beanFactory;
 	}
 
 	@Bean
 	public WxVerifyController wxVerifyController() {
-		return new WxVerifyController(apiVerifyProperties);
+		return new WxVerifyController(wxVerifyProperties);
 	}
 
 	@Bean

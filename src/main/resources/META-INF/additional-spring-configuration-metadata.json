@@ -4,7 +4,7 @@
       "name": "wx.api.verify.appsecret",
       "type": "java.lang.String",
       "description": "Description for wx.api.verify.appsecret.",
-      "sourceType": "com.example.myproject.config.invoker.ApiVerifyProperties"
+      "sourceType": "com.example.myproject.config.invoker.WxVerifyProperties"
     },
     {
       "name": "wx.menu.auto-create",

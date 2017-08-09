@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
 @ConfigurationProperties(prefix = "wx.api.invoker")
-public class ApiInvokerProperties implements InitializingBean {
+public class WxInvokerProperties implements InitializingBean {
 
     /**
      * 是否启用https

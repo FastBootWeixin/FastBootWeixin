@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -21,6 +22,11 @@ import java.util.List;
 /**
  * 所有消息都是通过Msg推送的
  * 坑啊，主动发消息竟然是json格式
+ * 真是尴尬，不仅格式不同，结构也不同，坑爹。。。
+ * 特别是text消息，json的在text结构下，xml在顶级
+ * @JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
+ * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
+ * https://github.com/FasterXML/jackson-databind/issues/512
  * FastBootWeixin  WxMessage
  *
  * @author Guangshan
@@ -49,52 +55,74 @@ public class WxMessage {
         /**
          * 收到Button事件和普通事件
          */
+        @JsonProperty("event")
         EVENT(Intent.RECEIVE, Wx.Category.EVENT, Wx.Category.BUTTON),
 
         /**
          * 文本消息
          */
+        @JsonProperty("text")
         TEXT(Intent.ALL, Wx.Category.MESSAGE),
 
         /**
          * 图片消息
          */
+        @JsonProperty("image")
         IMAGE(Intent.ALL, Wx.Category.MESSAGE),
 
         /**
          * 语音消息
          */
+        @JsonProperty("voice")
         VOICE(Intent.ALL, Wx.Category.MESSAGE),
 
         /**
          * 视频消息
          */
+        @JsonProperty("video")
         VIDEO(Intent.ALL, Wx.Category.MESSAGE),
 
         /**
          * 小视频消息
          */
+        @JsonProperty("short_video")
         SHORT_VIDEO(Intent.RECEIVE, Wx.Category.MESSAGE),
 
         /**
          * 地理位置消息
          */
+        @JsonProperty("location")
         LOCATION(Intent.RECEIVE, Wx.Category.MESSAGE),
 
         /**
          * 链接消息
          */
+        @JsonProperty("link")
         LINK(Intent.RECEIVE, Wx.Category.MESSAGE),
 
         /**
          * 发送音乐消息
          */
+        @JsonProperty("music")
         MUSIC(Intent.SEND, Wx.Category.MESSAGE),
 
         /**
          * 发送图文消息
          */
-        NEWS(Intent.SEND, Wx.Category.MESSAGE);
+        @JsonProperty("news")
+        NEWS(Intent.SEND, Wx.Category.MESSAGE),
+
+        /**
+         * 发送图文消息（点击跳转到图文消息页面）
+         */
+        @JsonProperty("mpnews")
+        MPNEWS(Intent.SEND, Wx.Category.MESSAGE),
+
+        /**
+         * 发送卡券
+         */
+        @JsonProperty("wxcard")
+        WXCARD(Intent.SEND, Wx.Category.MESSAGE);
 
         private Intent intent;
 
@@ -199,16 +227,19 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.FIELD)
     @NoArgsConstructor
     @Getter
     public static class Text extends WxMessage {
 
-        @XmlElement(name = "Content", required = true)
-        protected String content;
+        @XmlElement(name = "Content")
+        @XmlJavaTypeAdapter(Body.TextBodyAdaptor.class)
+        @JsonProperty("text")
+        protected Body body;
 
-        Text(String toUserName, String fromUserName, Date createTime, Type messageType, String content) {
+        Text(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
             super(toUserName, fromUserName, createTime, messageType);
-            this.content = content;
+            this.body = body;
         }
 
         public static Builder builder() {
@@ -217,20 +248,45 @@ public class WxMessage {
             return builder;
         }
 
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Body {
+
+            @JsonProperty("content")
+            protected String content;
+
+            public static class TextBodyAdaptor extends XmlAdapter<String, Body> {
+
+                @Override
+                public Body unmarshal(String v) throws Exception {
+                    return new Body(v);
+                }
+
+                @Override
+                public String marshal(Body v) throws Exception {
+                    return v.content;
+                }
+            }
+
+        }
+
         public static class Builder extends WxMessage.Builder<Builder> {
+
             private String content;
 
             Builder() {
             }
 
             // 父类如何返回？
+            // 使用泛型搞定了
             public Builder content(String content) {
                 this.content = content;
                 return this;
             }
 
             public Text build() {
-                return new Text(toUserName, fromUserName, createTime, messageType, content);
+                return new Text(toUserName, fromUserName, createTime, messageType, new Body(content));
             }
 
             public String toString() {
@@ -244,19 +300,30 @@ public class WxMessage {
     @Getter
     public static class Image extends WxMessage {
 
-        @XmlElementWrapper(name = "Image")
-        @XmlElement(name = "MediaId", required = true)
-        protected String mediaId;
+        @XmlElement(name = "Image", required = true)
+        @JsonProperty("image")
+        protected Body body;
 
-        Image(String toUserName, String fromUserName, Date createTime, Type messageType, String mediaId) {
+        Image(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
             super(toUserName, fromUserName, createTime, messageType);
-            this.mediaId = mediaId;
+            this.body = body;
         }
 
         public static Builder builder() {
             Builder builder = new Builder();
             builder.msgType(Type.IMAGE);
             return builder;
+        }
+
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Body {
+
+            @XmlElement(name = "MediaId", required = true)
+            @JsonProperty("media_id")
+            protected String mediaId;
+
         }
 
         public static class Builder extends WxMessage.Builder<Builder>{
@@ -272,7 +339,7 @@ public class WxMessage {
             }
 
             public Image build() {
-                return new Image(toUserName, fromUserName, createTime, messageType, mediaId);
+                return new Image(toUserName, fromUserName, createTime, messageType, new Body(mediaId));
             }
 
             public String toString() {
@@ -286,13 +353,24 @@ public class WxMessage {
     @Getter
     public static class Voice extends WxMessage {
 
-        @XmlElementWrapper(name = "Voice")
-        @XmlElement(name = "MediaId", required = true)
-        protected String mediaId;
+        @XmlElement(name = "Voice", required = true)
+        @JsonProperty("voice")
+        protected Body body;
 
-        Voice(String toUserName, String fromUserName, Date createTime, Type messageType, String mediaId) {
+        Voice(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
             super(toUserName, fromUserName, createTime, messageType);
-            this.mediaId = mediaId;
+            this.body = body;
+        }
+
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Body {
+
+            @XmlElement(name = "MediaId", required = true)
+            @JsonProperty("media_id")
+            protected String mediaId;
+
         }
 
         public static Builder builder() {
@@ -314,7 +392,7 @@ public class WxMessage {
             }
 
             public Voice build() {
-                return new Voice(toUserName, fromUserName, createTime, messageType, mediaId);
+                return new Voice(toUserName, fromUserName, createTime, messageType, new Body(mediaId));
             }
 
             public String toString() {
@@ -329,6 +407,7 @@ public class WxMessage {
     public static class Video extends WxMessage {
 
         @XmlElement(name = "Video")
+        @JsonProperty("video")
         protected Body body;
 
         Video(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
@@ -336,19 +415,25 @@ public class WxMessage {
             this.body = body;
         }
 
-        @XmlRootElement(name = "Video")
         @XmlAccessorType(XmlAccessType.NONE)
         @AllArgsConstructor
         @NoArgsConstructor
         public static class Body {
 
             @XmlElement(name = "MediaId", required = true)
+            @JsonProperty("media_id")
             protected String mediaId;
 
+            @XmlElement(name = "ThumbMediaId")
+            @JsonProperty("thumb_media_id")
+            protected String thumbMediaId;
+
             @XmlElement(name = "Title")
+            @JsonProperty("title")
             protected String title;
 
             @XmlElement(name = "Description")
+            @JsonProperty("description")
             protected String description;
 
         }
@@ -359,6 +444,9 @@ public class WxMessage {
             return builder;
         }
 
+        /**
+         * 上面的body和下面的body风格不一致。。。算了，什么时候强迫症犯了再改好了
+         */
         public static class Builder extends WxMessage.Builder<Builder>{
 
             protected Body body;
@@ -376,6 +464,11 @@ public class WxMessage {
 
             public Builder mediaId(String mediaId) {
                 this.body.mediaId = mediaId;
+                return this;
+            }
+
+            public Builder thumbMediaId(String thumbMediaId) {
+                this.body.thumbMediaId = thumbMediaId;
                 return this;
             }
 
@@ -404,7 +497,8 @@ public class WxMessage {
     @Getter
     public static class Music extends WxMessage {
 
-        @XmlElement(name = "Video")
+        @XmlElement(name = "Music")
+        @JsonProperty("music")
         protected Body body;
 
         Music(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
@@ -412,25 +506,29 @@ public class WxMessage {
             this.body = body;
         }
 
-        @XmlRootElement(name = "Video")
         @XmlAccessorType(XmlAccessType.NONE)
         @AllArgsConstructor
         @NoArgsConstructor
         public static class Body {
 
             @XmlElement(name = "ThumbMediaId", required = true)
+            @JsonProperty("thumb_media_id")
             protected String thumbMediaId;
 
             @XmlElement(name = "Title")
+            @JsonProperty("title")
             protected String title;
 
             @XmlElement(name = "Description")
+            @JsonProperty("description")
             protected String description;
 
             @XmlElement(name = "MusicUrl")
+            @JsonProperty("musicurl")
             protected String musicUrl;
 
             @XmlElement(name = "HQMusicUrl")
+            @JsonProperty("hqmusicurl")
             protected String hqMusicUrl;
 
         }
@@ -493,6 +591,9 @@ public class WxMessage {
         }
     }
 
+    /**
+     * 图文消息（点击跳转到外链）
+     */
     @XmlRootElement(name = "xml")
     @NoArgsConstructor
     @Getter
@@ -504,36 +605,51 @@ public class WxMessage {
         @XmlElement(name = "ArticleCount", required = true)
         protected Integer articleCount;
 
-        @XmlElementWrapper(name = "Articles", required = true)
-        @XmlElements(@XmlElement(name = "item", type = Item.class))
-        protected List<Item> articles;
+        @XmlElement(name = "Articles", required = true)
+        @JsonProperty("news")
+        protected Body body;
 
-        News(String toUserName, String fromUserName, Date createTime, Type messageType, List<Item> articles) {
+        News(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
             super(toUserName, fromUserName, createTime, messageType);
-            this.articleCount = articles.size();
-            this.articles = articles;
+            this.articleCount = body.getArticles().size();
+            this.body = body;
+        }
+
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Getter
+        public static class Body {
+
+            @XmlElements(@XmlElement(name = "item", type = Item.class))
+            @JsonProperty("articles")
+            protected List<Item> articles;
+
         }
 
         /**
          * 突然想省个事，虽然这里确实是用builder更好一点，但是我就是不用
          * 写builder了，但是刚才还有个事情忘记了，不知道是啥了。
          */
-        @XmlRootElement(name = "item")
         @XmlAccessorType(XmlAccessType.NONE)
         @AllArgsConstructor
         @NoArgsConstructor
         public static class Item {
 
             @XmlElement(name = "Title", required = true)
+            @JsonProperty("title")
             protected String title;
 
             @XmlElement(name = "Description", required = true)
+            @JsonProperty("description")
             protected String description;
 
             @XmlElement(name = "PicUrl", required = true)
+            @JsonProperty("picurl")
             protected String picUrl;
 
             @XmlElement(name = "Url", required = true)
+            @JsonProperty("url")
             protected String url;
 
             public static Builder builder() {
@@ -650,11 +766,123 @@ public class WxMessage {
                 } else if (this.lastItem != null) {
                     items.add(this.lastItem);
                 }
-                return new News(toUserName, fromUserName, createTime, messageType, items);
+                return new News(toUserName, fromUserName, createTime, messageType, new Body(items));
             }
 
             public String toString() {
                 return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.items.toString() + ")";
+            }
+        }
+    }
+
+    /**
+     * 发送图文消息（点击跳转到图文消息页面）
+     */
+    @XmlRootElement(name = "xml")
+    @NoArgsConstructor
+    @Getter
+    public static class MpNews extends WxMessage {
+
+        @XmlElement(name = "Mpnews", required = true)
+        @JsonProperty("mpnews")
+        protected Body body;
+
+        MpNews(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
+            super(toUserName, fromUserName, createTime, messageType);
+            this.body = body;
+        }
+
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Body {
+
+            @XmlElement(name = "MediaId", required = true)
+            @JsonProperty("media_id")
+            protected String mediaId;
+
+        }
+
+        public static Builder builder() {
+            Builder builder = new Builder();
+            builder.msgType(Type.MPNEWS);
+            return builder;
+        }
+
+        public static class Builder extends WxMessage.Builder<Builder>{
+
+            protected String mediaId;
+
+            Builder() {
+            }
+
+            public Builder mediaId(String mediaId) {
+                this.mediaId = mediaId;
+                return this;
+            }
+
+            public MpNews build() {
+                return new MpNews(toUserName, fromUserName, createTime, messageType, new Body(mediaId));
+            }
+
+            public String toString() {
+                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.mediaId + ")";
+            }
+        }
+    }
+
+    /**
+     * 发送卡券
+     */
+    @XmlRootElement(name = "xml")
+    @NoArgsConstructor
+    @Getter
+    public static class WxCard extends WxMessage {
+
+        @XmlElement(name = "WxCard", required = true)
+        @JsonProperty("wxcard")
+        protected Body body;
+
+        WxCard(String toUserName, String fromUserName, Date createTime, Type messageType, Body body) {
+            super(toUserName, fromUserName, createTime, messageType);
+            this.body = body;
+        }
+
+        @XmlAccessorType(XmlAccessType.NONE)
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class Body {
+
+            @XmlElement(name = "CardId", required = true)
+            @JsonProperty("card_id")
+            protected String cardId;
+
+        }
+
+        public static Builder builder() {
+            Builder builder = new Builder();
+            builder.msgType(Type.WXCARD);
+            return builder;
+        }
+
+        public static class Builder extends WxMessage.Builder<Builder>{
+
+            protected String cardId;
+
+            Builder() {
+            }
+
+            public Builder cardId(String cardId) {
+                this.cardId = cardId;
+                return this;
+            }
+
+            public WxCard build() {
+                return new WxCard(toUserName, fromUserName, createTime, messageType, new Body(cardId));
+            }
+
+            public String toString() {
+                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.cardId + ")";
             }
         }
     }
