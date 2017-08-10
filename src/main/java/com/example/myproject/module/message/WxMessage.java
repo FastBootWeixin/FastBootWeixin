@@ -649,7 +649,7 @@ public class WxMessage {
             protected String picUrl;
 
             @XmlElement(name = "Url", required = true)
-            @JsonProperty("url")
+            @JsonProperty("host")
             protected String url;
 
             public static Builder builder() {
@@ -690,7 +690,7 @@ public class WxMessage {
                 }
 
                 public String toString() {
-                    return "com.example.myproject.module.message.WxMessage.News.Item.ItemBuilder(title=" + this.title + ", description=" + this.description + ", picUrl=" + this.picUrl + ", url=" + this.url + ")";
+                    return "com.example.myproject.module.message.WxMessage.News.Item.ItemBuilder(title=" + this.title + ", description=" + this.description + ", picUrl=" + this.picUrl + ", host=" + this.url + ")";
                 }
             }
         }

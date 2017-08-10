@@ -4,7 +4,7 @@ import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.mvc.WxRequestUtils;
 import com.example.myproject.mvc.annotation.WxEventMapping;
-import com.example.myproject.support.UserProvider;
+import com.example.myproject.support.WxUserProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -60,7 +60,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 
 	// 是否有更好的方式？有空参看源码
 	@Autowired
-	private UserProvider userProvider;
+	private WxUserProvider wxUserProvider;
 
 	// 从谁发的
 	public static final String WX_FROM_USER = "fromUser";
@@ -71,9 +71,9 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 	// 发给谁的
 	public static final String WX_TO_USER = "toUser";
 
-	public WxArgumentResolver(UserProvider userProvider) {
+	public WxArgumentResolver(WxUserProvider wxUserProvider) {
 		super();
-		this.userProvider = userProvider;
+		this.wxUserProvider = wxUserProvider;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 	 */
 	public WxArgumentResolver(ConfigurableBeanFactory beanFactory) {
 		super(beanFactory);
-		this.userProvider = beanFactory.getBean(UserProvider.class);
+		this.wxUserProvider = beanFactory.getBean(WxUserProvider.class);
 	}
 
 
@@ -134,19 +134,19 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 
 	private Object getUser(MethodParameter parameter, WxRequest wxRequest) {
 		// 类型不匹配直接返回
-		if (!userProvider.isMatch(parameter.getParameterType())) {
+		if (!wxUserProvider.isMatch(parameter.getParameterType())) {
 			return null;
 		}
 		if (WX_TO_USER.equals(parameter.getParameterName())) {
 			// 尝试转换toUser
-			return userProvider.getToUser(wxRequest.getToUserName());
+			return wxUserProvider.getToUser(wxRequest.getToUserName());
 		} else if (WX_FROM_USER.equals(parameter.getParameterName())) {
 			// 尝试转换fromUser
-			return userProvider.getFromUser(wxRequest.getFromUserName());
+			return wxUserProvider.getFromUser(wxRequest.getFromUserName());
 		} else if (WX_USER.equals(parameter.getParameterName()) || !BeanUtils.isSimpleProperty(parameter.getParameterType())) {
 			// 两个都转换失败时，判断是否是简单属性，如果不是，则尝试转换为用户
 			// 因为此时无法得知是要获取to还是from，所以取对于用户来说更需要的from
-			return userProvider.getUser(wxRequest.getFromUserName(), wxRequest.getToUserName());
+			return wxUserProvider.getUser(wxRequest.getFromUserName(), wxRequest.getToUserName());
 		}
 		return null;
 	}

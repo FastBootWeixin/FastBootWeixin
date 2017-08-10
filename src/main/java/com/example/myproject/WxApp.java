@@ -2,8 +2,8 @@ package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.invoker.WxInvokerController;
 import com.example.myproject.config.invoker.WxInvokerTemplate;
+import com.example.myproject.controller.invoker.WxInvokerController;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.message.WxMessage;
@@ -37,6 +37,12 @@ public class WxApp {
     @ResponseBody
     public String test() {
         return wxInvokerTemplate.getCallbackIp();
+    }
+
+    @RequestMapping("test1")
+    @ResponseBody
+    public String test1() {
+        return wxInvokerController.getCallbackIp();
     }
 
     @RequestMapping("menu")
@@ -129,7 +135,7 @@ public class WxApp {
     public void location() {
     }
 
-    //    @WxButton(type = WxButton.Type.MEDIA_ID, mediaId = "1", group = WxButton.Group.LEFT, name = "二级菜单左三", key = "left_3")
+    //    @WxButton(type = WxButton.Method.MEDIA_ID, mediaId = "1", group = WxButton.Group.LEFT, name = "二级菜单左三", key = "left_3")
     public void media() {
     }
 
@@ -176,7 +182,7 @@ public class WxApp {
     public void view() {
     }
 
-    //    @WxButton(type = WxButton.Type.VIEW_LIMITED, group = WxButton.Group.MIDDLE, name = "二级菜单中五", key = "middle_5")
+    //    @WxButton(type = WxButton.Method.VIEW_LIMITED, group = WxButton.Group.MIDDLE, name = "二级菜单中五", key = "middle_5")
     public void viewLimited() {
     }
 

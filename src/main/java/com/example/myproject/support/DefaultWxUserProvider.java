@@ -1,14 +1,14 @@
 package com.example.myproject.support;
 
 /**
- * FastBootWeixin  DefaultUserProvider
+ * FastBootWeixin  DefaultWxUserProvider
  *
  * @author Guangshan
- * @summary FastBootWeixin  DefaultUserProvider
+ * @summary FastBootWeixin  DefaultWxUserProvider
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/8/5 21:54
  */
-public class DefaultUserProvider implements UserProvider<WxUser> {
+public class DefaultWxUserProvider implements WxUserProvider<WxUser> {
 
     @Override
     public WxUser getUser(String fromUserName, String toUserName) {

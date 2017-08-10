@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface WxParam {
+public @interface WxApiParam {
 
 	/**
 	 * Alias for {@link #name}.

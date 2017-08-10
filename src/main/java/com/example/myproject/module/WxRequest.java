@@ -18,12 +18,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * FastBootWeixin  WxRequest
+ * FastBootWeixin  WxApiRequest
  * 包含了全部的消息内容，最原始的类型
  * 注意默认情况下如果一个值为null，JAXB不会为其生成XML节点，要想控制这个行为，需要使用其他插件如XmlNullPolicy
  *
  * @author Guangshan
- * @summary FastBootWeixin  WxRequest
+ * @summary FastBootWeixin  WxApiRequest
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 23:38
  */

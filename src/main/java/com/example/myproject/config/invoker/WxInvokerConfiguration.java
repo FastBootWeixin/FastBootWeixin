@@ -1,6 +1,6 @@
 package com.example.myproject.config.invoker;
 
-import com.example.myproject.common.BeanNames;
+import com.example.myproject.common.WxBeanNames;
 import com.example.myproject.controller.invoker.WxInvokerController;
 import com.example.myproject.controller.invoker.WxInvokerProxyFactory;
 import com.example.myproject.support.AccessTokenManager;
@@ -73,8 +73,8 @@ public class WxInvokerConfiguration {
 	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
 	 * @return
      */
-	@Bean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
-	@ConditionalOnMissingBean(name = BeanNames.API_INVOKER_REST_TEMPLATE_NAME)
+	@Bean(name = WxBeanNames.API_INVOKER_REST_TEMPLATE_NAME)
+	@ConditionalOnMissingBean(name = WxBeanNames.API_INVOKER_REST_TEMPLATE_NAME)
 	public RestTemplate wxInvokerRestTemplate() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
 		builder = builder.requestFactory(getClientHttpRequestFactory()).errorHandler(new DefaultResponseErrorHandler());
@@ -92,8 +92,8 @@ public class WxInvokerConfiguration {
 	}
 
 	@Bean
-	public WxInvokerProxyFactory wxInvokerProxyFactory() {
-		return new WxInvokerProxyFactory(WxInvokerController.class);
+	public WxInvokerProxyFactory wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, AccessTokenManager accessTokenManager) {
+		return new WxInvokerProxyFactory(WxInvokerController.class, wxUrlProperties, accessTokenManager, wxInvokerRestTemplate());
 	}
 
 	/**

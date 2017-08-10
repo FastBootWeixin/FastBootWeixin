@@ -1,6 +1,6 @@
 package com.example.myproject.config.token;
 
-import com.example.myproject.common.BeanNames;
+import com.example.myproject.common.WxBeanNames;
 import com.example.myproject.config.invoker.WxInvokerProperties;
 import com.example.myproject.config.invoker.WxUrlProperties;
 import com.example.myproject.config.invoker.WxVerifyProperties;
@@ -34,7 +34,7 @@ public class TokenConfiguration {
 	private final WxVerifyProperties wxVerifyProperties;
 
 	public TokenConfiguration(
-			@Autowired @Qualifier(BeanNames.API_INVOKER_REST_TEMPLATE_NAME) RestTemplate apiInvokerRestTemplate,
+			@Autowired @Qualifier(WxBeanNames.API_INVOKER_REST_TEMPLATE_NAME) RestTemplate apiInvokerRestTemplate,
 			WxVerifyProperties wxVerifyProperties,
 			WxUrlProperties wxUrlProperties) {
 		this.apiInvokerRestTemplate = apiInvokerRestTemplate;

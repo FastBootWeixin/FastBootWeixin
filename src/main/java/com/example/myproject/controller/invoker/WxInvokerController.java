@@ -14,13 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 public interface WxInvokerController {
 
-    @RequestMapping("${wx.api.url.getCallbackIp}")
     String getCallbackIp();
 
-    @RequestMapping("${wx.api.url.getMenu}")
     String getMenu();
 
-    @RequestMapping("${wx.api.url.crteteMenu}")
     String createMenu(@RequestBody String menuJson);
 
 }
