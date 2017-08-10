@@ -1,6 +1,8 @@
 package com.example.myproject.config.invoker;
 
 import com.example.myproject.common.BeanNames;
+import com.example.myproject.controller.invoker.WxInvokerController;
+import com.example.myproject.controller.invoker.WxInvokerProxyFactory;
 import com.example.myproject.support.AccessTokenManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,7 +93,7 @@ public class WxInvokerConfiguration {
 
 	@Bean
 	public WxInvokerProxyFactory wxInvokerProxyFactory() {
-		return new WxInvokerProxyFactory();
+		return new WxInvokerProxyFactory(WxInvokerController.class);
 	}
 
 	/**

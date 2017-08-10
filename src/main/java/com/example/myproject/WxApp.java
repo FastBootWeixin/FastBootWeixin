@@ -53,13 +53,7 @@ public class WxApp {
      */
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左")
     public String left() {
-        return "<xml>\n" +
-                "<ToUserName><![CDATA[toUser]]></ToUserName>\n" +
-                "<FromUserName><![CDATA[fromUser]]></FromUserName>\n" +
-                "<CreateTime>12345678</CreateTime>\n" +
-                "<MsgType><![CDATA[text]]></MsgType>\n" +
-                "<Content><![CDATA[你好]]></Content>\n" +
-                "</xml>";
+        return "";
     }
 
     /**
