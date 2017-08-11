@@ -1,5 +1,6 @@
 package com.example.myproject.controller.invoker.annotation;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 import java.lang.annotation.*;
@@ -33,17 +34,32 @@ public @interface WxApiRequest {
 	String path() default ValueConstants.DEFAULT_NONE;
 
 	/**
-	 * 调用方法
+	 * 调用方法，判断是什么类型的方法
 	 * @return
 	 */
 	Method method() default Method.GET;
 
-	String[] headers() default {};
-
 	enum Method {
 
-		GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
+		GET(HttpMethod.GET),
+		JSON(HttpMethod.POST),
+		XML(HttpMethod.POST),
+		FORM(HttpMethod.POST),
+		PUT(HttpMethod.POST),
+		PATCH(HttpMethod.PATCH),
+		DELETE(HttpMethod.DELETE),
+		OPTIONS(HttpMethod.OPTIONS),
+		TRACE(HttpMethod.TRACE);
 
+		private HttpMethod httpMethod;
+
+		Method(HttpMethod httpMethod) {
+			this.httpMethod = httpMethod;
+		}
+
+		public HttpMethod getHttpMethod() {
+			return httpMethod;
+		}
 	}
 
 
