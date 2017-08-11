@@ -57,7 +57,7 @@ public class WxApp {
      * 2、messageType:location类型，主动推送，用户发送的消息
      * 3、messageType:event-eventType:location事件 系统事件推送
      */
-    @WxButton(group = WxButton.Group.LEFT, main = true, name = "一级菜单左")
+    @WxButton(group = WxButton.Group.LEFT, main = true, name = "左")
     public String left() {
         return "";
     }

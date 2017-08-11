@@ -27,7 +27,6 @@ public class WxVerifyController {
     }
 
     @ResponseBody
-    @RequestMapping("hahah")
     public String verify(@RequestParam(value = "signature", required = true) String signature,
                          @RequestParam(value = "timestamp", required = true) String timestamp,
                          @RequestParam(value = "nonce", required = true) String nonce,

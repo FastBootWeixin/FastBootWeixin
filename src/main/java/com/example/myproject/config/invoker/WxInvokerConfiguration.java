@@ -3,7 +3,9 @@ package com.example.myproject.config.invoker;
 import com.example.myproject.common.WxBeanNames;
 import com.example.myproject.controller.invoker.WxInvokerController;
 import com.example.myproject.controller.invoker.WxInvokerProxyFactory;
+import com.example.myproject.controller.invoker.executor.WxApiExecutor;
 import com.example.myproject.support.AccessTokenManager;
+import com.example.myproject.util.WxApplicationContextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
@@ -69,6 +71,11 @@ public class WxInvokerConfiguration {
 		this.messageConverters = messageConverters;
 	}
 
+	@Bean
+	public WxApplicationContextUtils wxApplicationContextUtils() {
+		return new WxApplicationContextUtils();
+	}
+
 	/**
 	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
 	 * @return
@@ -87,13 +94,18 @@ public class WxInvokerConfiguration {
 	}
 
 	@Bean
-	public WxInvokerTemplate wxInvoker(AccessTokenManager accessTokenManager) {
+	public WxInvokerTemplate wxApiInvoker(AccessTokenManager accessTokenManager) {
 		return new WxInvokerTemplate(wxInvokerRestTemplate(), accessTokenManager, wxUrlProperties);
 	}
 
 	@Bean
-	public WxInvokerProxyFactory wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, AccessTokenManager accessTokenManager) {
-		return new WxInvokerProxyFactory(WxInvokerController.class, wxUrlProperties, accessTokenManager, wxInvokerRestTemplate());
+	public WxApiExecutor wxApiExecutor(AccessTokenManager accessTokenManager) {
+		return new WxApiExecutor(wxInvokerRestTemplate(), accessTokenManager);
+	}
+
+	@Bean
+	public WxInvokerProxyFactory wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, WxApiExecutor wxApiExecutor) {
+		return new WxInvokerProxyFactory(WxInvokerController.class, wxUrlProperties, wxApiExecutor);
 	}
 
 	/**

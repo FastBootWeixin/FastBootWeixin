@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ValueConstants;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

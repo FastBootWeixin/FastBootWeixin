@@ -2,7 +2,10 @@ package com.example.myproject.controller.invoker.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+/**
+ * 是否有必要再加一个WxApiFile，传入路径参数？
+ */
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

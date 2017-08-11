@@ -1,5 +1,6 @@
 package com.example.myproject.controller.invoker;
 
+import com.example.myproject.controller.invoker.annotation.WxApiBody;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,6 +19,6 @@ public interface WxInvokerController {
 
     String getMenu();
 
-    String createMenu(@RequestBody String menuJson);
+    String createMenu(@WxApiBody String menuJson);
 
 }

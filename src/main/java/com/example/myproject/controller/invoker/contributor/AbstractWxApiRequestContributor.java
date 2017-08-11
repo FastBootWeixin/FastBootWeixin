@@ -1,5 +1,7 @@
 package com.example.myproject.controller.invoker.contributor;
 
+import com.example.myproject.controller.invoker.annotation.WxApiBody;
+import com.example.myproject.controller.invoker.annotation.WxApiForm;
 import com.example.myproject.controller.invoker.annotation.WxApiParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
@@ -62,6 +64,10 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
+        // 有这两个注解，就不支持
+        if (parameter.hasParameterAnnotation(WxApiBody.class) || parameter.hasParameterAnnotation(WxApiForm.class)) {
+            return false;
+        }
         if (parameter.hasParameterAnnotation(annotationType)) {
             return true;
         } else {
