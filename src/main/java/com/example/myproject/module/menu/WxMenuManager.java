@@ -1,8 +1,8 @@
 package com.example.myproject.module.menu;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.invoker.WxInvokerTemplate;
-import com.example.myproject.controller.invoker.WxInvokerController;
+import com.example.myproject.controller.invoker.WxApiInvokeService;
+import com.example.myproject.exception.WxAppException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +27,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     @Autowired
-    private WxInvokerController wxInvokerController;
+    private WxApiInvokeService wxApiInvokeService;
 
     private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
@@ -84,8 +84,8 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                 menuJsonCache = objectMapper.writeValueAsString(wxMenu);
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage(), e);
-                // TODO: 2017/7/25 加入自己的异常体系
-                throw new RuntimeException("todo");
+                // done: 2017/7/25 加入自己的异常体系
+                throw new WxAppException("JSON处理异常", e);
             }
         }
         return menuJsonCache;
@@ -93,12 +93,12 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        String oldMenuJson = wxInvokerController.getMenu();
+        String oldMenuJson = wxApiInvokeService.getMenu();
         String newMenuJson = this.getMenuJson();
         try {
             WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
             if (isMenuChanged(oldWxMenus)) {
-                String result = wxInvokerController.createMenu(newMenuJson);
+                String result = wxApiInvokeService.createMenu(newMenuJson);
                 logger.info("==============================================================");
                 logger.info("            执行创建菜单操作       ");
                 logger.info("            操作结果：" + result);

@@ -2,10 +2,10 @@ package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.config.invoker.WxInvokerTemplate;
-import com.example.myproject.controller.invoker.WxInvokerController;
+import com.example.myproject.controller.invoker.WxApiInvokeService;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
+import com.example.myproject.module.media.WxMedia;
 import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.mvc.annotation.WxEventMapping;
@@ -15,6 +15,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
+
 /**
  * Hello world!
  */
@@ -23,10 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class WxApp {
 
     @Autowired
-    WxInvokerTemplate wxInvokerTemplate;
-
-    @Autowired
-    WxInvokerController wxInvokerController;
+    WxApiInvokeService wxApiInvokeService;
 
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
@@ -36,19 +35,25 @@ public class WxApp {
     @RequestMapping("test")
     @ResponseBody
     public String test() {
-        return wxInvokerTemplate.getCallbackIp();
+        return wxApiInvokeService.getCallbackIp();
     }
 
     @RequestMapping("test1")
     @ResponseBody
     public String test1() {
-        return wxInvokerController.getCallbackIp();
+        return wxApiInvokeService.uploadMedia(WxMedia.Type.IMAGE, new File("G:/WeChat/1.png"));
+    }
+
+    @RequestMapping("test2")
+    @ResponseBody
+    public String test2(String mediaId) {
+        return wxApiInvokeService.getMedia(mediaId);
     }
 
     @RequestMapping("menu")
     @ResponseBody
     public String menu() {
-        return wxInvokerTemplate.getMenu();
+        return wxApiInvokeService.getMenu();
     }
 
     /**
@@ -65,7 +70,7 @@ public class WxApp {
     /**
      * 回复消息一定要有fromUser，且是gh_930e3941e6f7
      */
-    @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "一级菜单中")
+    @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "中")
     public void middle() {
         System.out.println(1);
     }
@@ -79,7 +84,7 @@ public class WxApp {
             order = WxButton.Order.FIRST,
             name = "二级菜单左一")
     public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
-        System.out.println(wxInvokerController.getMenu());
+        System.out.println(wxApiInvokeService.getMenu());
         return WxMessage.News.builder()
                 .fromUserName(wxUser.getToUserName())
                 .toUserName(wxUser.getFromUserName())
@@ -135,7 +140,7 @@ public class WxApp {
     public void location() {
     }
 
-    //    @WxButton(type = WxButton.Method.MEDIA_ID, mediaId = "1", group = WxButton.Group.LEFT, name = "二级菜单左三", key = "left_3")
+    //    @WxButton(type = WxButton.Method.MEDIA_ID, mediaId = "1", group = WxButton.Group.LEFT, value = "二级菜单左三", key = "left_3")
     public void media() {
     }
 
@@ -182,7 +187,7 @@ public class WxApp {
     public void view() {
     }
 
-    //    @WxButton(type = WxButton.Method.VIEW_LIMITED, group = WxButton.Group.MIDDLE, name = "二级菜单中五", key = "middle_5")
+    //    @WxButton(type = WxButton.Method.VIEW_LIMITED, group = WxButton.Group.MIDDLE, value = "二级菜单中五", key = "middle_5")
     public void viewLimited() {
     }
 

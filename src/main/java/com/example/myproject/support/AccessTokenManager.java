@@ -1,7 +1,7 @@
 package com.example.myproject.support;
 
-import com.example.myproject.config.token.TokenServer;
-import com.example.myproject.module.token.AccessToken;
+import com.example.myproject.config.token.WxTokenServer;
+import com.example.myproject.module.token.WxAccessToken;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -18,13 +18,13 @@ import java.time.Instant;
  */
 public class AccessTokenManager implements InitializingBean {
 
-    private TokenStore tokenStore;
+    private WxTokenStore wxTokenStore;
 
-    private TokenServer tokenServer;
+    private WxTokenServer wxTokenServer;
 
-    public AccessTokenManager(TokenServer tokenServer, TokenStore tokenStore) {
-        this.tokenServer = tokenServer;
-        this.tokenStore = tokenStore;
+    public AccessTokenManager(WxTokenServer wxTokenServer, WxTokenStore wxTokenStore) {
+        this.wxTokenServer = wxTokenServer;
+        this.wxTokenStore = wxTokenStore;
     }
 
     /**
@@ -35,17 +35,17 @@ public class AccessTokenManager implements InitializingBean {
 
     private String refrestToken() {
         long now = Instant.now().toEpochMilli();
-        if (this.tokenStore.lock()) {
+        if (this.wxTokenStore.lock()) {
             try {
                 // 拿到锁之后再判断一次过期时间，如果过期的话视为还没刷新
-                if (tokenStore.getExpireTime() < now) {
-                    AccessToken accessToken = tokenServer.refreshToken();
-                    tokenStore.setToken(accessToken.getAccessToken(), now + accessToken.getExpiresIn() * 1000);
-                    return accessToken.getAccessToken();
+                if (wxTokenStore.getExpireTime() < now) {
+                    WxAccessToken wxAccessToken = wxTokenServer.refreshToken();
+                    wxTokenStore.setToken(wxAccessToken.getAccessToken(), now + wxAccessToken.getExpiresIn() * 1000);
+                    return wxAccessToken.getAccessToken();
                 }
             } finally {
                 // 如果加锁成功了，一定要解锁
-                tokenStore.unlock();
+                wxTokenStore.unlock();
             }
         } else {
             // 加锁失败，直接获取当前token
@@ -53,20 +53,20 @@ public class AccessTokenManager implements InitializingBean {
             // 因为如果此时获取了旧的token，但是如果旧的token失效了，那么此时请求会失败
             // 如果设置了请求token失败时重新获取的策略，很有可能造成线程阻塞。
         }
-        return tokenStore.getToken();
+        return wxTokenStore.getToken();
     }
 
     public String getToken() {
         long now = Instant.now().toEpochMilli();
-        long expireTime = tokenStore.getExpireTime();
+        long expireTime = wxTokenStore.getExpireTime();
         // 如果当前仍在有效期，但是在刷新期内，异步刷新，并返回当前的值
         if (now <= expireTime && expireTime <= now - tokenRedundance) {
             new Thread(() -> this.refrestToken()).start();
-            return this.tokenStore.getToken();
+            return this.wxTokenStore.getToken();
         } else if (expireTime < now) {
             return this.refrestToken();
         }
-        return this.tokenStore.getToken();
+        return this.wxTokenStore.getToken();
     }
 
     @Override

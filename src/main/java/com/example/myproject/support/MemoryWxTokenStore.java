@@ -9,14 +9,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * FastBootWeixin  MemoryTokenStore
+ * FastBootWeixin  MemoryWxTokenStore
  *
  * @author Guangshan
- * @summary FastBootWeixin  MemoryTokenStore
+ * @summary FastBootWeixin  MemoryWxTokenStore
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 17:08
  */
-public class MemoryTokenStore implements TokenStore {
+public class MemoryWxTokenStore implements WxTokenStore {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 

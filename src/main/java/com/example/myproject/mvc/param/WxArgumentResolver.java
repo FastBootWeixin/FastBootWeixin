@@ -36,13 +36,13 @@ import java.util.Map;
  * with Servlet 3.0 multipart requests. This resolver can also be created in default
  * resolution mode in which simple types (int, long, etc.) not annotated with
  * {@link RequestParam @RequestParam} are also treated as request parameters with
- * the parameter name derived from the argument name.
+ * the parameter value derived from the argument value.
  *
- * <p>If the method parameter type is {@link Map}, the name specified in the
+ * <p>If the method parameter type is {@link Map}, the value specified in the
  * annotation is used to resolve the request parameter String value. The value is
  * then converted to a {@link Map} via type conversion assuming a suitable
  * {@link Converter} or {@link PropertyEditor} has been registered.
- * Or if a request parameter name is not specified the
+ * Or if a request parameter value is not specified the
  * {@link RequestParamMapMethodArgumentResolver} is used instead to provide
  * access to all request parameters in the form of a map.
  *
@@ -92,7 +92,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 	 * <ul>
 	 * <li>@RequestParam-annotated method arguments.
 	 * This excludes {@link Map} params where the annotation doesn't
-	 * specify a name.	See {@link RequestParamMapMethodArgumentResolver}
+	 * specify a value.	See {@link RequestParamMapMethodArgumentResolver}
 	 * instead for such params.
 	 * <li>Arguments of type {@link MultipartFile}
 	 * unless annotated with @{@link RequestPart}.

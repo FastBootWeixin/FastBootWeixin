@@ -1,8 +1,13 @@
 package com.example.myproject.mvc;
 
 import com.example.myproject.module.WxRequest;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.core.io.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Random;
 
 /**
@@ -18,6 +23,19 @@ public class WxRequestUtils {
 
     public static WxRequest getWxRequestFromRequestAttribute(HttpServletRequest request) {
         return (WxRequest)request.getAttribute(RAW_WX_MESSAGE_REQUEST_ATTRIBUTE);
+    }
+
+    /**
+     * 暂时只支持这几种类型
+     *
+     * @param paramType
+     * @return
+     */
+    public static boolean isMutlipart(Class paramType) {
+        return (InputStream.class.isAssignableFrom(paramType) ||
+                Reader.class.isAssignableFrom(paramType) ||
+                File.class.isAssignableFrom(paramType) ||
+                InputStreamSource.class.isAssignableFrom(paramType));
     }
 
     /**

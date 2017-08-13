@@ -1,15 +1,15 @@
 package com.example.myproject.support;
 
 /**
- * FastBootWeixin  TokenStore
+ * FastBootWeixin  WxTokenStore
  * 注意考虑分布式存储，或许需要加一个lock，因为获取之后上一个会失效，所以不能完全交给setToken方法自己加锁
  *
  * @author Guangshan
- * @summary FastBootWeixin  TokenStore
+ * @summary FastBootWeixin  WxTokenStore
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 17:08
  */
-public interface TokenStore {
+public interface WxTokenStore {
 
 	/**
 	 * 获取Token

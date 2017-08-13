@@ -10,6 +10,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface WxApiForm {
 
-    String name() default ValueConstants.DEFAULT_NONE;
+    String value() default ValueConstants.DEFAULT_NONE;
 
 }

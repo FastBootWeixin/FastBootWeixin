@@ -1,13 +1,12 @@
 package com.example.myproject.controller.invoker.contributor;
 
 import com.example.myproject.controller.invoker.annotation.WxApiParam;
-import org.springframework.beans.BeanUtils;
+import com.example.myproject.util.WxAppAssert;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ValueConstants;
-import org.springframework.web.method.support.UriComponentsContributor;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collection;
@@ -26,6 +25,7 @@ public class WxApiParamContributor extends AbstractWxApiRequestContributor<WxApi
         }
         WxApiParam wxApiParam = parameter.getParameterAnnotation(WxApiParam.class);
         String name = (wxApiParam == null || StringUtils.isEmpty(wxApiParam.name()) ? parameter.getParameterName() : wxApiParam.name());
+        WxAppAssert.notNull(name, "请添加编译器的-parameter或者为参数添加注解名称");
         if (value == null) {
             if (wxApiParam != null) {
                 if (!wxApiParam.required() || !wxApiParam.defaultValue().equals(ValueConstants.DEFAULT_NONE)) {

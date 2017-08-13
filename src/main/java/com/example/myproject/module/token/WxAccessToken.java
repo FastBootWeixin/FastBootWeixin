@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
- * FastBootWeixin  AccessToken
+ * FastBootWeixin  WxAccessToken
  *
  * @author Guangshan
- * @summary FastBootWeixin  AccessToken
+ * @summary FastBootWeixin  WxAccessToken
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 17:45
  */
 @Data
-public class AccessToken {
+public class WxAccessToken {
 
     @JsonProperty("access_token")
     private String accessToken;

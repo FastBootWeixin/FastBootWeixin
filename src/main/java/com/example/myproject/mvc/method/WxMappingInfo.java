@@ -72,7 +72,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 	}
 
 	/**
-	 * Return the name for this mapping, or {@code null}.
+	 * Return the value for this mapping, or {@code null}.
 	 */
 	public String getName() {
 		return this.name;

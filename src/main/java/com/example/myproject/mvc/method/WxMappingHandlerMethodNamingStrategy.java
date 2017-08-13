@@ -23,7 +23,7 @@ import org.springframework.web.servlet.handler.HandlerMethodMappingNamingStrateg
 public class WxMappingHandlerMethodNamingStrategy
 		implements HandlerMethodMappingNamingStrategy<WxMappingInfo> {
 
-	/** Separator between the type and method-level parts of a HandlerMethod mapping name */
+	/** Separator between the type and method-level parts of a HandlerMethod mapping value */
 	public static final String SEPARATOR = "#";
 
 

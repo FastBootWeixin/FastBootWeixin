@@ -10,6 +10,6 @@ package com.example.myproject.common;
  */
 public interface WxBeanNames {
 
-    String API_INVOKER_REST_TEMPLATE_NAME = "ApiInvokerRestTemplate";
+    String WX_API_INVOKER_NAME = "WxApiInvoker";
 
 }

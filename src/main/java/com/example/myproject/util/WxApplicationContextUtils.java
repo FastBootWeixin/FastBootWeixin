@@ -1,5 +1,6 @@
 package com.example.myproject.util;
 
+import com.example.myproject.exception.WxAppException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -28,7 +29,7 @@ public class WxApplicationContextUtils implements BeanFactoryAware {
             expressionContext = new BeanExpressionContext(configurableBeanFactory, null);
         } else {
             // 转成系统异常
-            throw new RuntimeException("todo");
+            throw new WxAppException("系统初始化异常");
         }
     }
 

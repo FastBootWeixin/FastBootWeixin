@@ -24,7 +24,7 @@ import java.util.Map;
 public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterceptor, BeanClassLoaderAware, FactoryBean<T> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-    // private WxInvokerController wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxInvokerController.class);
+    // private WxApiInvokeService wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxApiInvokeService.class);
 
     private static final ObjectMapper jsonConvert = new ObjectMapper();
 
@@ -91,7 +91,7 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
 
     @Override
     public Class<?> getObjectType() {
-        return WxInvokerController.class;
+        return WxApiInvokeService.class;
     }
 
     @Override

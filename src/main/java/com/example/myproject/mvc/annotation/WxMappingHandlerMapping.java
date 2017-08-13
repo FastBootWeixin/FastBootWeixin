@@ -113,9 +113,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     /**
-     * Return the handler methods for the given mapping name.
+     * Return the handler methods for the given mapping value.
      *
-     * @param mappingName the mapping name
+     * @param mappingName the mapping value
      * @return a list of matching HandlerMethod's or {@code null}; the returned
      * list will never be modified and is safe to iterate.
      * @see #setHandlerMethodMappingNamingStrategy
@@ -214,7 +214,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
      * Register a handler method and its unique mapping. Invoked at startup for
      * each detected handler method.
      *
-     * @param handler the bean name of the handler or the handler instance
+     * @param handler the bean value of the handler or the handler instance
      * @param method  the method to register
      * @param mapping the mapping conditions associated with the handler method
      * @throws IllegalStateException if another method was already registered
@@ -345,7 +345,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
 
         /**
-         * Return handler methods by mapping name. Thread-safe for concurrent use.
+         * Return handler methods by mapping value. Thread-safe for concurrent use.
          */
         public List<HandlerMethod> getHandlerMethodsByMappingName(String mappingName) {
             return this.nameLookup.get(mappingName);
@@ -421,7 +421,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             }
 
             if (logger.isTraceEnabled()) {
-                logger.trace("Mapping name '" + name + "'");
+                logger.trace("Mapping value '" + name + "'");
             }
 
             List<HandlerMethod> newList = new ArrayList<HandlerMethod>(oldList.size() + 1);
@@ -431,7 +431,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
             if (newList.size() > 1) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Mapping name clash for handlerMethods " + newList +
+                    logger.trace("Mapping value clash for handlerMethods " + newList +
                             ". Consider assigning explicit names.");
                 }
             }

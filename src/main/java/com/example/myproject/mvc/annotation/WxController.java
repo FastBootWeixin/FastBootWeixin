@@ -14,9 +14,9 @@ import java.lang.annotation.*;
 public @interface WxController {
 
     /**
-     * The value may indicate a suggestion for a logical component name,
+     * The value may indicate a suggestion for a logical component value,
      * to be turned into a Spring bean in case of an autodetected component.
-     * @return the suggested component name, if any
+     * @return the suggested component value, if any
      */
     String value() default "";
 
