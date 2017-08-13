@@ -4,6 +4,8 @@ import com.example.myproject.controller.invoker.annotation.WxApiBody;
 import com.example.myproject.controller.invoker.annotation.WxApiForm;
 import com.example.myproject.controller.invoker.annotation.WxApiParam;
 import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.menu.WxMenuManager;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,12 +24,12 @@ public interface WxApiInvokeService {
 
     String getCallbackIp();
 
-    String getMenu();
+    WxMenuManager.WxMenus getMenu();
 
-    String createMenu(@WxApiBody String menuJson);
+    String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
 
     String uploadMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
 
-    String getMedia(@WxApiParam("media_id") String mediaId);
+    InputStreamResource getMedia(@WxApiParam("media_id") String mediaId);
 
 }

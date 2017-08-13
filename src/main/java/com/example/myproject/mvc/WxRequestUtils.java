@@ -32,7 +32,8 @@ public class WxRequestUtils {
      * @return
      */
     public static boolean isMutlipart(Class paramType) {
-        return (InputStream.class.isAssignableFrom(paramType) ||
+        return (byte[].class == paramType ||
+                InputStream.class.isAssignableFrom(paramType) ||
                 Reader.class.isAssignableFrom(paramType) ||
                 File.class.isAssignableFrom(paramType) ||
                 InputStreamSource.class.isAssignableFrom(paramType));

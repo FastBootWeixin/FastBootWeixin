@@ -1,6 +1,7 @@
 package com.example.myproject.controller.invoker.component;
 
 import com.example.myproject.config.invoker.WxInvokerProperties;
+import com.example.myproject.exception.WxAppException;
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
 import org.apache.http.config.Registry;
@@ -81,7 +82,7 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
             try {
                 sslContext = new SSLContextBuilder().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
             } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
-                throw new IllegalArgumentException("初始化HTTPS失败");
+                throw new WxAppException("初始化HTTPS失败", e);
             }
             builder.setSSLContext(sslContext);
             // don't check Hostnames, either.

@@ -70,7 +70,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     }
 
     //有空了改成lambda表达式，先用老循环
-    public String getMenuJson() {
+    public WxMenu getMenu() {
         if (wxMenu == null) {
             wxMenu = new WxMenu();
             mainButtonLookup.entrySet().stream().sorted(Comparator.comparingInt(e2 -> e2.getKey().ordinal()))
@@ -80,38 +80,34 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                                 .forEach(b -> m.getValue().addSubButton(b));
                         wxMenu.add(m.getValue());
                     });
-            try {
-                menuJsonCache = objectMapper.writeValueAsString(wxMenu);
-            } catch (JsonProcessingException e) {
-                logger.error(e.getMessage(), e);
-                // done: 2017/7/25 加入自己的异常体系
-                throw new WxAppException("JSON处理异常", e);
-            }
+//            try {
+//                menuJsonCache = objectMapper.writeValueAsString(wxMenu);
+//            } catch (JsonProcessingException e) {
+//                logger.error(e.getMessage(), e);
+//                // done: 2017/7/25 加入自己的异常体系
+//                throw new WxAppException("JSON处理异常", e);
+//            }
         }
-        return menuJsonCache;
+        return wxMenu;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        String oldMenuJson = wxApiInvokeService.getMenu();
-        String newMenuJson = this.getMenuJson();
-        try {
-            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
-            if (isMenuChanged(oldWxMenus)) {
-                String result = wxApiInvokeService.createMenu(newMenuJson);
-                logger.info("==============================================================");
-                logger.info("            执行创建菜单操作       ");
-                logger.info("            操作结果：" + result);
-                logger.info("            新的菜单json为：" + newMenuJson);
-                logger.info("==============================================================");
-            } else {
-                logger.info("==============================================================");
-                logger.info("            菜单未发生变化             ");
-                logger.info("            当前菜单json为：" + oldMenuJson);
-                logger.info("==============================================================");
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        WxMenus oldWxMenu = wxApiInvokeService.getMenu();
+        WxMenu newWxMenu = this.getMenu();
+//            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
+        if (isMenuChanged(oldWxMenu)) {
+            String result = wxApiInvokeService.createMenu(newWxMenu);
+            logger.info("==============================================================");
+            logger.info("            执行创建菜单操作       ");
+            logger.info("            操作结果：" + result);
+            logger.info("            新的菜单json为：" + newWxMenu);
+            logger.info("==============================================================");
+        } else {
+            logger.info("==============================================================");
+            logger.info("            菜单未发生变化             ");
+            logger.info("            当前菜单json为：" + oldWxMenu);
+            logger.info("==============================================================");
         }
     }
 
@@ -119,7 +115,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         return !this.wxMenu.equals(wxMenus.wxMenu);
     }
 
-    private static class WxMenu {
+    public static class WxMenu {
         @JsonProperty("button")
         public List<WxButtonItem> mainButtons = new ArrayList<>();
 
@@ -136,7 +132,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         }
     }
 
-    private static class WxMenus {
+    public static class WxMenus {
 
         @JsonProperty("menu")
         public WxMenu wxMenu;

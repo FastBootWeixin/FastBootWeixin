@@ -42,9 +42,9 @@ public class WxApiResponseExtractor {
             return null;
         }
         // 先不管文件
-        if (WxRequestUtils.isMutlipart(returnType)) {
-            return null;
-        }
+//        if (WxRequestUtils.isMutlipart(returnType)) {
+//            return null;
+//        }
         WxApiMessageConverterExtractor<T> delegate = delegates.get(returnType);
         if (delegate == null) {
             delegate = new WxApiMessageConverterExtractor(returnType, converters);

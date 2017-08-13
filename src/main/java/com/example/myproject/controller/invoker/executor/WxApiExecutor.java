@@ -92,11 +92,31 @@ public class WxApiExecutor {
         } else if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.XML) {
             httpHeaders = buildXmlHeaders();
             // 暂时不支持xml转换。。。
-            body = getStringBody(wxApiMethodInfo, args);
+            body = getObjectBody(wxApiMethodInfo, args);
+//            body = getStringBody(wxApiMethodInfo, args);
         } else if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.FORM) {
             body = getFormBody(wxApiMethodInfo, args);
         }
         return new RequestEntity(body, httpHeaders, wxApiMethodInfo.getRequestMethod().getHttpMethod(), builder.build().toUri());
+    }
+
+    private Object getObjectBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
+        MethodParameter methodParameter = wxApiMethodInfo.getMethodParameters().stream()
+                .filter(p -> BeanUtils.isSimpleValueType(p.getParameterType()) || p.hasParameterAnnotation(WxApiBody.class))
+                .findFirst().orElse(null);
+        if (methodParameter == null) {
+            throw new WxAppException("没有可处理的参数");
+        }
+        // 不是简单类型
+        if (!BeanUtils.isSimpleValueType(methodParameter.getParameterType())) {
+            // 暂时只支持json
+            return args[methodParameter.getParameterIndex()];
+        }
+        if (args[methodParameter.getParameterIndex()] != null) {
+            return args[methodParameter.getParameterIndex()].toString();
+        } else {
+            return "";
+        }
     }
 
     private String getStringBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
@@ -122,6 +142,12 @@ public class WxApiExecutor {
         }
     }
 
+    /**
+     * 要发送文件，使用这种方式，请查看源码：FormHttpMessageConverter
+     * @param wxApiMethodInfo
+     * @param args
+     * @return
+     */
     private Object getFormBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         wxApiMethodInfo.getMethodParameters().stream()

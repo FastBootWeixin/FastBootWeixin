@@ -6,12 +6,14 @@ import com.example.myproject.controller.invoker.WxApiInvokeService;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.mvc.annotation.WxEventMapping;
 import com.example.myproject.support.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -46,13 +48,13 @@ public class WxApp {
 
     @RequestMapping("test2")
     @ResponseBody
-    public String test2(String mediaId) {
+    public InputStreamResource test2(String mediaId) {
         return wxApiInvokeService.getMedia(mediaId);
     }
 
     @RequestMapping("menu")
     @ResponseBody
-    public String menu() {
+    public WxMenuManager.WxMenus menu() {
         return wxApiInvokeService.getMenu();
     }
 
@@ -75,14 +77,14 @@ public class WxApp {
         System.out.println(1);
     }
 
-    @WxButton(group = WxButton.Group.RIGHT, main = true, name = "一级菜单右")
+    @WxButton(group = WxButton.Group.RIGHT, main = true, name = "右")
     public void right() {
     }
 
     @WxButton(type = WxButton.Type.CLICK,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIRST,
-            name = "二级菜单左一")
+            name = "左一")
     public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
         System.out.println(wxApiInvokeService.getMenu());
         return WxMessage.News.builder()
@@ -136,7 +138,7 @@ public class WxApp {
     @WxButton(type = WxButton.Type.LOCATION_SELECT,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.SECOND,
-            name = "二级菜单左二")
+            name = "左二")
     public void location() {
     }
 
