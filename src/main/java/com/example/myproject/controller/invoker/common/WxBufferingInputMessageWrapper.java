@@ -7,6 +7,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,11 +20,13 @@ import java.io.InputStream;
  * @author Arjen Poutsma
  * @since 3.1
  */
-public final class WxBufferingInputMessageWrapper implements HttpInputMessage {
+public final class WxBufferingInputMessageWrapper implements HttpInputMessage, Closeable {
 
 	private final HttpInputMessage httpInputMessage;
 
 	private byte[] body;
+
+	private ByteArrayInputStream byteArrayInputStream;
 
 	public WxBufferingInputMessageWrapper(HttpInputMessage httpInputMessage) {
 		this.httpInputMessage = httpInputMessage;
@@ -37,7 +40,10 @@ public final class WxBufferingInputMessageWrapper implements HttpInputMessage {
 	@Override
 	public InputStream getBody() throws IOException {
 		this.init();
-		return new ByteArrayInputStream(this.body);
+		if (byteArrayInputStream == null) {
+			byteArrayInputStream = new ByteArrayInputStream(this.body);
+		}
+		return byteArrayInputStream;
 	}
 
 	/**
@@ -55,4 +61,14 @@ public final class WxBufferingInputMessageWrapper implements HttpInputMessage {
 		return this.body;
 	}
 
+	@Override
+	public void close() throws IOException {
+		if (this.httpInputMessage != null && this.httpInputMessage.getBody() != null) {
+			try {
+				this.httpInputMessage.getBody().close();
+			} catch (IOException e) {
+				// ignore it
+			}
+		}
+	}
 }

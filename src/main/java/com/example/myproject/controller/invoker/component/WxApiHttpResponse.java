@@ -72,6 +72,7 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 	@Override
 	public void close() {
 		this.delegate.close();
+		this.pushbackInputStream = null;
 	}
 
 }
