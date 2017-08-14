@@ -2,6 +2,7 @@ package com.example.myproject.controller.invoker.component;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.AbstractClientHttpResponse;
 import org.springframework.http.client.ClientHttpResponse;
 
@@ -32,9 +33,18 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 		this.delegate = delegate;
 	}
 
+	/**
+	 * 你问我为什么要偷梁换柱？当然是因为微信接口返回的是JSON，但是Content-Type却是Text_Pain啦，是否要考虑判断内容？
+	 * 暂时不需要，除非有些接口返回XML，也是这个头，那就坑爹了
+	 * @return
+	 */
 	@Override
 	public HttpHeaders getHeaders() {
-		return this.delegate.getHeaders();
+		HttpHeaders headers = this.delegate.getHeaders();
+		if (headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
+			headers.setContentType(MediaType.APPLICATION_JSON);
+		}
+		return headers;
 	}
 
 	/**

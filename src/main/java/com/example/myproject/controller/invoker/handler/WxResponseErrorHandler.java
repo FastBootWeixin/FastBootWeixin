@@ -35,79 +35,80 @@ import java.nio.charset.Charset;
  */
 public class WxResponseErrorHandler extends DefaultResponseErrorHandler {
 
-	// 数了一下，是15
-	public static final int WX_API_ERROR_CODE_END = 15;
+    // 数了一下，是15
+    public static final int WX_API_ERROR_CODE_END = 15;
 
-	/**
-	 * Delegates to {@link #hasError(HttpStatus)} with the response status code.
-	 */
-	@Override
-	public boolean hasError(ClientHttpResponse response) throws IOException {
-		return hasError(getHttpStatusCode(response)) || hasApiResultError(response);
-	}
+    /**
+     * Delegates to {@link #hasError(HttpStatus)} with the response status code.
+     */
+    @Override
+    public boolean hasError(ClientHttpResponse response) throws IOException {
+        return hasError(getHttpStatusCode(response)) || hasApiResultError(response);
+    }
 
-	/**
-	 * This default implementation throws a {@link HttpClientErrorException} if the response status code
-	 * is {@link HttpStatus.Series#CLIENT_ERROR}, a {@link HttpServerErrorException}
-	 * if it is {@link HttpStatus.Series#SERVER_ERROR},
-	 * and a {@link RestClientException} in other cases.
-	 */
-	@Override
-	public void handleError(ClientHttpResponse response) throws IOException {
-		HttpStatus statusCode = getHttpStatusCode(response);
-		switch (statusCode.series()) {
-			case CLIENT_ERROR:
-				throw new WxApiResponseException(new String(getResponseBody(response)), response, statusCode);
-			case SERVER_ERROR:
-				throw new WxApiResponseException(new String(getResponseBody(response)), response, statusCode);
-			default:
-				throw new WxApiResultException(new String(getResponseBody(response)));
-		}
-	}
-	/**
-	 * Indicates whether the response has an empty message body.
-	 * <p>Implementation tries to read the first bytes of the response stream:
-	 * <ul>
-	 * <li>if no bytes are available, the message body is empty</li>
-	 * <li>otherwise it is not empty and the stream is reset to its start for further reading</li>
-	 * </ul>
-	 * @return {@code true} if the response has a zero-length message body, {@code false} otherwise
-	 * @throws IOException in case of I/O errors
-	 */
-	private boolean hasApiResultError(ClientHttpResponse response) throws IOException {
-		// 只有响应是json时才可能有api错误
-		// 微信太坑了！Content-Type标准里，编码使用charset标记的，这丫竟然用encoding标记！
-		// 参考这个：https://www.zhihu.com/question/20615748
-		if (!MediaType.APPLICATION_JSON.isCompatibleWith(response.getHeaders().getContentType())
-				&& !MediaType.APPLICATION_JSON.includes(response.getHeaders().getContentType())) {
-			return false;
-		}
-		InputStream body = response.getBody();
-		if (body == null) {
-			return false;
-		}
-		else if (body.markSupported()) {
-			body.mark(WX_API_ERROR_CODE_END);
-			byte[] bytes = new byte[WX_API_ERROR_CODE_END];
-			body.read(bytes);
-			if (WxApiResultException.hasException(new String(bytes))) {
-				return true;
-			}
-			else {
-				body.reset();
-				return false;
-			}
-		} else if (body instanceof PushbackInputStream) {
-			PushbackInputStream pushbackInputStream = (PushbackInputStream) body;
-			byte[] bytes = new byte[WX_API_ERROR_CODE_END];
-			pushbackInputStream.read(bytes);
-			if (WxApiResultException.hasException(new String(bytes))) {
-				return true;
-			} else {
-				pushbackInputStream.unread(bytes);
-				return false;
-			}
-		}
-		return false;
-	}
+    /**
+     * This default implementation throws a {@link HttpClientErrorException} if the response status code
+     * is {@link HttpStatus.Series#CLIENT_ERROR}, a {@link HttpServerErrorException}
+     * if it is {@link HttpStatus.Series#SERVER_ERROR},
+     * and a {@link RestClientException} in other cases.
+     */
+    @Override
+    public void handleError(ClientHttpResponse response) throws IOException {
+        HttpStatus statusCode = getHttpStatusCode(response);
+        switch (statusCode.series()) {
+            case CLIENT_ERROR:
+                throw new WxApiResponseException(new String(getResponseBody(response)), response, statusCode);
+            case SERVER_ERROR:
+                throw new WxApiResponseException(new String(getResponseBody(response)), response, statusCode);
+            default:
+                throw new WxApiResultException(new String(getResponseBody(response)));
+        }
+    }
+
+    /**
+     * Indicates whether the response has an empty message body.
+     * <p>Implementation tries to read the first bytes of the response stream:
+     * <ul>
+     * <li>if no bytes are available, the message body is empty</li>
+     * <li>otherwise it is not empty and the stream is reset to its start for further reading</li>
+     * </ul>
+     *
+     * @return {@code true} if the response has a zero-length message body, {@code false} otherwise
+     * @throws IOException in case of I/O errors
+     */
+    private boolean hasApiResultError(ClientHttpResponse response) throws IOException {
+        // 只有响应是json时才可能有api错误
+        // 微信太坑了！Content-Type标准里，编码使用charset标记的，这丫竟然用encoding标记！
+        // 参考这个：https://www.zhihu.com/question/20615748
+        if (!(MediaType.APPLICATION_JSON.isCompatibleWith(response.getHeaders().getContentType())
+                || MediaType.APPLICATION_JSON.includes(response.getHeaders().getContentType())
+                || MediaType.TEXT_PLAIN.includes(response.getHeaders().getContentType()))) {
+            return false;
+        }
+        InputStream body = response.getBody();
+        if (body == null) {
+            return false;
+        } else if (body.markSupported()) {
+            body.mark(WX_API_ERROR_CODE_END);
+            byte[] bytes = new byte[WX_API_ERROR_CODE_END];
+            body.read(bytes);
+            if (WxApiResultException.hasException(new String(bytes))) {
+                return true;
+            } else {
+                body.reset();
+                return false;
+            }
+        } else if (body instanceof PushbackInputStream) {
+            PushbackInputStream pushbackInputStream = (PushbackInputStream) body;
+            byte[] bytes = new byte[WX_API_ERROR_CODE_END];
+            pushbackInputStream.read(bytes);
+            if (WxApiResultException.hasException(new String(bytes))) {
+                return true;
+            } else {
+                pushbackInputStream.unread(bytes);
+                return false;
+            }
+        }
+        return false;
+    }
 }

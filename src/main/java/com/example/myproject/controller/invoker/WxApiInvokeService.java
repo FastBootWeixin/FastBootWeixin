@@ -28,7 +28,7 @@ public interface WxApiInvokeService {
 
     String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
 
-    String uploadMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
+    WxMedia uploadMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
 
     InputStreamResource getMedia(@WxApiParam("media_id") String mediaId);
 

@@ -42,7 +42,7 @@ public class WxApp {
 
     @RequestMapping("test1")
     @ResponseBody
-    public String test1() {
+    public WxMedia test1() {
         return wxApiInvokeService.uploadMedia(WxMedia.Type.IMAGE, new File("G:/WeChat/1.png"));
     }
 

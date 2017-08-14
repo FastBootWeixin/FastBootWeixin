@@ -1,5 +1,12 @@
 package com.example.myproject.module.media;
 
+import com.example.myproject.module.message.adapters.WxJsonAdapters;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.util.Date;
+
 /**
  * FastBootWeixin  WxMedia
  *
@@ -12,7 +19,14 @@ public class WxMedia {
 
     public enum Type {
 
-        IMAGE, VOICE, VIDEO, THUMB;
+        @JsonProperty("image")
+        IMAGE,
+        @JsonProperty("voice")
+        VOICE,
+        @JsonProperty("video")
+        VIDEO,
+        @JsonProperty("thumb")
+        THUMB;
 
         @Override
         public String toString() {
@@ -20,4 +34,13 @@ public class WxMedia {
         }
     }
 
+    @JsonProperty("type")
+    private Type type;
+
+    @JsonProperty("media_id")
+    private String mediaId;
+
+    @JsonDeserialize(converter = WxJsonAdapters.WxDateConverter.class)
+    @JsonProperty("created_at")
+    private Date createdAt;
 }
