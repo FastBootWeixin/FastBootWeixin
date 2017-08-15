@@ -3,7 +3,6 @@ package com.example.myproject;
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
-import com.example.myproject.module.Wx;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.media.WxMedia;
@@ -15,7 +14,6 @@ import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.mvc.annotation.WxEventMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 

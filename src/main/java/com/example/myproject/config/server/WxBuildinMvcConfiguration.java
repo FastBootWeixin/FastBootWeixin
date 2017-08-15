@@ -27,30 +27,30 @@ import java.util.List;
 @Configuration
 public class WxBuildinMvcConfiguration {
 
-	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final WxVerifyProperties wxVerifyProperties;
+    private final WxVerifyProperties wxVerifyProperties;
 
-	private final BeanFactory beanFactory;
+    private final BeanFactory beanFactory;
 
-	public WxBuildinMvcConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory) {
-		this.wxVerifyProperties = wxVerifyProperties;
-		this.beanFactory = beanFactory;
-	}
+    public WxBuildinMvcConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory) {
+        this.wxVerifyProperties = wxVerifyProperties;
+        this.beanFactory = beanFactory;
+    }
 
-	@Bean
-	public WxVerifyController wxVerifyController() {
-		return new WxVerifyController(wxVerifyProperties);
-	}
+    @Bean
+    public WxVerifyController wxVerifyController() {
+        return new WxVerifyController(wxVerifyProperties);
+    }
 
-	@Bean
-	public WxMappingHandlerMapping wxRequestMappingHandlerMapping() {
-		WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxVerifyController());
-		wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
-		return wxMappingHandlerMapping;
-	}
+    @Bean
+    public WxMappingHandlerMapping wxRequestMappingHandlerMapping() {
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxVerifyController());
+        wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
+        return wxMappingHandlerMapping;
+    }
 
-//	@Bean
+    //	@Bean
 //	@ConditionalOnMissingBean
 //	public WxUserProvider userProvider(WxApiInvokeSpi wxApiInvokeSpi) {
 //		return new DefaultWxUserProvider(wxApiInvokeSpi);
@@ -59,46 +59,54 @@ public class WxBuildinMvcConfiguration {
 //	public WxUserProvider userProvider() {
 //		return new DefaultWxUserProvider();
 //	}
+    @Bean
+    public WxMediaResourceMessageConverter wxMediaResourceMessageConverter() {
+        return new WxMediaResourceMessageConverter();
+    }
 
-	@Bean
-	public WxMvcConfigurer wxMvcConfigurer(WxUserProvider wxUserProvider) {
-		return new WxMvcConfigurer(wxUserProvider, beanFactory);
-	}
+    @Bean
+    public WxMvcConfigurer wxMvcConfigurer(WxUserProvider wxUserProvider) {
+        return new WxMvcConfigurer(wxUserProvider, beanFactory);
+    }
 
-	@Bean
-	public WxResponseBodyAdvice wxResponseBodyAdvice() {
-		return new WxResponseBodyAdvice();
-	}
+    @Bean
+    public WxResponseBodyAdvice wxResponseBodyAdvice() {
+        return new WxResponseBodyAdvice();
+    }
 
-	public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
+    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
 
-		private HandlerMethodArgumentResolver handlerMethodArgumentResolver;
+        private HandlerMethodArgumentResolver handlerMethodArgumentResolver;
 
-		/**
-		 * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
-		 * WxApiExecutor -> WxApiInvokeSpi -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
-		 * 于是产生了循环依赖
-		 * 临时处理先把ConversionService的依赖去掉，后期考虑优化依赖关系
-		 * @param wxUserProvider
-		 * @param beanFactory
+        /**
+         * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
+         * WxApiExecutor -> WxApiInvokeSpi -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
+         * 于是产生了循环依赖
+         * 临时处理先把ConversionService的依赖去掉，后期考虑优化依赖关系
+         *
+         * @param wxUserProvider
+         * @param beanFactory
          */
-		public WxMvcConfigurer(WxUserProvider wxUserProvider, BeanFactory beanFactory) {
-			if (beanFactory instanceof ConfigurableBeanFactory) {
-				this.handlerMethodArgumentResolver = new WxArgumentResolver((ConfigurableBeanFactory) beanFactory);
-			} else {
-				this.handlerMethodArgumentResolver = new WxArgumentResolver(wxUserProvider);
-			}
-		}
+        public WxMvcConfigurer(WxUserProvider wxUserProvider, BeanFactory beanFactory) {
+            if (beanFactory instanceof ConfigurableBeanFactory) {
+                this.handlerMethodArgumentResolver = new WxArgumentResolver((ConfigurableBeanFactory) beanFactory);
+            } else {
+                this.handlerMethodArgumentResolver = new WxArgumentResolver(wxUserProvider);
+            }
+        }
 
-		@Override
-		public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-			argumentResolvers.add(this.handlerMethodArgumentResolver);
-		}
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+            argumentResolvers.add(this.handlerMethodArgumentResolver);
+        }
 
-		@Override
-		public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        /**
+         * WebMvcConfigurationSupport添加的MessageConverter不会被添加到SpringBoot全局的HttpMessageConverters中
+         */
+		/*@Override
+        public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 			converters.add(new WxMediaResourceMessageConverter());
-		}
-	}
+		}*/
+    }
 
 }
