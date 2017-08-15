@@ -60,7 +60,6 @@ import java.util.Map;
 public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
     // 是否有更好的方式？有空参看源码
-    @Autowired
     private WxUserProvider wxUserProvider;
 
     /**

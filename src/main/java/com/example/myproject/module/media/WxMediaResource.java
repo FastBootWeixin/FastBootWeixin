@@ -2,13 +2,16 @@ package com.example.myproject.module.media;
 
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.controller.invoker.common.WxBufferingInputMessageWrapper;
+import com.example.myproject.module.Wx;
 import com.example.myproject.util.WxApplicationContextUtils;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
@@ -48,6 +51,8 @@ public class WxMediaResource extends AbstractResource {
     private String mediaId;
 
     private URL url;
+
+    private File file;
 
     /**
      * 是否真的需要这么多成员变量？
@@ -144,16 +149,21 @@ public class WxMediaResource extends AbstractResource {
 
     @Override
     public URL getURL() throws IOException {
-        throw new FileNotFoundException(getDescription() + " cannot be resolved to URL");
+        return this.url;
     }
 
     /**
-     * This implementation throws a FileNotFoundException, assuming
-     * that the resource cannot be resolved to an absolute file path.
+     * 我的stream用的并不好，所以有空要梳理和观察一下当前的Stream是否会出现内存泄漏
+     * 加锁防止多次写入
      */
     @Override
-    public File getFile() throws IOException {
-        throw new FileNotFoundException(getDescription() + " cannot be resolved to absolute file path");
+    public synchronized File getFile() throws IOException {
+        if (this.file != null) {
+            String pathToUse = StringUtils.applyRelativePath(Wx.Environment.getInstance().getDefaultMediaPath(), this.filename);
+            this.file = new File(pathToUse);
+            FileCopyUtils.copy(this.getBody(), file);
+        }
+        return this.file;
     }
 
     /**

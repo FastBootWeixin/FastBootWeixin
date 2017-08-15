@@ -17,10 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.*;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -171,7 +168,9 @@ public class WxApiExecutor {
     }
 
     private Resource getFormResource(Object arg) {
-        if (Resource.class.isAssignableFrom(arg.getClass())) {
+        if(byte[].class == arg.getClass()) {
+            return new ByteArrayResource((byte[]) arg);
+        } else if (Resource.class.isAssignableFrom(arg.getClass())) {
             return (Resource) arg;
         } else if (InputStreamSource.class.isAssignableFrom(arg.getClass())) {
             try {
@@ -184,11 +183,12 @@ public class WxApiExecutor {
             return new FileSystemResource((File) arg);
         } else if (InputStream.class.isAssignableFrom(arg.getClass())) {
             return new InputStreamResource((InputStream) arg);
-        } else {
+        } else if (Reader.class.isAssignableFrom(arg.getClass())) {
             Reader reader = (Reader) arg;
             ReaderInputStream readerInputStream = new ReaderInputStream(reader, Charset.forName("UTF-8"));
             return new InputStreamResource(readerInputStream);
         }
+        throw new WxAppException("不支持的Resource类型");
     }
 
     /**

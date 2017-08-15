@@ -1,8 +1,5 @@
 package com.example.myproject.module;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
 /**
  * FastBootWeixin 微信常量类
  *
@@ -48,14 +45,17 @@ public class Wx {
         private Environment() {
         }
 
-        private String wxUserName;
+        /**
+         * 默认存储路径，在用户目录下的weixin目录
+         */
+        private String defaultMediaPath = "~/weixin/media/";
 
-        public String getWxUserName() {
-            return wxUserName;
+        public String getDefaultMediaPath() {
+            return defaultMediaPath;
         }
 
-        public void setWxUserName(String wxUserName) {
-            this.wxUserName = wxUserName;
+        public void setDefaultMediaPath(String defaultMediaPath) {
+            this.defaultMediaPath = defaultMediaPath;
         }
     }
 

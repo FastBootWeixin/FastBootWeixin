@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandles;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -424,5 +425,7 @@ public class WxRequest {
         }
         return null;
     }
+
+    private StringBuffer requestUrl;
 
 }

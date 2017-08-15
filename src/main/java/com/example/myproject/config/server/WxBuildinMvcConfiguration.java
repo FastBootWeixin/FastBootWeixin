@@ -3,6 +3,7 @@ package com.example.myproject.config.server;
 import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
+import com.example.myproject.controller.invoker.common.WxMediaResourceMessageConverter;
 import com.example.myproject.mvc.advice.WxResponseBodyAdvice;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxArgumentResolver;
@@ -16,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -93,6 +95,10 @@ public class WxBuildinMvcConfiguration {
 			argumentResolvers.add(this.handlerMethodArgumentResolver);
 		}
 
+		@Override
+		public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+			converters.add(new WxMediaResourceMessageConverter());
+		}
 	}
 
 }

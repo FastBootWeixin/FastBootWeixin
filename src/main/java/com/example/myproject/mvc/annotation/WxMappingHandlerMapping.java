@@ -166,6 +166,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             // ServletWebRequest
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
             WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
+            wxRequest.setRequestUrl(request.getRequestURL());
             WxRequestResponseUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
             switch (wxRequest.getCategory()) {

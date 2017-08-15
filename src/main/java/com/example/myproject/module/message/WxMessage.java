@@ -29,6 +29,9 @@ import java.util.List;
  * https://github.com/FasterXML/jackson-databind/issues/512
  * FastBootWeixin  WxMessage
  *
+ * 加入WxMessageTemplate用于发送消息
+ * WxMessageConverter用于转换消息（把文件转换为media_id等）
+ *
  * @author Guangshan
  * @summary FastBootWeixin  WxMessage
  * 2017, Guangshan Group All Rights Reserved
