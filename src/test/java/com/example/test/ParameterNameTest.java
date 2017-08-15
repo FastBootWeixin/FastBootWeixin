@@ -19,7 +19,7 @@ public class ParameterNameTest {
      */
     public static void main(String[] args) throws NoSuchMethodException {
 //        Paranamer paranamer = new CachingParanamer();
-//        Method method = WxApiInvokeService.class.getMethod("uploadMedia", File.class);
+//        Method method = WxApiInvokeSpi.class.getMethod("uploadMedia", File.class);
 //        String[] s = paranamer.lookupParameterNames(method);
 //        System.out.println(s);
     }

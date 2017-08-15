@@ -24,11 +24,7 @@ import java.util.Map;
 public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterceptor, BeanClassLoaderAware, FactoryBean<T> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-    // private WxApiInvokeService wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxApiInvokeService.class);
-
-    private static final ObjectMapper jsonConvert = new ObjectMapper();
-
-    private static final String WX_ACCESS_TOKEN_PARAM_NAME = "access_token";
+    // private WxApiInvokeSpi wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxApiInvokeSpi.class);
 
     private final WxApiTypeInfo wxApiTypeInfo;
 
@@ -91,7 +87,7 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
 
     @Override
     public Class<?> getObjectType() {
-        return WxApiInvokeService.class;
+        return WxApiInvokeSpi.class;
     }
 
     @Override

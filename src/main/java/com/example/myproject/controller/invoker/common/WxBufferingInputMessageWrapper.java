@@ -51,8 +51,13 @@ public final class WxBufferingInputMessageWrapper implements HttpInputMessage, C
 	 * @throws IOException
 	 */
 	public WxBufferingInputMessageWrapper init() throws IOException {
-		if (this.body == null) {
-			this.body = StreamUtils.copyToByteArray(this.httpInputMessage.getBody());
+		if (this.body != null) {
+			return this;
+		}
+		if (httpInputMessage instanceof WxBufferingInputMessageWrapper) {
+			this.body = ((WxBufferingInputMessageWrapper) httpInputMessage).getRawBody();
+		} else {
+			this.body = StreamUtils.copyToByteArray(httpInputMessage.getBody());
 		}
 		return this;
 	}

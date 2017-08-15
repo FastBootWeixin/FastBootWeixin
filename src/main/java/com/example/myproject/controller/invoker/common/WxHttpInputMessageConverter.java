@@ -23,7 +23,7 @@ import java.util.List;
 public class WxHttpInputMessageConverter extends AbstractHttpMessageConverter<HttpInputMessage> {
 
     public WxHttpInputMessageConverter() {
-        super(new MediaType("application", "octet-stream"), MediaType.ALL);
+        super(MediaType.APPLICATION_OCTET_STREAM, MediaType.ALL);
     }
 
     @Override

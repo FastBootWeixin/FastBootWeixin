@@ -2,15 +2,17 @@ package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.controller.invoker.WxApiInvokeService;
+import com.example.myproject.controller.invoker.WxApiInvokeSpi;
+import com.example.myproject.module.Wx;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.module.message.WxMessage;
+import com.example.myproject.module.user.WxUser;
 import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.mvc.annotation.WxEventMapping;
-import com.example.myproject.support.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.InputStreamResource;
@@ -27,7 +29,7 @@ import java.io.File;
 public class WxApp {
 
     @Autowired
-    WxApiInvokeService wxApiInvokeService;
+    WxApiInvokeSpi wxApiInvokeSpi;
 
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
@@ -37,25 +39,25 @@ public class WxApp {
     @RequestMapping("test")
     @ResponseBody
     public String test() {
-        return wxApiInvokeService.getCallbackIp();
+        return wxApiInvokeSpi.getCallbackIp();
     }
 
     @RequestMapping("test1")
     @ResponseBody
     public WxMedia test1() {
-        return wxApiInvokeService.uploadMedia(WxMedia.Type.IMAGE, new File("G:/WeChat/1.png"));
+        return wxApiInvokeSpi.uploadMedia(WxMedia.Type.IMAGE, new File("G:/WeChat/1.png"));
     }
 
     @RequestMapping("test2")
     @ResponseBody
-    public InputStreamResource test2(String mediaId) {
-        return wxApiInvokeService.getMedia(mediaId);
+    public WxMediaResource test2(String mediaId) {
+        return wxApiInvokeSpi.getMedia(mediaId);
     }
 
     @RequestMapping("menu")
     @ResponseBody
     public WxMenuManager.WxMenus menu() {
-        return wxApiInvokeService.getMenu();
+        return wxApiInvokeSpi.getMenu();
     }
 
     /**
@@ -86,10 +88,9 @@ public class WxApp {
             order = WxButton.Order.FIRST,
             name = "左一")
     public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
-        System.out.println(wxApiInvokeService.getMenu());
+        System.out.println(wxApiInvokeSpi.getMenu());
         return WxMessage.News.builder()
-                .fromUserName(wxUser.getToUserName())
-                .toUserName(wxUser.getFromUserName())
+                .toUserName(wxUser.getOpenId())
                 .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
                         "qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")

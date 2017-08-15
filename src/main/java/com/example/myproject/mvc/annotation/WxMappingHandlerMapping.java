@@ -7,9 +7,9 @@ import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.menu.WxButtonItem;
 import com.example.myproject.module.menu.WxMenuManager;
+import com.example.myproject.mvc.WxRequestResponseUtils;
 import com.example.myproject.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.example.myproject.mvc.method.WxMappingInfo;
-import com.example.myproject.mvc.WxRequestUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -39,17 +39,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
      */
     private static final String SCOPED_TARGET_NAME_PREFIX = "scopedTarget.";
 
-    private static final String[] WX_VERIFY_PARAMS = new String[]{
-            "echostr", "nonce", "signature", "timestamp"
-    };
+    private static final ParamsRequestCondition WX_VERIFY_PARAMS_CONDITION = new ParamsRequestCondition("echostr", "nonce", "signature", "timestamp");
 
-    private static final String[] WX_POST_PARAMS = new String[]{
-            "openid", "nonce", "signature", "timestamp"
-    };
-
-    private static final ParamsRequestCondition WX_VERIFY_PARAMS_CONDITION = new ParamsRequestCondition(WX_VERIFY_PARAMS);
-
-    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition(WX_POST_PARAMS);
+    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition("openid", "nonce", "signature", "timestamp");
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
@@ -174,7 +166,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             // ServletWebRequest
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
             WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
-            WxRequestUtils.setWxRequestToRequestAttribute(request, wxRequest);
+            WxRequestResponseUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
             switch (wxRequest.getCategory()) {
                 case BUTTON:

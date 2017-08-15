@@ -1,7 +1,6 @@
 package com.example.myproject.controller.invoker.executor;
 
 import com.example.myproject.exception.WxApiResponseException;
-import com.example.myproject.mvc.WxRequestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpInputMessage;
@@ -42,7 +41,7 @@ public class WxApiResponseExtractor {
             return null;
         }
         // 先不管文件
-//        if (WxRequestUtils.isMutlipart(returnType)) {
+//        if (WxRequestResponseUtils.isMutlipart(returnType)) {
 //            return null;
 //        }
         WxApiMessageConverterExtractor<T> delegate = delegates.get(returnType);

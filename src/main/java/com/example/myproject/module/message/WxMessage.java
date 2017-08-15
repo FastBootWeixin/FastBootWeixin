@@ -183,6 +183,10 @@ public class WxMessage {
         this.messageType = messageType;
     }
 
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
     public static Builder builder() {
         return new Builder();
     }

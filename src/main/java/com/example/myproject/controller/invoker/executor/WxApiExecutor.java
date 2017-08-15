@@ -6,9 +6,8 @@ import com.example.myproject.controller.invoker.annotation.WxApiForm;
 import com.example.myproject.controller.invoker.annotation.WxApiRequest;
 import com.example.myproject.controller.invoker.common.ReaderInputStream;
 import com.example.myproject.exception.WxApiResponseException;
-import com.example.myproject.exception.WxApiResultException;
 import com.example.myproject.exception.WxAppException;
-import com.example.myproject.mvc.WxRequestUtils;
+import com.example.myproject.mvc.WxRequestResponseUtils;
 import com.example.myproject.support.AccessTokenManager;
 import com.example.myproject.util.WxAppAssert;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +16,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -27,7 +25,6 @@ import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ValueConstants;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
@@ -38,11 +35,11 @@ import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 
 /**
- * FastBootWeixin  WxApiInvokeService
+ * FastBootWeixin  WxApiInvokeSpi
  * 注意拦截调用异常，如果是token过期，重新获取token并重试
  *
  * @author Guangshan
- * @summary FastBootWeixin  WxApiInvokeService
+ * @summary FastBootWeixin  WxApiInvokeSpi
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 17:14
  */
@@ -60,13 +57,13 @@ public class WxApiExecutor {
 
     private final ObjectMapper jsonConverter = new ObjectMapper();
 
-    private final ConversionService conversionService;
+//    private final ConversionService conversionService;
 
-    public WxApiExecutor(WxApiInvoker wxApiInvoker, AccessTokenManager accessTokenManager, ConversionService conversionService) {
+    public WxApiExecutor(WxApiInvoker wxApiInvoker, AccessTokenManager accessTokenManager) {
         this.wxApiInvoker = wxApiInvoker;
         this.wxApiResponseExtractor = new WxApiResponseExtractor(this.wxApiInvoker.getMessageConverters());
         this.accessTokenManager = accessTokenManager;
-        this.conversionService = conversionService;
+//        this.conversionService = conversionService;
     }
 
     public Object execute(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
@@ -163,7 +160,7 @@ public class WxApiExecutor {
                     }
                     // 加入Assert
                     WxAppAssert.notNull(paramName, "请添加编译器的-parameter或者为参数添加注解名称");
-                    if (WxRequestUtils.isMutlipart(p.getParameterType())) {
+                    if (WxRequestResponseUtils.isMutlipart(p.getParameterType())) {
                         param = getFormResource(args[p.getParameterIndex()]);
                     } else {
                         param = args[p.getParameterIndex()];

@@ -1,5 +1,8 @@
 package com.example.myproject.module;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * FastBootWeixin 微信常量类
  *
@@ -32,4 +35,28 @@ public class Wx {
          */
         SYSTEM
     }
+
+
+    public static class Environment {
+
+        private static Environment instance = new Environment();
+
+        public static Environment getInstance() {
+            return instance;
+        }
+
+        private Environment() {
+        }
+
+        private String wxUserName;
+
+        public String getWxUserName() {
+            return wxUserName;
+        }
+
+        public void setWxUserName(String wxUserName) {
+            this.wxUserName = wxUserName;
+        }
+    }
+
 }

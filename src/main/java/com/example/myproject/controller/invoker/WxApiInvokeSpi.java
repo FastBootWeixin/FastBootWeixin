@@ -4,23 +4,24 @@ import com.example.myproject.controller.invoker.annotation.WxApiBody;
 import com.example.myproject.controller.invoker.annotation.WxApiForm;
 import com.example.myproject.controller.invoker.annotation.WxApiParam;
 import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
+import com.example.myproject.module.user.WxUser;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.File;
 
 /**
- * FastBootWeixin  WxApiInvokeService
+ * FastBootWeixin  WxApiInvokeSpi
  * 注意拦截调用异常，如果是token过期，重新获取token并重试
+ * 改个名儿，叫SPI高端一点
  *
  * @author Guangshan
- * @summary FastBootWeixin  WxApiInvokeService
+ * @summary FastBootWeixin  WxApiInvokeSpi
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/7/23 17:14
  */
-public interface WxApiInvokeService {
+public interface WxApiInvokeSpi {
 
     String getCallbackIp();
 
@@ -30,6 +31,8 @@ public interface WxApiInvokeService {
 
     WxMedia uploadMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
 
-    InputStreamResource getMedia(@WxApiParam("media_id") String mediaId);
+    WxMediaResource getMedia(@WxApiParam("media_id") String mediaId);
+
+    WxUser getUserInfo(@WxApiParam("openid") String userOpenId);
 
 }

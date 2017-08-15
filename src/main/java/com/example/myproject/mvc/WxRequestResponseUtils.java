@@ -3,6 +3,7 @@ package com.example.myproject.mvc;
 import com.example.myproject.module.WxRequest;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.server.ServerHttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.util.Random;
 /**
  * 绑定一些参数
  */
-public class WxRequestUtils {
+public class WxRequestResponseUtils {
 
     private static final String RAW_WX_MESSAGE_REQUEST_ATTRIBUTE = "RAW_WX_MESSAGE_REQUEST_ATTRIBUTE";
 

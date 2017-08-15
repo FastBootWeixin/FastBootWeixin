@@ -1,10 +1,8 @@
 package com.example.myproject.module.menu;
 
 import com.example.myproject.annotation.WxButton;
-import com.example.myproject.controller.invoker.WxApiInvokeService;
-import com.example.myproject.exception.WxAppException;
+import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,7 +15,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 
@@ -27,7 +24,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     @Autowired
-    private WxApiInvokeService wxApiInvokeService;
+    private WxApiInvokeSpi wxApiInvokeSpi;
 
     private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
@@ -93,11 +90,11 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        WxMenus oldWxMenu = wxApiInvokeService.getMenu();
+        WxMenus oldWxMenu = wxApiInvokeSpi.getMenu();
         WxMenu newWxMenu = this.getMenu();
 //            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
         if (isMenuChanged(oldWxMenu)) {
-            String result = wxApiInvokeService.createMenu(newWxMenu);
+            String result = wxApiInvokeSpi.createMenu(newWxMenu);
             logger.info("==============================================================");
             logger.info("            执行创建菜单操作       ");
             logger.info("            操作结果：" + result);

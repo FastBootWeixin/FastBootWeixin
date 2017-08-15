@@ -1,7 +1,7 @@
 package com.example.myproject.config.invoker;
 
 import com.example.myproject.common.WxBeanNames;
-import com.example.myproject.controller.invoker.WxApiInvokeService;
+import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.controller.invoker.WxInvokerProxyFactory;
 import com.example.myproject.controller.invoker.common.WxHttpInputMessageConverter;
 import com.example.myproject.controller.invoker.component.WxApiHttpRequestFactory;
@@ -9,23 +9,11 @@ import com.example.myproject.controller.invoker.executor.WxApiExecutor;
 import com.example.myproject.controller.invoker.executor.WxApiInvoker;
 import com.example.myproject.controller.invoker.handler.WxResponseErrorHandler;
 import com.example.myproject.support.AccessTokenManager;
+import com.example.myproject.support.DefaultWxUserProvider;
+import com.example.myproject.support.WxUserProvider;
 import com.example.myproject.util.WxApplicationContextUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.Header;
-import org.apache.http.client.HttpClient;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
-import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -35,28 +23,19 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableConfigurationProperties({WxVerifyProperties.class, WxInvokerProperties.class, WxUrlProperties.class})
@@ -105,14 +84,41 @@ public class WxInvokerConfiguration {
 		return new WxApiInvoker(builder.build());
 	}
 
+	/*
+		┌─────┐
+	|  wxInvokerProxyFactory defined in class path resource [com/example/myproject/config/invoker/WxInvokerConfiguration.class]
+	↑     ↓
+	|  wxApiExecutor defined in class path resource [com/example/myproject/config/invoker/WxInvokerConfiguration.class]
+	↑     ↓
+	|  org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration$EnableWebMvcConfiguration
+	↑     ↓
+	|  wxButtonArgumentResolver defined in class path resource [com/example/myproject/config/server/WxBuildinMvcConfiguration.class]
+	↑     ↓
+	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxApiInvokeSpi com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
+	└─────┘
+	 */
+	/**
+	 * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
+	 * 于是产生了循环依赖
+	 * @param accessTokenManager
+	 * @param conversionService
+	 * @return
+	 */
 	@Bean
-	public WxApiExecutor wxApiExecutor(AccessTokenManager accessTokenManager, ConversionService conversionService) {
-		return new WxApiExecutor(wxApiInvoker(), accessTokenManager, conversionService);
+	public WxApiExecutor wxApiExecutor(AccessTokenManager accessTokenManager) {
+		return new WxApiExecutor(wxApiInvoker(), accessTokenManager);
 	}
 
 	@Bean
-	public WxInvokerProxyFactory wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, WxApiExecutor wxApiExecutor) {
-		return new WxInvokerProxyFactory(WxApiInvokeService.class, wxUrlProperties, wxApiExecutor);
+	public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, WxApiExecutor wxApiExecutor) {
+		return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxUrlProperties, wxApiExecutor);
+	}
+
+
+	@Bean
+	@ConditionalOnMissingBean
+	public WxUserProvider userProvider(WxApiInvokeSpi wxApiInvokeSpi) {
+		return new DefaultWxUserProvider(wxApiInvokeSpi);
 	}
 
 	/**

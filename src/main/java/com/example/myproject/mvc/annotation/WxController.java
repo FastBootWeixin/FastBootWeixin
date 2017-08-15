@@ -1,6 +1,7 @@
 package com.example.myproject.mvc.annotation;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.example.myproject.annotation.WxResponseBody;
+import org.springframework.stereotype.Controller;
 
 import java.lang.annotation.*;
 
@@ -10,7 +11,8 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@RestController
+@Controller
+@WxResponseBody
 public @interface WxController {
 
     /**

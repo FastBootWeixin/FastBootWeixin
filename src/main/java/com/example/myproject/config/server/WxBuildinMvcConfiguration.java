@@ -2,6 +2,8 @@ package com.example.myproject.config.server;
 
 import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
+import com.example.myproject.controller.invoker.WxApiInvokeSpi;
+import com.example.myproject.mvc.advice.WxResponseBodyAdvice;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxArgumentResolver;
 import com.example.myproject.support.DefaultWxUserProvider;
@@ -21,7 +23,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Configuration
-public class WxBuildinControllerConfiguration {
+public class WxBuildinMvcConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -29,7 +31,7 @@ public class WxBuildinControllerConfiguration {
 
 	private final BeanFactory beanFactory;
 
-	public WxBuildinControllerConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory) {
+	public WxBuildinMvcConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory) {
 		this.wxVerifyProperties = wxVerifyProperties;
 		this.beanFactory = beanFactory;
 	}
@@ -46,21 +48,38 @@ public class WxBuildinControllerConfiguration {
 		return wxMappingHandlerMapping;
 	}
 
+//	@Bean
+//	@ConditionalOnMissingBean
+//	public WxUserProvider userProvider(WxApiInvokeSpi wxApiInvokeSpi) {
+//		return new DefaultWxUserProvider(wxApiInvokeSpi);
+//	}
+//	@Bean
+//	public WxUserProvider userProvider() {
+//		return new DefaultWxUserProvider();
+//	}
+
 	@Bean
-	@ConditionalOnMissingBean
-	public WxUserProvider userProvider() {
-		return new DefaultWxUserProvider();
+	public WxMvcConfigurer wxMvcConfigurer(WxUserProvider wxUserProvider) {
+		return new WxMvcConfigurer(wxUserProvider, beanFactory);
 	}
 
 	@Bean
-	public WxMvcConfigurer wxButtonArgumentResolver(WxUserProvider wxUserProvider) {
-		return new WxMvcConfigurer(wxUserProvider, beanFactory);
+	public WxResponseBodyAdvice wxResponseBodyAdvice() {
+		return new WxResponseBodyAdvice();
 	}
 
 	public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
 
 		private HandlerMethodArgumentResolver handlerMethodArgumentResolver;
 
+		/**
+		 * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
+		 * WxApiExecutor -> WxApiInvokeSpi -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
+		 * 于是产生了循环依赖
+		 * 临时处理先把ConversionService的依赖去掉，后期考虑优化依赖关系
+		 * @param wxUserProvider
+		 * @param beanFactory
+         */
 		public WxMvcConfigurer(WxUserProvider wxUserProvider, BeanFactory beanFactory) {
 			if (beanFactory instanceof ConfigurableBeanFactory) {
 				this.handlerMethodArgumentResolver = new WxArgumentResolver((ConfigurableBeanFactory) beanFactory);

@@ -16,11 +16,7 @@ import java.util.Arrays;
  */
 public interface WxUserProvider<T> {
 
-    T getUser(String fromUserName, String toUserName);
-
-    T getFromUser(String fromUserName);
-
-    T getToUser(String toUserName);
+    T getUser(String userName);
 
     /**
      * 可能会有bug，当这个类的实现类有多个泛型时\

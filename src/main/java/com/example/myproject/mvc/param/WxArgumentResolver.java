@@ -2,8 +2,9 @@ package com.example.myproject.mvc.param;
 
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.module.WxRequest;
-import com.example.myproject.mvc.WxRequestUtils;
+import com.example.myproject.mvc.WxRequestResponseUtils;
 import com.example.myproject.mvc.annotation.WxEventMapping;
+import com.example.myproject.mvc.annotation.WxMessageMapping;
 import com.example.myproject.support.WxUserProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ import java.util.Map;
  * resolution mode in which simple types (int, long, etc.) not annotated with
  * {@link RequestParam @RequestParam} are also treated as request parameters with
  * the parameter value derived from the argument value.
- *
+ * <p>
  * <p>If the method parameter type is {@link Map}, the value specified in the
  * annotation is used to resolve the request parameter String value. The value is
  * then converted to a {@link Map} via type conversion assuming a suitable
@@ -45,140 +46,149 @@ import java.util.Map;
  * Or if a request parameter value is not specified the
  * {@link RequestParamMapMethodArgumentResolver} is used instead to provide
  * access to all request parameters in the form of a map.
- *
+ * <p>
  * <p>A {@link WebDataBinder} is invoked to apply type conversion to resolved request
  * header values that don't yet match the method parameter type.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @author Brian Clozel
- * @since 3.1
  * @see RequestParamMapMethodArgumentResolver
  * implements UriComponentsContributor 这个东西可能在写ApiInvoker调用时有用
+ * @since 3.1
  */
 public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
-	// 是否有更好的方式？有空参看源码
-	@Autowired
-	private WxUserProvider wxUserProvider;
+    // 是否有更好的方式？有空参看源码
+    @Autowired
+    private WxUserProvider wxUserProvider;
 
-	// 从谁发的
-	public static final String WX_FROM_USER = "fromUser";
+    /**
+     * 从谁发的，也不要了，用一个处理
+     */
+    @Deprecated
+    public static final String WX_FROM_USER = "fromUser";
 
-	// 默认同上，另外一个参数名
-	public static final String WX_USER = "user";
+    // 默认同上，另外一个参数名
+    public static final String WX_USER = "wxUser";
 
-	// 发给谁的
-	public static final String WX_TO_USER = "toUser";
+    /**
+     * 发给谁的，不需要了，用ResponseBodyAdvice处理这个
+     */
+    @Deprecated
+    public static final String WX_TO_USER = "toUser";
 
-	public WxArgumentResolver(WxUserProvider wxUserProvider) {
-		super();
-		this.wxUserProvider = wxUserProvider;
-	}
+    public WxArgumentResolver(WxUserProvider wxUserProvider) {
+        super();
+        this.wxUserProvider = wxUserProvider;
+    }
 
-	/**
-	 * @param beanFactory a bean factory used for resolving  ${...} placeholder
-	 * and #{...} SpEL expressions in default values, or {@code null} if default
-	 * values are not expected to contain expressions
-	 */
-	public WxArgumentResolver(ConfigurableBeanFactory beanFactory) {
-		super(beanFactory);
-		this.wxUserProvider = beanFactory.getBean(WxUserProvider.class);
-	}
+    /**
+     * @param beanFactory a bean factory used for resolving  ${...} placeholder
+     *                    and #{...} SpEL expressions in default values, or {@code null} if default
+     *                    values are not expected to contain expressions
+     */
+    public WxArgumentResolver(ConfigurableBeanFactory beanFactory) {
+        super(beanFactory);
+        this.wxUserProvider = beanFactory.getBean(WxUserProvider.class);
+    }
 
 
-	/**
-	 * Supports the following:
-	 * <ul>
-	 * <li>@RequestParam-annotated method arguments.
-	 * This excludes {@link Map} params where the annotation doesn't
-	 * specify a value.	See {@link RequestParamMapMethodArgumentResolver}
-	 * instead for such params.
-	 * <li>Arguments of type {@link MultipartFile}
-	 * unless annotated with @{@link RequestPart}.
-	 * <li>Arguments of type {@code javax.servlet.http.Part}
-	 * unless annotated with @{@link RequestPart}.
-	 * <li>In default resolution mode, simple type arguments
-	 * even if not with @{@link RequestParam}.
-	 * </ul>
-	 */
-	@Override
-	public boolean supportsParameter(MethodParameter parameter) {
-		// 只有method上有注解WxButton时才支持解析
-		if (!AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxButton.class) && !AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxEventMapping.class)) {
-			return false;
-		}
-		return true;
-	}
+    /**
+     * Supports the following:
+     * <ul>
+     * <li>@RequestParam-annotated method arguments.
+     * This excludes {@link Map} params where the annotation doesn't
+     * specify a value.	See {@link RequestParamMapMethodArgumentResolver}
+     * instead for such params.
+     * <li>Arguments of type {@link MultipartFile}
+     * unless annotated with @{@link RequestPart}.
+     * <li>Arguments of type {@code javax.servlet.http.Part}
+     * unless annotated with @{@link RequestPart}.
+     * <li>In default resolution mode, simple type arguments
+     * even if not with @{@link RequestParam}.
+     * </ul>
+     */
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        // 只有method上有注解WxButton时才支持解析
+        if (!AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxButton.class) &&
+                !AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxEventMapping.class) &&
+                !AnnotatedElementUtils.hasAnnotation(parameter.getMethod(), WxMessageMapping.class)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
-		return new RequestParamNamedValueInfo();
-	}
+    @Override
+    protected NamedValueInfo createNamedValueInfo(MethodParameter parameter) {
+        return new RequestParamNamedValueInfo();
+    }
 
-	@Override
-	protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
-		HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-		WxRequest wxRequest = WxRequestUtils.getWxRequestFromRequestAttribute(servletRequest);
-		// 类型匹配，直接返回
-		if (parameter.getParameterType() == WxRequest.class) {
-			return wxRequest;
-		}
-		// 如果可以获取用户则返回用户
-		Object user = getUser(parameter, wxRequest);
-		if (user != null) {
-			return user;
-		}
-		return wxRequest.getParameterValue(name);
-	}
+    @Override
+    protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
+        HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
+        WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(servletRequest);
+        // 类型匹配，直接返回
+        if (parameter.getParameterType() == WxRequest.class) {
+            return wxRequest;
+        }
+        // 如果可以获取用户则返回用户
+        Object user = getUser(parameter, wxRequest);
+        if (user != null) {
+            return user;
+        }
+        return wxRequest.getParameterValue(name);
+    }
 
-	private Object getUser(MethodParameter parameter, WxRequest wxRequest) {
-		// 类型不匹配直接返回
-		if (!wxUserProvider.isMatch(parameter.getParameterType())) {
-			return null;
-		}
-		if (WX_TO_USER.equals(parameter.getParameterName())) {
-			// 尝试转换toUser
-			return wxUserProvider.getToUser(wxRequest.getToUserName());
-		} else if (WX_FROM_USER.equals(parameter.getParameterName())) {
-			// 尝试转换fromUser
-			return wxUserProvider.getFromUser(wxRequest.getFromUserName());
-		} else if (WX_USER.equals(parameter.getParameterName()) || !BeanUtils.isSimpleProperty(parameter.getParameterType())) {
-			// 两个都转换失败时，判断是否是简单属性，如果不是，则尝试转换为用户
-			// 因为此时无法得知是要获取to还是from，所以取对于用户来说更需要的from
-			return wxUserProvider.getUser(wxRequest.getFromUserName(), wxRequest.getToUserName());
-		}
-		return null;
-	}
+    private Object getUser(MethodParameter parameter, WxRequest wxRequest) {
+        // 类型不匹配直接返回
+        if (!wxUserProvider.isMatch(parameter.getParameterType())) {
+            return null;
+        } else if (WX_USER.equals(parameter.getParameterName()) || !BeanUtils.isSimpleProperty(parameter.getParameterType())) {
+            // 两个都转换失败时，判断是否是简单属性，如果不是，则尝试转换为用户
+            // 因为此时无法得知是要获取to还是from，所以取对于用户来说更需要的from
+            return wxUserProvider.getUser(wxRequest.getFromUserName());
+        }
+        return null;
+    }
 
-	@Override
-	protected void handleMissingValue(String name, MethodParameter parameter, NativeWebRequest request)
-			throws Exception {
+    /*
+        if (WX_TO_USER.equals(parameter.getParameterName())) {
+            // 尝试转换toUser
+            return wxUserProvider.getToUser(wxRequest.getToUserName());
+        } else if (WX_FROM_USER.equals(parameter.getParameterName())) {
+            // 尝试转换fromUser
+            return wxUserProvider.getFromUser(wxRequest.getFromUserName());
+        }
+     */
 
-		HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-		if (MultipartResolutionDelegate.isMultipartArgument(parameter)) {
-			if (!MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {
-				throw new MultipartException("Current request is not a multipart request");
-			}
-			else {
-				throw new MissingServletRequestPartException(name);
-			}
-		}
-		else {
-			throw new MissingServletRequestParameterException(name,
-					parameter.getNestedParameterType().getSimpleName());
-		}
-	}
+    @Override
+    protected void handleMissingValue(String name, MethodParameter parameter, NativeWebRequest request)
+            throws Exception {
 
-	private static class RequestParamNamedValueInfo extends NamedValueInfo {
+        HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
+        if (MultipartResolutionDelegate.isMultipartArgument(parameter)) {
+            if (!MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {
+                throw new MultipartException("Current request is not a multipart request");
+            } else {
+                throw new MissingServletRequestPartException(name);
+            }
+        } else {
+            throw new MissingServletRequestParameterException(name,
+                    parameter.getNestedParameterType().getSimpleName());
+        }
+    }
 
-		public RequestParamNamedValueInfo() {
-			super("", false, ValueConstants.DEFAULT_NONE);
-		}
+    private static class RequestParamNamedValueInfo extends NamedValueInfo {
 
-		public RequestParamNamedValueInfo(RequestParam annotation) {
-			super(annotation.name(), annotation.required(), annotation.defaultValue());
-		}
-	}
+        public RequestParamNamedValueInfo() {
+            super("", false, ValueConstants.DEFAULT_NONE);
+        }
+
+        public RequestParamNamedValueInfo(RequestParam annotation) {
+            super(annotation.name(), annotation.required(), annotation.defaultValue());
+        }
+    }
 
 }
