@@ -205,7 +205,7 @@ public class WxMediaResource extends AbstractResource {
 
     @Override
     public Resource createRelative(String mediaId) throws IOException {
-        return WxApplicationContextUtils.getBean(WxApiInvokeSpi.class).getMedia(mediaId);
+        return WxApplicationContextUtils.getBean(WxApiInvokeSpi.class).getTempMedia(mediaId);
     }
 
     /**

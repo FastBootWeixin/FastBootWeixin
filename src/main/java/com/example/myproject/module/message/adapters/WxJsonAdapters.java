@@ -1,7 +1,6 @@
 package com.example.myproject.module.message.adapters;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -36,7 +35,7 @@ public class WxJsonAdapters {
         }
     }
 
-    public static class WxDateConverter implements Converter<Integer, Date> {
+    public static class WxIntDateConverter implements Converter<Integer, Date> {
 
         @Override
         public Date convert(Integer value) {
@@ -57,6 +56,30 @@ public class WxJsonAdapters {
         @Override
         public JavaType getOutputType(TypeFactory typeFactory) {
             return typeFactory.constructType(Date.class);
+        }
+    }
+
+    public static class WxBooleanIntConverter implements Converter<Boolean, Integer> {
+
+        @Override
+        public Integer convert(Boolean value) {
+            return value == null ? 0 : value ? 1 : 0;
+        }
+
+        /**
+         * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
+         * Deserializer后会把值送给convert
+         * @param typeFactory
+         * @return
+         */
+        @Override
+        public JavaType getInputType(TypeFactory typeFactory) {
+            return typeFactory.constructType(Boolean.class);
+        }
+
+        @Override
+        public JavaType getOutputType(TypeFactory typeFactory) {
+            return typeFactory.constructType(Integer.class);
         }
     }
 

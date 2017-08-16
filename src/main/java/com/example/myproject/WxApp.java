@@ -5,7 +5,7 @@ import com.example.myproject.annotation.WxButton;
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
-import com.example.myproject.module.media.WxMaterial;
+import com.example.myproject.module.media.WxMedia;
 import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.module.message.WxMessage;
@@ -42,14 +42,14 @@ public class WxApp {
 
     @RequestMapping("test1")
     @ResponseBody
-    public WxMaterial test1() {
-        return wxApiInvokeSpi.uploadMedia(WxMaterial.Type.IMAGE, new File("E:/test.png"));
+    public WxMedia.TempMediaResult test1() {
+        return wxApiInvokeSpi.uploadTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
     }
 
     @RequestMapping("test2")
     @ResponseBody
     public WxMediaResource test2(String mediaId) {
-        return wxApiInvokeSpi.getMedia(mediaId);
+        return wxApiInvokeSpi.getTempMedia(mediaId);
     }
 
     @RequestMapping("menu")

@@ -77,7 +77,7 @@ public class WxUser {
     /**
      * 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
      */
-    @JsonDeserialize(converter = WxJsonAdapters.WxDateConverter.class)
+    @JsonDeserialize(converter = WxJsonAdapters.WxIntDateConverter.class)
     @JsonProperty("subscribe_time")
     private Date subscribeTime;
 
