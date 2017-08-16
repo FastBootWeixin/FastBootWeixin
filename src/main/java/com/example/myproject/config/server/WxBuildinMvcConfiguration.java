@@ -2,22 +2,19 @@ package com.example.myproject.config.server;
 
 import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.WxVerifyController;
-import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.controller.invoker.common.WxMediaResourceMessageConverter;
-import com.example.myproject.mvc.advice.WxResponseBodyAdvice;
+import com.example.myproject.mvc.advice.WxMediaResponseBodyAdvice;
+import com.example.myproject.mvc.advice.WxMessageResponseBodyAdvice;
 import com.example.myproject.mvc.annotation.WxMappingHandlerMapping;
 import com.example.myproject.mvc.param.WxArgumentResolver;
-import com.example.myproject.support.DefaultWxUserProvider;
 import com.example.myproject.support.WxUserProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -70,8 +67,13 @@ public class WxBuildinMvcConfiguration {
     }
 
     @Bean
-    public WxResponseBodyAdvice wxResponseBodyAdvice() {
-        return new WxResponseBodyAdvice();
+    public WxMessageResponseBodyAdvice wxMessageResponseBodyAdvice() {
+        return new WxMessageResponseBodyAdvice();
+    }
+
+    @Bean
+    public WxMediaResponseBodyAdvice wxMediaResponseBodyAdvice() {
+        return new WxMediaResponseBodyAdvice();
     }
 
     public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {

@@ -1,11 +1,13 @@
 package com.example.myproject.controller.invoker.common;
 
+import com.example.myproject.exception.WxApiException;
 import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.mvc.WxRequestResponseUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -44,20 +46,22 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 			throws IOException, HttpMessageNotReadableException {
 
 		WxMediaResource wxMediaResource = new WxMediaResource(inputMessage);
+		if (wxMediaResource.isUrlMedia() && !clazz.isAssignableFrom(WxMediaResource.class)) {
+			throw new WxApiException("不支持的返回类型，接口返回了url");
+		}
 		if (InputStreamResource.class == clazz) {
 			return new InputStreamResource(wxMediaResource.getInputStream());
+		} else if (clazz.isAssignableFrom(WxMediaResource.class)) {
+			return wxMediaResource;
 		} else if (clazz.isAssignableFrom(ByteArrayResource.class)) {
 			return new ByteArrayResource(wxMediaResource.getBody());
-		}
-		else if (clazz.isAssignableFrom(WxMediaResource.class)) {
-			return wxMediaResource;
 		} else if (clazz.isAssignableFrom(FileSystemResource.class)) {
 			return new FileSystemResource(wxMediaResource.getFile());
 		}
 //		else if (clazz.isAssignableFrom(File.class)) {
 //			return wxMediaResource.getFile();
 //		}
-		throw new IllegalStateException("Unsupported resource class: " + clazz);
+		throw new WxApiException("不支持的返回类型");
 	}
 
 	@Override
@@ -66,6 +70,15 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 			return ((WxMediaResource) resource).getContentType();
 		} else {
 			return super.getDefaultContentType(resource);
+		}
+	}
+
+	protected void addDefaultHeaders(HttpHeaders headers, Resource t, MediaType contentType) throws IOException {
+		// 忽略被选择出来的类型，因为如果有选择出来的类型，会影响getDefaultContentType的获取
+		super.addDefaultHeaders(headers, t, null);
+		// 如果super真的拿不到contentType时，取传入的contentType
+		if (headers.getContentType() == null) {
+			headers.setContentType(contentType);
 		}
 	}
 

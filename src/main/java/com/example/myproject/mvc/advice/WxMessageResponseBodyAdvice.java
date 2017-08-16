@@ -28,7 +28,7 @@ import java.lang.invoke.MethodHandles;
  * @since 2017年8月15日
  */
 @ControllerAdvice
-public class WxResponseBodyAdvice implements ResponseBodyAdvice<WxMessage>, Ordered {
+public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage>, Ordered {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 

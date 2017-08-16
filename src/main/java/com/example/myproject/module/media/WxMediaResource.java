@@ -54,6 +54,8 @@ public class WxMediaResource extends AbstractResource {
 
     private File file;
 
+    private boolean isUrlMedia;
+
     /**
      * 是否真的需要这么多成员变量？
      * @param httpInputMessage
@@ -65,11 +67,35 @@ public class WxMediaResource extends AbstractResource {
         } else {
             this.body = StreamUtils.copyToByteArray(httpInputMessage.getBody());
         }
+        // 判断是否是json
+        if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION) || body[0] == '{') {
+            this.isUrlMedia = true;
+            this.url = extractURL(body);
+        }
         this.httpHeaders = httpInputMessage.getHeaders();
         this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
         this.filename = extractFilename(this.description);
         this.contentType = httpHeaders.getContentType();
         this.contentLength = httpHeaders.getContentLength();
+    }
+
+    /**
+     * 如果返回的是素材地址
+     * @param messageBody
+     */
+    public WxMediaResource(String messageBody) {
+
+    }
+
+    public URL extractURL(byte[] body) {
+        String json = new String(body);
+        int start = json.indexOf(":\"") + 2;
+        int end = json.indexOf("\"", start);
+        try {
+            return new URL(json.substring(start, end));
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 
     /**
@@ -201,6 +227,10 @@ public class WxMediaResource extends AbstractResource {
 
     public HttpHeaders getHttpHeaders() {
         return httpHeaders;
+    }
+
+    public boolean isUrlMedia() {
+        return isUrlMedia;
     }
 
     public String getMediaId() {

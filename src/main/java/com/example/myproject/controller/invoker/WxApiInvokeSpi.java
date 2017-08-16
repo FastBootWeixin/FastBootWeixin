@@ -3,11 +3,10 @@ package com.example.myproject.controller.invoker;
 import com.example.myproject.controller.invoker.annotation.WxApiBody;
 import com.example.myproject.controller.invoker.annotation.WxApiForm;
 import com.example.myproject.controller.invoker.annotation.WxApiParam;
-import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.media.WxMaterial;
 import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.module.user.WxUser;
-import org.springframework.core.io.InputStreamResource;
 
 import java.io.File;
 
@@ -29,10 +28,38 @@ public interface WxApiInvokeSpi {
 
     String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
 
-    WxMedia uploadMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
+    WxMaterial.MediaResult uploadMedia(@WxApiParam("type") WxMaterial.Type type, @WxApiForm("media") File media);
 
     WxMediaResource getMedia(@WxApiParam("media_id") String mediaId);
 
     WxUser getUserInfo(@WxApiParam("openid") String userOpenId);
+
+    WxMaterial.ImageResult uploadImg(@WxApiForm("media") File media);
+
+    WxMaterial.NewsResult addNews(@WxApiBody WxMaterial.News news);
+
+    /**
+     * 值返回一个json结果，不管了，如果有错的话会抛出异常的
+     * @param news
+     */
+    void updateNews(@WxApiBody WxMaterial.NewsForUpdate news);
+
+    /**
+     * 视频不要传description
+     * @param type
+     * @param media
+     * @param description
+     * @return
+     */
+    WxMaterial.MaterialResult addMaterial(@WxApiParam("type") WxMaterial.Type type, @WxApiForm("media") File media, @WxApiForm("description") WxMaterial.Video description);
+
+    getMaterial(@WxApiBody WxMaterial mediaId);
+
+    
+    getVideoMaterial();
+
+    delMaterial();
+    getMaterialCount();
+    batchGetMaterial();
 
 }

@@ -82,12 +82,12 @@ public class WxApiExecutor {
         Object body = null;
         if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.JSON) {
             httpHeaders = buildJsonHeaders();
-            body = getStringBody(wxApiMethodInfo, args);
+//            body = getStringBody(wxApiMethodInfo, args);
+            body = getObjectBody(wxApiMethodInfo, args);
         } else if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.XML) {
             httpHeaders = buildXmlHeaders();
             // 暂时不支持xml转换。。。
             body = getObjectBody(wxApiMethodInfo, args);
-//            body = getStringBody(wxApiMethodInfo, args);
         } else if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.FORM) {
             body = getFormBody(wxApiMethodInfo, args);
         }
@@ -147,6 +147,10 @@ public class WxApiExecutor {
         wxApiMethodInfo.getMethodParameters().stream()
                 .filter(p -> !BeanUtils.isSimpleValueType(p.getParameterType()) || p.hasParameterAnnotation(WxApiForm.class) || p.hasParameterAnnotation(WxApiBody.class))
                 .forEach(p -> {
+                    // 为空则直接返回不加这个参数
+                    if (args[p.getParameterIndex()] == null) {
+                        return;
+                    }
                     WxApiForm wxApiForm = p.getParameterAnnotation(WxApiForm.class);
                     String paramName;
                     Object param;

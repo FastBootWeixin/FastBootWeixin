@@ -40,10 +40,12 @@ public class WxApiResponseExtractor {
         if (returnType == null || Void.class == returnType || responseEntity.getBody() == null) {
             return null;
         }
-        // 先不管文件
-//        if (WxRequestResponseUtils.isMutlipart(returnType)) {
-//            return null;
-//        }
+        /* 先不管文件
+        if (WxRequestResponseUtils.isMutlipart(returnType)) {
+            return null;
+        }
+        不是不管文件，而是可以被messageConverter处理了
+        */
         WxApiMessageConverterExtractor<T> delegate = delegates.get(returnType);
         if (delegate == null) {
             delegate = new WxApiMessageConverterExtractor(returnType, converters);

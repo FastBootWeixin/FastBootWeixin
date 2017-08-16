@@ -92,20 +92,20 @@ public class WxResponseErrorHandler extends DefaultResponseErrorHandler {
             body.mark(WX_API_ERROR_CODE_END);
             byte[] bytes = new byte[WX_API_ERROR_CODE_END];
             body.read(bytes);
+            body.reset();
             if (WxApiResultException.hasException(new String(bytes))) {
                 return true;
             } else {
-                body.reset();
                 return false;
             }
         } else if (body instanceof PushbackInputStream) {
             PushbackInputStream pushbackInputStream = (PushbackInputStream) body;
             byte[] bytes = new byte[WX_API_ERROR_CODE_END];
             pushbackInputStream.read(bytes);
+            pushbackInputStream.unread(bytes);
             if (WxApiResultException.hasException(new String(bytes))) {
                 return true;
             } else {
-                pushbackInputStream.unread(bytes);
                 return false;
             }
         }
