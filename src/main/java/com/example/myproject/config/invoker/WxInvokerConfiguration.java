@@ -22,7 +22,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -46,16 +45,12 @@ public class WxInvokerConfiguration {
 
 	private final WxInvokerProperties wxInvokerProperties;
 
-	private final WxUrlProperties wxUrlProperties;
-
 	private final ObjectProvider<HttpMessageConverters> messageConverters;
 
 	public WxInvokerConfiguration(
 			WxInvokerProperties wxInvokerProperties,
-			WxUrlProperties wxUrlProperties,
 			ObjectProvider<HttpMessageConverters> messageConverters) {
 		this.wxInvokerProperties = wxInvokerProperties;
-		this.wxUrlProperties = wxUrlProperties;
 		this.messageConverters = messageConverters;
 	}
 
@@ -101,7 +96,6 @@ public class WxInvokerConfiguration {
 	 * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
 	 * 于是产生了循环依赖
 	 * @param accessTokenManager
-	 * @param conversionService
 	 * @return
 	 */
 	@Bean

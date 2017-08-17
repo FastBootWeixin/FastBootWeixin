@@ -67,6 +67,7 @@ public class WxMediaResource extends AbstractResource {
         } else {
             this.body = StreamUtils.copyToByteArray(httpInputMessage.getBody());
         }
+        this.httpHeaders = httpInputMessage.getHeaders();
         // 判断是否是json
         if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION) || body[0] == '{') {
             this.isUrlMedia = true;
