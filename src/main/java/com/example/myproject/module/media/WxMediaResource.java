@@ -186,6 +186,7 @@ public class WxMediaResource extends AbstractResource {
     @Override
     public synchronized File getFile() throws IOException {
         if (this.file != null) {
+            // 拿到临时文件令
             String pathToUse = StringUtils.applyRelativePath(Wx.Environment.getInstance().getDefaultMediaPath(), this.filename);
             this.file = new File(pathToUse);
             FileCopyUtils.copy(this.getBody(), file);

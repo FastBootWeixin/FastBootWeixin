@@ -6,6 +6,7 @@ import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
 import com.example.myproject.module.media.WxMedia;
+import com.example.myproject.module.media.WxMediaManager;
 import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
 import com.example.myproject.module.message.WxMessage;
@@ -29,6 +30,9 @@ public class WxApp {
     @Autowired
     WxApiInvokeSpi wxApiInvokeSpi;
 
+    @Autowired
+    WxMediaManager wxMediaManager;
+
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -43,6 +47,7 @@ public class WxApp {
     @RequestMapping("test1")
     @ResponseBody
     public WxMedia.TempMediaResult test1() {
+        wxMediaManager.uploadTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
         return wxApiInvokeSpi.uploadTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
     }
 

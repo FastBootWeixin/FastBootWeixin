@@ -48,7 +48,8 @@ public class Wx {
         /**
          * 默认存储路径，在用户目录下的weixin目录
          */
-        private String defaultMediaPath = "~/weixin/media/";
+        private String defaultMediaPath = System.getProperty("java.io.tmpdir");
+        // "~/weixin/media/";
 
         public String getDefaultMediaPath() {
             return defaultMediaPath;

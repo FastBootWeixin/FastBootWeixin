@@ -1,6 +1,7 @@
 package com.example.myproject.controller.invoker.common;
 
-import com.google.common.primitives.UnsignedBytes;
+
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +14,6 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * copy from google
@@ -100,9 +99,10 @@ public final class ReaderInputStream extends InputStream {
      * @throws IllegalArgumentException if bufferSize is non-positive
      */
     ReaderInputStream(Reader reader, CharsetEncoder encoder, int bufferSize) {
-        this.reader = checkNotNull(reader);
-        this.encoder = checkNotNull(encoder);
-        checkArgument(bufferSize > 0, "bufferSize must be positive: %s", bufferSize);
+        Assert.notNull(reader, "不能为空");
+        Assert.notNull(encoder, "不能为空");
+        this.reader = reader;
+        this.encoder = encoder;
         encoder.reset();
 
         charBuffer = CharBuffer.allocate(bufferSize);
@@ -118,7 +118,7 @@ public final class ReaderInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        return (read(singleByte) == 1) ? UnsignedBytes.toInt(singleByte[0]) : -1;
+        return (read(singleByte) == 1) ? singleByte[0] & 0xFF : -1;
     }
 
     // TODO(chrisn): Consider trying to encode/flush directly to the argument byte
@@ -126,7 +126,6 @@ public final class ReaderInputStream extends InputStream {
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         // Obey InputStream contract.
-        checkPositionIndexes(off, off + len, b.length);
         if (len == 0) {
             return 0;
         }
