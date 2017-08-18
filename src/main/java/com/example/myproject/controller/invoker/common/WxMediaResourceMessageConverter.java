@@ -14,7 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.*;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import java.io.*;
 
 /**
@@ -31,7 +34,9 @@ import java.io.*;
  * @author Kazuki Shimizu
  * @since 3.0.2
  */
-public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverter {
+public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverter implements ServletContextAware {
+
+	private ServletContext servletContext;
 
 	/*
 	本想支持所有类型的，但是想想没有必要，也不好处理，干脆值覆盖父类的功能
@@ -40,7 +45,6 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 	protected boolean supports(Class<?> clazz) {
 		return WxRequestResponseUtils.isMutlipart(clazz);
 	}*/
-
 	@Override
 	protected Resource readInternal(Class<? extends Resource> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException {
@@ -70,6 +74,12 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 		if (resource instanceof WxMediaResource) {
 			contentType = ((WxMediaResource) resource).getContentType();
 		}
+		if (contentType == null && servletContext != null && resource.getFilename() != null) {
+			String mimeType = servletContext.getMimeType(resource.getFilename());
+			if (StringUtils.hasText(mimeType)) {
+				contentType = MediaType.parseMediaType(mimeType);
+			}
+		}
 		if (contentType != null) {
 			return contentType;
 		}
@@ -85,4 +95,8 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 		}
 	}
 
+	@Override
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
+	}
 }

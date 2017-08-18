@@ -86,6 +86,8 @@ public interface WxApiInvokeSpi {
 
     WxMedia.Count getMediaCount();
 
+    void clearQuota(@WxApiBody String appid);
+
 //    batchGetMedia();
 
 }

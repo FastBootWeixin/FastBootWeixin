@@ -60,7 +60,7 @@ public class WxMedia {
     /**
      * 标记是result
      */
-    public interface Result extends Serializable {
+    public interface Result {
 
         /**
          * 获取关键信息
@@ -149,7 +149,7 @@ public class WxMedia {
 
     @Data
     @NoArgsConstructor
-    public static class Video {
+    public static class Video implements Serializable {
 
         @JsonProperty("title")
         private String title;

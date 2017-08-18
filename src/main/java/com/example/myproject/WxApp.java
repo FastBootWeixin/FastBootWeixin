@@ -2,6 +2,7 @@ package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
 import com.example.myproject.annotation.WxButton;
+import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.event.WxEvent;
@@ -15,6 +16,7 @@ import com.example.myproject.mvc.annotation.WxController;
 import com.example.myproject.mvc.annotation.WxEventMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -33,49 +35,51 @@ public class WxApp {
     @Autowired
     WxMediaManager wxMediaManager;
 
+    @Autowired
+    WxVerifyProperties wxVerifyProperties;
+
     //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
     }
 
+    @RequestMapping("clear")
+    public String clear() {
+        wxApiInvokeSpi.clearQuota("{\"appid\":\"" + wxVerifyProperties.getAppid() + "\"}");
+        return "ok";
+    }
+
     @RequestMapping("test")
-    @ResponseBody
     public String test() {
         return wxApiInvokeSpi.getCallbackIp();
     }
 
     @RequestMapping("test1")
-    @ResponseBody
     public String test1() {
-        return wxMediaManager.storeTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
+        return wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
     }
 
     @RequestMapping("test2")
-    @ResponseBody
-    public WxMediaResource test2(String mediaId) {
-        return wxApiInvokeSpi.getTempMedia(mediaId);
+    public Resource test2(String mediaId) {
+        return wxMediaManager.getTempMedia(mediaId);
     }
 
     @RequestMapping("test3")
-    @ResponseBody
     public String test3() {
-        return wxMediaManager.storeMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
+        return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
     }
 
     @RequestMapping("test4")
-    @ResponseBody
-    public WxMediaResource test4(String mediaId) {
-        return wxApiInvokeSpi.getMedia(WxMedia.of(mediaId));
+    public Resource test4(String mediaId) {
+        return wxMediaManager.getMedia(mediaId);
     }
 
     @RequestMapping("test5")
-    @ResponseBody
     public WxMedia.Count test5(String mediaId) {
         return wxApiInvokeSpi.getMediaCount();
     }
 
     @RequestMapping("menu")
-    @ResponseBody
     public WxMenuManager.WxMenus menu() {
         return wxApiInvokeSpi.getMenu();
     }

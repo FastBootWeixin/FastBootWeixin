@@ -2,9 +2,11 @@ package com.example.myproject.module.media;
 
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.controller.invoker.common.WxBufferingInputMessageWrapper;
+import com.example.myproject.exception.WxAppException;
 import com.example.myproject.module.Wx;
 import com.example.myproject.util.WxApplicationContextUtils;
 import org.springframework.core.io.AbstractResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -56,12 +58,15 @@ public class WxMediaResource extends AbstractResource {
 
     private boolean isUrlMedia;
 
+    private boolean isFileResource;
+
     /**
      * 是否真的需要这么多成员变量？
      * @param httpInputMessage
      * @throws IOException
      */
     public WxMediaResource(HttpInputMessage httpInputMessage) throws IOException {
+        this.isFileResource = false;
         if (httpInputMessage instanceof WxBufferingInputMessageWrapper) {
             this.body = ((WxBufferingInputMessageWrapper) httpInputMessage).getRawBody();
         } else {
@@ -72,22 +77,33 @@ public class WxMediaResource extends AbstractResource {
         if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION) || body[0] == '{') {
             this.isUrlMedia = true;
             this.url = extractURL(body);
+        } else {
+            this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
+            this.filename = extractFilename(this.description);
+            this.contentType = httpHeaders.getContentType();
+            this.contentLength = httpHeaders.getContentLength();
         }
-        this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
-        this.filename = extractFilename(this.description);
-        this.contentType = httpHeaders.getContentType();
-        this.contentLength = httpHeaders.getContentLength();
     }
 
     /**
-     * 如果返回的是素材地址
-     * @param messageBody
+     * 覆盖FileSystemResource，用于兼容mediaManager中从本地文件获取的资源
+     * 是否真的需要这么多成员变量？
+     * @param file
+     * @throws IOException
      */
-    public WxMediaResource(String messageBody) {
-
+    public WxMediaResource(File file) {
+        this.isFileResource = true;
+        this.file = file;
+        this.httpHeaders = new HttpHeaders();
+        // 判断是否是json
+        this.description = "file [" + this.file.getAbsolutePath() + "]";
+        this.filename = file.getName();
+        // 这里可以考虑使用文件扩展名获取对应的contentType，但是我不太想管，先不管吧
+        // 反正获取contentType的地方做过空判断，如果为空的话会走默认的根据文件扩展名获取
+        this.contentLength = file.length();
     }
 
-    public URL extractURL(byte[] body) {
+    private URL extractURL(byte[] body) {
         String json = new String(body);
         int start = json.indexOf(":\"") + 2;
         int end = json.indexOf("\"", start);
@@ -170,11 +186,17 @@ public class WxMediaResource extends AbstractResource {
 
     @Override
     public InputStream getInputStream() throws IOException {
+        if (isFileResource) {
+            return new FileInputStream(this.file);
+        }
         return new ByteArrayInputStream(this.body);
     }
 
     @Override
     public URL getURL() throws IOException {
+        if (this.isFileResource) {
+            return this.file.toURI().toURL();
+        }
         return this.url;
     }
 
@@ -184,10 +206,21 @@ public class WxMediaResource extends AbstractResource {
      */
     @Override
     public synchronized File getFile() throws IOException {
-        if (this.file != null) {
-            // 拿到临时文件令
-            String pathToUse = StringUtils.applyRelativePath(Wx.Environment.getInstance().getDefaultMediaPath(), this.filename);
+        if (isFileResource) {
+            return this.file;
+        }
+        return this.getFile(Wx.Environment.getInstance().getDefaultMediaPath());
+    }
+
+    public synchronized File getFile(String path) throws IOException {
+        if (this.file == null) {
+            // 拿到临时文件路径
+            String pathToUse = StringUtils.applyRelativePath(path, this.filename);
             this.file = new File(pathToUse);
+            if (!this.file.exists()) {
+                this.file.getParentFile().mkdirs();
+                this.file.createNewFile();
+            }
             FileCopyUtils.copy(this.getBody(), file);
         }
         return this.file;
@@ -206,6 +239,10 @@ public class WxMediaResource extends AbstractResource {
 
     @Override
     public Resource createRelative(String mediaId) throws IOException {
+        if (isFileResource) {
+            String pathToUse = StringUtils.applyRelativePath(StringUtils.cleanPath(file.getPath()), mediaId);
+            return new WxMediaResource(new File(pathToUse));
+        }
         return WxApplicationContextUtils.getBean(WxApiInvokeSpi.class).getTempMedia(mediaId);
     }
 
@@ -218,7 +255,18 @@ public class WxMediaResource extends AbstractResource {
         return this.filename;
     }
 
+    /**
+     * body只在
+     * @return
+     */
     public byte[] getBody() {
+        if (this.body == null && this.file != null) {
+            try (InputStream is = new BufferedInputStream(new FileInputStream(file))) {
+                this.body = StreamUtils.copyToByteArray(is);
+            } catch (Exception e) {
+                throw new WxAppException(e);
+            }
+        }
         return body;
     }
 

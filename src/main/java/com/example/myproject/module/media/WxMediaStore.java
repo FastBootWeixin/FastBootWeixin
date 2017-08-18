@@ -6,7 +6,7 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
-import org.springframework.util.StreamUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -34,7 +34,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 用于保存图片
      */
-    private HTreeMap<String, String> imageDb;
+    private HTreeMap<String, String> urlDb;
 
     private String defaultFilePath = "~/weixin/media/file/";
 
@@ -72,6 +72,10 @@ public class WxMediaStore implements InitializingBean {
      * @return
      */
     public File storeTempMediaToFile(String mediaId, Resource resource) throws IOException {
+        WxMediaResource wxMediaResource = (WxMediaResource) resource;
+        if (wxMediaResource.isUrlMedia()) {
+            return null;
+        }
         String fileName = resource.getFilename();
         if (fileName == null) {
             fileName = mediaId;
@@ -100,7 +104,6 @@ public class WxMediaStore implements InitializingBean {
                 .mediaType(type)
                 .mediaId(result.getMediaId())
                 .lastModifiedTime(new Date(file.lastModified()))
-                .result(result)
                 .build();
         tempMediaFileDb.put(file.getAbsolutePath(), storeEntity);
         if (result.getMediaId() != null) {
@@ -138,15 +141,24 @@ public class WxMediaStore implements InitializingBean {
                 .mediaId(result.getMediaId())
                 .lastModifiedTime(new Date(file.lastModified()))
                 .mediaUrl(result.getUrl())
-                .result(result)
                 .build();
         mediaFileDb.put(file.getAbsolutePath(), storeEntity);
         if (result.getMediaId() != null) {
             mediaIdDb.put(result.getMediaId(), file.getAbsolutePath());
         }
         if (result.getUrl() != null) {
-            imageDb.put(result.getUrl(), file.getAbsolutePath());
-            imageDb.put(file.getAbsolutePath(), result.getUrl());
+            // 如果有url，还要额外保存两个东西
+            // 1、filePath对应的url。2、mediaId对应的url
+            // 至于url与mediaId的映射关系和url与filePath的映射关系，暂时没有发现应用场景
+            // 我在想是不是不用保存？其实保存三对儿关系即可？这里先直接保存吧。。。毕竟我想区分image的映射
+            urlDb.put(file.getAbsolutePath(), result.getUrl());
+            urlDb.put(result.getUrl(), file.getAbsolutePath());
+            /* if (result.getMediaId() != null) {
+                // 顺着就能找到所有的了
+                // update，保持与图片那里一致，只保存两个映射关系
+                urlDb.put(result.getUrl(), result.getMediaId());
+                urlDb.put(result.getMediaId(), file.getAbsolutePath());
+            } */
         }
         // 每执行一个写操作，都要commit，否则强制终止程序时会导致打不开数据库文件
         db.commit();
@@ -174,6 +186,50 @@ public class WxMediaStore implements InitializingBean {
         return file;
     }
 
+    /**
+     * 根据file查找url
+     * 暂时不考虑图片修改
+     * @param file
+     * @return
+     */
+    public String findUrlByFile(File file) {
+        return urlDb.get(file.getAbsolutePath());
+    }
+
+    /**
+     * @return
+     */
+    public void storeFileToUrl(File file, WxMedia.ImageResult result) {
+        urlDb.put(file.getPath(), result.getUrl());
+        urlDb.put(result.getUrl(), file.getPath());
+        db.commit();
+    }
+
+    /**
+     * 只能用来删除永久素材
+     * @param mediaId
+     */
+    public void deleteMedia(String mediaId) {
+        String filePath = mediaIdDb.remove(mediaId);
+        StoreEntity storeEntity = mediaFileDb.remove(filePath);
+        if (storeEntity != null && storeEntity.mediaUrl != null) {
+            urlDb.remove(filePath);
+            urlDb.remove(storeEntity.mediaUrl);
+        }
+        db.commit();
+    }
+
+    public File findFileByUrl(String url) {
+        String filePath = urlDb.get(url);
+        if (filePath != null) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                return file;
+            }
+        }
+        return null;
+    }
+
     private File findFile(String filePath) {
         if (filePath == null) {
             return null;
@@ -188,11 +244,7 @@ public class WxMediaStore implements InitializingBean {
     private StoreEntity storeFile(File file, String mediaId, Resource resource) throws IOException {
         file.createNewFile();
         file.setLastModified(0l);
-        try (FileOutputStream fos = new FileOutputStream(file);
-             InputStream inputStream = resource.getInputStream()
-        ) {
-            StreamUtils.copy(inputStream, fos);
-        }
+        FileCopyUtils.copy(resource.getInputStream(), new FileOutputStream(file));
         StoreEntity storeEntity = StoreEntity.builder()
                 .filePath(file.getAbsolutePath())
                 .createTime(new Date())
@@ -228,39 +280,7 @@ public class WxMediaStore implements InitializingBean {
         tempMediaIdDb = db.createHashMap("tempMediaId").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
         mediaFileDb = db.createHashMap("mediaFile").makeOrGet();
         mediaIdDb = db.createHashMap("mediaId").makeOrGet();
-        imageDb = db.createHashMap("imageUrl").makeOrGet();
-    }
-
-    public static void main(String[] args) throws IOException {
-        File file = new File("~/weixin/media/db/store.db");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
-        }
-        DB db = DBMaker.newFileDB(file)
-                .transactionDisable().asyncWriteFlushDelay(100).closeOnJvmShutdown().make();
-//        db.catPut("a", "b");
-        String b = db.catGet("a");
-        // 2.0支持对更新创建和获取操作加入过期时间
-        HTreeMap map = db.getHashMap("tempMedia");
-        System.out.println(b);
-
-        WxMedia.TempMediaResult result = new WxMedia.TempMediaResult();
-        result.setCreatedAt(new Date());
-        result.setType(WxMedia.Type.IMAGE);
-        result.setMediaId("asfsfsafsfdsf");
-
-        StoreEntity storeEntity = StoreEntity.builder()
-                .filePath(file.getAbsolutePath())
-                .createTime(new Date())
-                .mediaType(WxMedia.Type.VIDEO)
-                .mediaId("adsfsfsffs")
-                .lastModifiedTime(new Date(file.lastModified()))
-                .result(result)
-                .build();
-//        map.put(file.getPath(), storeEntity);
-        Object o = map.get(file.getAbsolutePath());
-        System.out.println(o);
+        urlDb = db.createHashMap("imageUrl").makeOrGet();
     }
 
     /**
@@ -298,10 +318,37 @@ public class WxMediaStore implements InitializingBean {
          */
         private WxMedia.Type mediaType;
 
-        /**
-         * 原始结果
-         */
-        private WxMedia.Result result;
+    }
+
+    public static void main(String[] args) throws IOException {
+        File file = new File("~/weixin/media/db/store.db");
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        DB db = DBMaker.newFileDB(file)
+                .transactionDisable().asyncWriteFlushDelay(100).closeOnJvmShutdown().make();
+//        db.catPut("a", "b");
+        String b = db.catGet("a");
+        // 2.0支持对更新创建和获取操作加入过期时间
+        HTreeMap map = db.getHashMap("tempMedia");
+        System.out.println(b);
+
+        WxMedia.TempMediaResult result = new WxMedia.TempMediaResult();
+        result.setCreatedAt(new Date());
+        result.setType(WxMedia.Type.IMAGE);
+        result.setMediaId("asfsfsafsfdsf");
+
+        StoreEntity storeEntity = StoreEntity.builder()
+                .filePath(file.getAbsolutePath())
+                .createTime(new Date())
+                .mediaType(WxMedia.Type.VIDEO)
+                .mediaId("adsfsfsffs")
+                .lastModifiedTime(new Date(file.lastModified()))
+                .build();
+//        map.put(file.getPath(), storeEntity);
+        Object o = map.get(file.getAbsolutePath());
+        System.out.println(o);
     }
 
 }
