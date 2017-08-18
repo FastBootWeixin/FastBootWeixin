@@ -5,10 +5,11 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
+import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -26,41 +27,208 @@ public class WxMediaStore implements InitializingBean {
 
     private HTreeMap<String, String> tempMediaIdDb;
 
-    public WxMedia.TempMediaResult getTempMedia(String filePath) {
-        return (WxMedia.TempMediaResult) tempMediaFileDb.get(filePath).result;
+    private HTreeMap<String, StoreEntity> mediaFileDb;
+
+    private HTreeMap<String, String> mediaIdDb;
+
+    /**
+     * 用于保存图片
+     */
+    private HTreeMap<String, String> imageDb;
+
+    private String defaultFilePath = "~/weixin/media/file/";
+
+    private String defaultTempFilePath = "~/weixin/media/file/temp/";
+
+    private String defaultDbPath = "~/weixin/media/db/store.db";
+
+    /**
+     * 根据文件查找tempMediaId
+     * @param file
+     * @return
+     */
+    public String findTempMediaIdByFile(File file) {
+        StoreEntity storeEntity = tempMediaFileDb.get(file.getAbsolutePath());
+        // 如果保存的最后更新时间再文件的最后更新时间之前，说明文件有更新，返回空
+        if (storeEntity != null && storeEntity.lastModifiedTime.getTime() >= file.lastModified()) {
+            return storeEntity.mediaId;
+        }
+        return null;
     }
 
-    public void storeTempMedia(WxMedia.Type type, File file, WxMedia.TempMediaResult result) {
+    /**
+     * 根据tempMediaId查找File
+     * @param mediaId
+     * @return
+     */
+    public File findFileByTempMediaId(String mediaId) {
+        String filePath = tempMediaIdDb.get(mediaId);
+        return findFile(filePath);
+    }
+
+    /**
+     * 保存tempMedia到File
+     * @param mediaId
+     * @return
+     */
+    public File storeTempMediaToFile(String mediaId, Resource resource) throws IOException {
+        String fileName = resource.getFilename();
+        if (fileName == null) {
+            fileName = mediaId;
+        }
+        File file = new File(StringUtils.applyRelativePath(defaultTempFilePath, fileName));
+        if (file.exists()) {
+            return file;
+        }
+        StoreEntity storeEntity = storeFile(file, mediaId, resource);
+        tempMediaFileDb.put(file.getAbsolutePath(), storeEntity);
+        tempMediaIdDb.put(mediaId, file.getAbsolutePath());
+        db.commit();
+        return file;
+    }
+
+    /**
+     * 保存tempMedia到mediaStore
+     * @param type
+     * @param file
+     * @param result
+     */
+    public WxMedia.TempMediaResult storeFileToTempMedia(WxMedia.Type type, File file, WxMedia.TempMediaResult result) {
         StoreEntity storeEntity = StoreEntity.builder()
-                .filePath(file.getPath())
+                .filePath(file.getAbsolutePath())
                 .createTime(result.getCreatedAt())
                 .mediaType(type)
                 .mediaId(result.getMediaId())
                 .lastModifiedTime(new Date(file.lastModified()))
                 .result(result)
                 .build();
-        tempMediaFileDb.put(file.getPath(), storeEntity);
+        tempMediaFileDb.put(file.getAbsolutePath(), storeEntity);
         if (result.getMediaId() != null) {
-            tempMediaIdDb.put(result.getMediaId(), file.getPath());
+            tempMediaIdDb.put(result.getMediaId(), file.getAbsolutePath());
         }
+        // 每执行一个写操作，都要commit，否则强制终止程序时会导致打不开数据库文件
+        db.commit();
+        return result;
+    }
+
+    public String findMediaIdByFile(File file) {
+        StoreEntity storeEntity = mediaFileDb.get(file.getAbsolutePath());
+        // 如果保存的最后更新时间再文件的最后更新时间之前，说明文件有更新，返回空
+        if (storeEntity != null && storeEntity.lastModifiedTime.getTime() >= file.lastModified()) {
+            return storeEntity.mediaId;
+        }
+        return null;
+    }
+
+    /**
+     * 根据mediaId查找File
+     * @param mediaId
+     * @return
+     */
+    public File findFileByMediaId(String mediaId) {
+        String filePath = mediaIdDb.get(mediaId);
+        return findFile(filePath);
+    }
+
+    public WxMedia.MediaResult storeFileToMedia(WxMedia.Type type, File file, WxMedia.MediaResult result) {
+        StoreEntity storeEntity = StoreEntity.builder()
+                .filePath(file.getAbsolutePath())
+                .createTime(new Date())
+                .mediaType(type)
+                .mediaId(result.getMediaId())
+                .lastModifiedTime(new Date(file.lastModified()))
+                .mediaUrl(result.getUrl())
+                .result(result)
+                .build();
+        mediaFileDb.put(file.getAbsolutePath(), storeEntity);
+        if (result.getMediaId() != null) {
+            mediaIdDb.put(result.getMediaId(), file.getAbsolutePath());
+        }
+        if (result.getUrl() != null) {
+            imageDb.put(result.getUrl(), file.getAbsolutePath());
+            imageDb.put(file.getAbsolutePath(), result.getUrl());
+        }
+        // 每执行一个写操作，都要commit，否则强制终止程序时会导致打不开数据库文件
+        db.commit();
+        return result;
+    }
+
+    /**
+     * 保存media到File
+     * @param mediaId
+     * @return
+     */
+    public File storeMediaToFile(String mediaId, Resource resource) throws IOException {
+        String fileName = resource.getFilename();
+        if (fileName == null) {
+            fileName = mediaId;
+        }
+        File file = new File(StringUtils.applyRelativePath(defaultFilePath, fileName));
+        if (file.exists()) {
+            return file;
+        }
+        StoreEntity storeEntity = storeFile(file, mediaId, resource);
+        mediaFileDb.put(file.getAbsolutePath(), storeEntity);
+        mediaIdDb.put(mediaId, file.getAbsolutePath());
+        db.commit();
+        return file;
+    }
+
+    private File findFile(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
+        File file = new File(filePath);
+        if (file.exists()) {
+            return file;
+        }
+        return null;
+    }
+
+    private StoreEntity storeFile(File file, String mediaId, Resource resource) throws IOException {
+        file.createNewFile();
+        file.setLastModified(0l);
+        try (FileOutputStream fos = new FileOutputStream(file);
+             InputStream inputStream = resource.getInputStream()
+        ) {
+            StreamUtils.copy(inputStream, fos);
+        }
+        StoreEntity storeEntity = StoreEntity.builder()
+                .filePath(file.getAbsolutePath())
+                .createTime(new Date())
+                .mediaType(null) //有必要的话可以尝试解析文件名来获取mediaType，暂时不想做
+                .mediaId(mediaId)
+                .lastModifiedTime(new Date(0l))
+                .build();
+        return storeEntity;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        File file = new File("~/weixin/media/db/store.db");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+        File filePath = new File(defaultFilePath);
+        if (!filePath.exists()) {
+            filePath.mkdirs();
         }
-        db = DBMaker.newFileDB(file)
-                .transactionDisable().asyncWriteFlushDelay(100).make();
-        if (db.exists("tempMediaFile")) {
-            tempMediaFileDb = db.getHashMap("tempMediaFile");
-            tempMediaIdDb = db.getHashMap("tempMediaId");
-        } else {
-            tempMediaFileDb = db.createHashMap("tempMediaFile").expireAfterWrite(3, TimeUnit.DAYS).make();
-            tempMediaIdDb = db.createHashMap("tempMediaId").expireAfterWrite(3, TimeUnit.DAYS).make();
+        filePath = new File(defaultTempFilePath);
+        if (!filePath.exists()) {
+            filePath.mkdirs();
         }
+        File dbFile = new File(defaultDbPath);
+        if (!dbFile.exists()) {
+            dbFile.getParentFile().mkdirs();
+            dbFile.createNewFile();
+        }
+        db = DBMaker.newFileDB(dbFile)
+                .transactionDisable()
+                .cacheDisable()
+                .asyncWriteEnable()
+                .checksumEnable()
+                .closeOnJvmShutdown().make();
+        tempMediaFileDb = db.createHashMap("tempMediaFile").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
+        tempMediaIdDb = db.createHashMap("tempMediaId").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
+        mediaFileDb = db.createHashMap("mediaFile").makeOrGet();
+        mediaIdDb = db.createHashMap("mediaId").makeOrGet();
+        imageDb = db.createHashMap("imageUrl").makeOrGet();
     }
 
     public static void main(String[] args) throws IOException {
@@ -74,8 +242,25 @@ public class WxMediaStore implements InitializingBean {
 //        db.catPut("a", "b");
         String b = db.catGet("a");
         // 2.0支持对更新创建和获取操作加入过期时间
-        HTreeMap map = db.createHashMap("tempMedia").expireAfterWrite(3, TimeUnit.DAYS).make();
+        HTreeMap map = db.getHashMap("tempMedia");
         System.out.println(b);
+
+        WxMedia.TempMediaResult result = new WxMedia.TempMediaResult();
+        result.setCreatedAt(new Date());
+        result.setType(WxMedia.Type.IMAGE);
+        result.setMediaId("asfsfsafsfdsf");
+
+        StoreEntity storeEntity = StoreEntity.builder()
+                .filePath(file.getAbsolutePath())
+                .createTime(new Date())
+                .mediaType(WxMedia.Type.VIDEO)
+                .mediaId("adsfsfsffs")
+                .lastModifiedTime(new Date(file.lastModified()))
+                .result(result)
+                .build();
+//        map.put(file.getPath(), storeEntity);
+        Object o = map.get(file.getAbsolutePath());
+        System.out.println(o);
     }
 
     /**

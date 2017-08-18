@@ -84,7 +84,7 @@ public interface WxApiInvokeSpi {
 
     void delMedia(@WxApiBody WxMedia mediaId);
 
-    WxMedia.Count getMaterialCount(@WxApiBody WxMedia mediaId);
+    WxMedia.Count getMediaCount();
 
 //    batchGetMedia();
 

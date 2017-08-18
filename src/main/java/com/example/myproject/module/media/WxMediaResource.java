@@ -73,7 +73,6 @@ public class WxMediaResource extends AbstractResource {
             this.isUrlMedia = true;
             this.url = extractURL(body);
         }
-        this.httpHeaders = httpInputMessage.getHeaders();
         this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
         this.filename = extractFilename(this.description);
         this.contentType = httpHeaders.getContentType();

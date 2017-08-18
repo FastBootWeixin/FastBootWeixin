@@ -1,8 +1,6 @@
 package com.example.myproject.module.media;
 
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
-import com.example.myproject.controller.invoker.annotation.WxApiForm;
-import com.example.myproject.controller.invoker.annotation.WxApiParam;
 
 import java.io.File;
 
@@ -25,14 +23,24 @@ public class WxMediaManager {
         this.wxMediaStore = wxMediaStore;
     }
 
-    public WxMedia.TempMediaResult uploadTempMedia(WxMedia.Type type, File media) {
-        WxMedia.TempMediaResult result = wxMediaStore.getTempMedia(media.getPath());
-        if (result != null) {
-            return result;
+    public String storeTempMedia(WxMedia.Type type, File media) {
+        String mediaId = wxMediaStore.findTempMediaIdByFile(media);
+        if (mediaId != null) {
+            return mediaId;
         }
-        result = wxApiInvokeSpi.uploadTempMedia(type, media);
-        wxMediaStore.storeTempMedia(type, media, result);
-        return result;
+        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, media);
+        wxMediaStore.storeFileToTempMedia(type, media, result);
+        return result.getMediaId();
+    }
+
+    public String storeMedia(WxMedia.Type type, File media) {
+        String mediaId = wxMediaStore.findMediaIdByFile(media);
+        if (mediaId != null) {
+            return mediaId;
+        }
+        WxMedia.MediaResult result = wxApiInvokeSpi.addMedia(type, media, null);
+        wxMediaStore.storeFileToMedia(type, media, result);
+        return result.getMediaId();
     }
 
 }

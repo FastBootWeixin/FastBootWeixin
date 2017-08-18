@@ -66,11 +66,14 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 
 	@Override
 	protected MediaType getDefaultContentType(Resource resource) {
+		MediaType contentType = null;
 		if (resource instanceof WxMediaResource) {
-			return ((WxMediaResource) resource).getContentType();
-		} else {
-			return super.getDefaultContentType(resource);
+			contentType = ((WxMediaResource) resource).getContentType();
 		}
+		if (contentType != null) {
+			return contentType;
+		}
+		return super.getDefaultContentType(resource);
 	}
 
 	protected void addDefaultHeaders(HttpHeaders headers, Resource t, MediaType contentType) throws IOException {

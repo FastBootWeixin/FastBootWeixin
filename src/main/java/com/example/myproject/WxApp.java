@@ -46,15 +46,32 @@ public class WxApp {
 
     @RequestMapping("test1")
     @ResponseBody
-    public WxMedia.TempMediaResult test1() {
-        wxMediaManager.uploadTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
-        return wxApiInvokeSpi.uploadTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
+    public String test1() {
+        return wxMediaManager.storeTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
     }
 
     @RequestMapping("test2")
     @ResponseBody
     public WxMediaResource test2(String mediaId) {
         return wxApiInvokeSpi.getTempMedia(mediaId);
+    }
+
+    @RequestMapping("test3")
+    @ResponseBody
+    public String test3() {
+        return wxMediaManager.storeMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
+    }
+
+    @RequestMapping("test4")
+    @ResponseBody
+    public WxMediaResource test4(String mediaId) {
+        return wxApiInvokeSpi.getMedia(WxMedia.of(mediaId));
+    }
+
+    @RequestMapping("test5")
+    @ResponseBody
+    public WxMedia.Count test5(String mediaId) {
+        return wxApiInvokeSpi.getMediaCount();
     }
 
     @RequestMapping("menu")

@@ -41,7 +41,10 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 	@Override
 	public HttpHeaders getHeaders() {
 		HttpHeaders headers = this.delegate.getHeaders();
-		if (headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
+		if (headers.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
+			return headers;
+		}
+		if (headers.containsKey(HttpHeaders.CONTENT_TYPE) && headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 		}
 		return headers;
