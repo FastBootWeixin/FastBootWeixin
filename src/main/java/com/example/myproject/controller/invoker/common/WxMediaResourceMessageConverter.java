@@ -90,7 +90,7 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 		// 忽略被选择出来的类型，因为如果有选择出来的类型，会影响getDefaultContentType的获取
 		super.addDefaultHeaders(headers, t, null);
 		// 如果super真的拿不到contentType时，取传入的contentType
-		if (headers.getContentType() == null) {
+		if (headers.getContentType() == null && contentType != null) {
 			headers.setContentType(contentType);
 		}
 	}

@@ -2,9 +2,10 @@ package com.example.myproject.module.message;
 
 import com.example.myproject.module.Wx;
 import com.example.myproject.module.message.adapters.WxXmlAdapters;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.logging.Log;
@@ -24,15 +25,15 @@ import java.util.List;
  * 坑啊，主动发消息竟然是json格式
  * 真是尴尬，不仅格式不同，结构也不同，坑爹。。。
  * 特别是text消息，json的在text结构下，xml在顶级
+ *
+ * @author Guangshan
  * @JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
  * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
  * https://github.com/FasterXML/jackson-databind/issues/512
  * FastBootWeixin  WxMessage
- *
+ * <p>
  * 加入WxMessageTemplate用于发送消息
  * WxMessageConverter用于转换消息（把文件转换为media_id等）
- *
- * @author Guangshan
  * @summary FastBootWeixin  WxMessage
  * 2017, Guangshan Group All Rights Reserved
  * @since 2017/8/2 23:21
@@ -190,10 +191,13 @@ public class WxMessage {
         this.fromUserName = fromUserName;
     }
 
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
-
 
     public static class Builder<T extends Builder> {
         protected String toUserName;
@@ -302,6 +306,48 @@ public class WxMessage {
         }
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class MediaBody {
+        @XmlElement(name = "MediaId", required = true)
+        @JsonProperty("media_id")
+        protected String mediaId;
+
+        @JsonIgnore
+        protected String mediaPath;
+
+        @JsonIgnore
+        protected String mediaUrl;
+    }
+
+    public static class MediaBuilder<T extends MediaBuilder> extends Builder<MediaBuilder> {
+
+        protected String mediaId;
+
+        protected String mediaPath;
+
+        protected String mediaUrl;
+
+        MediaBuilder() {
+        }
+
+        public T mediaId(String mediaId) {
+            this.mediaId = mediaId;
+            return (T) this;
+        }
+
+        public T mediaPath(String mediaId) {
+            this.mediaPath = mediaPath;
+            return (T) this;
+        }
+
+        public T mediaUrl(String mediaUrl) {
+            this.mediaUrl = mediaUrl;
+            return (T) this;
+        }
+    }
+
     @XmlRootElement(name = "xml")
     @NoArgsConstructor
     @Getter
@@ -323,30 +369,23 @@ public class WxMessage {
         }
 
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
-        public static class Body {
+        @Data
+        public static class Body extends MediaBody {
 
-            @XmlElement(name = "MediaId", required = true)
-            @JsonProperty("media_id")
-            protected String mediaId;
+            public Body(String mediaId, String mediaPath, String mediaUrl) {
+                super(mediaId, mediaPath, mediaUrl);
+            }
 
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
-
-            protected String mediaId;
+        public static class Builder extends WxMessage.MediaBuilder<Builder> {
 
             Builder() {
-            }
 
-            public Builder mediaId(String mediaId) {
-                this.mediaId = mediaId;
-                return this;
             }
 
             public Image build() {
-                return new Image(toUserName, fromUserName, createTime, messageType, new Body(mediaId));
+                return new Image(toUserName, fromUserName, createTime, messageType, new Body(mediaId, mediaPath, mediaUrl));
             }
 
             public String toString() {
@@ -370,14 +409,12 @@ public class WxMessage {
         }
 
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
         @NoArgsConstructor
-        public static class Body {
-
-            @XmlElement(name = "MediaId", required = true)
-            @JsonProperty("media_id")
-            protected String mediaId;
-
+        @Data
+        public static class Body extends MediaBody {
+            public Body(String mediaId, String mediaPath, String mediaUrl) {
+                super(mediaId, mediaPath, mediaUrl);
+            }
         }
 
         public static Builder builder() {
@@ -386,20 +423,13 @@ public class WxMessage {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
-
-            protected String mediaId;
+        public static class Builder extends WxMessage.MediaBuilder<Builder> {
 
             Builder() {
             }
 
-            public Builder mediaId(String mediaId) {
-                this.mediaId = mediaId;
-                return this;
-            }
-
             public Voice build() {
-                return new Voice(toUserName, fromUserName, createTime, messageType, new Body(mediaId));
+                return new Voice(toUserName, fromUserName, createTime, messageType, new Body(mediaId, mediaPath, mediaUrl));
             }
 
             public String toString() {
@@ -425,11 +455,8 @@ public class WxMessage {
         @XmlAccessorType(XmlAccessType.NONE)
         @AllArgsConstructor
         @NoArgsConstructor
-        public static class Body {
-
-            @XmlElement(name = "MediaId", required = true)
-            @JsonProperty("media_id")
-            protected String mediaId;
+        @Data
+        public static class Body extends MediaBody {
 
             @XmlElement(name = "ThumbMediaId")
             @JsonProperty("thumb_media_id")
@@ -443,6 +470,12 @@ public class WxMessage {
             @JsonProperty("description")
             protected String description;
 
+            @JsonIgnore
+            protected String thumbMediaPath;
+
+            @JsonIgnore
+            protected String thumbMediaUrl;
+
         }
 
         public static Builder builder() {
@@ -453,8 +486,9 @@ public class WxMessage {
 
         /**
          * 上面的body和下面的body风格不一致。。。算了，什么时候强迫症犯了再改好了
+         * 加了几个参数之后发现还是下面这种方式好啊。。。
          */
-        public static class Builder extends WxMessage.Builder<Builder>{
+        public static class Builder extends WxMessage.MediaBuilder<Builder> {
 
             protected Body body;
 
@@ -462,20 +496,21 @@ public class WxMessage {
                 body = new Body();
             }
 
-            public Builder body(String mediaId, String title, String description) {
+            public Builder body(String mediaId, String thumbMediaId, String title, String description) {
                 this.body.mediaId = mediaId;
+                this.body.thumbMediaId = thumbMediaId;
                 this.body.title = title;
                 this.body.description = description;
                 return this;
             }
 
-            public Builder mediaId(String mediaId) {
-                this.body.mediaId = mediaId;
+            public Builder thumbMediaPath(String thumbMediaPath) {
+                this.body.thumbMediaPath = thumbMediaPath;
                 return this;
             }
 
-            public Builder thumbMediaId(String thumbMediaId) {
-                this.body.thumbMediaId = thumbMediaId;
+            public Builder thumbMediaUrl(String thumbMediaUrl) {
+                this.body.thumbMediaUrl = thumbMediaUrl;
                 return this;
             }
 
@@ -513,10 +548,13 @@ public class WxMessage {
             this.body = body;
         }
 
+        /**
+         * 其实可以再抽象一个thumbMediaBody的。。。我懒
+         */
         @XmlAccessorType(XmlAccessType.NONE)
         @AllArgsConstructor
         @NoArgsConstructor
-        public static class Body {
+        public static class Body extends MediaBody {
 
             @XmlElement(name = "ThumbMediaId", required = true)
             @JsonProperty("thumb_media_id")
@@ -538,6 +576,17 @@ public class WxMessage {
             @JsonProperty("hqmusicurl")
             protected String hqMusicUrl;
 
+            /**
+             * 懒省事，做个简单的替换
+             * @param thumbMediaId
+             */
+            public void setMediaId(String thumbMediaId) {
+                this.thumbMediaId = thumbMediaId;
+            }
+
+            public String getMediaId() {
+                return this.thumbMediaId;
+            }
         }
 
         public static Builder builder() {
@@ -546,7 +595,7 @@ public class WxMessage {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
+        public static class Builder extends WxMessage.MediaBuilder<Builder> {
 
             protected Body body;
 
@@ -565,6 +614,16 @@ public class WxMessage {
 
             public Builder thumbMediaId(String thumbMediaId) {
                 this.body.thumbMediaId = thumbMediaId;
+                return this;
+            }
+
+            public Builder thumbMediaPath(String thumbMediaPath) {
+                this.body.mediaPath = thumbMediaPath;
+                return this;
+            }
+
+            public Builder thumbMediaUrl(String thumbMediaUrl) {
+                this.body.mediaUrl = thumbMediaUrl;
                 return this;
             }
 
@@ -656,8 +715,16 @@ public class WxMessage {
             protected String picUrl;
 
             @XmlElement(name = "Url", required = true)
-            @JsonProperty("host")
+            @JsonProperty("url")
             protected String url;
+
+            public String getPicUrl() {
+                return picUrl;
+            }
+
+            public void setPicUrl(String picUrl) {
+                this.picUrl = picUrl;
+            }
 
             public static Builder builder() {
                 return new Builder();
@@ -708,7 +775,7 @@ public class WxMessage {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             // 是叫items呢还是articles呢
             protected LinkedList<Item> items;
@@ -721,6 +788,7 @@ public class WxMessage {
 
             /**
              * 添加主article，就是最上面那个大图
+             *
              * @param title
              * @param description
              * @param picUrl
@@ -816,7 +884,7 @@ public class WxMessage {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             protected String mediaId;
 
@@ -872,7 +940,7 @@ public class WxMessage {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder>{
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             protected String cardId;
 
@@ -892,6 +960,56 @@ public class WxMessage {
                 return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.cardId + ")";
             }
         }
+    }
+
+    @AllArgsConstructor
+    public static class Status extends WxMessage {
+        @JsonIgnore
+        protected Type messageType;
+
+        @JsonProperty("command")
+        protected Command command;
+
+        Status(String toUserName, String fromUserName, Date createTime, Type messageType, boolean isTyping) {
+            super(toUserName, fromUserName, createTime, messageType);
+            this.command = isTyping ? Command.TYPING : Command.CANCEL_TYPING;
+        }
+
+        private enum Command {
+
+            @JsonProperty("Typing")
+            TYPING,
+            @JsonProperty("CancelTyping")
+            CANCEL_TYPING
+
+        }
+
+        public static Builder builder() {
+            Builder builder = new Builder();
+            return builder;
+        }
+
+        public static class Builder extends WxMessage.Builder<Builder> {
+
+            protected boolean isTyping;
+
+            Builder() {
+            }
+
+            public Builder isTyping(boolean isTyping) {
+                this.isTyping = isTyping;
+                return this;
+            }
+
+            public Status build() {
+                return new Status(toUserName, fromUserName, createTime, messageType, isTyping);
+            }
+
+            public String toString() {
+                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.isTyping + ")";
+            }
+        }
+
     }
 
 }

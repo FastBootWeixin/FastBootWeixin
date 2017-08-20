@@ -1,9 +1,11 @@
 package com.example.myproject.controller.invoker.component;
 
+import com.example.myproject.mvc.WxRequestResponseUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.AbstractClientHttpResponse;
+import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
@@ -27,10 +29,13 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 
 	private final ClientHttpResponse delegate;
 
+	private final ClientHttpRequest request;
+
 	private PushbackInputStream pushbackInputStream;
 
-	public WxApiHttpResponse(ClientHttpResponse delegate) {
+	public WxApiHttpResponse(ClientHttpResponse delegate, ClientHttpRequest request) {
 		this.delegate = delegate;
+		this.request = request;
 	}
 
 	/**
@@ -46,6 +51,9 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 		}
 		if (headers.containsKey(HttpHeaders.CONTENT_TYPE) && headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
 			headers.setContentType(MediaType.APPLICATION_JSON);
+		}
+		if (!headers.containsKey(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)) {
+			headers.add(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL, request.getURI().toString());
 		}
 		return headers;
 	}

@@ -5,6 +5,9 @@ import com.example.myproject.module.user.WxUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * FastBootWeixin  DefaultWxUserProvider
  *
@@ -17,13 +20,20 @@ public class DefaultWxUserProvider implements WxUserProvider<WxUser> {
 
     private WxApiInvokeSpi wxApiInvokeSpi;
 
+    private Map<String, WxUser> cache = new HashMap<>();
+
     public DefaultWxUserProvider(WxApiInvokeSpi wxApiInvokeSpi) {
         this.wxApiInvokeSpi = wxApiInvokeSpi;
     }
 
     @Override
     public WxUser getUser(String fromUserName) {
-        return wxApiInvokeSpi.getUserInfo(fromUserName);
+        WxUser userInfo = cache.get(fromUserName);
+        if (userInfo == null) {
+            userInfo = wxApiInvokeSpi.getUserInfo(fromUserName);
+            cache.put(fromUserName, userInfo);
+        }
+        return userInfo;
     }
 
 }

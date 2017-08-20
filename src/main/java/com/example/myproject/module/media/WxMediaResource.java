@@ -4,6 +4,7 @@ import com.example.myproject.controller.invoker.WxApiInvokeSpi;
 import com.example.myproject.controller.invoker.common.WxBufferingInputMessageWrapper;
 import com.example.myproject.exception.WxAppException;
 import com.example.myproject.module.Wx;
+import com.example.myproject.mvc.WxRequestResponseUtils;
 import com.example.myproject.util.WxApplicationContextUtils;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.FileSystemResource;
@@ -21,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
@@ -74,15 +76,23 @@ public class WxMediaResource extends AbstractResource {
         }
         this.httpHeaders = httpInputMessage.getHeaders();
         // 判断是否是json
-        if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION) || body[0] == '{') {
+        if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
             this.isUrlMedia = true;
-            this.url = extractURL(body);
+            if (body[0] == '{') {
+                this.url = extractURL(body);
+                this.filename = extractFilenameFromURL(url);
+            } else if (httpHeaders.containsKey(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)) {
+                this.url = URI.create(httpHeaders.getFirst(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)).toURL();
+                this.filename = extractFilenameFromURL(url);
+            } else {
+                this.filename = UUID.randomUUID().toString() + ".jpg";
+            }
         } else {
             this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
             this.filename = extractFilename(this.description);
-            this.contentType = httpHeaders.getContentType();
-            this.contentLength = httpHeaders.getContentLength();
         }
+        this.contentType = httpHeaders.getContentType();
+        this.contentLength = httpHeaders.getContentLength();
     }
 
     /**
@@ -177,6 +187,12 @@ public class WxMediaResource extends AbstractResource {
             }
         }
         return filename;
+    }
+
+    private String extractFilenameFromURL(URL url) {
+        String uri = url.toString();
+        int index = uri.lastIndexOf('/') + 1;
+        return uri.substring(index);
     }
 
     @Override

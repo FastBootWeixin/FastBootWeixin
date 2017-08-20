@@ -42,7 +42,7 @@ public final class WxApiHttpRequest implements ClientHttpRequest {
 
 	@Override
 	public ClientHttpResponse execute() throws IOException {
-		return new WxApiHttpResponse(this.delegate.execute());
+		return new WxApiHttpResponse(this.delegate.execute(), this);
 	}
 
 	@Override

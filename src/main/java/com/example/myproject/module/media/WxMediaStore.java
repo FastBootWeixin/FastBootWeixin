@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
  * 数据库使用内嵌数据库，经过一天的maven仓库database embedded选型，暂时决定使用MapDB(200k，其实有700K)或者kahaDB(600k)
  * 还有一个PalDB，这些都不小，真不行了我自己实现一个好了。。。暂时先用现成的
  * MapDB最新版依赖真的太多了，不想用了，先用MapDB的老版本吧
+ *
+ * 重要！这个store类要优化成callbace方式，且做的易于扩展，现在我自己都有点看不懂这个东西了
+ *
  */
 public class WxMediaStore implements InitializingBean {
 
@@ -114,6 +117,37 @@ public class WxMediaStore implements InitializingBean {
         return result;
     }
 
+    /**
+     * 保存tempMedia到mediaStore
+     * @param type
+     * @param result
+     */
+    public WxMedia.TempMediaResult storeUrlToTempMedia(WxMedia.Type type, String url, WxMedia.TempMediaResult result) {
+        StoreEntity storeEntity = StoreEntity.builder()
+                .filePath(url)
+                .createTime(result.getCreatedAt())
+                .mediaType(type)
+                .mediaId(result.getMediaId())
+                .lastModifiedTime(result.getCreatedAt())
+                .build();
+        tempMediaFileDb.put(url, storeEntity);
+        if (result.getMediaId() != null) {
+            tempMediaIdDb.put(result.getMediaId(), url);
+        }
+        // 每执行一个写操作，都要commit，否则强制终止程序时会导致打不开数据库文件
+        db.commit();
+        return result;
+    }
+
+    public String findTempMediaIdByUrl(String url) {
+        StoreEntity storeEntity = tempMediaFileDb.get(url);
+        // 如果保存的最后更新时间再文件的最后更新时间之前，说明文件有更新，返回空
+        if (storeEntity != null) {
+            return storeEntity.mediaId;
+        }
+        return null;
+    }
+
     public String findMediaIdByFile(File file) {
         StoreEntity storeEntity = mediaFileDb.get(file.getAbsolutePath());
         // 如果保存的最后更新时间再文件的最后更新时间之前，说明文件有更新，返回空
@@ -194,6 +228,26 @@ public class WxMediaStore implements InitializingBean {
      */
     public String findUrlByFile(File file) {
         return urlDb.get(file.getAbsolutePath());
+    }
+
+    /**
+     * 保存图片URL到图片URL
+     * @return
+     */
+    public void storeUrlToUrl(String imgUrl, WxMedia.ImageResult result) {
+        urlDb.put(imgUrl, result.getUrl());
+        urlDb.put(result.getUrl(), imgUrl);
+        db.commit();
+    }
+
+    /**
+     * 根据imgUrl查找url
+     * 暂时不考虑图片修改
+     * @param imgUrl
+     * @return
+     */
+    public String findUrlByUrl(String imgUrl) {
+        return urlDb.get(imgUrl);
     }
 
     /**

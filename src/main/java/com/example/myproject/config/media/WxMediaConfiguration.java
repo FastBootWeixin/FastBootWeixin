@@ -1,6 +1,7 @@
 package com.example.myproject.config.media;
 
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
+import com.example.myproject.controller.invoker.executor.WxApiInvoker;
 import com.example.myproject.module.media.WxMediaManager;
 import com.example.myproject.module.media.WxMediaStore;
 import org.apache.commons.logging.Log;
@@ -18,8 +19,11 @@ public class WxMediaConfiguration {
 
 	private final WxApiInvokeSpi wxApiInvokeSpi;
 
-	public WxMediaConfiguration(WxApiInvokeSpi wxApiInvokeSpi) {
+	private final WxApiInvoker wxApiInvoker;
+
+	public WxMediaConfiguration(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker) {
 		this.wxApiInvokeSpi = wxApiInvokeSpi;
+		this.wxApiInvoker = wxApiInvoker;
 	}
 
 	@Bean
@@ -30,7 +34,7 @@ public class WxMediaConfiguration {
 
 	@Bean
 	public WxMediaManager wxMediaManager() {
-		return new WxMediaManager(wxApiInvokeSpi, wxMediaStore());
+		return new WxMediaManager(wxApiInvokeSpi, wxApiInvoker, wxMediaStore());
 	}
 
 }

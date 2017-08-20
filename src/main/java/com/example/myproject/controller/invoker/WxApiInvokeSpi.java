@@ -6,7 +6,9 @@ import com.example.myproject.controller.invoker.annotation.WxApiParam;
 import com.example.myproject.module.media.WxMedia;
 import com.example.myproject.module.media.WxMediaResource;
 import com.example.myproject.module.menu.WxMenuManager;
+import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.module.user.WxUser;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 
@@ -28,13 +30,13 @@ public interface WxApiInvokeSpi {
 
     String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
 
-    WxMedia.TempMediaResult uploadTempMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") File media);
+    WxMedia.TempMediaResult uploadTempMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") Resource media);
 
     WxMediaResource getTempMedia(@WxApiParam("media_id") String mediaId);
 
     WxUser getUserInfo(@WxApiParam("openid") String userOpenId);
 
-    WxMedia.ImageResult uploadImg(@WxApiForm("media") File media);
+    WxMedia.ImageResult uploadImg(@WxApiForm("media") Resource media);
 
     WxMedia.NewsResult addNews(@WxApiBody WxMedia.News news);
 
@@ -53,9 +55,9 @@ public interface WxApiInvokeSpi {
      * @param description
      * @return
      */
-    WxMedia.MediaResult addMedia(@WxApiParam("type") WxMedia.Type type,
-                                 @WxApiForm("media") File media,
-                                 @WxApiForm("description") WxMedia.Video description);
+    WxMedia.MediaResult uploadMedia(@WxApiParam("type") WxMedia.Type type,
+                                    @WxApiForm("media") Resource media,
+                                    @WxApiForm("description") WxMedia.Video description);
 
     /**
      * 同下面两个地址，没办法，返回类型不同，我也很无奈啊
@@ -87,6 +89,10 @@ public interface WxApiInvokeSpi {
     WxMedia.Count getMediaCount();
 
     void clearQuota(@WxApiBody String appid);
+
+    void sendMessage(@WxApiBody WxMessage wxMessage);
+
+    void setMessageStatus(@WxApiBody WxMessage.Status status);
 
 //    batchGetMedia();
 

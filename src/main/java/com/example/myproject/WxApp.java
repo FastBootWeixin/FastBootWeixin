@@ -1,6 +1,7 @@
 package com.example.myproject;
 
 import com.example.myproject.annotation.WxApplication;
+import com.example.myproject.annotation.WxAsyncMessage;
 import com.example.myproject.annotation.WxButton;
 import com.example.myproject.config.invoker.WxVerifyProperties;
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
@@ -17,6 +18,7 @@ import com.example.myproject.mvc.annotation.WxEventMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -79,6 +81,21 @@ public class WxApp {
         return wxApiInvokeSpi.getMediaCount();
     }
 
+    @RequestMapping("test7")
+    public String test7() {
+        return wxMediaManager.addImg(new File("E:/test.png"));
+    }
+
+    @RequestMapping("test8")
+    public Resource test8(String url) {
+        return wxMediaManager.getImg(url);
+    }
+
+    @RequestMapping("test9")
+    public String test9(String url) {
+        return wxMediaManager.addImgByUrl(url);
+    }
+
     @RequestMapping("menu")
     public WxMenuManager.WxMenus menu() {
         return wxApiInvokeSpi.getMenu();
@@ -111,41 +128,41 @@ public class WxApp {
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIRST,
             name = "左一")
+    @WxAsyncMessage
     public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
-        System.out.println(wxApiInvokeSpi.getMenu());
         return WxMessage.News.builder()
                 .toUserName(wxUser.getOpenId())
                 .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")
                 .addItem("我是二条图文测试消息", "测试哈哈哈哈",
-                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")
                 .addItem("我是三条图文测试消息", "测试哈哈哈哈",
-                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")
                 .addItem("我是四条图文测试消息", "测试哈哈哈哈",
-                        "qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")
                 .addItem(WxMessage.News.Item.builder()
                         .title("我是五条图文测试消息")
                         .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
                         .url("qipei.mxixm.com/vendor/5").build())
                 .addItem(WxMessage.News.Item.builder()
                         .title("我是六条图文测试消息")
                         .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
                         .url("qipei.mxixm.com/vendor/5").build())
                 .addItem(WxMessage.News.Item.builder()
                         .title("我是七条图文测试消息")
                         .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
                         .url("qipei.mxixm.com/vendor/5").build())
                 .addItem(WxMessage.News.Item.builder()
                         .title("我是八条图文测试消息")
                         .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
                         .url("qipei.mxixm.com/vendor/5").build())
                 .addItem(WxMessage.News.Item.builder()
                         .title("我是九条图文测试消息")

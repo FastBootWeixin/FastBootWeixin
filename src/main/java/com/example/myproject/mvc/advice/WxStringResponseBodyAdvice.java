@@ -1,15 +1,21 @@
 package com.example.myproject.mvc.advice;
 
+import com.example.myproject.annotation.WxButton;
+import com.example.myproject.exception.WxAppException;
 import com.example.myproject.module.WxRequest;
 import com.example.myproject.module.message.WxMessage;
 import com.example.myproject.mvc.WxRequestResponseUtils;
+import com.example.myproject.mvc.annotation.WxMessageMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.xml.AbstractXmlHttpMessageConverter;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -17,6 +23,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 
 /**
@@ -28,24 +38,28 @@ import java.lang.invoke.MethodHandles;
  * @since 2017年8月15日
  */
 @ControllerAdvice
-public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage>, Ordered {
+public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, Ordered {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
+    private Marshaller xmlConverter;
+
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 200000;
+        return Ordered.LOWEST_PRECEDENCE - 30000;
     }
 
     @Override
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
-        return AbstractXmlHttpMessageConverter.class.isAssignableFrom(converterType) &&
-                WxMessage.class.isAssignableFrom(returnType.getParameterType());
+        return StringHttpMessageConverter.class.isAssignableFrom(converterType) &&
+                CharSequence.class.isAssignableFrom(returnType.getParameterType()) &&
+                (returnType.hasMethodAnnotation(WxButton.class) ||
+                        returnType.hasMethodAnnotation(WxMessageMapping.class));
     }
 
     @Override
-    public WxMessage beforeBodyWrite(WxMessage body, MethodParameter returnType,
+    public String beforeBodyWrite(String body, MethodParameter returnType,
                                   MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
         if (!(request instanceof ServletServerHttpRequest)) {
@@ -53,15 +67,25 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(servletRequest);
-        if (wxRequest != null) {
-            if (body.getFromUserName() == null) {
-                body.setFromUserName(wxRequest.getToUserName());
+        WxMessage.Text text = WxMessage.Text.builder().fromUserName(wxRequest.getToUserName())
+                .toUserName(wxRequest.getFromUserName())
+                .content(body)
+                .build();
+        return parseXml(text);
+    }
+
+    private String parseXml(WxMessage.Text text) {
+        try {
+            if (xmlConverter == null) {
+                JAXBContext jaxbContext = JAXBContext.newInstance(WxMessage.Text.class);
+                xmlConverter = jaxbContext.createMarshaller();
             }
-            if (body.getToUserName() == null) {
-                body.setToUserName(wxRequest.getFromUserName());
-            }
+            StringWriter writer = new StringWriter();
+            xmlConverter.marshal(text, writer);
+            return writer.toString();
+        } catch (JAXBException e) {
+            throw new WxAppException(e);
         }
-        return body;
     }
 
 }

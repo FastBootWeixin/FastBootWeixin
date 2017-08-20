@@ -1,7 +1,9 @@
 package com.example.myproject.module.media;
 
 import com.example.myproject.controller.invoker.WxApiInvokeSpi;
+import com.example.myproject.controller.invoker.executor.WxApiInvoker;
 import com.example.myproject.exception.WxApiException;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
@@ -21,8 +23,11 @@ public class WxMediaManager {
 
     private WxMediaStore wxMediaStore;
 
-    public WxMediaManager(WxApiInvokeSpi wxApiInvokeSpi, WxMediaStore wxMediaStore) {
+    private WxApiInvoker wxApiInvoker;
+
+    public WxMediaManager(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker, WxMediaStore wxMediaStore) {
         this.wxApiInvokeSpi = wxApiInvokeSpi;
+        this.wxApiInvoker = wxApiInvoker;
         this.wxMediaStore = wxMediaStore;
     }
 
@@ -31,8 +36,19 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, media);
+        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, new FileSystemResource(media));
         wxMediaStore.storeFileToTempMedia(type, media, result);
+        return result.getMediaId();
+    }
+
+    public String addTempMediaByUrl(WxMedia.Type type, String url) {
+        String mediaId = wxMediaStore.findTempMediaIdByUrl(url);
+        if (mediaId != null) {
+            return mediaId;
+        }
+        Resource resource = wxApiInvoker.getForObject(url, Resource.class);
+        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, resource);
+        wxMediaStore.storeUrlToTempMedia(type, url, result);
         return result.getMediaId();
     }
 
@@ -41,7 +57,7 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.MediaResult result = wxApiInvokeSpi.addMedia(type, media, null);
+        WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(type, new FileSystemResource(media), null);
         wxMediaStore.storeFileToMedia(type, media, result);
         return result.getMediaId();
     }
@@ -57,7 +73,7 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.MediaResult result = wxApiInvokeSpi.addMedia(WxMedia.Type.VIDEO, video, description);
+        WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(WxMedia.Type.VIDEO, new FileSystemResource(video), description);
         wxMediaStore.storeFileToMedia(WxMedia.Type.VIDEO, video, result);
         return result.getMediaId();
     }
@@ -99,7 +115,7 @@ public class WxMediaManager {
         if (url != null) {
             return url;
         }
-        WxMedia.ImageResult imageResult = wxApiInvokeSpi.uploadImg(file);
+        WxMedia.ImageResult imageResult = wxApiInvokeSpi.uploadImg(new FileSystemResource(file));
         wxMediaStore.storeFileToUrl(file, imageResult);
         return imageResult.getUrl();
     }
@@ -112,6 +128,21 @@ public class WxMediaManager {
             // 如果为空的时候是否可以直接通过url获取source呢？
             return null;
         }
+    }
+
+    public String addImgByUrl(String imgUrl) {
+        String url = wxMediaStore.findUrlByUrl(imgUrl);
+        if (url != null) {
+            return url;
+        }
+        Resource resource = wxApiInvoker.getForObject(imgUrl, Resource.class);
+        WxMedia.ImageResult result = wxApiInvokeSpi.uploadImg(resource);
+        wxMediaStore.storeUrlToUrl(imgUrl, result);
+        return result.getUrl();
+    }
+
+    public String getImgByUrl(String imgUrl) {
+        return wxMediaStore.findUrlByUrl(imgUrl);
     }
 
     /**
@@ -145,7 +176,6 @@ public class WxMediaManager {
 
     public void delMedia(String mediaId) {
         wxApiInvokeSpi.delMedia(WxMedia.of(mediaId));
-
     }
 
     public WxMedia.Count getMediaCount() {

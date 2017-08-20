@@ -18,6 +18,8 @@ public class WxRequestResponseUtils {
 
     private static final String RAW_WX_MESSAGE_REQUEST_ATTRIBUTE = "RAW_WX_MESSAGE_REQUEST_ATTRIBUTE";
 
+    public static final String HEADER_X_WX_REQUEST_URL = "X-Wx-Request-Url";
+
     public static void setWxRequestToRequestAttribute(HttpServletRequest request, WxRequest wxRequest) {
         request.setAttribute(RAW_WX_MESSAGE_REQUEST_ATTRIBUTE, wxRequest);
     }
