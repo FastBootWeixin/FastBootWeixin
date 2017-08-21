@@ -37,7 +37,7 @@ public class WxApiResponseExtractor {
 
     public <T> T extractData(ResponseEntity<HttpInputMessage> responseEntity, Class<T> returnType) {
         // 本来应该有response数据为空的判断的，其实这里已经被前一步的restTemplate获取中判断过了，这里只用判断body为空即可
-        if (returnType == null || Void.class == returnType || responseEntity.getBody() == null) {
+        if (returnType == null || void.class == returnType || Void.class == returnType || responseEntity.getBody() == null) {
             return null;
         }
         /* 先不管文件

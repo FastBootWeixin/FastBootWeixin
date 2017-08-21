@@ -7,9 +7,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.mxixm.fastbootwx.config.invoker.WxInvokerConfiguration;
+import com.mxixm.fastbootwx.config.media.WxMediaConfiguration;
+import com.mxixm.fastbootwx.config.message.WxAsyncMessageConfiguration;
+import com.mxixm.fastbootwx.config.server.WxBuildinMvcConfiguration;
+import com.mxixm.fastbootwx.config.token.WxTokenConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 
 @Target(ElementType.TYPE)
@@ -17,6 +23,7 @@ import org.springframework.core.annotation.AliasFor;
 @Documented
 @Inherited
 @SpringBootApplication
+@EnableWxMvc
 public @interface WxApplication {
 
 	/**

@@ -18,12 +18,10 @@ import org.springframework.util.StringUtils;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 
-@Component
 public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    @Autowired
     private WxApiInvokeSpi wxApiInvokeSpi;
 
     private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
@@ -36,11 +34,11 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private WxButtonEventKeyStrategy wxButtonEventKeyStrategy = new WxButtonEventKeyStrategy();
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    private String menuJsonCache;
-
     private WxMenu wxMenu;
+
+    public WxMenuManager(WxApiInvokeSpi wxApiInvokeSpi) {
+        this.wxApiInvokeSpi = wxApiInvokeSpi;
+    }
 
     public WxButtonItem add(WxButton wxButton) {
         WxButtonItem buttonItem = WxButtonItem.builder()

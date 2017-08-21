@@ -416,7 +416,7 @@ public class WxRequest {
         if (propertyDescriptor != null) {
             Object value = null;
             try {
-                value = propertyDescriptor.getReadMethod().invoke(this.getClass(), new Object[]{});//调用方法获取方法的返回值
+                value = propertyDescriptor.getReadMethod().invoke(this, new Object[]{});//调用方法获取方法的返回值
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

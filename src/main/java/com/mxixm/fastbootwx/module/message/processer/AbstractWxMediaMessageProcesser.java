@@ -7,6 +7,9 @@ import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.module.message.WxMessageProcesser;
 
 import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 
 /**
  * FastBootWeixin  WxCommonMessageProcesser
@@ -37,6 +40,19 @@ public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> imple
             }
         }
         return body;
+    }
+
+    public boolean supports(WxRequest wxRequest, T wxMessage) {
+        Type type = this.getClass().getGenericSuperclass();
+        if (!(type instanceof ParameterizedType)) {
+            return false;
+        }
+        ParameterizedType parameterizedType = (ParameterizedType) type;
+        Class userClass =(Class)(parameterizedType.getActualTypeArguments()[0]);
+        if (userClass == null) {
+            return false;
+        }
+        return userClass.isAssignableFrom(wxMessage.getClass());
     }
 
 }

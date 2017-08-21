@@ -44,7 +44,7 @@ public class WxRequestResponseUtils {
      * hello world
      * @param args
      */
-    public static void main(String ... args) {
+    public static void main1(String ... args) {
         System.out.println(randomString(-229985452)+' '+randomString(-147909649));
     }
 

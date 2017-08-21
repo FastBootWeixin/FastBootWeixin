@@ -374,7 +374,7 @@ public class WxMediaStore implements InitializingBean {
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main1(String[] args) throws IOException {
         File file = new File("~/weixin/media/db/store.db");
         if (!file.exists()) {
             file.getParentFile().mkdirs();
