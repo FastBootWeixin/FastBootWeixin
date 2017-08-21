@@ -1,16 +1,21 @@
 package com.mxixm.fastbootwx.mvc.annotation;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.lang.annotation.*;
 
 /**
- * Created by Administrator on 2017/8/4.
+ * FastBootWeixin  WxAppAssert
+ *
+ * @author WxController
+ * @summary FastBootWeixin  WxController
+ * @Copyright (c) 2017, Guangshan Group All Rights Reserved
+ * @since 2017/8/12 22:51
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Controller
+@RestController
 public @interface WxController {
 
     /**

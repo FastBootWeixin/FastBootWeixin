@@ -11,16 +11,14 @@ import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.mvc.WxRequestResponseUtils;
 import com.mxixm.fastbootwx.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastbootwx.mvc.method.WxMappingInfo;
+import com.mxixm.fastbootwx.util.WildcardUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
@@ -32,6 +30,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean {
 
@@ -105,45 +104,20 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
     }
 
-    /**
-     * Return the handler methods for the given mapping value.
-     *
-     * @param mappingName the mapping value
-     * @return a list of matching HandlerMethod's or {@code null}; the returned
-     * list will never be modified and is safe to iterate.
-     * @see #setHandlerMethodMappingNamingStrategy
-     */
     @Override
     public List<HandlerMethod> getHandlerMethodsForMappingName(String mappingName) {
         return this.mappingRegistry.getHandlerMethodsByMappingName(mappingName);
     }
 
-    /**
-     * Return the internal mapping registry. Provided for testing purposes.
-     */
     MappingRegistry getMappingRegistry() {
         return this.mappingRegistry;
     }
 
-    /**
-     * Register the given mapping.
-     * <p>This method may be invoked at runtime after initialization has completed.
-     *
-     * @param mapping the mapping for the handler method
-     * @param handler the handler
-     * @param method  the method
-     */
     @Override
     public void registerMapping(WxMappingInfo mapping, Object handler, Method method) {
         this.mappingRegistry.register(mapping, handler, method);
     }
 
-    /**
-     * Un-register the given mapping.
-     * <p>This method may be invoked at runtime after initialization has completed.
-     *
-     * @param mapping the mapping to unregister
-     */
     @Override
     public void unregisterMapping(WxMappingInfo mapping) {
         this.mappingRegistry.unregister(mapping);
@@ -196,15 +170,21 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getMappingButtonByEventKey(wxRequest.getEventKey());
+        return mappingRegistry.getHandlerButtonByEventKey(wxRequest.getEventKey());
     }
 
     private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getMappingEventByEventType(wxRequest.getEventType());
+        return mappingRegistry.getHandlerEventByEventType(wxRequest.getEventType());
     }
 
     private HandlerMethod lookupMessageHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getMappingMessageByEventType(wxRequest.getMessageType());
+        if (wxRequest.getMessageType() == WxMessage.Type.TEXT) {
+            List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequest.getContent());
+            if (!handlerMethods.isEmpty()) {
+                return handlerMethods.get(0);
+            }
+        }
+        return mappingRegistry.getHandlerMessageByEventType(wxRequest.getMessageType());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -276,6 +256,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .category(Wx.Category.MESSAGE)
                 .messageTypes(wxMessageMapping.type())
                 .mappingName(wxMessageMapping.name())
+                .wildcards(wxMessageMapping.wildcard())
                 .build();
     }
 
@@ -303,26 +284,47 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
 
+        private final MultiValueMap<String, WxMappingInfo> wildcardLookup = new LinkedMultiValueMap<>();
+        
         private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
         public Map<WxMappingInfo, HandlerMethod> getMappings() {
             return this.mappingLookup;
         }
 
-        public HandlerMethod getMappingButtonByEventKey(String eventKey) {
+        public HandlerMethod getHandlerButtonByEventKey(String eventKey) {
             return this.eventKeyLookup.get(eventKey);
         }
 
-        public HandlerMethod getMappingEventByEventType(WxEvent.Type eventType) {
+        public HandlerMethod getHandlerEventByEventType(WxEvent.Type eventType) {
             return this.eventTypeLookup.get(eventType);
         }
 
-        public HandlerMethod getMappingMessageByEventType(WxMessage.Type messageType) {
+        public HandlerMethod getHandlerMessageByEventType(WxMessage.Type messageType) {
             return this.messageTypeLookup.get(messageType);
         }
 
         public List<HandlerMethod> getHandlerMethodsByMappingName(String mappingName) {
             return this.nameLookup.get(mappingName);
+        }
+
+        public List<HandlerMethod> getHandlersByContent(String content) {
+            List<String> matchs = this.wildcardLookup.keySet().stream().filter(w -> WildcardUtils.wildcardMatch(content, w))
+                    .sorted(Comparator.comparing(String::length).reversed()).collect(Collectors.toList());
+            if (matchs.isEmpty()) {
+                return Collections.emptyList();
+            }
+            if (matchs.size() > 1) {
+                if (matchs.get(0).length() == matchs.get(1).length()) {
+                    logger.error("有两个重复的通配符！以后加入通配符权重！！");
+                }
+            }
+            String selectedMatch = matchs.get(0);
+            final List<HandlerMethod> handlerMethods = this.wildcardLookup.get(selectedMatch).stream().map(w -> mappingLookup.get(w)).collect(Collectors.toList());
+            if (handlerMethods.size() > 1) {
+                logger.error("有一个通配符有两个匹配的方法！");
+            }
+            return handlerMethods;
         }
 
         public void acquireReadLock() {
@@ -349,6 +351,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 if (!StringUtils.isEmpty(mapping.getEventKey())) {
                     eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
                 }
+                // 对于button类型，暂时只支持key查找
                 if (!mapping.getWxEventTypeCondition().isEmpty()) {
                     mapping.getWxEventTypeCondition().getEnums().forEach(
                             e -> eventTypeLookup.put(e, handlerMethod)
@@ -359,7 +362,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                             e -> messageTypeLookup.put(e, handlerMethod)
                     );
                 }
-
+                if (!mapping.getWxMessageWildcardCondition().isEmpty()) {
+                    mapping.getWxMessageWildcardCondition().getWildcards().forEach(
+                            w -> wildcardLookup.add(w, mapping)
+                    );
+                }
+                
+                
                 String name = null;
                 if (getNamingStrategy() != null) {
                     name = getNamingStrategy().getName(handlerMethod, mapping);

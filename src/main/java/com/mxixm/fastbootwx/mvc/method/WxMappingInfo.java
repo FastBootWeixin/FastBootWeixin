@@ -4,10 +4,7 @@ import com.mxixm.fastbootwx.annotation.WxButton;
 import com.mxixm.fastbootwx.module.Wx;
 import com.mxixm.fastbootwx.module.event.WxEvent;
 import com.mxixm.fastbootwx.module.message.WxMessage;
-import com.mxixm.fastbootwx.mvc.condition.WxButtonTypeCondition;
-import com.mxixm.fastbootwx.mvc.condition.WxCategoryCondition;
-import com.mxixm.fastbootwx.mvc.condition.WxEventTypeCondition;
-import com.mxixm.fastbootwx.mvc.condition.WxMessageTypeCondition;
+import com.mxixm.fastbootwx.mvc.condition.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.PathMatcher;
@@ -55,13 +52,16 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 	private final WxMessageTypeCondition wxMessageTypeCondition;
 
+	private final WxMessageWildcardCondition wxMessageWildcardCondition;
+
 	public WxMappingInfo(String name,
 						 Wx.Category category,
 						 String eventKey,
 						 WxCategoryCondition categories,
 						 WxButtonTypeCondition buttonTypes,
 						 WxEventTypeCondition eventTypes,
-						 WxMessageTypeCondition messageTypes) {
+						 WxMessageTypeCondition messageTypes,
+						 WxMessageWildcardCondition wildcards) {
 		this.name = (name != null ? name : "");
 		this.category = category;
 		this.eventKey = StringUtils.hasText(eventKey) ? eventKey : null;
@@ -69,6 +69,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		this.wxButtonTypeCondition = (buttonTypes != null ? buttonTypes : new WxButtonTypeCondition());
 		this.wxEventTypeCondition = (eventTypes != null ? eventTypes : new WxEventTypeCondition());
 		this.wxMessageTypeCondition = (messageTypes != null ? messageTypes : new WxMessageTypeCondition());
+		this.wxMessageWildcardCondition = (wildcards != null ? wildcards : new WxMessageWildcardCondition());
 	}
 
 	/**
@@ -102,6 +103,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		return wxMessageTypeCondition;
 	}
 
+	public WxMessageWildcardCondition getWxMessageWildcardCondition() {
+		return wxMessageWildcardCondition;
+	}
+
 	/**
 	 * Combines "this" request mapping info (i.e. the current instance) with another request mapping info instance.
 	 * <p>Example: combine type- and method-level request mappings.
@@ -116,7 +121,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxButtonTypeCondition buttonTypes = this.wxButtonTypeCondition.combine(other.wxButtonTypeCondition);
 		WxEventTypeCondition eventTypes = this.wxEventTypeCondition.combine(other.wxEventTypeCondition);
 		WxMessageTypeCondition messageTypes = this.wxMessageTypeCondition.combine(other.wxMessageTypeCondition);
-		return new WxMappingInfo(name, category, eventKey, categories, buttonTypes, eventTypes, messageTypes);
+		WxMessageWildcardCondition wildcards = this.wxMessageWildcardCondition.combine(other.wxMessageWildcardCondition);
+		return new WxMappingInfo(name, category, eventKey, categories, buttonTypes, eventTypes, messageTypes, wildcards);
 	}
 
 	private String combineEventKeys(WxMappingInfo other) {
@@ -141,13 +147,6 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		}
 	}
 
-	/**
-	 * Checks if all conditions in this request mapping info match the provided request and returns
-	 * a potentially new request mapping info with conditions tailored to the current request.
-	 * <p>For example the returned instance may contain the subset of URL patterns that match to
-	 * the current request, sorted with best matching patterns on top.
-	 * @return a new instance in case all conditions match; or {@code null} otherwise
-	 */
 	@Override
 	public WxMappingInfo getMatchingCondition(HttpServletRequest request) {
 
@@ -155,18 +154,13 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		WxButtonTypeCondition buttonTypes = (WxButtonTypeCondition) this.wxButtonTypeCondition.getMatchingCondition(request);
 		WxEventTypeCondition eventTypes = (WxEventTypeCondition) this.wxEventTypeCondition.getMatchingCondition(request);
 		WxMessageTypeCondition messageTypes = (WxMessageTypeCondition) this.wxMessageTypeCondition.getMatchingCondition(request);
+		WxMessageWildcardCondition wildcards = this.wxMessageWildcardCondition.getMatchingCondition(request);
 		if (categories == null) {
 			return null;
 		}
-		return new WxMappingInfo(this.name, this.category, this.eventKey, categories, buttonTypes, eventTypes, messageTypes);
+		return new WxMappingInfo(this.name, this.category, this.eventKey, categories, buttonTypes, eventTypes, messageTypes, wildcards);
 	}
 
-	/**
-	 * Compares "this" info (i.e. the current instance) with another info in the context of a request.
-	 * <p>Note: It is assumed both instances have been obtained via
-	 * {@link #getMatchingCondition(HttpServletRequest)} to ensure they have conditions with
-	 * content relevant to current request.
-	 */
 	@Override
 	public int compareTo(WxMappingInfo other, HttpServletRequest request) {
 		int result;
@@ -204,7 +198,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 				this.wxCategoryCondition.equals(otherInfo.wxCategoryCondition) &&
 				this.wxEventTypeCondition.equals(otherInfo.wxEventTypeCondition) &&
 				this.wxButtonTypeCondition.equals(otherInfo.wxButtonTypeCondition) &&
-				this.wxMessageTypeCondition.equals(otherInfo.wxMessageTypeCondition));
+				this.wxMessageTypeCondition.equals(otherInfo.wxMessageTypeCondition) &&
+				this.wxMessageWildcardCondition.equals(otherInfo.wxMessageWildcardCondition));
 	}
 
 	@Override
@@ -266,6 +261,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
 		Builder eventKey(String eventKey);
 
+		Builder wildcards(String... wildcards);
+
 		Builder options(WxMappingInfo.BuilderConfiguration options);
 
 		WxMappingInfo build();
@@ -282,6 +279,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		private WxMessage.Type[] messageTypes;
 
 		private WxEvent.Type[] eventTypes;
+
+		private String[] wildcards;
 
 		private String mappingName;
 
@@ -312,6 +311,12 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 		}
 
 		@Override
+		public DefaultBuilder wildcards(String... wildcards) {
+			this.wildcards = wildcards;
+			return this;
+		}
+
+		@Override
 		public DefaultBuilder mappingName(String name) {
 			this.mappingName = name;
 			return this;
@@ -335,7 +340,8 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 					new WxCategoryCondition(category),
 					new WxButtonTypeCondition(buttonTypes),
 					new WxEventTypeCondition(eventTypes),
-					new WxMessageTypeCondition(messageTypes));
+					new WxMessageTypeCondition(messageTypes),
+					new WxMessageWildcardCondition(wildcards));
 		}
 	}
 

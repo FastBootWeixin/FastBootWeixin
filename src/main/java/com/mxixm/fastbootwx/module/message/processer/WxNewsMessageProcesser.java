@@ -3,6 +3,7 @@ package com.mxixm.fastbootwx.module.message.processer;
 import com.mxixm.fastbootwx.module.WxRequest;
 import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.module.message.WxMessageProcesser;
+import com.mxixm.fastbootwx.util.WxMediaUrlUtils;
 
 /**
  * FastBootWeixin  WxCommonMessageProcesser

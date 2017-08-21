@@ -20,7 +20,13 @@ public @interface WxMessageMapping {
     WxMessage.Type type();
 
     /**
-     * 匹配模式
+     * 通配符
+     * @return
+     */
+    String[] wildcard() default "*";
+
+    /**
+     * 匹配模式，正则表达式，暂时不支持
      * @return
      */
     String pattern() default "";

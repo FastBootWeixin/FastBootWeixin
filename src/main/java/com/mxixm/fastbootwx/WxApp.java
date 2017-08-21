@@ -14,6 +14,7 @@ import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.module.user.WxUser;
 import com.mxixm.fastbootwx.mvc.annotation.WxController;
 import com.mxixm.fastbootwx.mvc.annotation.WxEventMapping;
+import com.mxixm.fastbootwx.mvc.annotation.WxMessageMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.Resource;
@@ -241,4 +242,53 @@ public class WxApp {
     public void unsubscribe(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
         System.out.println(wxRequest);
     }
+
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "哈哈哈*")
+    public WxMessage message(String content) {
+        return WxMessage.News.builder()
+                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是二条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是三条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem("我是四条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        "qipei.mxixm.com/vendor/5")
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是五条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是六条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是七条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是八条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .addItem(WxMessage.News.Item.builder()
+                        .title("我是九条图文测试消息")
+                        .description("测试哈哈哈哈")
+                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
+                        .url("qipei.mxixm.com/vendor/5").build())
+                .build();
+    }
+
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "嘿*")
+    public String ms(String content) {
+        return "嘿嘿嘿" + content;
+    }
+
 }

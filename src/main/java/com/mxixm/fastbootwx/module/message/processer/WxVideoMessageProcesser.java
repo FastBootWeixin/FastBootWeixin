@@ -4,6 +4,7 @@ import com.mxixm.fastbootwx.module.WxRequest;
 import com.mxixm.fastbootwx.module.media.WxMedia;
 import com.mxixm.fastbootwx.module.media.WxMediaManager;
 import com.mxixm.fastbootwx.module.message.WxMessage;
+import com.mxixm.fastbootwx.util.WxMediaUrlUtils;
 
 import java.io.File;
 

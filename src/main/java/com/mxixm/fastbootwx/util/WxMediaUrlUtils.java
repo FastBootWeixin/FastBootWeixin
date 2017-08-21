@@ -1,4 +1,4 @@
-package com.mxixm.fastbootwx.module.message.processer;
+package com.mxixm.fastbootwx.util;
 
 import org.springframework.util.StringUtils;
 
