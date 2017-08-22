@@ -41,7 +41,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private static final ParamsRequestCondition WX_VERIFY_PARAMS_CONDITION = new ParamsRequestCondition("echostr", "nonce", "signature", "timestamp");
 
-    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition("openId", "nonce", "signature", "timestamp");
+    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition("openid", "nonce", "signature", "timestamp");
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
@@ -170,7 +170,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getHandlerButtonByEventKey(wxRequest.getEventKey());
+        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequest.getEventKey());
+        if (handlerMethod == null) {
+            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequest.getButtonType());
+        }
+        return handlerMethod;
     }
 
     private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
@@ -184,7 +188,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 return handlerMethods.get(0);
             }
         }
-        return mappingRegistry.getHandlerMessageByEventType(wxRequest.getMessageType());
+        return mappingRegistry.getHandlerMessageByMessageType(wxRequest.getMessageType());
     }
 
     protected boolean isHandler(Class<?> beanType) {
@@ -276,6 +280,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
         private final Map<String, HandlerMethod> eventKeyLookup = new LinkedHashMap<>();
 
+        private final Map<WxButton.Type, HandlerMethod> buttonTypeLookup = new LinkedHashMap<>();
+
         private final Map<WxEvent.Type, HandlerMethod> eventTypeLookup = new LinkedHashMap<>();
 
         private final Map<WxMessage.Type, HandlerMethod> messageTypeLookup = new LinkedHashMap<>();
@@ -296,11 +302,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return this.eventKeyLookup.get(eventKey);
         }
 
+        public HandlerMethod getHandlerButtonByButtonType(WxButton.Type buttonType) {
+            return this.buttonTypeLookup.get(buttonType);
+        }
+
         public HandlerMethod getHandlerEventByEventType(WxEvent.Type eventType) {
             return this.eventTypeLookup.get(eventType);
         }
 
-        public HandlerMethod getHandlerMessageByEventType(WxMessage.Type messageType) {
+        public HandlerMethod getHandlerMessageByMessageType(WxMessage.Type messageType) {
             return this.messageTypeLookup.get(messageType);
         }
 
@@ -362,13 +372,16 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                             e -> messageTypeLookup.put(e, handlerMethod)
                     );
                 }
+                if (!mapping.getWxButtonTypeCondition().isEmpty()) {
+                    mapping.getWxButtonTypeCondition().getEnums().forEach(
+                            e -> buttonTypeLookup.put(e, handlerMethod)
+                    );
+                }
                 if (!mapping.getWxMessageWildcardCondition().isEmpty()) {
                     mapping.getWxMessageWildcardCondition().getWildcards().forEach(
                             w -> wildcardLookup.add(w, mapping)
                     );
                 }
-                
-                
                 String name = null;
                 if (getNamingStrategy() != null) {
                     name = getNamingStrategy().getName(handlerMethod, mapping);

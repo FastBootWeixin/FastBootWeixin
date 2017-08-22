@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.mvc.annotation;
 
 import com.mxixm.fastbootwx.annotation.WxResponseBody;
+import org.springframework.stereotype.Controller;
 
 import java.lang.annotation.*;
 
@@ -15,6 +16,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Controller
 @WxResponseBody
 public @interface WxController {
 

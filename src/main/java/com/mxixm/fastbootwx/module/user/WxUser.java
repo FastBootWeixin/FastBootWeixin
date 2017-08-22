@@ -23,12 +23,12 @@ public class WxUser {
      * 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。
      */
     @JsonProperty("subscribe")
-    private String subscribe;
+    private Integer subscribe;
 
     /**
      * 用户的标识，对当前公众号唯一
      */
-    @JsonProperty("openId")
+    @JsonProperty("openid")
     private String openId;
 
     /**

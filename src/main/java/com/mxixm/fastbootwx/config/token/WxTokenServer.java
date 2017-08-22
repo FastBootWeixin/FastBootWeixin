@@ -62,7 +62,7 @@ public class WxTokenServer {
         }
     }
 
-    public WxWebUser getUserAccessTokenByCode(String code) {
+    public WxWebUser getWxWebUserByCode(String code) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
                 .queryParam("grant_type", "authorization_code")
@@ -72,7 +72,7 @@ public class WxTokenServer {
         return getWxWebUserByBuilder(builder);
     }
 
-    public WxWebUser getUserAccessTokenByRefreshToken(String refreshToken) {
+    public WxWebUser getWxWebUserByRefreshToken(String refreshToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
                 .queryParam("grant_type", "authorization_code")
@@ -100,7 +100,7 @@ public class WxTokenServer {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
-                .queryParam("openId", wxWebUser.getOpenId())
+                .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
         String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
@@ -119,7 +119,7 @@ public class WxTokenServer {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
-                .queryParam("openId", wxWebUser.getOpenId());
+                .queryParam("openid", wxWebUser.getOpenId());
         String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             return false;

@@ -52,8 +52,8 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 		if (headers.containsKey(HttpHeaders.CONTENT_TYPE) && headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 		}
-		if (!headers.containsKey(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)) {
-			headers.add(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL, request.getURI().toString());
+		if (!headers.containsKey(WxRequestResponseUtils.X_WX_REQUEST_URL)) {
+			headers.add(WxRequestResponseUtils.X_WX_REQUEST_URL, request.getURI().toString());
 		}
 		return headers;
 	}

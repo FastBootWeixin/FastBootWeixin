@@ -15,12 +15,22 @@ import com.mxixm.fastbootwx.module.user.WxUser;
 import com.mxixm.fastbootwx.mvc.annotation.WxController;
 import com.mxixm.fastbootwx.mvc.annotation.WxEventMapping;
 import com.mxixm.fastbootwx.mvc.annotation.WxMessageMapping;
+import com.mxixm.fastbootwx.util.WxUrlUtils;
+import com.mxixm.fastbootwx.web.WxOAuth2Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Hello world!
@@ -244,11 +254,12 @@ public class WxApp {
     }
 
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "哈哈哈*")
+    @WxAsyncMessage
     public WxMessage message(String content) {
         return WxMessage.News.builder()
                 .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
                         "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
+                        WxUrlUtils.processRedirectUrl("http://smc24f.natappfree.cc/test", false))
                 .addItem("我是二条图文测试消息", "测试哈哈哈哈",
                         "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
                         "qipei.mxixm.com/vendor/5")
@@ -287,8 +298,23 @@ public class WxApp {
     }
 
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "嘿*")
-    public String ms(String content) {
-        return "嘿嘿嘿" + content;
+    public List<String> ms(String content) {
+        return Arrays.asList(content.split(""));
+    }
+
+
+    // @Configurable
+    @Configuration
+    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
+
+        @Autowired
+        private WxOAuth2Interceptor wxOAuth2Interceptor;
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(wxOAuth2Interceptor);
+        }
+
     }
 
 }

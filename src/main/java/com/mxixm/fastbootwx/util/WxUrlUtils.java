@@ -33,6 +33,14 @@ public abstract class WxUrlUtils {
         }
     }
 
+    public static String processRedirectUrl(String url) {
+        return processRedirectUrl(null, url, null, true);
+    }
+
+    public static String processRedirectUrl(String url, boolean isBase) {
+        return processRedirectUrl(null, url, null, isBase);
+    }
+
     /**
      * 最后会重定向到redirect_uri/?code=CODE&state=STATE上面
      *

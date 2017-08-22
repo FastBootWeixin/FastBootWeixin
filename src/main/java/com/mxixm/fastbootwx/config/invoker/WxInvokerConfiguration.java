@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.config.invoker;
 
 import com.mxixm.fastbootwx.common.WxBeanNames;
+import com.mxixm.fastbootwx.config.token.WxTokenServer;
 import com.mxixm.fastbootwx.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastbootwx.controller.invoker.WxInvokerProxyFactory;
 import com.mxixm.fastbootwx.controller.invoker.common.WxHttpInputMessageConverter;
@@ -12,6 +13,7 @@ import com.mxixm.fastbootwx.support.WxAccessTokenManager;
 import com.mxixm.fastbootwx.support.DefaultWxUserProvider;
 import com.mxixm.fastbootwx.support.WxUserProvider;
 import com.mxixm.fastbootwx.util.WxApplicationContextUtils;
+import com.mxixm.fastbootwx.web.WxUserManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,6 +24,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -112,8 +115,13 @@ public class WxInvokerConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public WxUserProvider userProvider(WxApiInvokeSpi wxApiInvokeSpi) {
-		return new DefaultWxUserProvider(wxApiInvokeSpi);
+	public WxUserProvider userProvider(WxUserManager wxUserManager) {
+		return new DefaultWxUserProvider(wxUserManager);
+	}
+
+	@Bean
+	public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+		return new WxUserManager(wxTokenServer, wxApiInvokeSpi);
 	}
 
 	/**

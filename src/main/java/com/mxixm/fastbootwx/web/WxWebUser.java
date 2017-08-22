@@ -1,7 +1,10 @@
 package com.mxixm.fastbootwx.web;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class WxWebUser {
@@ -27,7 +30,7 @@ public class WxWebUser {
     /**
      * 用户唯一标识，请注意，在未关注公众号时，用户访问公众号的网页，也会产生一个用户和公众号唯一的OpenID
      */
-    @JsonProperty("openId")
+    @JsonProperty("openid")
     private String openId;
 
     /**
@@ -35,5 +38,8 @@ public class WxWebUser {
      */
     @JsonProperty("scope")
     private String scope;
+
+    @JsonIgnore
+    private Date createTime = new Date();
 
 }

@@ -14,6 +14,7 @@ import com.mxixm.fastbootwx.mvc.advice.WxStringResponseBodyAdvice;
 import com.mxixm.fastbootwx.mvc.annotation.WxMappingHandlerMapping;
 import com.mxixm.fastbootwx.mvc.param.WxArgumentResolver;
 import com.mxixm.fastbootwx.support.WxUserProvider;
+import com.mxixm.fastbootwx.web.WxOAuth2Interceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -106,6 +107,11 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     @Bean
     public WxMediaResponseBodyAdvice wxMediaResponseBodyAdvice() {
         return new WxMediaResponseBodyAdvice();
+    }
+
+    @Bean
+    public WxOAuth2Interceptor wxOAuth2Interceptor() {
+        return new WxOAuth2Interceptor();
     }
 
     @Override

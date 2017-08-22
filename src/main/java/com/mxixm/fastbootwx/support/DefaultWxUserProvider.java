@@ -3,6 +3,7 @@ package com.mxixm.fastbootwx.support;
 import com.mxixm.fastbootwx.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastbootwx.module.user.WxUser;
 import com.mxixm.fastbootwx.util.CacheMap;
+import com.mxixm.fastbootwx.web.WxUserManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,22 +18,15 @@ import java.util.Map;
  */
 public class DefaultWxUserProvider implements WxUserProvider<WxUser> {
 
-    private WxApiInvokeSpi wxApiInvokeSpi;
+    private WxUserManager wxUserManager;
 
-    private Map<String, WxUser> cache = new CacheMap<>("WxUserCache");
-
-    public DefaultWxUserProvider(WxApiInvokeSpi wxApiInvokeSpi) {
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+    public DefaultWxUserProvider(WxUserManager wxUserManager) {
+        this.wxUserManager = wxUserManager;
     }
 
     @Override
     public WxUser getUser(String fromUserName) {
-        WxUser userInfo = cache.get(fromUserName);
-        if (userInfo == null) {
-            userInfo = wxApiInvokeSpi.getUserInfo(fromUserName);
-            cache.put(fromUserName, userInfo);
-        }
-        return userInfo;
+        return this.wxUserManager.getWxUser(fromUserName);
     }
 
 }

@@ -80,8 +80,8 @@ public class WxMediaResource extends AbstractResource {
             if (body[0] == '{') {
                 this.url = extractURL(body);
                 this.filename = extractFilenameFromURL(url);
-            } else if (httpHeaders.containsKey(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)) {
-                this.url = URI.create(httpHeaders.getFirst(WxRequestResponseUtils.HEADER_X_WX_REQUEST_URL)).toURL();
+            } else if (httpHeaders.containsKey(WxRequestResponseUtils.X_WX_REQUEST_URL)) {
+                this.url = URI.create(httpHeaders.getFirst(WxRequestResponseUtils.X_WX_REQUEST_URL)).toURL();
                 this.filename = extractFilenameFromURL(url);
             } else {
                 this.filename = UUID.randomUUID().toString() + ".jpg";

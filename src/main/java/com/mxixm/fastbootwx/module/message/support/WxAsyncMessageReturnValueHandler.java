@@ -20,6 +20,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,10 +51,14 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
      */
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
+        // 如果是collection或者array，都作为asyncMessage消息处理
+        boolean isCollectionType = Collection.class.isAssignableFrom(returnType.getParameterType());
+        boolean isArrayType = returnType.getParameterType().isArray();
         boolean isWxAsyncMessage = AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), WxAsyncMessage.class) ||
-                returnType.hasMethodAnnotation(WxAsyncMessage.class);
-        boolean isWxMessage = WxMessage.class.isAssignableFrom(returnType.getParameterType());
-        boolean isWxStringMessage = CharSequence.class.isAssignableFrom(returnType.getParameterType()) &&
+                returnType.hasMethodAnnotation(WxAsyncMessage.class) || isCollectionType || isArrayType;
+        Class realType = getRealType(returnType);
+        boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
+        boolean isWxStringMessage = CharSequence.class.isAssignableFrom(realType) &&
                 (returnType.hasMethodAnnotation(WxButton.class) || returnType.hasMethodAnnotation(WxMessageMapping.class));
         return isWxAsyncMessage && (isWxMessage || isWxStringMessage);
     }
@@ -68,10 +75,37 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         this.asyncExecutor.submit(() -> {
             if (returnValue instanceof WxMessage) {
                 wxMessageTemplate.sendMessage(wxRequest, (WxMessage) returnValue);
-            } else {
+            } else if (returnValue instanceof CharSequence) {
                 wxMessageTemplate.sendMessage(wxRequest, returnValue.toString());
+            } else if (returnValue instanceof Collection) {
+                if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
+                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
+                } else if (WxMessage.class.isAssignableFrom(getRealType(returnType))) {
+                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
+                }
+            } else if (returnType.getParameterType().isArray()) {
+                if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
+                    Arrays.stream((Object[]) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
+                } else if (WxMessage.class.isAssignableFrom(getRealType(returnType))) {
+                    Arrays.stream((WxMessage[]) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
+                }
             }
         });
+    }
+
+    private Class getRealType(MethodParameter returnType) {
+        boolean isCollection = Collection.class.isAssignableFrom(returnType.getParameterType());
+        if (isCollection) {
+            if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+                return (Class) ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments()[0];
+            } else {
+                return returnType.getParameterType();
+            }
+        }
+        if (returnType.getParameterType().isArray()) {
+            return returnType.getParameterType().getComponentType();
+        }
+        return returnType.getParameterType();
     }
 
     @Override
