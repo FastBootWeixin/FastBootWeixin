@@ -1,5 +1,6 @@
 package com.mxixm.fastbootwx.config.server;
 
+import com.mxixm.fastbootwx.annotation.EnableWxMvc;
 import com.mxixm.fastbootwx.config.invoker.WxVerifyProperties;
 import com.mxixm.fastbootwx.controller.WxVerifyController;
 import com.mxixm.fastbootwx.controller.invoker.WxApiInvokeSpi;
@@ -22,8 +23,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -32,9 +37,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
-public class WxBuildinMvcConfiguration {
+public class WxBuildinMvcConfiguration implements ImportAware {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -45,6 +51,8 @@ public class WxBuildinMvcConfiguration {
     private final WxMessageProcesser wxMessageProcesser;
 
     private final WxApiInvokeSpi wxApiInvokeSpi;
+
+    private boolean menuAutoCreate = true;
 
     public WxBuildinMvcConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
         this.wxVerifyProperties = wxVerifyProperties;
@@ -67,7 +75,7 @@ public class WxBuildinMvcConfiguration {
 
     @Bean
     public WxMenuManager wxMenuManager() {
-        return new WxMenuManager(wxApiInvokeSpi);
+        return new WxMenuManager(wxApiInvokeSpi, menuAutoCreate);
     }
 
     @Bean
@@ -98,6 +106,13 @@ public class WxBuildinMvcConfiguration {
     @Bean
     public WxMediaResponseBodyAdvice wxMediaResponseBodyAdvice() {
         return new WxMediaResponseBodyAdvice();
+    }
+
+    @Override
+    public void setImportMetadata(AnnotationMetadata importMetadata) {
+        AnnotationAttributes annotationAttributes = AnnotationAttributes.fromMap(
+                importMetadata.getAnnotationAttributes(EnableWxMvc.class.getName(), false));
+        this.menuAutoCreate = annotationAttributes.getBoolean("menuAutoCreate");
     }
 
     /**

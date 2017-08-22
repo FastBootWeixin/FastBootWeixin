@@ -28,7 +28,7 @@ public class WxUser {
     /**
      * 用户的标识，对当前公众号唯一
      */
-    @JsonProperty("openid")
+    @JsonProperty("openId")
     private String openId;
 
     /**
@@ -98,6 +98,12 @@ public class WxUser {
      */
     @JsonProperty("groupid")
     private Integer groupId;
+
+    /**
+     * 用户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
+     */
+    @JsonProperty("privilege")
+    private List<String> privileges;
 
     /**
      * 用户被打上的标签ID列表

@@ -224,7 +224,7 @@ public class WxMediaResource extends AbstractResource {
         if (isFileResource) {
             return this.file;
         }
-        return this.getFile(Wx.Environment.getInstance().getDefaultMediaPath());
+        return this.getFile(Wx.Environment.instance().getDefaultMediaPath());
     }
 
     public synchronized File getFile(String path) throws IOException {

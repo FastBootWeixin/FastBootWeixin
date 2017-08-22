@@ -27,6 +27,13 @@ import org.springframework.core.annotation.AliasFor;
 public @interface WxApplication {
 
 	/**
+	 * 是否自动创建菜单
+	 * @return
+	 */
+	@AliasFor(annotation = EnableWxMvc.class, attribute = "menuAutoCreate")
+	boolean menuAutoCreate() default true;
+
+	/**
 	 * Exclude specific auto-configuration classes such that they will never be applied.
 	 * @return the classes to exclude
 	 */

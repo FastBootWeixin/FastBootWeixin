@@ -1,13 +1,13 @@
 package com.mxixm.fastbootwx.mvc.annotation;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.mxixm.fastbootwx.annotation.WxResponseBody;
 
 import java.lang.annotation.*;
 
 /**
- * FastBootWeixin  WxAppAssert
+ * FastBootWeixin  WxController
  *
- * @author WxController
+ * @author Guangshan
  * @summary FastBootWeixin  WxController
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/8/12 22:51
@@ -15,14 +15,9 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@RestController
+@WxResponseBody
 public @interface WxController {
 
-    /**
-     * The value may indicate a suggestion for a logical component value,
-     * to be turned into a Spring bean in case of an autodetected component.
-     * @return the suggested component value, if any
-     */
     String value() default "";
 
 }

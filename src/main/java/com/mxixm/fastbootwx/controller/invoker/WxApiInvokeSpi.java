@@ -32,7 +32,7 @@ public interface WxApiInvokeSpi {
 
     WxMediaResource getTempMedia(@WxApiParam("media_id") String mediaId);
 
-    WxUser getUserInfo(@WxApiParam("openid") String userOpenId);
+    WxUser getUserInfo(@WxApiParam("openId") String userOpenId);
 
     WxMedia.ImageResult uploadImg(@WxApiForm("media") Resource media);
 

@@ -24,7 +24,7 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValueHandler, InitializingBean, DisposableBean, Ordered {
+public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValueHandler, InitializingBean, DisposableBean {
 
     // 异步执行器
     private ThreadPoolExecutor asyncExecutor;
@@ -96,11 +96,6 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         if (this.asyncExecutor != null) {
             this.asyncExecutor.shutdown();
         }
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 10000;
     }
 
     private static class WxAsyncMessageThreadFactory implements ThreadFactory {

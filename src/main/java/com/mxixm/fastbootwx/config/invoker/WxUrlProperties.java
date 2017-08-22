@@ -17,4 +17,8 @@ public class WxUrlProperties {
 
     private String createMenu = "cgi-bin/menu/create?access_token={accessToken}";
 
+    private String getUserAccessTokenByCode = "sns/oauth2/access_token";
+
+    private String getUserInfoByUserAccessToken = "sns/userinfo";
+
 }

@@ -38,7 +38,7 @@ public class Wx {
 
         private static Environment instance = new Environment();
 
-        public static Environment getInstance() {
+        public static Environment instance() {
             return instance;
         }
 
@@ -50,6 +50,36 @@ public class Wx {
          */
         private String defaultMediaPath = System.getProperty("java.io.tmpdir");
         // "~/weixin/media/";
+
+        private String wxToken;
+
+        private String wxAppId;
+
+        private String wxAppSecret;
+
+        public String getWxToken() {
+            return wxToken;
+        }
+
+        public void setWxToken(String wxToken) {
+            this.wxToken = wxToken;
+        }
+
+        public String getWxAppId() {
+            return wxAppId;
+        }
+
+        public void setWxAppId(String wxAppId) {
+            this.wxAppId = wxAppId;
+        }
+
+        public String getWxAppSecret() {
+            return wxAppSecret;
+        }
+
+        public void setWxAppSecret(String wxAppSecret) {
+            this.wxAppSecret = wxAppSecret;
+        }
 
         public String getDefaultMediaPath() {
             return defaultMediaPath;

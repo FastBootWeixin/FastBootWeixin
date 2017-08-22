@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * FastBootWeixin  WxApiInvokeSpi
@@ -188,7 +189,7 @@ public class WxApiExecutor {
             return new InputStreamResource((InputStream) arg);
         } else if (Reader.class.isAssignableFrom(arg.getClass())) {
             Reader reader = (Reader) arg;
-            ReaderInputStream readerInputStream = new ReaderInputStream(reader, Charset.forName("UTF-8"));
+            ReaderInputStream readerInputStream = new ReaderInputStream(reader, StandardCharsets.UTF_8);
             return new InputStreamResource(readerInputStream);
         }
         throw new WxAppException("不支持的Resource类型");

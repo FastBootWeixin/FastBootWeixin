@@ -15,4 +15,11 @@ import java.lang.annotation.*;
 @Inherited
 @Import({WxInvokerConfiguration.class, WxAsyncMessageConfiguration.class, WxBuildinMvcConfiguration.class, WxTokenConfiguration.class, WxMediaConfiguration.class})
 public @interface EnableWxMvc {
+
+    /**
+     * 是否自动创建菜单
+     * @return
+     */
+    boolean menuAutoCreate() default true;
+
 }

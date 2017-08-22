@@ -5,7 +5,7 @@ import com.mxixm.fastbootwx.module.media.WxMedia;
 import com.mxixm.fastbootwx.module.media.WxMediaManager;
 import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.module.message.WxMessageProcesser;
-import com.mxixm.fastbootwx.util.WxMediaUrlUtils;
+import com.mxixm.fastbootwx.util.WxUrlUtils;
 
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
@@ -34,7 +34,7 @@ public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> imple
                 String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File(body.getMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getMediaUrl() != null) {
-                String url = WxMediaUrlUtils.processUrl(wxRequest.getRequestUrl().toString(), body.getMediaUrl());
+                String url = WxUrlUtils.processMediaUrl(wxRequest.getRequestUrl().toString(), body.getMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setMediaId(mediaId);
             }

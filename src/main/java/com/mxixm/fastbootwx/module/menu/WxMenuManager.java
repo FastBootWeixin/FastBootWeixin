@@ -4,6 +4,7 @@ import com.mxixm.fastbootwx.annotation.WxButton;
 import com.mxixm.fastbootwx.controller.invoker.WxApiInvokeSpi;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.ToString;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,11 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private WxMenu wxMenu;
 
-    public WxMenuManager(WxApiInvokeSpi wxApiInvokeSpi) {
+    private boolean autoCreate;
+
+    public WxMenuManager(WxApiInvokeSpi wxApiInvokeSpi, boolean autoCreate) {
         this.wxApiInvokeSpi = wxApiInvokeSpi;
+        this.autoCreate = autoCreate;
     }
 
     public WxButtonItem add(WxButton wxButton) {
@@ -88,6 +92,9 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        if (!autoCreate) {
+            return;
+        }
         WxMenus oldWxMenu = wxApiInvokeSpi.getMenu();
         WxMenu newWxMenu = this.getMenu();
 //            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
@@ -110,6 +117,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         return !this.wxMenu.equals(wxMenus.wxMenu);
     }
 
+    @ToString
     public static class WxMenu {
         @JsonProperty("button")
         public List<WxButtonItem> mainButtons = new ArrayList<>();
@@ -127,6 +135,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         }
     }
 
+    @ToString
     public static class WxMenus {
 
         @JsonProperty("menu")
