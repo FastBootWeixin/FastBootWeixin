@@ -15,6 +15,8 @@ import com.mxixm.fastbootwx.module.user.WxUser;
 import com.mxixm.fastbootwx.mvc.annotation.WxController;
 import com.mxixm.fastbootwx.mvc.annotation.WxEventMapping;
 import com.mxixm.fastbootwx.mvc.annotation.WxMessageMapping;
+import com.mxixm.fastbootwx.util.WxRedirect;
+import com.mxixm.fastbootwx.util.WxRedirectUtils;
 import com.mxixm.fastbootwx.util.WxUrlUtils;
 import com.mxixm.fastbootwx.web.WxOAuth2Interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,68 +255,41 @@ public class WxApp {
         System.out.println(wxRequest);
     }
 
-    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "哈哈哈*")
-    @WxAsyncMessage
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
+//    @WxAsyncMessage
     public WxMessage message(String content) {
         return WxMessage.News.builder()
                 .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
                         "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        WxUrlUtils.processRedirectUrl("http://smc24f.natappfree.cc/test", false))
-                .addItem("我是二条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem("我是三条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem("我是四条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是五条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是六条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是七条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是八条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是九条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
+                        WxRedirectUtils.baseRedirect("http://smc24f.natappfree.cc/test"))
                 .build();
     }
 
-    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "嘿*")
-    public List<String> ms(String content) {
-        return Arrays.asList(content.split(""));
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
+    public WxMessage two(String content) {
+        return WxMessage.News.builder()
+                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        WxRedirectUtils.authRedirect("http://smc24f.natappfree.cc/test"))
+                .build();
     }
 
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "3*")
+    public WxMessage three(String content) {
+        return WxMessage.News.builder()
+                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        WxRedirectUtils.baseRedirect("http://smc24f.natappfree.cc/test?ha=hh"))
+                .build();
+    }
 
-    // @Configurable
-    @Configuration
-    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
-
-        @Autowired
-        private WxOAuth2Interceptor wxOAuth2Interceptor;
-
-        @Override
-        public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(wxOAuth2Interceptor);
-        }
-
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "4*")
+    public WxMessage fore(String content) {
+        return WxMessage.News.builder()
+                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
+                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
+                        WxRedirectUtils.authRedirect("http://smc24f.natappfree.cc/test"))
+                .build();
     }
 
 }

@@ -6,6 +6,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -18,55 +20,22 @@ import java.nio.charset.StandardCharsets;
  */
 public abstract class WxUrlUtils {
 
-    private static final String WX_OAUTH2_URL = "https://open.weixin.qq.com/connect/oauth2/authorize";
-
-    private static final UriComponentsBuilder baseBuilder = UriComponentsBuilder.fromHttpUrl(WX_OAUTH2_URL);
-
-    public static String processMediaUrl(String requestUrl, String url) {
+    public static String mediaUrl(String requestUrl, String url) {
         if (url.startsWith("http://") || url.startsWith("https://")) {
             return url;
         }
         if (url.startsWith("/") && !StringUtils.isEmpty(requestUrl)) {
-            return StringUtils.applyRelativePath(requestUrl, url);
+            String hostUrl = requestUrl;
+            try {
+                URI uri = new URI(requestUrl);
+                hostUrl = uri.getHost();
+            } catch (URISyntaxException e) {
+                // ignore it
+            }
+            return StringUtils.applyRelativePath(hostUrl, url);
         } else {
             return "http://" + url;
         }
-    }
-
-    public static String processRedirectUrl(String url) {
-        return processRedirectUrl(null, url, null, true);
-    }
-
-    public static String processRedirectUrl(String url, boolean isBase) {
-        return processRedirectUrl(null, url, null, isBase);
-    }
-
-    /**
-     * 最后会重定向到redirect_uri/?code=CODE&state=STATE上面
-     *
-     * @param requestUrl 请求地址
-     * @param url 要跳转的地址
-     * @param state 重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
-     * @param isBase 应用授权作用域，snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid），
-     *               snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，即使在未关注的情况下，只要用户授权，也能获取其信息）
-     * @return
-     */
-    public static String processRedirectUrl(String requestUrl, String url, String state, boolean isBase) {
-        if (url.startsWith(WX_OAUTH2_URL)) {
-            return url;
-        }
-        String redirectUri = processMediaUrl(requestUrl, url);
-        try {
-            redirectUri = UriUtils.encode(redirectUri, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            // ignore it
-        }
-        String finalRedirectUri = baseBuilder.cloneBuilder().queryParam("appid", Wx.Environment.instance().getWxAppId())
-                .queryParam("redirect_uri", redirectUri)
-                .queryParam("response_type", "code")
-                .queryParam("scope", isBase ? "snsapi_base" : "snsapi_userinfo")
-                .queryParam("state", state).build().toUriString() + "#wechat_redirect";
-        return finalRedirectUri;
     }
 
 }

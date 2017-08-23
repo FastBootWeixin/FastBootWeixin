@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.web;
 
 import com.mxixm.fastbootwx.mvc.WxRequestResponseUtils;
+import com.mxixm.fastbootwx.util.WxRedirectUtils;
 import com.mxixm.fastbootwx.util.WxUrlUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,6 +16,7 @@ import java.lang.invoke.MethodHandles;
 
 /**
  * 微信oauth2的interceptor
+ * 如果重定向的url中有参数，微信也会原封不动的把这些参数加上，再把自己的参数往后面加，所以我觉得state应该没什么卵用了，自己拼参数就足够了
  *
  * @Copyright (c) 2016, Guangshan Group All Rights Reserved.
  */
@@ -58,8 +60,9 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        String redirectUrl = request.getRequestURI() + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
-        response.sendRedirect(WxUrlUtils.processRedirectUrl(redirectUrl));
+        String redirectUrl = request.getRequestURL() + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+        // 如果重定向到授权，则肯定可以获得信息，但是如果重定向到基本，则无法获得信息，所以默认重定向到授权
+        response.sendRedirect(WxRedirectUtils.redirect(redirectUrl, false));
         return false;
     }
 

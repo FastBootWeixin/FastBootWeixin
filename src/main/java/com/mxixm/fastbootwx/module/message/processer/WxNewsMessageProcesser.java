@@ -3,6 +3,7 @@ package com.mxixm.fastbootwx.module.message.processer;
 import com.mxixm.fastbootwx.module.WxRequest;
 import com.mxixm.fastbootwx.module.message.WxMessage;
 import com.mxixm.fastbootwx.module.message.WxMessageProcesser;
+import com.mxixm.fastbootwx.util.WxRedirectUtils;
 import com.mxixm.fastbootwx.util.WxUrlUtils;
 
 /**
@@ -19,7 +20,10 @@ public class WxNewsMessageProcesser implements WxMessageProcesser<WxMessage.News
         if (wxMessage == null) {
             return wxMessage;
         }
-        wxMessage.getBody().getArticles().stream().forEach(i -> i.setPicUrl(WxUrlUtils.processMediaUrl(wxRequest.getRequestUrl().toString(), i.getPicUrl())));
+        wxMessage.getBody().getArticles().stream().forEach(i -> {
+            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestUrl().toString(), i.getPicUrl()));
+            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestUrl().toString(), i.getUrl()));
+        });
         return wxMessage;
     }
 

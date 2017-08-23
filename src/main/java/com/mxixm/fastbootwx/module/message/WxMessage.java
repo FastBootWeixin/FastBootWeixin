@@ -726,6 +726,14 @@ public class WxMessage {
                 this.picUrl = picUrl;
             }
 
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
+            public String getUrl() {
+                return url;
+            }
+
             public static Builder builder() {
                 return new Builder();
             }

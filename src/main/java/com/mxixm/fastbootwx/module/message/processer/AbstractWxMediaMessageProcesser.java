@@ -34,7 +34,7 @@ public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> imple
                 String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File(body.getMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getMediaUrl() != null) {
-                String url = WxUrlUtils.processMediaUrl(wxRequest.getRequestUrl().toString(), body.getMediaUrl());
+                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestUrl().toString(), body.getMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setMediaId(mediaId);
             }

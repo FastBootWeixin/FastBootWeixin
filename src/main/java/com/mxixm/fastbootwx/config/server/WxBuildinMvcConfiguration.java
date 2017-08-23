@@ -22,6 +22,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -32,6 +33,8 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -41,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
+@EnableConfigurationProperties(WxMvcProperties.class)
 public class WxBuildinMvcConfiguration implements ImportAware {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
@@ -53,9 +57,12 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private final WxApiInvokeSpi wxApiInvokeSpi;
 
+    private final WxMvcProperties wxMvcProperties;
+
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+    public WxBuildinMvcConfiguration(WxMvcProperties wxMvcProperties, WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+        this.wxMvcProperties = wxMvcProperties;
         this.wxVerifyProperties = wxVerifyProperties;
         this.beanFactory = beanFactory;
         this.wxMessageProcesser = wxMessageProcesser;
@@ -84,10 +91,10 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         return new WxMediaResourceMessageConverter();
     }
 
-//    @Bean
-//    public WxMvcConfigurer wxMvcConfigurer(WxUserProvider wxUserProvider) {
-//        return new WxMvcConfigurer(wxUserProvider, beanFactory);
-//    }
+    @Bean
+    public WxMvcConfigurer wxMvcConfigurer() {
+        return new WxMvcConfigurer(wxOAuth2Interceptor(), wxMvcProperties);
+    }
 
     @Bean
     public WxMvcAdapterCustomer wxMvcAdapterCustomer() {
@@ -154,6 +161,26 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
 
+        private HandlerInterceptor wxOAuth2Interceptor;
+
+        private WxMvcProperties wxMvcProperties;
+
+        public WxMvcConfigurer(HandlerInterceptor wxOAuth2Interceptor, WxMvcProperties wxMvcProperties) {
+            this.wxOAuth2Interceptor = wxOAuth2Interceptor;
+            this.wxMvcProperties = wxMvcProperties;
+        }
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(wxOAuth2Interceptor)
+                    .addPathPatterns(wxMvcProperties.getIncludePatterns().toArray(new String[wxMvcProperties.getIncludePatterns().size()]))
+                    .excludePathPatterns(wxMvcProperties.getIncludePatterns().toArray(new String[wxMvcProperties.getIncludePatterns().size()]));
+        }
+
+    }
+
+    /*public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
+
         private WxArgumentResolver wxArgumentResolver;
 
         private WxAsyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler;
@@ -166,7 +193,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
          *
          * @param wxUserProvider
          * @param beanFactory
-         */
+         *
         public WxMvcConfigurer(WxUserProvider wxUserProvider, BeanFactory beanFactory) {
             if (beanFactory instanceof ConfigurableBeanFactory) {
                 this.wxArgumentResolver = new WxArgumentResolver((ConfigurableBeanFactory) beanFactory);
@@ -192,7 +219,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         /*@Override
         public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 			converters.add(new WxMediaResourceMessageConverter());
-		}*/
+		}*
     }
-
+    */
 }
