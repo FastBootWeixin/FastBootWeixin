@@ -28,11 +28,11 @@ public abstract class WxUrlUtils {
             String hostUrl = requestUrl;
             try {
                 URI uri = new URI(requestUrl);
-                hostUrl = uri.getHost();
+                hostUrl = uri.getScheme() + "://" + uri.getHost();
             } catch (URISyntaxException e) {
                 // ignore it
             }
-            return StringUtils.applyRelativePath(hostUrl, url);
+            return hostUrl +  url;
         } else {
             return "http://" + url;
         }

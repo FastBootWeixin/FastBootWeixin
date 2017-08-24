@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.controller;
 
 import com.mxixm.fastbootwx.config.invoker.WxVerifyProperties;
+import com.mxixm.fastbootwx.util.CryptUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,7 +32,7 @@ public class WxVerifyController {
                          @RequestParam(value = "nonce", required = true) String nonce,
                          @RequestParam(value = "echostr", required = true) String echostr) {
         String rawString = Stream.of(wxVerifyProperties.getToken(), timestamp, nonce).sorted().collect(Collectors.joining());
-        if (signature.equals(DigestUtils.sha1Hex(rawString))) {
+        if (signature.equals(CryptUtils.encryptSHA1(rawString))) {
             return echostr;
         }
         return null;

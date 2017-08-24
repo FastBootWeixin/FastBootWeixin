@@ -2,10 +2,10 @@ package com.mxixm.fastbootwx.web;
 
 import com.mxixm.fastbootwx.mvc.WxRequestResponseUtils;
 import com.mxixm.fastbootwx.util.WxRedirectUtils;
-import com.mxixm.fastbootwx.util.WxUrlUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,7 +20,7 @@ import java.lang.invoke.MethodHandles;
  *
  * @Copyright (c) 2016, Guangshan Group All Rights Reserved.
  */
-public class WxOAuth2Interceptor implements HandlerInterceptor {
+public class WxOAuth2Interceptor implements HandlerInterceptor, Ordered {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -76,4 +76,8 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
                                 Object handler, Exception ex) throws Exception {
     }
 
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE + 10;
+    }
 }
