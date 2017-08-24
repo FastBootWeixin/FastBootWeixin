@@ -2,6 +2,7 @@ package com.mxixm.fastbootwx.module.message.support;
 
 import com.mxixm.fastbootwx.annotation.WxAsyncMessage;
 import com.mxixm.fastbootwx.annotation.WxButton;
+import com.mxixm.fastbootwx.annotation.WxMapping;
 import com.mxixm.fastbootwx.config.message.WxAsyncMessageProperties;
 import com.mxixm.fastbootwx.module.WxRequest;
 import com.mxixm.fastbootwx.module.message.WxMessage;
@@ -59,7 +60,7 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         Class realType = getRealType(returnType);
         boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
         boolean isWxStringMessage = CharSequence.class.isAssignableFrom(realType) &&
-                (returnType.hasMethodAnnotation(WxButton.class) || returnType.hasMethodAnnotation(WxMessageMapping.class));
+                returnType.hasMethodAnnotation(WxMapping.class);
         return isWxAsyncMessage && (isWxMessage || isWxStringMessage);
     }
 

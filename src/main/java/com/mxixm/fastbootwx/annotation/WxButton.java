@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@WxMapping
 public @interface WxButton {
 
     // 按钮属于哪一组

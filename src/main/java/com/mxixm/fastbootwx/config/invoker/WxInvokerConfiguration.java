@@ -25,6 +25,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -43,6 +44,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties({WxVerifyProperties.class, WxInvokerProperties.class, WxUrlProperties.class})
 @ConditionalOnClass(RestTemplate.class)
+@PropertySource("classpath:/wx.properties")
 public class WxInvokerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

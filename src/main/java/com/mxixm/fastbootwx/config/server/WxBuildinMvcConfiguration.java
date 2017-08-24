@@ -159,7 +159,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         }
     }
 
-    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {
+    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter implements Ordered {
 
         private HandlerInterceptor wxOAuth2Interceptor;
 
@@ -177,6 +177,10 @@ public class WxBuildinMvcConfiguration implements ImportAware {
                     .excludePathPatterns(wxMvcProperties.getIncludePatterns().toArray(new String[wxMvcProperties.getIncludePatterns().size()]));
         }
 
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE + 1000;
+        }
     }
 
     /*public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {

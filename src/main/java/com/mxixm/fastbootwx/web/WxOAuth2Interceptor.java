@@ -20,7 +20,7 @@ import java.lang.invoke.MethodHandles;
  *
  * @Copyright (c) 2016, Guangshan Group All Rights Reserved.
  */
-public class WxOAuth2Interceptor implements HandlerInterceptor, Ordered {
+public class WxOAuth2Interceptor implements HandlerInterceptor {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -76,8 +76,4 @@ public class WxOAuth2Interceptor implements HandlerInterceptor, Ordered {
                                 Object handler, Exception ex) throws Exception {
     }
 
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE + 10;
-    }
 }

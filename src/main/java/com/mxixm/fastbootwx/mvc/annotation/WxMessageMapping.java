@@ -1,5 +1,6 @@
 package com.mxixm.fastbootwx.mvc.annotation;
 
+import com.mxixm.fastbootwx.annotation.WxMapping;
 import com.mxixm.fastbootwx.module.message.WxMessage;
 
 import java.lang.annotation.*;
@@ -11,6 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@WxMapping
 public @interface WxMessageMapping {
 
     /**

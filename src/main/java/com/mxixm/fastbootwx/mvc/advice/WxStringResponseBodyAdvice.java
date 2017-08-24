@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.mvc.advice;
 
 import com.mxixm.fastbootwx.annotation.WxButton;
+import com.mxixm.fastbootwx.annotation.WxMapping;
 import com.mxixm.fastbootwx.exception.WxAppException;
 import com.mxixm.fastbootwx.module.WxRequest;
 import com.mxixm.fastbootwx.module.message.WxMessage;
@@ -58,8 +59,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
                             Class<? extends HttpMessageConverter<?>> converterType) {
         return StringHttpMessageConverter.class.isAssignableFrom(converterType) &&
                 CharSequence.class.isAssignableFrom(returnType.getParameterType()) &&
-                (returnType.hasMethodAnnotation(WxButton.class) ||
-                        returnType.hasMethodAnnotation(WxMessageMapping.class));
+                returnType.hasMethodAnnotation(WxMapping.class);
     }
 
     @Override

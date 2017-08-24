@@ -1,6 +1,7 @@
 package com.mxixm.fastbootwx.mvc.annotation;
 
 import com.mxixm.fastbootwx.annotation.WxAsyncMessage;
+import com.mxixm.fastbootwx.annotation.WxMapping;
 import com.mxixm.fastbootwx.module.event.WxEvent;
 
 import java.lang.annotation.*;
@@ -12,6 +13,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @WxAsyncMessage
+@WxMapping
 public @interface WxEventMapping {
 
     /**
