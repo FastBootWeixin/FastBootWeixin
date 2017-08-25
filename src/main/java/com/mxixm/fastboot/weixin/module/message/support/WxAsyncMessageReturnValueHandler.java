@@ -1,0 +1,162 @@
+package com.mxixm.fastboot.weixin.module.message.support;
+
+import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
+import com.mxixm.fastboot.weixin.annotation.WxMapping;
+import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageProperties;
+import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
+import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValueHandler, InitializingBean, DisposableBean {
+
+    // 异步执行器
+    private ThreadPoolExecutor asyncExecutor;
+
+    private WxMessageTemplate wxMessageTemplate;
+
+    private WxAsyncMessageProperties wxAsyncMessageProperties;
+
+    public WxAsyncMessageReturnValueHandler(WxAsyncMessageProperties wxAsyncMessageProperties, WxMessageTemplate wxMessageTemplate) {
+        this.wxAsyncMessageProperties = wxAsyncMessageProperties;
+        this.wxMessageTemplate = wxMessageTemplate;
+    }
+
+    /**
+     * 有WxAsyncMessage注解且
+     * 返回值是WxMessage的子类
+     * 或者是CharSequence的子类，且有注解WxButton或者WXMessageMapping
+     *
+     * @param returnType
+     * @return
+     */
+    @Override
+    public boolean supportsReturnType(MethodParameter returnType) {
+        // 如果是collection或者array，都作为asyncMessage消息处理
+        boolean isCollectionType = Collection.class.isAssignableFrom(returnType.getParameterType());
+        boolean isArrayType = returnType.getParameterType().isArray();
+        boolean isWxAsyncMessage = AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), WxAsyncMessage.class) ||
+                returnType.hasMethodAnnotation(WxAsyncMessage.class) || isCollectionType || isArrayType;
+        Class realType = getRealType(returnType);
+        boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
+        boolean isWxStringMessage = CharSequence.class.isAssignableFrom(realType) &&
+                returnType.hasMethodAnnotation(WxMapping.class);
+        return isWxAsyncMessage && (isWxMessage || isWxStringMessage);
+    }
+
+    @Override
+    public void handleReturnValue(Object returnValue, MethodParameter returnType,
+                                  ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+        mavContainer.setRequestHandled(true);
+        HttpServletResponse servletResponse = webRequest.getNativeResponse(HttpServletResponse.class);
+        ServletServerHttpResponse outputMessage = new ServletServerHttpResponse(servletResponse);
+        outputMessage.getBody();
+        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+        WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(request);
+        this.asyncExecutor.submit(() -> {
+            if (returnValue instanceof WxMessage) {
+                wxMessageTemplate.sendMessage(wxRequest, (WxMessage) returnValue);
+            } else if (returnValue instanceof CharSequence) {
+                wxMessageTemplate.sendMessage(wxRequest, returnValue.toString());
+            } else if (returnValue instanceof Collection) {
+                if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
+                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
+                } else if (WxMessage.class.isAssignableFrom(getRealType(returnType))) {
+                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
+                }
+            } else if (returnType.getParameterType().isArray()) {
+                if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
+                    Arrays.stream((Object[]) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
+                } else if (WxMessage.class.isAssignableFrom(getRealType(returnType))) {
+                    Arrays.stream((WxMessage[]) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
+                }
+            }
+        });
+    }
+
+    private Class getRealType(MethodParameter returnType) {
+        boolean isCollection = Collection.class.isAssignableFrom(returnType.getParameterType());
+        if (isCollection) {
+            if (returnType.getGenericParameterType() instanceof ParameterizedType) {
+                return (Class) ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments()[0];
+            } else {
+                return returnType.getParameterType();
+            }
+        }
+        if (returnType.getParameterType().isArray()) {
+            return returnType.getParameterType().getComponentType();
+        }
+        return returnType.getParameterType();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.asyncExecutor = new ThreadPoolExecutor(
+                // 正常情况下的线程数，默认6
+                wxAsyncMessageProperties.getPoolCoreSize(),
+                // 线程池最大线程数，默认12
+                wxAsyncMessageProperties.getPoolMaxSize(),
+                // 线程存活时间：多少秒，默认80秒
+                wxAsyncMessageProperties.getPoolKeepAliveInSeconds(), TimeUnit.SECONDS,
+                // 使用arrayList阻塞队列，默认10000
+                new ArrayBlockingQueue<>(wxAsyncMessageProperties.getMaxQueueSize()),
+                // 线程名
+                new WxAsyncMessageThreadFactory(Executors.defaultThreadFactory()),
+                // 忽视最早入队的日志
+                new ThreadPoolExecutor.DiscardOldestPolicy());
+    }
+
+    @Override
+    public void destroy() {
+        if (this.asyncExecutor != null) {
+            this.asyncExecutor.shutdown();
+        }
+    }
+
+    private static class WxAsyncMessageThreadFactory implements ThreadFactory {
+        private final ThreadFactory delegate;
+        private final Thread.UncaughtExceptionHandler exceptionHandler;
+
+        public WxAsyncMessageThreadFactory(ThreadFactory threadFactory) {
+            super();
+            this.delegate = threadFactory;
+            this.exceptionHandler = new LogUncaughtExceptionHandler();
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            final Thread t = this.delegate.newThread(r);
+            t.setUncaughtExceptionHandler(exceptionHandler);
+            t.setName("WxAsyncMessage-Sender-" + t.getName());
+            return t;
+        }
+    }
+
+    private static class LogUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+
+        private static final Logger logger = Logger.getLogger("WxAsyncMessage");
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+            logger.log(Level.SEVERE, "线程：" + t.getName() + ",执行异常", e);
+        }
+    }
+
+}

@@ -4,7 +4,7 @@
       "name": "wx.api.verify.appsecret",
       "type": "java.lang.String",
       "description": "Description for wx.api.verify.appsecret.",
-      "sourceType": "com.mxixm.fastbootwx.config.invoker.WxVerifyProperties"
+      "sourceType": "com.mxixm.fastboot.weixin.config.invoker.WxVerifyProperties"
     },
     {
       "name": "wx.menu.auto-create",

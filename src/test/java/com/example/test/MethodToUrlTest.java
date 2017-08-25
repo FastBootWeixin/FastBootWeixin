@@ -1,6 +1,6 @@
 package com.example.test;
 
-import com.mxixm.fastbootwx.controller.WxVerifyController;
+import com.mxixm.fastboot.weixin.controller.WxVerifyController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
