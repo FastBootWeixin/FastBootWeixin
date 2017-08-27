@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 public class WxApiTypeInfo {
 
-    private static final String WX_API_PROPERTY_PREFIX = "wx.api.url";
+    private static final String WX_API_PROPERTY_PREFIX = "wx.url";
 
     private final Class clazz;
 

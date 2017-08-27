@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.controller.invoker;
 
-import com.mxixm.fastboot.weixin.config.invoker.WxUrlProperties;
+import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiExecutor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -44,10 +44,10 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
     private final WxApiExecutor wxApiExecutor;
 
     // 理论上构造方法上不能做这么多事的，以后再优化
-    public WxInvokerProxyFactory(Class<T> clazz, WxUrlProperties wxUrlProperties, WxApiExecutor wxApiExecutor) {
+    public WxInvokerProxyFactory(Class<T> clazz, WxProperties wxProperties, WxApiExecutor wxApiExecutor) {
         this.clazz = clazz;
         this.wxApiExecutor = wxApiExecutor;
-        this.wxApiTypeInfo = new WxApiTypeInfo(clazz, wxUrlProperties.getHost());
+        this.wxApiTypeInfo = new WxApiTypeInfo(clazz, wxProperties.getUrl().getHost());
     }
 
     @Override

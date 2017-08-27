@@ -57,6 +57,16 @@ public class Wx {
 
         private String wxAppSecret;
 
+        private String callbackUrl;
+
+        public String getCallbackUrl() {
+            return callbackUrl;
+        }
+
+        public void setCallbackUrl(String callbackUrl) {
+            this.callbackUrl = callbackUrl;
+        }
+
         public String getWxToken() {
             return wxToken;
         }

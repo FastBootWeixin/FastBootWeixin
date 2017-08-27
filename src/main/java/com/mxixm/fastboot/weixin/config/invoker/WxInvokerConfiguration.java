@@ -1,7 +1,8 @@
 package com.mxixm.fastboot.weixin.config.invoker;
 
 import com.mxixm.fastboot.weixin.common.WxBeanNames;
-import com.mxixm.fastboot.weixin.config.token.WxTokenServer;
+import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxHttpInputMessageConverter;
 import com.mxixm.fastboot.weixin.controller.invoker.component.WxApiHttpRequestFactory;
@@ -20,12 +21,10 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -41,21 +40,19 @@ import java.util.Collections;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties({WxVerifyProperties.class, WxInvokerProperties.class, WxUrlProperties.class})
 @ConditionalOnClass(RestTemplate.class)
-@PropertySource("classpath:/wx.properties")
 public class WxInvokerConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final WxInvokerProperties wxInvokerProperties;
+	private final WxProperties wxProperties;
 
 	private final ObjectProvider<HttpMessageConverters> messageConverters;
 
 	public WxInvokerConfiguration(
-			WxInvokerProperties wxInvokerProperties,
+			WxProperties wxProperties,
 			ObjectProvider<HttpMessageConverters> messageConverters) {
-		this.wxInvokerProperties = wxInvokerProperties;
+		this.wxProperties = wxProperties;
 		this.messageConverters = messageConverters;
 	}
 
@@ -71,7 +68,7 @@ public class WxInvokerConfiguration {
 	@Bean(name = WxBeanNames.WX_API_INVOKER_NAME)
 	public WxApiInvoker wxApiInvoker() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
-		builder = builder.requestFactory(new WxApiHttpRequestFactory(wxInvokerProperties))
+		builder = builder.requestFactory(new WxApiHttpRequestFactory(wxProperties))
 				.errorHandler(new WxResponseErrorHandler());
 		HttpMessageConverters converters = this.messageConverters.getIfUnique();
 		List<HttpMessageConverter<?>> converterList = new ArrayList<>();
@@ -109,8 +106,8 @@ public class WxInvokerConfiguration {
 	}
 
 	@Bean
-	public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxUrlProperties wxUrlProperties, WxApiExecutor wxApiExecutor) {
-		return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxUrlProperties, wxApiExecutor);
+	public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
+		return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxProperties, wxApiExecutor);
 	}
 
 

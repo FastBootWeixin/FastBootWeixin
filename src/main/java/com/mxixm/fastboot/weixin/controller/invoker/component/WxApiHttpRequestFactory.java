@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.controller.invoker.component;
 
-import com.mxixm.fastboot.weixin.config.invoker.WxInvokerProperties;
+import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import org.apache.http.Header;
 import org.apache.http.client.HttpClient;
@@ -43,12 +43,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
 
-    private WxInvokerProperties wxInvokerProperties;
+    private WxProperties wxProperties;
 
     private ClientHttpRequestFactory delegate;
 
-    public WxApiHttpRequestFactory(WxInvokerProperties wxInvokerProperties) {
-        this.wxInvokerProperties = wxInvokerProperties;
+    public WxApiHttpRequestFactory(WxProperties wxProperties) {
+        this.wxProperties = wxProperties;
         this.delegate = getClientHttpRequestFactory();
     }
 
@@ -61,11 +61,11 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
         // httpClient连接配置，底层是配置RequestConfig
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         // 连接超时
-        clientHttpRequestFactory.setConnectTimeout(wxInvokerProperties.getConnectTimeout());
+        clientHttpRequestFactory.setConnectTimeout(wxProperties.getInvoker().getConnectTimeout());
         // 数据读取超时时间，即SocketTimeout
-        clientHttpRequestFactory.setReadTimeout(wxInvokerProperties.getReadTimeout());
+        clientHttpRequestFactory.setReadTimeout(wxProperties.getInvoker().getReadTimeout());
         // 连接不够用的等待时间，不宜过长，必须设置，比如连接不够用时，时间过长将是灾难性的
-        clientHttpRequestFactory.setConnectionRequestTimeout(wxInvokerProperties.getConnectionRequestTimeout());
+        clientHttpRequestFactory.setConnectionRequestTimeout(wxProperties.getInvoker().getConnectionRequestTimeout());
         return clientHttpRequestFactory;
     }
 
@@ -77,7 +77,7 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
         HttpClientBuilder builder = HttpClientBuilder.create();
         // 长连接保持30秒
         PoolingHttpClientConnectionManager pollingConnectionManager;
-        if (wxInvokerProperties.isEnableHttps()) {
+        if (wxProperties.getInvoker().isEnableHttps()) {
             SSLContext sslContext;
             try {
                 sslContext = new SSLContextBuilder().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
@@ -98,17 +98,17 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
                     .build();
             // now, we builder connection-manager using our Registry.
             //      -- allows multi-threaded use
-            pollingConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, null, null, null, wxInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
+            pollingConnectionManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry, null, null, null, wxProperties.getInvoker().getTimeToLive(), TimeUnit.SECONDS);
         } else {
-            pollingConnectionManager = new PoolingHttpClientConnectionManager(wxInvokerProperties.getTimeToLive(), TimeUnit.SECONDS);
+            pollingConnectionManager = new PoolingHttpClientConnectionManager(wxProperties.getInvoker().getTimeToLive(), TimeUnit.SECONDS);
         }
         // 总连接数
-        pollingConnectionManager.setMaxTotal(wxInvokerProperties.getMaxTotal());
+        pollingConnectionManager.setMaxTotal(wxProperties.getInvoker().getMaxTotal());
         // 同路由的并发数
-        pollingConnectionManager.setDefaultMaxPerRoute(wxInvokerProperties.getMaxPerRoute());
+        pollingConnectionManager.setDefaultMaxPerRoute(wxProperties.getInvoker().getMaxPerRoute());
         builder.setConnectionManager(pollingConnectionManager);
         // 重试次数，默认是2次，没有开启
-        builder.setRetryHandler(new DefaultHttpRequestRetryHandler(wxInvokerProperties.getRetryCount(), wxInvokerProperties.isRequestSentRetryEnabled()));
+        builder.setRetryHandler(new DefaultHttpRequestRetryHandler(wxProperties.getInvoker().getRetryCount(), wxProperties.getInvoker().isRequestSentRetryEnabled()));
         // 保持长连接配置，需要在头添加Keep-Alive
         builder.setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE);
         List<Header> headers = new ArrayList<>();

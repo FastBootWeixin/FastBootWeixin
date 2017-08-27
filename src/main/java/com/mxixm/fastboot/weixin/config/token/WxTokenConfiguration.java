@@ -1,10 +1,10 @@
 package com.mxixm.fastboot.weixin.config.token;
 
-import com.mxixm.fastboot.weixin.config.invoker.WxUrlProperties;
+import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
-import com.mxixm.fastboot.weixin.config.invoker.WxVerifyProperties;
-import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
+import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
+import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
 import com.mxixm.fastboot.weixin.support.WxTokenStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,15 +19,11 @@ public class WxTokenConfiguration {
 
 	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final WxUrlProperties wxUrlProperties;
-
-	private final WxVerifyProperties wxVerifyProperties;
+	private final WxProperties wxProperties;
 
 	public WxTokenConfiguration(
-			WxVerifyProperties wxVerifyProperties,
-			WxUrlProperties wxUrlProperties) {
-		this.wxVerifyProperties = wxVerifyProperties;
-		this.wxUrlProperties = wxUrlProperties;
+			WxProperties wxProperties) {
+		this.wxProperties = wxProperties;
 	}
 
 	@Bean
@@ -38,7 +34,7 @@ public class WxTokenConfiguration {
 
 	@Bean
 	public WxTokenServer wxTokenServer(WxApiInvoker wxApiInvoker) {
-		return new WxTokenServer(wxApiInvoker, wxVerifyProperties, wxUrlProperties);
+		return new WxTokenServer(wxApiInvoker, wxProperties);
 	}
 
 	@Bean

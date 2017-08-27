@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.web;
 
-import com.mxixm.fastboot.weixin.config.token.WxTokenServer;
+import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.util.CacheMap;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;

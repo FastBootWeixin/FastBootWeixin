@@ -1,9 +1,9 @@
 package com.mxixm.fastboot.weixin.module.message.support;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
-import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageProperties;
+import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
@@ -32,10 +32,10 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
 
     private WxMessageTemplate wxMessageTemplate;
 
-    private WxAsyncMessageProperties wxAsyncMessageProperties;
+    private WxProperties wxProperties;
 
-    public WxAsyncMessageReturnValueHandler(WxAsyncMessageProperties wxAsyncMessageProperties, WxMessageTemplate wxMessageTemplate) {
-        this.wxAsyncMessageProperties = wxAsyncMessageProperties;
+    public WxAsyncMessageReturnValueHandler(WxProperties wxProperties, WxMessageTemplate wxMessageTemplate) {
+        this.wxProperties = wxProperties;
         this.wxMessageTemplate = wxMessageTemplate;
     }
 
@@ -110,13 +110,13 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
     public void afterPropertiesSet() throws Exception {
         this.asyncExecutor = new ThreadPoolExecutor(
                 // 正常情况下的线程数，默认6
-                wxAsyncMessageProperties.getPoolCoreSize(),
+                wxProperties.getMessage().getPoolCoreSize(),
                 // 线程池最大线程数，默认12
-                wxAsyncMessageProperties.getPoolMaxSize(),
+                wxProperties.getMessage().getPoolMaxSize(),
                 // 线程存活时间：多少秒，默认80秒
-                wxAsyncMessageProperties.getPoolKeepAliveInSeconds(), TimeUnit.SECONDS,
+                wxProperties.getMessage().getPoolKeepAliveInSeconds(), TimeUnit.SECONDS,
                 // 使用arrayList阻塞队列，默认10000
-                new ArrayBlockingQueue<>(wxAsyncMessageProperties.getMaxQueueSize()),
+                new ArrayBlockingQueue<>(wxProperties.getMessage().getMaxQueueSize()),
                 // 线程名
                 new WxAsyncMessageThreadFactory(Executors.defaultThreadFactory()),
                 // 忽视最早入队的日志

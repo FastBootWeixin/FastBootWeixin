@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import com.mxixm.fastboot.weixin.controller.WxVerifyController;
+import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
@@ -45,7 +45,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
-    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxVerifyController.class, "verify", null);
+    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxBuildinVerify.class, "verify", null);
 
     private final HandlerMethod wxVerifyMethodHandler;
 
@@ -58,9 +58,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     // 可以加一个开关功能
     private WxMenuManager wxMenuManager;
 
-    public WxMappingHandlerMapping(WxVerifyController wxVerifyController, WxMenuManager wxMenuManager) {
+    public WxMappingHandlerMapping(WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager) {
         super();
-        this.wxVerifyMethodHandler = new HandlerMethod(wxVerifyController, WX_VERIFY_METHOD);
+        this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
         this.xmlConverter = new Jaxb2RootElementHttpMessageConverter();
         this.wxMenuManager = wxMenuManager;
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());

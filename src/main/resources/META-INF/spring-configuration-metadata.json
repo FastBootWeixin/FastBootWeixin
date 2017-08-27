@@ -1,0 +1,79 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.invoker",
+      "sourceMethod": "getInvoker()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Invoker"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.message",
+      "sourceMethod": "getMessage()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Message"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.mvc",
+      "sourceMethod": "getMvc()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc",
+      "name": "wx.mvc.interceptor",
+      "sourceMethod": "getInterceptor()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc$Interceptor"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.system",
+      "sourceMethod": "getSystem()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$System"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.url",
+      "sourceMethod": "getUrl()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Url"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.appid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.appsecret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.callback-url",
+      "description": "用户在网页授权页同意授权给公众号后，微信会将授权数据传给一个回调页面，回调页面需在此域名下，以确保安全可靠",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc$Interceptor",
+      "name": "wx.mvc.interceptor.exclude-patterns",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc$Interceptor",
+      "name": "wx.mvc.interceptor.include-patterns",
+      "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.token",
+      "type": "java.lang.String"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package com.example.test;
 
-import com.mxixm.fastboot.weixin.controller.WxVerifyController;
+import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -18,7 +18,7 @@ public class MethodToUrlTest {
 
     public static void main(String[] args) throws JsonProcessingException {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://api.wx.com");
-        MvcUriComponentsBuilder.fromMethod(builder, WxVerifyController.class, ClassUtils.getMethod(WxVerifyController.class, "verify", null), "a", "a", "a", "a");
+        MvcUriComponentsBuilder.fromMethod(builder, WxBuildinVerify.class, ClassUtils.getMethod(WxBuildinVerify.class, "verify", null), "a", "a", "a", "a");
         System.out.println(builder);
     }
 

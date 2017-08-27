@@ -3,282 +3,119 @@ package com.mxixm.fastboot.weixin;
 import com.mxixm.fastboot.weixin.annotation.WxApplication;
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import com.mxixm.fastboot.weixin.config.invoker.WxVerifyProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxController;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxEventMapping;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxMessageMapping;
-import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
-import com.mxixm.fastboot.weixin.module.media.WxMedia;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.core.io.Resource;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.io.File;
-
-/**
- * Hello world!
- */
 @WxApplication
 @WxController
 public class WxApp {
 
-    @Autowired
-    WxApiInvokeSpi wxApiInvokeSpi;
-
-    @Autowired
-    WxMediaManager wxMediaManager;
-
-    @Autowired
-    WxVerifyProperties wxVerifyProperties;
-
-    //用mvn命令执行和直接执行该Java是一样的结果，mvn spring-boot:run是找到这个文件的main去执行的
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
     }
 
-    @RequestMapping("clear")
-    public String clear() {
-        wxApiInvokeSpi.clearQuota("{\"appid\":\"" + wxVerifyProperties.getAppid() + "\"}");
-        return "ok";
-    }
-
-    @RequestMapping("test")
-    public String test() {
-        return wxApiInvokeSpi.getCallbackIp();
-    }
-
-    @RequestMapping("test1")
-    public String test1() {
-        return wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
-    }
-
-    @RequestMapping("test2")
-    public Resource test2(String mediaId) {
-        return wxMediaManager.getTempMedia(mediaId);
-    }
-
-    @RequestMapping("test3")
-    public String test3() {
-        return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new File("E:/test.png"));
-    }
-
-    @RequestMapping("test4")
-    public Resource test4(String mediaId) {
-        return wxMediaManager.getMedia(mediaId);
-    }
-
-    @RequestMapping("test5")
-    public WxMedia.Count test5(String mediaId) {
-        return wxApiInvokeSpi.getMediaCount();
-    }
-
-    @RequestMapping("test7")
-    public String test7() {
-        return wxMediaManager.addImg(new File("E:/test.png"));
-    }
-
-    @RequestMapping("test8")
-    public Resource test8(String url) {
-        return wxMediaManager.getImg(url);
-    }
-
-    @RequestMapping("test9")
-    public String test9(String url) {
-        return wxMediaManager.addImgByUrl(url);
-    }
-
-    @RequestMapping("menu")
-    public WxMenuManager.WxMenus menu() {
-        return wxApiInvokeSpi.getMenu();
-    }
-
     /**
-     * 一次选择位置共推送了以下事件：
-     * 1、messageType:event-eventType:location_select事件，菜单主动触发
-     * 2、messageType:location类型，主动推送，用户发送的消息
-     * 3、messageType:event-eventType:location事件 系统事件推送
+     * 定义微信菜单
      */
     @WxButton(group = WxButton.Group.LEFT, main = true, name = "左")
-    public String left() {
-        return "";
+    public void left() {
     }
 
     /**
-     * 回复消息一定要有fromUser，且是gh_930e3941e6f7
+     * 定义微信菜单
      */
-    @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "中")
-    public void middle() {
-        System.out.println(1);
-    }
-
     @WxButton(group = WxButton.Group.RIGHT, main = true, name = "右")
     public void right() {
     }
 
+    /**
+     * 定义微信菜单，并接受事件
+     */
     @WxButton(type = WxButton.Type.CLICK,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIRST,
-            name = "左一")
-    @WxAsyncMessage
-    public WxMessage click(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
-        return WxMessage.News.builder()
-                .toUserName(wxUser.getOpenId())
-                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem("我是二条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem("我是三条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem("我是四条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        "qipei.mxixm.com/vendor/5")
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是五条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是六条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是七条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是八条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("http://qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .addItem(WxMessage.News.Item.builder()
-                        .title("我是九条图文测试消息")
-                        .description("测试哈哈哈哈")
-                        .picUrl("qipei.mxixm.com/upload/image/1472608640783.jpg")
-                        .url("qipei.mxixm.com/vendor/5").build())
-                .build();
-//        return WxMessage.Text.builder()
-//                .fromUserName(wxUser.getToUserName())
-//                .toUserName(wxUser.getFromUserName())
-//                .content("我是一条文本测试消息")
-//                .build();
+            name = "文本消息")
+    public String leftFirst(WxRequest wxRequest, WxUser wxUser) {
+        return "测试文本消息";
     }
 
-    @WxButton(type = WxButton.Type.LOCATION_SELECT,
-            group = WxButton.Group.LEFT,
-            order = WxButton.Order.SECOND,
-            name = "左二")
-    public void location() {
-    }
-
-    //    @WxButton(type = WxButton.Method.MEDIA_ID, mediaId = "1", group = WxButton.Group.LEFT, value = "二级菜单左三", key = "left_3")
-    public void media() {
-    }
-
-    @WxButton(type = WxButton.Type.PIC_PHOTO_OR_ALBUM,
-            group = WxButton.Group.LEFT,
-            order = WxButton.Order.FORTH,
-            name = "二级菜单左四")
-    public void pic() {
-    }
-
-    @WxButton(type = WxButton.Type.PIC_SYSPHOTO,
-            group = WxButton.Group.LEFT,
-            order = WxButton.Order.FIFTH,
-            name = "二级菜单左五")
-    public void picSys() {
-    }
-
-    @WxButton(type = WxButton.Type.PIC_WEIXIN,
-            group = WxButton.Group.MIDDLE,
-            order = WxButton.Order.FIRST,
-            name = "二级菜单中一")
-    public void picWeixin() {
-    }
-
-    @WxButton(type = WxButton.Type.SCANCODE_PUSH,
-            group = WxButton.Group.MIDDLE,
-            order = WxButton.Order.SECOND,
-            name = "二级菜单中二")
-    public void scanCode() {
-    }
-
-    @WxButton(type = WxButton.Type.SCANCODE_WAITMSG,
-            group = WxButton.Group.MIDDLE,
-            order = WxButton.Order.THIRD,
-            name = "二级菜单中三")
-    public void scanCodeWait() {
-    }
-
+    /**
+     * 定义微信菜单，并接受事件
+     */
     @WxButton(type = WxButton.Type.VIEW,
+            group = WxButton.Group.LEFT,
+            order = WxButton.Order.SECOND,
             url = "http://baidu.com",
-            group = WxButton.Group.MIDDLE,
-            order = WxButton.Order.FORTH,
-            name = "二级菜单中四")
-    public void view() {
+            name = "点击链接")
+    @WxAsyncMessage
+    public WxMessage link() {
+        return WxMessage.News.builder()
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com/")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://qipei.mxixm.com/vendor/")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://smc24f.natappfree.cc/vendor/82")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a0e54054e2fb7c0&redirect_uri=http://smc24f.natappfree.cc/vendor/82&response_type=code&scope=snsapi_base&state#wechat_redirect")
+                .build();
     }
 
-    //    @WxButton(type = WxButton.Method.VIEW_LIMITED, group = WxButton.Group.MIDDLE, value = "二级菜单中五", key = "middle_5")
-    public void viewLimited() {
+    /**
+     * 定义微信菜单，并接受事件
+     */
+    @WxButton(type = WxButton.Type.CLICK,
+            group = WxButton.Group.LEFT,
+            order = WxButton.Order.THIRD,
+            name = "图文消息")
+    public WxMessage news() {
+        return WxMessage.News.builder()
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com/")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://qipei.mxixm.com/vendor/")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://smc24f.natappfree.cc/vendor/82")
+                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a0e54054e2fb7c0&redirect_uri=http://smc24f.natappfree.cc/vendor/82&response_type=code&scope=snsapi_base&state#wechat_redirect")
+                .build();
     }
 
-    @WxButton(group = WxButton.Group.RIGHT,
-            name = "二级菜单右一")
-    public void c1() {
-    }
-
+    /**
+     * 接受微信事件
+     * @param wxRequest
+     * @param wxUser
+     */
     @WxEventMapping(type = WxEvent.Type.UNSUBSCRIBE)
-    public void unsubscribe(WxRequest wxRequest, String fromUser, String toUser, WxUser wxUser) {
-        System.out.println(wxRequest);
+    public void unsubscribe(WxRequest wxRequest, WxUser wxUser) {
+        System.out.println(wxUser.getNickName() + "退订了公众号");
     }
 
+    /**
+     * 接受用户文本消息，异步返回文本消息
+     * @param content
+     * @return
+     */
+    @WxMessageMapping(type = WxMessage.Type.TEXT)
+    @WxAsyncMessage
+    public String text(String content) {
+        return "收到消息内容为" + content;
+    }
+
+    /**
+     * 接受用户文本消息，同步返回图文消息
+     * @param content
+     * @return
+     */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
-//    @WxAsyncMessage
     public WxMessage message(String content) {
         return WxMessage.News.builder()
-                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        WxRedirectUtils.baseRedirect("http://smc24f.natappfree.cc/test"))
+                .addItem(WxMessage.News.Item.builder().title(content).description("随便一点")
+                        .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
+                        .url("http://baidu.com").build())
+                .addItem(WxMessage.News.Item.builder().title("第二条").description("随便二点")
+                        .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
+                        .url("http://baidu.com").build())
                 .build();
     }
-
-    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
-    public WxMessage two(String content) {
-        return WxMessage.News.builder()
-                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        WxRedirectUtils.authRedirect("http://smc24f.natappfree.cc/test"))
-                .build();
-    }
-
-    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "3*")
-    public WxMessage three(String content) {
-        return WxMessage.News.builder()
-                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        WxRedirectUtils.baseRedirect("http://smc24f.natappfree.cc/test?ha=hh"))
-                .build();
-    }
-
-    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "4*")
-    public WxMessage fore(String content) {
-        return WxMessage.News.builder()
-                .firstItem("我是一条图文测试消息", "测试哈哈哈哈",
-                        "http://qipei.mxixm.com/upload/image/1472608640783.jpg",
-                        WxRedirectUtils.authRedirect("http://smc24f.natappfree.cc/test"))
-                .build();
-    }
-
 }

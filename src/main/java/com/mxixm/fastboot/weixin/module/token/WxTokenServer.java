@@ -1,12 +1,11 @@
-package com.mxixm.fastboot.weixin.config.token;
+package com.mxixm.fastboot.weixin.module.token;
 
-import com.mxixm.fastboot.weixin.config.invoker.WxUrlProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
-import com.mxixm.fastboot.weixin.config.invoker.WxVerifyProperties;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.apache.commons.logging.Log;
@@ -31,24 +30,21 @@ public class WxTokenServer {
 
     private WxApiInvoker wxApiInvoker;
 
-    private WxVerifyProperties wxVerifyProperties;
-
-    private WxUrlProperties wxUrlProperties;
+    private WxProperties wxProperties;
 
     private final ObjectMapper jsonConverter = new ObjectMapper();
 
-    public WxTokenServer(WxApiInvoker wxApiInvoker, WxVerifyProperties wxVerifyProperties, WxUrlProperties wxUrlProperties) {
+    public WxTokenServer(WxApiInvoker wxApiInvoker, WxProperties wxProperties) {
         this.wxApiInvoker = wxApiInvoker;
-        this.wxVerifyProperties = wxVerifyProperties;
-        this.wxUrlProperties = wxUrlProperties;
+        this.wxProperties = wxProperties;
     }
 
     public WxAccessToken refreshToken() {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getRefreshToken())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getRefreshToken())
                 .queryParam("grant_type", "client_credential")
-                .queryParam("appid", wxVerifyProperties.getAppid())
-                .queryParam("secret", wxVerifyProperties.getAppsecret());
+                .queryParam("appid", wxProperties.getAppid())
+                .queryParam("secret", wxProperties.getAppsecret());
         String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             throw new WxAccessTokenException(result);
@@ -64,20 +60,20 @@ public class WxTokenServer {
 
     public WxWebUser getWxWebUserByCode(String code) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("appid", wxVerifyProperties.getAppid())
-                .queryParam("secret", wxVerifyProperties.getAppsecret())
+                .queryParam("appid", wxProperties.getAppid())
+                .queryParam("secret", wxProperties.getAppsecret())
                 .queryParam("code", code);
         return getWxWebUserByBuilder(builder);
     }
 
     public WxWebUser getWxWebUserByRefreshToken(String refreshToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("appid", wxVerifyProperties.getAppid())
-                .queryParam("secret", wxVerifyProperties.getAppsecret())
+                .queryParam("appid", wxProperties.getAppid())
+                .queryParam("secret", wxProperties.getAppsecret())
                 .queryParam("refresh_token", refreshToken);
         return getWxWebUserByBuilder(builder);
     }
@@ -98,7 +94,7 @@ public class WxTokenServer {
 
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
@@ -117,7 +113,7 @@ public class WxTokenServer {
 
     public boolean isVerifyUserAccessToken(WxWebUser wxWebUser) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxUrlProperties.getHost()).path(wxUrlProperties.getGetUserAccessTokenByCode())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId());
         String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);

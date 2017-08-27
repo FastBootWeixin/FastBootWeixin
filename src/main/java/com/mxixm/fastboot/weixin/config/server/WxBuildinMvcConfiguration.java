@@ -1,8 +1,8 @@
 package com.mxixm.fastboot.weixin.config.server;
 
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
-import com.mxixm.fastboot.weixin.config.invoker.WxVerifyProperties;
-import com.mxixm.fastboot.weixin.controller.WxVerifyController;
+import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxMediaResourceMessageConverter;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
@@ -22,7 +22,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -42,12 +41,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(WxMvcProperties.class)
 public class WxBuildinMvcConfiguration implements ImportAware {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    private final WxVerifyProperties wxVerifyProperties;
+    private final WxProperties wxProperties;
 
     private final BeanFactory beanFactory;
 
@@ -55,26 +53,23 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private final WxApiInvokeSpi wxApiInvokeSpi;
 
-    private final WxMvcProperties wxMvcProperties;
-
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxMvcProperties wxMvcProperties, WxVerifyProperties wxVerifyProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
-        this.wxMvcProperties = wxMvcProperties;
-        this.wxVerifyProperties = wxVerifyProperties;
+    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+        this.wxProperties = wxProperties;
         this.beanFactory = beanFactory;
         this.wxMessageProcesser = wxMessageProcesser;
         this.wxApiInvokeSpi = wxApiInvokeSpi;
     }
 
     @Bean
-    public WxVerifyController wxVerifyController() {
-        return new WxVerifyController(wxVerifyProperties);
+    public WxBuildinVerify wxBuildinVerify() {
+        return new WxBuildinVerify(wxProperties.getToken());
     }
 
     @Bean
     public WxMappingHandlerMapping wxRequestMappingHandlerMapping() {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxVerifyController(), wxMenuManager());
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxBuildinVerify(), wxMenuManager());
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }
@@ -91,7 +86,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     @Bean
     public WxMvcConfigurer wxMvcConfigurer() {
-        return new WxMvcConfigurer(wxOAuth2Interceptor(), wxMvcProperties);
+        return new WxMvcConfigurer(wxOAuth2Interceptor(), wxProperties);
     }
 
     @Bean
@@ -161,18 +156,18 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
         private HandlerInterceptor wxOAuth2Interceptor;
 
-        private WxMvcProperties wxMvcProperties;
+        private WxProperties wxProperties;
 
-        public WxMvcConfigurer(HandlerInterceptor wxOAuth2Interceptor, WxMvcProperties wxMvcProperties) {
+        public WxMvcConfigurer(HandlerInterceptor wxOAuth2Interceptor, WxProperties wxProperties) {
             this.wxOAuth2Interceptor = wxOAuth2Interceptor;
-            this.wxMvcProperties = wxMvcProperties;
+            this.wxProperties = wxProperties;
         }
 
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(wxOAuth2Interceptor)
-                    .addPathPatterns(wxMvcProperties.getIncludePatterns().toArray(new String[wxMvcProperties.getIncludePatterns().size()]))
-                    .excludePathPatterns(wxMvcProperties.getIncludePatterns().toArray(new String[wxMvcProperties.getIncludePatterns().size()]));
+                    .addPathPatterns(wxProperties.getMvc().getInterceptor().getIncludePatterns().toArray(new String[wxProperties.getMvc().getInterceptor().getIncludePatterns().size()]))
+                    .excludePathPatterns(wxProperties.getMvc().getInterceptor().getExcludePatterns().toArray(new String[wxProperties.getMvc().getInterceptor().getExcludePatterns().size()]));
         }
 
         @Override
