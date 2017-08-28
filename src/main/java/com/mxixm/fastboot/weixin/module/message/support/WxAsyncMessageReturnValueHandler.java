@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,11 +48,11 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
      */
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {
-        // 如果是collection或者array，都作为asyncMessage消息处理
-        boolean isCollectionType = Collection.class.isAssignableFrom(returnType.getParameterType());
+        // 如果是iterable或者array，都作为asyncMessage消息处理
+        boolean isIterableType = Iterable.class.isAssignableFrom(returnType.getParameterType());
         boolean isArrayType = returnType.getParameterType().isArray();
         boolean isWxAsyncMessage = AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), WxAsyncMessage.class) ||
-                returnType.hasMethodAnnotation(WxAsyncMessage.class) || isCollectionType || isArrayType;
+                returnType.hasMethodAnnotation(WxAsyncMessage.class) || isIterableType || isArrayType;
         Class realType = getRealType(returnType);
         boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
         boolean isWxStringMessage = CharSequence.class.isAssignableFrom(realType) &&
@@ -75,11 +74,11 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
                 wxMessageTemplate.sendMessage(wxRequest, (WxMessage) returnValue);
             } else if (returnValue instanceof CharSequence) {
                 wxMessageTemplate.sendMessage(wxRequest, returnValue.toString());
-            } else if (returnValue instanceof Collection) {
+            } else if (returnValue instanceof Iterable) {
                 if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
-                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
+                    ((Iterable) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, v.toString()));
                 } else if (WxMessage.class.isAssignableFrom(getRealType(returnType))) {
-                    ((Collection) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
+                    ((Iterable) returnValue).forEach(v -> wxMessageTemplate.sendMessage(wxRequest, (WxMessage) v));
                 }
             } else if (returnType.getParameterType().isArray()) {
                 if (CharSequence.class.isAssignableFrom(getRealType(returnType))) {
@@ -92,8 +91,8 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
     }
 
     private Class getRealType(MethodParameter returnType) {
-        boolean isCollection = Collection.class.isAssignableFrom(returnType.getParameterType());
-        if (isCollection) {
+        boolean isIterable = Iterable.class.isAssignableFrom(returnType.getParameterType());
+        if (isIterable) {
             if (returnType.getGenericParameterType() instanceof ParameterizedType) {
                 return (Class) ((ParameterizedType) returnType.getGenericParameterType()).getActualTypeArguments()[0];
             } else {
