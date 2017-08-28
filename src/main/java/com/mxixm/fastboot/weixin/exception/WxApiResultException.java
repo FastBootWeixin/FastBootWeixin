@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * FastBootWeixin  WxApiResultException
+ * https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433747234
  *
  * @author Guangshan
  * @summary FastBootWeixin  WxApiResultException
@@ -84,15 +85,15 @@ public class WxApiResultException extends WxApiException {
         return false;
     }
 
-    enum WxApiResultCode {
+    public enum WxApiResultCode {
 
         System_Busy(-1, "系统繁忙，此时请开发者稍候再试"),
         Success(0, "请求成功"),
         App_Secret_Error(40001, "AppSecret错误或者AppSecret不属于这个公众号，请开发者确认AppSecret的正确性"),
         Grant_Type_Error(40002, "请确保grant_type字段值为client_credential"),
+        Menu_No_Exist(46003, "不存在的菜单数据"),
         Invalid_IP_Error(40164, "调用接口的IP地址不在白名单中，请在接口IP白名单中进行设置"),
         Unknown_Error(99999, "未知错误，请查看message");
-
         int errcode;
 
         String errdesc;

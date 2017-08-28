@@ -3,6 +3,7 @@ package com.mxixm.fastboot.weixin.module.menu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.logging.Log;
@@ -93,10 +94,18 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         if (!autoCreate) {
             return;
         }
-        WxMenus oldWxMenu = wxApiInvokeSpi.getMenu();
+        WxMenus oldWxMenu = null;
+        try {
+            oldWxMenu = wxApiInvokeSpi.getMenu();
+        } catch (WxApiResultException e) {
+            // 如果不是菜单不存在，则继续抛出，否则执行创建菜单操作
+            if (e.getResultCode() != WxApiResultException.WxApiResultCode.Menu_No_Exist) {
+                throw e;
+            }
+        }
         WxMenu newWxMenu = this.getMenu();
 //            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
-        if (isMenuChanged(oldWxMenu)) {
+        if (oldWxMenu == null || isMenuChanged(oldWxMenu)) {
             String result = wxApiInvokeSpi.createMenu(newWxMenu);
             logger.info("==============================================================");
             logger.info("            执行创建菜单操作       ");
