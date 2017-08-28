@@ -12,14 +12,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 
 /**
- * FastBootWeixin  WxApplicationContextUtils
+ * FastBootWeixin  WxContextUtils
  *
  * @author Guangshan
- * @summary FastBootWeixin  WxApplicationContextUtils
+ * @summary FastBootWeixin  WxContextUtils
  * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/8/11 21:03
  */
-public class WxApplicationContextUtils implements ApplicationListener<ApplicationReadyEvent>, Ordered {
+public class WxContextUtils implements ApplicationListener<ApplicationReadyEvent>, Ordered {
 
     private static ConfigurableBeanFactory configurableBeanFactory;
 

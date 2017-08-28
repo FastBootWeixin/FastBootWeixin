@@ -5,7 +5,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiParamContributor;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiPathContributor;
-import com.mxixm.fastboot.weixin.util.WxApplicationContextUtils;
+import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
@@ -80,7 +80,7 @@ public class WxApiMethodInfo {
         WxApiRequest wxApiRequest = AnnotatedElementUtils.findMergedAnnotation(method, WxApiRequest.class);
         if (wxApiRequest == null || StringUtils.isEmpty(wxApiRequest.path()) || ValueConstants.DEFAULT_NONE.equals(wxApiRequest.path())) {
             // 默认情况下取方法名为变量名，尝试从环境变量中获取信息
-            return WxApplicationContextUtils.resolveStringValue("${" + this.wxApiTypeInfo.getPropertyPrefix() + "." + method.getName() + "}");
+            return WxContextUtils.resolveStringValue("${" + this.wxApiTypeInfo.getPropertyPrefix() + "." + method.getName() + "}");
         }
         return wxApiRequest.path();
     }

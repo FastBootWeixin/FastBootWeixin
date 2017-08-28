@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.module.media;
 
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxBufferingInputMessageWrapper;
-import com.mxixm.fastboot.weixin.util.WxApplicationContextUtils;
+import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.Wx;
@@ -260,7 +260,7 @@ public class WxMediaResource extends AbstractResource {
             String pathToUse = StringUtils.applyRelativePath(StringUtils.cleanPath(file.getPath()), mediaId);
             return new WxMediaResource(new File(pathToUse));
         }
-        return WxApplicationContextUtils.getBean(WxApiInvokeSpi.class).getTempMedia(mediaId);
+        return WxContextUtils.getBean(WxApiInvokeSpi.class).getTempMedia(mediaId);
     }
 
     /**

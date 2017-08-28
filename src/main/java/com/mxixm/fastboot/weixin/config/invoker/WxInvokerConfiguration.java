@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.config.invoker;
 
-import com.mxixm.fastboot.weixin.common.WxBeanNames;
+import com.mxixm.fastboot.weixin.common.WxBeans;
 import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
@@ -11,7 +11,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.support.DefaultWxUserProvider;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
-import com.mxixm.fastboot.weixin.util.WxApplicationContextUtils;
+import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import com.mxixm.fastboot.weixin.controller.invoker.WxInvokerProxyFactory;
 import com.mxixm.fastboot.weixin.controller.invoker.handler.WxResponseErrorHandler;
@@ -57,15 +57,15 @@ public class WxInvokerConfiguration {
 	}
 
 	@Bean
-	public WxApplicationContextUtils wxApplicationContextUtils() {
-		return new WxApplicationContextUtils();
+	public WxContextUtils wxApplicationContextUtils() {
+		return new WxContextUtils();
 	}
 
 	/**
 	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
 	 * @return
      */
-	@Bean(name = WxBeanNames.WX_API_INVOKER_NAME)
+	@Bean(name = WxBeans.WX_API_INVOKER_NAME)
 	public WxApiInvoker wxApiInvoker() {
 		RestTemplateBuilder builder = new RestTemplateBuilder();
 		builder = builder.requestFactory(new WxApiHttpRequestFactory(wxProperties))
