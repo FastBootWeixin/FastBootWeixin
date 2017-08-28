@@ -21,7 +21,7 @@ import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.client.*;
+import org.springframework.web.client.DefaultResponseErrorHandler;
 
 import java.io.IOException;
 import java.io.InputStream;

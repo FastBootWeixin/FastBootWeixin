@@ -1,10 +1,10 @@
 package com.mxixm.fastboot.weixin.module.menu;
 
-import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mxixm.fastboot.weixin.annotation.WxButton;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.Assert;

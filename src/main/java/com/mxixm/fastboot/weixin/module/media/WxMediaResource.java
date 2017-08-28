@@ -1,11 +1,11 @@
 package com.mxixm.fastboot.weixin.module.media;
 
-import com.mxixm.fastboot.weixin.controller.invoker.common.WxBufferingInputMessageWrapper;
-import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.common.WxBufferingInputMessageWrapper;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -81,8 +81,8 @@ public class WxMediaResource extends AbstractResource {
             if (body[0] == '{') {
                 this.url = extractURL(body);
                 this.filename = extractFilenameFromURL(url);
-            } else if (httpHeaders.containsKey(WxRequestResponseUtils.X_WX_REQUEST_URL)) {
-                this.url = URI.create(httpHeaders.getFirst(WxRequestResponseUtils.X_WX_REQUEST_URL)).toURL();
+            } else if (httpHeaders.containsKey(WxWebUtils.X_WX_REQUEST_URL)) {
+                this.url = URI.create(httpHeaders.getFirst(WxWebUtils.X_WX_REQUEST_URL)).toURL();
                 this.filename = extractFilenameFromURL(url);
             } else {
                 this.filename = UUID.randomUUID().toString() + ".jpg";

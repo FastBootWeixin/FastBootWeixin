@@ -1,10 +1,10 @@
 package com.mxixm.fastboot.weixin.module.message.processer;
 
 import com.mxixm.fastboot.weixin.module.WxRequest;
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 import java.io.File;
 

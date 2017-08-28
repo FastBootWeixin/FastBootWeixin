@@ -6,7 +6,7 @@ import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.MethodParameter;
@@ -68,7 +68,7 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         ServletServerHttpResponse outputMessage = new ServletServerHttpResponse(servletResponse);
         outputMessage.getBody();
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(request);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(request);
         this.asyncExecutor.submit(() -> {
             if (returnValue instanceof WxMessage) {
                 wxMessageTemplate.sendMessage(wxRequest, (WxMessage) returnValue);

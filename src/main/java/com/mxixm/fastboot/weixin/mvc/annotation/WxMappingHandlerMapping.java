@@ -11,10 +11,10 @@ import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpInputMessage;
@@ -136,7 +136,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
             WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
             wxRequest.setRequestUrl(request.getRequestURL());
-            WxRequestResponseUtils.setWxRequestToRequestAttribute(request, wxRequest);
+            WxWebUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
             // switch不被推荐缺少default
             switch (wxRequest.getCategory()) {

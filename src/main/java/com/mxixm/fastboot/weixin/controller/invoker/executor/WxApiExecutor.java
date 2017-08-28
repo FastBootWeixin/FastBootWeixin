@@ -1,17 +1,17 @@
 package com.mxixm.fastboot.weixin.controller.invoker.executor;
 
-import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
-import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
-import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
-import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
-import com.mxixm.fastboot.weixin.util.WxAppAssert;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiMethodInfo;
-import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
-import com.mxixm.fastboot.weixin.controller.invoker.common.ReaderInputStream;
-import com.mxixm.fastboot.weixin.exception.WxAppException;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mxixm.fastboot.weixin.controller.invoker.WxApiMethodInfo;
+import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
+import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
+import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
+import com.mxixm.fastboot.weixin.controller.invoker.common.ReaderInputStream;
+import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
+import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
+import com.mxixm.fastboot.weixin.util.WxAppAssert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
@@ -160,7 +160,7 @@ public class WxApiExecutor {
                     }
                     // 加入Assert
                     WxAppAssert.notNull(paramName, "请添加编译器的-parameter或者为参数添加注解名称");
-                    if (WxRequestResponseUtils.isMutlipart(p.getParameterType())) {
+                    if (WxWebUtils.isMutlipart(p.getParameterType())) {
                         param = getFormResource(args[p.getParameterIndex()]);
                     } else {
                         param = args[p.getParameterIndex()];

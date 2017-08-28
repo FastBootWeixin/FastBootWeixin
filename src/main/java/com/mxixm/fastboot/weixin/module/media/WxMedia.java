@@ -1,9 +1,9 @@
 package com.mxixm.fastboot.weixin.module.media;
 
-import com.mxixm.fastboot.weixin.module.message.adapters.WxJsonAdapters;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mxixm.fastboot.weixin.module.message.adapters.WxJsonAdapters;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

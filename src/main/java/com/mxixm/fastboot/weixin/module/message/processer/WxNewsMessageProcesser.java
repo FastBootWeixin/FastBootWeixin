@@ -1,8 +1,8 @@
 package com.mxixm.fastboot.weixin.module.message.processer;
 
 import com.mxixm.fastboot.weixin.module.WxRequest;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 

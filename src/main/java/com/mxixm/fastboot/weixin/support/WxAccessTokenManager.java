@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.support;
 
-import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
+import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 

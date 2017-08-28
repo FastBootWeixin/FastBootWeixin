@@ -1,13 +1,13 @@
 package com.mxixm.fastboot.weixin.controller.invoker;
 
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
-import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiParam;
-import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
-import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
+import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiParam;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
+import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.user.WxUser;
 import org.springframework.core.io.Resource;
 
 /**

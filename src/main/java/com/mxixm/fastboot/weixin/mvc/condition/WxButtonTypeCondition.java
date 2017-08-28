@@ -16,10 +16,13 @@
 
 package com.mxixm.fastboot.weixin.mvc.condition;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.module.WxRequest;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * FastBootWeixin  WxButtonTypeCondition

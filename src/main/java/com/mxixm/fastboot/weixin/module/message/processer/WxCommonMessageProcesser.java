@@ -15,6 +15,7 @@ import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 public class WxCommonMessageProcesser implements WxMessageProcesser<WxMessage> {
 
     public WxMessage process(WxRequest wxRequest, WxMessage wxMessage) {
+        // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
             return wxMessage;
         }

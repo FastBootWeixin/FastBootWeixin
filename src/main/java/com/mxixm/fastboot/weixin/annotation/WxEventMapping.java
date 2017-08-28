@@ -1,8 +1,6 @@
 package com.mxixm.fastboot.weixin.annotation;
 
-import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.annotation.WxMapping;
 
 import java.lang.annotation.*;
 

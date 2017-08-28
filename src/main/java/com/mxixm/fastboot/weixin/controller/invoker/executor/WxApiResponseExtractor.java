@@ -41,7 +41,7 @@ public class WxApiResponseExtractor {
             return null;
         }
         /* 先不管文件
-        if (WxRequestResponseUtils.isMutlipart(returnType)) {
+        if (WxWebUtils.isMutlipart(returnType)) {
             return null;
         }
         不是不管文件，而是可以被messageConverter处理了

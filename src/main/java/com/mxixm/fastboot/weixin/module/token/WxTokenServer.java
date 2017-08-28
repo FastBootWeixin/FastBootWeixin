@@ -5,7 +5,6 @@ import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
-import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.apache.commons.logging.Log;

@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.module.media;
 
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.exception.WxApiException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;

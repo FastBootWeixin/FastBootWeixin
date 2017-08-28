@@ -2,8 +2,8 @@ package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.MethodParameter;
@@ -77,7 +77,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
     @Override
     protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-        WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(servletRequest);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(servletRequest);
         // 类型匹配，直接返回
         if (parameter.getParameterType() == WxRequest.class) {
             return wxRequest;

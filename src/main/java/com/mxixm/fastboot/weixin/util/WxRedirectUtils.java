@@ -1,7 +1,6 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.sun.jndi.toolkit.url.Uri;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;

@@ -1,15 +1,10 @@
 package com.mxixm.fastboot.weixin;
 
-import com.mxixm.fastboot.weixin.annotation.WxApplication;
-import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
-import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
-import com.mxixm.fastboot.weixin.annotation.WxController;
-import com.mxixm.fastboot.weixin.annotation.WxEventMapping;
-import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import org.springframework.boot.SpringApplication;
 
 @WxApplication

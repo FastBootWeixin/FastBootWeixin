@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 员工登录校验通过之后执行一些业务逻辑
+ * 登录校验通过之后执行一些业务逻辑
  */
 public interface WxOAuth2Callback {
 

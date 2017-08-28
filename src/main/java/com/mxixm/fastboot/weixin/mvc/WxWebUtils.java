@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * 绑定一些参数
  */
-public class WxRequestResponseUtils {
+public class WxWebUtils {
 
     private static final String WX_REQUEST_ATTRIBUTE = "WX_REQUEST_ATTRIBUTE";
 

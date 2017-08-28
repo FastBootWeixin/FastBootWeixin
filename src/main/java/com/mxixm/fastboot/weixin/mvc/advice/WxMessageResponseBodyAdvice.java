@@ -3,7 +3,7 @@ package com.mxixm.fastboot.weixin.mvc.advice;
 import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.MethodParameter;
@@ -59,7 +59,7 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
             return body;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-        WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(servletRequest);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(servletRequest);
         return wxMessageProcesser.process(wxRequest, body);
     }
 

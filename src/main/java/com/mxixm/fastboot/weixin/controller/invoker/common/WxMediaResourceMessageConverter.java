@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.controller.invoker.common;
 
-import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import com.mxixm.fastboot.weixin.exception.WxApiException;
+import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -9,12 +9,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * FastBootWeixin  WxJaxb2RootElementHttpMessageConverter
@@ -34,7 +35,7 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
 	还有也不直接支持File文件，不想写了
 	@Override
 	protected boolean supports(Class<?> clazz) {
-		return WxRequestResponseUtils.isMutlipart(clazz);
+		return WxWebUtils.isMutlipart(clazz);
 	}*/
 	@Override
 	protected Resource readInternal(Class<? extends Resource> clazz, HttpInputMessage inputMessage)

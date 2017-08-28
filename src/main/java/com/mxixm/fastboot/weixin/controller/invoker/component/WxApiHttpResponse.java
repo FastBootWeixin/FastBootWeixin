@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.controller.invoker.component;
 
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,8 +50,8 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 		if (headers.containsKey(HttpHeaders.CONTENT_TYPE) && headers.getContentType().equals(MediaType.TEXT_PLAIN)) {
 			headers.setContentType(MediaType.APPLICATION_JSON);
 		}
-		if (!headers.containsKey(WxRequestResponseUtils.X_WX_REQUEST_URL)) {
-			headers.add(WxRequestResponseUtils.X_WX_REQUEST_URL, request.getURI().toString());
+		if (!headers.containsKey(WxWebUtils.X_WX_REQUEST_URL)) {
+			headers.add(WxWebUtils.X_WX_REQUEST_URL, request.getURI().toString());
 		}
 		return headers;
 	}

@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.web;
 
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,7 +41,7 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        WxWebUser sessionUser = WxRequestResponseUtils.getWxWebUserFromSession(request);
+        WxWebUser sessionUser = WxWebUtils.getWxWebUserFromSession(request);
         if (sessionUser != null) {
             return true;
         }
@@ -53,7 +53,7 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
                 if (wxOAuth2Callback != null) {
                     wxOAuth2Callback.after(new WxOAuth2Callback.WxOAuth2Context(wxWebUser, state, response, request));
                 }
-                WxRequestResponseUtils.setWxWebUserToSession(request, wxWebUser);
+                WxWebUtils.setWxWebUserToSession(request, wxWebUser);
                 return true;
             }
         }

@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.module.event;
 
-import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.module.Wx;
 
 /**
  * FastBootWeixin  WxEvent

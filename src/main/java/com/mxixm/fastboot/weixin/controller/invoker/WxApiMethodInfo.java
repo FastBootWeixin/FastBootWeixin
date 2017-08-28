@@ -5,8 +5,8 @@ import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiParamContributor;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiPathContributor;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
@@ -126,7 +126,7 @@ public class WxApiMethodInfo {
         }
         // 如果有一个是文件则以FORM形式提交
         isMutlipartRequest = Arrays.stream(method.getParameters())
-                .filter(p -> WxRequestResponseUtils.isMutlipart(p.getType())).findFirst().isPresent();
+                .filter(p -> WxWebUtils.isMutlipart(p.getType())).findFirst().isPresent();
         if (isMutlipartRequest) {
             isWxApiFormPresent = true;
             return WxApiRequest.Method.FORM;

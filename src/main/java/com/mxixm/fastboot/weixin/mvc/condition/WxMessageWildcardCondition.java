@@ -17,8 +17,8 @@
 package com.mxixm.fastboot.weixin.mvc.condition;
 
 import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
-import com.mxixm.fastboot.weixin.mvc.WxRequestResponseUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +70,7 @@ public final class WxMessageWildcardCondition extends AbstractRequestCondition<W
 
 	@Override
 	public WxMessageWildcardCondition getMatchingCondition(HttpServletRequest request) {
-		WxRequest wxRequest = WxRequestResponseUtils.getWxRequestFromRequestAttribute(request);
+		WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(request);
 		if (wxRequest == null || wxRequest.getContent() == null) {
 			return null;
 		}

@@ -1,8 +1,8 @@
 package com.mxixm.fastboot.weixin.config.media;
 
+import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.media.WxMediaStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

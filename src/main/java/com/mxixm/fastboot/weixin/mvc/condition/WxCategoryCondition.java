@@ -16,8 +16,8 @@
 
 package com.mxixm.fastboot.weixin.mvc.condition;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.Wx;
+import com.mxixm.fastboot.weixin.module.WxRequest;
 
 import java.util.Collection;
 import java.util.Collections;
