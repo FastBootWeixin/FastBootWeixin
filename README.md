@@ -176,11 +176,11 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 ### 四、功能支持
 
-##### 1. Spring Boot风格的启动方式
+#### 1. Spring Boot风格的启动方式
 
 与Spring Boot完美整合，如果自己没有SpringBoot项目，想直接使用该框架搭建公众号，可直接使用@WxApplication标记启动类，该注解支持参数：menuAutoCreate，默认为true。表示自动创建微信菜单，可以设置为false关闭自动创建菜单的行为。若已有Spring Boot项目，想引入此框架，只需在你的任意配置类上标记注解@EnableWxMvc即可，参数同上。
 
-##### 2. Spring Mvc风格的Mapping
+#### 2. Spring Mvc风格的Mapping
 
 共支持三种Mapping：
 - @WxButton，微信按钮绑定与生成。参数说明:group表示左中右三个分组，name为按钮名，type菜单类型，main是否为一级菜单。order显示顺序。key为事件key，若交给框架管理，则key会自动生成，无需配置。url为view类型的访问地址。mediaId为媒体ID。
@@ -189,7 +189,7 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 注意：绑定所在类需声明为@WxController
 
-##### 3. Spring Mvc风格的参数绑定
+#### 3. Spring Mvc风格的参数绑定
 
 支持以下类型参数：
 - WxRequest:微信服务器的请求内容封装
@@ -198,7 +198,7 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 参数绑定目前支持这几种，如果有更好的方案需要支持，也可以直接提出意见与建议，我会及时进行处理的。
 
-##### 4. Spring Mvc风格的返回值
+#### 4. Spring Mvc风格的返回值
 
 返回值支持以下类型：
 - String 该返回值会以文本消息形式返回给用户
@@ -208,7 +208,7 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 上面异步发送消息都是使用的WxMessageTemplate发送的，下面讲解。
 
-##### 5. Spring风格的消息发送
+#### 5. Spring风格的消息发送
 
 本框架提供WxMessageTemplate发送消息，同时在template中提供了WxMessageProcesser支持，作用是在消息发送前对消息做处理。
 
@@ -218,17 +218,17 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 注意：所有的消息处理文本消息，建议都使用WxMessage里的对应消息内容的builder来生成！
 
-##### 6. 素材自动管理
+#### 6. 素材自动管理
 
 本框架提供WxMediaManager来管理素材，同时使用嵌入式数据库保存素材与本地文件的对应关系，目前这部分功能我虽然完成了，但是总感觉有很大的不妥，希望有人能帮我看看顺便提点意见。
 
 上面消息发送中的媒体其实也是通过素材管理器来实现的。
 
-##### 7. 内置AccessToken管理
+#### 7. 内置AccessToken管理
 
 本框架提供WxTokenStore接口来存储token，并提供一个默认的基于内存的实现MemoryWxTokenStore，若有分布式需要可以自行实现该接口，并把实现类作为Bean注入Spring即可。
 
-##### 8. 微信接口调用与返回值自动处理
+#### 8. 微信接口调用与返回值自动处理
 
 使用WxApiInvokeSpi接口与WxInvokerProxyFactory工厂类自动生成微信接口调用代理，只需要声明方法和注解即可，默认使用HttpComponent调用接口。有兴趣的小伙伴可以看看源码，我写的也不太好，有更好的建议欢迎提出。
 
@@ -236,19 +236,28 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 PS：你也可以使用这种方式任意生成自己的代理调用接口，后续我会加入文档，暂时懒。。。
 
-##### 9. 菜单自动生成与自动更新
+#### 9. 菜单自动生成与自动更新
 可以通过开关开启与关闭，通过@WxButton注解生成菜单结构，并自动调用接口判断菜单是否改变，自动生成与更新菜单。
 
-##### 10. 内置微信接口认证
+#### 10. 内置微信接口认证
 
 可以正确响应微信发送的Token验证，方便快捷。
 
-##### 11. 完全无侵入的Mvc模式
+#### 11. 完全无侵入的MVC模式
 
 使用本框架，不会对SpringMvc自己原生的Mapping产生任何影响，也不会占用任何独有的Mapping关系(除了认证请求)。在此框架存在的情况下，你可以使用任何SpringMvc的原生功能，包括根目录的请求，也不会被微信服务器独自占用。
 
-##### 12. 微信Web认证拦截器与URL自动转换
+#### 12. 微信Web认证拦截器与URL自动转换
 
 提供微信OAUTH2认证拦截，通过配置wx.mvc.interceptor.includePatterns和wx.mvc.interceptor.excludePatterns来配置拦截的目标地址，你可以提供一个WxOAuth2Callback接口的实现类作为Bean，在WxOAuth2Interceptor中会自动注入这个bean，并在微信Web认证通过后调用after(WxOAuth2Context context)方法把相关的context传递给该Bean的方法，你可以在该方法中获取到context了的WxWebUser，并通过WxUserManager把WxWebUser转换为WxUser。关系详细信息请参考：[微信网页授权](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)。
 
 附加功能：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
+
+### 五、暂时不支持的功能
+#### 1. 自定义客服回复消息
+之后可以加入支持，使用注解定义消息客服，类似于@RabbitListener的方式
+#### 2. 消息加解
+没有想到好的方式把消息加解密融合到SpringMvc中
+#### 3. 公众号其他高级功能
+如支付等
+#### 4. 待优化：WxMediaStore
