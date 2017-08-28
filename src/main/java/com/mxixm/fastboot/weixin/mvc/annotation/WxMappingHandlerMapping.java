@@ -1,6 +1,9 @@
 package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.annotation.WxController;
+import com.mxixm.fastboot.weixin.annotation.WxEventMapping;
+import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.WxRequest;

@@ -7,9 +7,9 @@ import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
-import com.mxixm.fastboot.weixin.mvc.annotation.WxController;
-import com.mxixm.fastboot.weixin.mvc.annotation.WxEventMapping;
-import com.mxixm.fastboot.weixin.mvc.annotation.WxMessageMapping;
+import com.mxixm.fastboot.weixin.annotation.WxController;
+import com.mxixm.fastboot.weixin.annotation.WxEventMapping;
+import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import org.springframework.boot.SpringApplication;
 
 @WxApplication

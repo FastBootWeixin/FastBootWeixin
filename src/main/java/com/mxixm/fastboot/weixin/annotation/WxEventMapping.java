@@ -1,4 +1,4 @@
-package com.mxixm.fastboot.weixin.mvc.annotation;
+package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;

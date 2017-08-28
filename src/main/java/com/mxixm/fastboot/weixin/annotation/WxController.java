@@ -1,6 +1,5 @@
-package com.mxixm.fastboot.weixin.mvc.annotation;
+package com.mxixm.fastboot.weixin.annotation;
 
-import com.mxixm.fastboot.weixin.annotation.WxResponseBody;
 import org.springframework.stereotype.Controller;
 
 import java.lang.annotation.*;
