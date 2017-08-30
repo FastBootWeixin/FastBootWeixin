@@ -20,14 +20,9 @@ public abstract class WxUrlUtils {
             return url;
         }
         if (url.startsWith("/") && !StringUtils.isEmpty(requestUrl)) {
-            String hostUrl = requestUrl;
-            try {
-                URI uri = new URI(requestUrl);
-                hostUrl = uri.getScheme() + "://" + uri.getHost();
-            } catch (URISyntaxException e) {
-                // ignore it
-            }
-            return hostUrl +  url;
+            URI uri = URI.create(requestUrl);
+            String hostUrl = uri.getScheme() + "://" + uri.getHost();
+            return hostUrl + url;
         } else {
             return "http://" + url;
         }

@@ -111,23 +111,18 @@ public class WxRedirectUtils {
      * @return
      */
     private static boolean isCallback(String baseUrl, String url) {
-        try {
-            String callbackUrlHost = null;
-            String urlHost = new URI(url).getHost();
-            String callbackUrl = Wx.Environment.instance().getCallbackUrl();
-            if (!StringUtils.isEmpty(callbackUrl)) {
-                callbackUrlHost = new URI(callbackUrl).getHost();
-            } else if (!StringUtils.isEmpty(baseUrl)) {
-                callbackUrlHost = new URI(baseUrl).getHost();
-            } else {
-                // 不满足条件，强行返回true
-                return true;
-            }
-            return callbackUrlHost.equals(urlHost);
-        } catch (URISyntaxException e) {
-            // ignore it
+        String callbackUrlHost;
+        String urlHost = URI.create(url).getHost();
+        String callbackUrl = Wx.Environment.instance().getCallbackUrl();
+        if (!StringUtils.isEmpty(callbackUrl)) {
+            callbackUrlHost = URI.create(callbackUrl).getHost();
+        } else if (!StringUtils.isEmpty(baseUrl)) {
+            callbackUrlHost = URI.create(baseUrl).getHost();
+        } else {
+            // 不满足条件，强行返回true
+            return true;
         }
-        return true;
+        return callbackUrlHost.equals(urlHost);
     }
 
 }
