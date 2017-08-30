@@ -99,7 +99,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             oldWxMenu = wxApiInvokeSpi.getMenu();
         } catch (WxApiResultException e) {
             // 如果不是菜单不存在，则继续抛出，否则执行创建菜单操作
-            if (e.getResultCode() != WxApiResultException.WxApiResultCode.Menu_No_Exist) {
+            if (e.getResultCode() != WxApiResultException.WxApiResultCode.NOT_FOUND_MENU_DATA) {
                 throw e;
             }
         }
