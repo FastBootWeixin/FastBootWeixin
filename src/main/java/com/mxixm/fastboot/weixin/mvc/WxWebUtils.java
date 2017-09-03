@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.mvc;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.core.io.InputStreamSource;
 
@@ -28,6 +28,14 @@ public class WxWebUtils {
 
     public static WxRequest getWxRequestFromRequestAttribute(HttpServletRequest request) {
         return (WxRequest) request.getAttribute(WX_REQUEST_ATTRIBUTE);
+    }
+
+    public static WxRequest.Body getWxRequestBodyFromRequestAttribute(HttpServletRequest request) {
+        WxRequest wxRequest = getWxRequestFromRequestAttribute(request);
+        if (wxRequest == null) {
+            return null;
+        }
+        return wxRequest.getBody();
     }
 
     public static void setWxWebUserToSession(HttpServletRequest request, WxWebUser wxWebUser) {

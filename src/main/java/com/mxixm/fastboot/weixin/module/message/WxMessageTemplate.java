@@ -1,7 +1,7 @@
 package com.mxixm.fastboot.weixin.module.message;
 
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
  * FastBootWeixin  WxMessageTemplate

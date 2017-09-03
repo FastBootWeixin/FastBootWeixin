@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.module.message.processer;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
@@ -38,7 +38,7 @@ public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxM
                 String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File(body.getThumbMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getThumbMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestUrl().toString(), body.getThumbMediaUrl());
+                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), body.getThumbMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setMediaId(mediaId);
             }

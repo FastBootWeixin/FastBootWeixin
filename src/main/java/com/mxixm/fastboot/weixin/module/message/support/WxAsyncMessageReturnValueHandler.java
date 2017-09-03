@@ -3,7 +3,7 @@ package com.mxixm.fastboot.weixin.module.message.support;
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;

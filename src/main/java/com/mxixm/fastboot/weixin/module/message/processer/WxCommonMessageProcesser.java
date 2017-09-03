@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.module.message.processer;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 
@@ -20,10 +20,10 @@ public class WxCommonMessageProcesser implements WxMessageProcesser<WxMessage> {
             return wxMessage;
         }
         if (wxMessage.getToUserName() == null) {
-            wxMessage.setToUserName(wxRequest.getFromUserName());
+            wxMessage.setToUserName(wxRequest.getBody().getFromUserName());
         }
         if (wxMessage.getFromUserName() == null) {
-            wxMessage.setFromUserName(wxRequest.getToUserName());
+            wxMessage.setFromUserName(wxRequest.getBody().getToUserName());
         }
         return wxMessage;
     }

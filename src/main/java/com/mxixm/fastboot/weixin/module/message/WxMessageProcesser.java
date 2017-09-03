@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

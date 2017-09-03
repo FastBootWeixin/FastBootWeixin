@@ -8,6 +8,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.common.WxMediaResourceMessag
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
+import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.advice.WxMediaResponseBodyAdvice;
 import com.mxixm.fastboot.weixin.mvc.advice.WxMessageResponseBodyAdvice;
 import com.mxixm.fastboot.weixin.mvc.advice.WxStringResponseBodyAdvice;
@@ -68,8 +69,8 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     }
 
     @Bean
-    public WxMappingHandlerMapping wxRequestMappingHandlerMapping() {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxBuildinVerify(), wxMenuManager());
+    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager) {
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxBuildinVerify(), wxMenuManager(), wxSessionManager);
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }

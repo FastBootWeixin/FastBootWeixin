@@ -1,7 +1,8 @@
 package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
 import org.springframework.beans.BeanUtils;
@@ -82,22 +83,28 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
         if (parameter.getParameterType() == WxRequest.class) {
             return wxRequest;
         }
+        if (parameter.getParameterType() == WxRequest.Body.class) {
+            return wxRequest.getBody();
+        }
+        if (parameter.getParameterType() == WxSession.class) {
+            return wxRequest.getWxSession();
+        }
         // 如果可以获取用户则返回用户
         Object user = getUser(parameter, wxRequest);
         if (user != null) {
             return user;
         }
-        return wxRequest.getParameterValue(name);
+        return wxRequest.getParameter(name);
     }
 
-    private Object getUser(MethodParameter parameter, WxRequest wxRequest) {
+    protected Object getUser(MethodParameter parameter, WxRequest wxRequest) {
         // 类型不匹配直接返回
         if (!wxUserProvider.isMatch(parameter.getParameterType())) {
             return null;
         } else if (WX_USER.equals(parameter.getParameterName()) || !BeanUtils.isSimpleProperty(parameter.getParameterType())) {
             // 两个都转换失败时，判断是否是简单属性，如果不是，则尝试转换为用户
             // 因为此时无法得知是要获取to还是from，所以取对于用户来说更需要的from
-            return wxUserProvider.getUser(wxRequest.getFromUserName());
+            return wxUserProvider.getUser(wxRequest.getBody().getFromUserName());
         }
         return null;
     }

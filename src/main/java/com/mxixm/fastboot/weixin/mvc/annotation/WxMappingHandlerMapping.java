@@ -6,21 +6,18 @@ import com.mxixm.fastboot.weixin.annotation.WxEventMapping;
 import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
@@ -52,20 +49,20 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final HandlerMethod wxVerifyMethodHandler;
 
-    private final Jaxb2RootElementHttpMessageConverter xmlConverter;
-
     // mappingRegistry同父类完全不同，故自己创建一个
     // 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
     private final MappingRegistry mappingRegistry = new MappingRegistry();
 
-    // 可以加一个开关功能
+    // 可以加一个开关功能:已经加了
     private WxMenuManager wxMenuManager;
 
-    public WxMappingHandlerMapping(WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager) {
+    private WxSessionManager wxSessionManager;
+
+    public WxMappingHandlerMapping(WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager) {
         super();
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
-        this.xmlConverter = new Jaxb2RootElementHttpMessageConverter();
         this.wxMenuManager = wxMenuManager;
+        this.wxSessionManager = wxSessionManager;
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
     }
 
@@ -132,22 +129,18 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
         this.mappingRegistry.acquireReadLock();
         try {
-            // ServletWebRequest
-            HttpInputMessage inputMessage = new ServletServerHttpRequest(request);
-            WxRequest wxRequest = (WxRequest) xmlConverter.read(WxRequest.class, inputMessage);
-            wxRequest.setRequestUrl(request.getRequestURL());
-            WxWebUtils.setWxRequestToRequestAttribute(request, wxRequest);
             HandlerMethod handlerMethod = null;
+            WxRequest.Body wxRequestBody = new WxRequest(request, wxSessionManager).getBody();
             // switch不被推荐缺少default
-            switch (wxRequest.getCategory()) {
+            switch (wxRequestBody.getCategory()) {
                 case BUTTON:
-                    handlerMethod = lookupButtonHandlerMethod(wxRequest);
+                    handlerMethod = lookupButtonHandlerMethod(wxRequestBody);
                     break;
                 case EVENT:
-                    handlerMethod = lookupEventHandlerMethod(wxRequest);
+                    handlerMethod = lookupEventHandlerMethod(wxRequestBody);
                     break;
                 case MESSAGE:
-                    handlerMethod = lookupMessageHandlerMethod(wxRequest);
+                    handlerMethod = lookupMessageHandlerMethod(wxRequestBody);
                     break;
                 default:break;
             }
@@ -165,26 +158,26 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
     }
 
-    private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
-        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequest.getEventKey());
+    private HandlerMethod lookupButtonHandlerMethod(WxRequest.Body wxRequestBody) {
+        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequestBody.getEventKey());
         if (handlerMethod == null) {
-            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequest.getButtonType());
+            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequestBody.getButtonType());
         }
         return handlerMethod;
     }
 
-    private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getHandlerEventByEventType(wxRequest.getEventType());
+    private HandlerMethod lookupEventHandlerMethod(WxRequest.Body wxRequestBody) {
+        return mappingRegistry.getHandlerEventByEventType(wxRequestBody.getEventType());
     }
 
-    private HandlerMethod lookupMessageHandlerMethod(WxRequest wxRequest) {
-        if (wxRequest.getMessageType() == WxMessage.Type.TEXT) {
-            List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequest.getContent());
+    private HandlerMethod lookupMessageHandlerMethod(WxRequest.Body wxRequestBody) {
+        if (wxRequestBody.getMessageType() == WxMessage.Type.TEXT) {
+            List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequestBody.getContent());
             if (!handlerMethods.isEmpty()) {
                 return handlerMethods.get(0);
             }
         }
-        return mappingRegistry.getHandlerMessageByMessageType(wxRequest.getMessageType());
+        return mappingRegistry.getHandlerMessageByMessageType(wxRequestBody.getMessageType());
     }
 
     protected boolean isHandler(Class<?> beanType) {

@@ -1,6 +1,8 @@
 package com.mxixm.fastboot.weixin.config;
 
 import com.mxixm.fastboot.weixin.module.Wx;
+import com.mxixm.fastboot.weixin.module.web.session.DefaultWxSessionIdGenerator;
+import com.mxixm.fastboot.weixin.module.web.session.WxSessionIdGenerator;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,8 +47,11 @@ public class WxProperties implements InitializingBean {
 
     private Mvc mvc = new Mvc();
 
+    private Server server = new Server();
+
     /**
      * 这里还可以设置其他地方要使用的东西
+     *
      * @throws Exception
      */
     @Override
@@ -174,6 +179,23 @@ public class WxProperties implements InitializingBean {
 
             List<String> excludePatterns = new ArrayList<>();
         }
+    }
+
+    @Getter
+    public static class Server {
+
+        private Class<? extends WxSessionIdGenerator> wxSessionIdGeneratorClass = DefaultWxSessionIdGenerator.class;
+
+        /**
+         * sesison超时，默认四个小时
+         */
+        private int sessionTimeout = 4 * 60 * 60 * 1000;
+
+        /**
+         * 最大活跃session数
+         */
+        private int maxActiveLimit = 0;
+
     }
 
 }

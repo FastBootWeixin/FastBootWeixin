@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.mvc.advice;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;

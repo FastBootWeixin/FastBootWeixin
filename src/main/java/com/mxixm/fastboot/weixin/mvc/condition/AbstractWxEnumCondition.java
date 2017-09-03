@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.mvc.condition;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
@@ -46,10 +46,10 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
 
 	@Override
 	public AbstractWxEnumCondition getMatchingCondition(HttpServletRequest request) {
-		return matchEnum(WxWebUtils.getWxRequestFromRequestAttribute(request));
+		return matchEnum(WxWebUtils.getWxRequestBodyFromRequestAttribute(request));
 	}
 
-	protected abstract AbstractWxEnumCondition matchEnum(WxRequest wxRequest);
+	protected abstract AbstractWxEnumCondition matchEnum(WxRequest.Body wxRequestBody);
 
 	@Override
 	public int compareTo(AbstractWxEnumCondition<T> other, HttpServletRequest request) {

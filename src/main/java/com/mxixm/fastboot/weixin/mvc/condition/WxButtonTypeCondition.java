@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.mvc.condition;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -51,8 +51,8 @@ public final class WxButtonTypeCondition extends AbstractWxEnumCondition<WxButto
 	}
 
 	@Override
-	protected WxButtonTypeCondition matchEnum(WxRequest wxRequest) {
-		WxButton.Type wxButtonType = wxRequest.getButtonType();
+	protected WxButtonTypeCondition matchEnum(WxRequest.Body wxRequestBody) {
+		WxButton.Type wxButtonType = wxRequestBody.getButtonType();
 		if (getEnums().contains(wxButtonType)) {
 			return new WxButtonTypeCondition(wxButtonType);
 		}

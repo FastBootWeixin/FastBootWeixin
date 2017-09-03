@@ -1,21 +1,21 @@
 package com.mxixm.fastboot.weixin.util;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 用来存储短暂对象的缓存类，实现Map接口，内部有一个定时器用来清除过期（30秒）的对象。
- * 为避免创建过多线程，没有特殊要求请使用getDefault()方法来获取本类的实例。
- *
+ * 扩展了两个功能
  */
 public class CacheMap<K, V> extends AbstractMap<K, V> {
 
     // 12个小时
     private static final long DEFAULT_TIMEOUT = 24 * 60 * 60 * 1000;
 
-    private static final Map<String, CacheMap> cacheNameMap = new HashMap<>();
+    private static final Map<String, CacheMap> cacheNameMap = new ConcurrentHashMap<>();
 
-    // 一个小时扫一次缓存
-    private static final long DEFAULT_CLEAR_PERIOD = 60 * 60 * 1000;
+    // 十分钟扫一次缓存
+    private static final long DEFAULT_CLEAR_PERIOD = 10 * 60 * 1000;
 
     private static TimerTask timerTask = new TimerTask() {
         @Override
@@ -28,18 +28,23 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
     private static Timer timer = new Timer(true);
 
     static {
+        // 清理线程可优化为多个
         timer.schedule(timerTask, DEFAULT_CLEAR_PERIOD, DEFAULT_CLEAR_PERIOD);
+    }
+
+    public static <K, V> Builder<K, V> builder() {
+        return new Builder<>();
     }
 
     static class CacheEntry<K, V> implements Entry<K, V> {
         long time;
-        V value;
         K key;
+        V value;
 
         CacheEntry(K key, V value) {
             super();
-            this.value = value;
             this.key = key;
+            this.value = value;
             this.time = System.currentTimeMillis();
         }
 
@@ -66,23 +71,58 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
         for (Object key : keys) {
             CacheEntry entry = (CacheEntry) map.getEntryMap().get(key);
             if (now - entry.time >= map.getCacheTimeout()) {
-                synchronized (map) {
-                    map.remove(key);
-                }
+                map.remove(key);
+            }
+        }
+    }
+
+    /**
+     * 清理超过限制的缓存
+     * @param map
+     */
+    public static void clearOverflowCache(CacheMap map) {
+        int maxSize = map.maxSize;
+        int realMaxSize = maxSize + maxSize / 4;
+        if (map.size() > realMaxSize) {
+            int needRemove = map.size() - maxSize;
+            TreeSet<Entry> sortedSet = map.entrySet();
+            Entry e;
+            while ((e = sortedSet.pollFirst()) != null && needRemove-- > 0) {
+                map.remove(e.getKey());
             }
         }
     }
 
     private long cacheTimeout;
 
+    private Map<K, CacheEntry> entryMap = new ConcurrentHashMap<>();
+
     private String cacheName;
 
-    private Map<K, CacheEntry> entryMap = new HashMap<>();
+    /**
+     * 在读取的时候是否刷新时间
+     */
+    private boolean refreshOnRead;
 
-    public CacheMap(String cacheName, long timeout) {
+    /**
+     * 0的时候是无限，最大空间，当然允许超过最大空间，但是只能超过四分之一的量，这样做是为了保证性能
+     */
+    private int maxSize;
+
+    public CacheMap(String cacheName, long timeout, boolean refreshOnRead, int maxSize) {
         this.cacheName = cacheName;
         this.cacheTimeout = timeout;
+        this.refreshOnRead = refreshOnRead;
+        this.maxSize = maxSize;
         cacheNameMap.put(cacheName, this);
+    }
+
+    public CacheMap(String cacheName, long timeout, boolean refreshOnRead) {
+        this(cacheName, timeout, refreshOnRead, 0);
+    }
+
+    public CacheMap(String cacheName, long timeout) {
+        this(cacheName, timeout, false);
     }
 
     public CacheMap(String cacheName) {
@@ -99,16 +139,22 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
 
     /**
      * remove其实是通过这个来实现的，但是这里功能明显导致删除会失败，结果会内存溢出，所以我重写了remove方法
+     * 这里的entrySet实现可能是有点问题的，因为返回的是一个新的实例。
      * @return
      */
     @Override
-    public Set<Entry<K, V>> entrySet() {
-        Set<Entry<K, V>> entrySet = new HashSet<>();
+    public TreeSet<Entry<K, V>> entrySet() {
+        TreeSet<Entry<K, V>> entrySet = new TreeSet<>(Comparator.comparing(kvEntry -> ((CacheEntry)kvEntry).time));
         Set<Entry<K, CacheEntry>> wrapEntrySet = entryMap.entrySet();
         for (Entry<K, CacheEntry> entry : wrapEntrySet) {
             entrySet.add(entry.getValue());
         }
         return entrySet;
+    }
+
+    @Override
+    public int size() {
+        return entryMap.size();
     }
 
     @Override
@@ -123,16 +169,78 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
     @Override
     public V get(Object key) {
         CacheEntry<K, V> entry = entryMap.get(key);
+        if (entry == null) {
+            return null;
+        }
+        if (refreshOnRead) {
+            entry.time = System.currentTimeMillis();
+        }
         return entry == null ? null : entry.value;
     }
 
     @Override
     public V put(K key, V value) {
-        CacheEntry entry = new CacheEntry(key, value);
-        synchronized (entryMap) {
-            entryMap.put(key, entry);
+        // 如果超量，需要清理
+        if (maxSize > 0 && this.size() > maxSize + maxSize / 4) {
+            clearOverflowCache(this);
         }
+        CacheEntry entry = new CacheEntry(key, value);
+        entryMap.put(key, entry);
         return value;
+    }
+
+    public static class Builder<K, V> {
+        private long cacheTimeout;
+        private Map<K, CacheEntry> entryMap;
+        private String cacheName;
+        private boolean refreshOnRead;
+        private int maxSize;
+
+        Builder() {
+        }
+
+        public CacheMap.Builder<K, V> cacheTimeout(long cacheTimeout) {
+            this.cacheTimeout = cacheTimeout;
+            return this;
+        }
+
+        public CacheMap.Builder<K, V> cacheName(String cacheName) {
+            this.cacheName = cacheName;
+            return this;
+        }
+
+        public CacheMap.Builder<K, V> refreshOnRead() {
+            this.refreshOnRead = true;
+            return this;
+        }
+
+        public CacheMap.Builder<K, V> maxSize(int maxSize) {
+            this.maxSize = maxSize;
+            return this;
+        }
+
+        public CacheMap<K, V> build() {
+            return new CacheMap<>(cacheName, cacheTimeout, refreshOnRead, maxSize);
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.util.CacheMap.CacheMapBuilder(cacheTimeout=" + this.cacheTimeout + ", entryMap=" + this.entryMap + ", cacheName=" + this.cacheName + ", refreshOnRead=" + this.refreshOnRead + ", maxSize=" + this.maxSize + ")";
+        }
+    }
+
+
+    public static void main(String[] args) {
+        CacheMap map = CacheMap.builder().cacheName("test").cacheTimeout(1000).maxSize(5).refreshOnRead().build();
+        map.put("1", "2");
+        map.put("2", "3");
+        map.put("3", "4");
+        map.put("4", "5");
+        map.put("5", "6");
+        map.get("1");
+        map.put("6", "7");
+        map.put("7", "8");
+        map.put("8", "9");
+        map.put("9", "10");
     }
 
 }

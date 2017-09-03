@@ -17,11 +17,20 @@ import java.util.Date;
  */
 public class WxUserManager {
 
-    private final CacheMap<String, WxWebUser> webUserCache = new CacheMap<>("WxWebUserCache", 5 * 60 * 1000);
+    private final CacheMap<String, WxWebUser> webUserCache = CacheMap.<String, WxWebUser>builder()
+            .cacheName("WxWebUserCache")
+            .cacheTimeout(5 * 60 * 1000)
+            .refreshOnRead().build();
 
-    private final CacheMap<String, WxUser> tokenUserCache = new CacheMap<>("TokenWxUserCache", 24 * 60 * 60 * 1000);
+    private final CacheMap<String, WxUser> tokenUserCache = CacheMap.<String, WxUser>builder()
+            .cacheName("TokenWxUserCache")
+            .cacheTimeout(24 * 60 * 60 * 1000)
+            .refreshOnRead().build();
 
-    private final CacheMap<String, WxUser> openIdUserCache = new CacheMap<>("OpenIdWxUserCache", 24 * 60 * 60 * 1000);
+    private final CacheMap<String, WxUser> openIdUserCache = CacheMap.<String, WxUser>builder()
+            .cacheName("OpenIdWxUserCache")
+            .cacheTimeout(24 * 60 * 60 * 1000)
+            .refreshOnRead().build();
 
     private WxTokenServer wxTokenServer;
 
@@ -52,6 +61,7 @@ public class WxUserManager {
 
     /**
      * 只针对未认证的情况
+     *
      * @param wxWebUser
      * @return
      */

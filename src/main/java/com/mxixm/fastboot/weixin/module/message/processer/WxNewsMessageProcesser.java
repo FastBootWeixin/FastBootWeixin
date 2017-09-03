@@ -1,6 +1,6 @@
 package com.mxixm.fastboot.weixin.module.message.processer;
 
-import com.mxixm.fastboot.weixin.module.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
@@ -21,8 +21,8 @@ public class WxNewsMessageProcesser implements WxMessageProcesser<WxMessage.News
             return wxMessage;
         }
         wxMessage.getBody().getArticles().stream().forEach(i -> {
-            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestUrl().toString(), i.getPicUrl()));
-            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestUrl().toString(), i.getUrl()));
+            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), i.getPicUrl()));
+            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestURL().toString(), i.getUrl()));
         });
         return wxMessage;
     }
