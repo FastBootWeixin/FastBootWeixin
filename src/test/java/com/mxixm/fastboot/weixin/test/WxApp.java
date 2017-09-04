@@ -5,6 +5,7 @@ import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.boot.SpringApplication;
 
@@ -118,5 +119,17 @@ public class WxApp {
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
                         .url("http://baidu.com").build())
                 .build();
+    }
+
+    /**
+     * 接受用户文本消息，异步返回文本消息
+     * @param content
+     * @return
+     */
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
+    @WxAsyncMessage
+    public String text2(WxRequestBody.Text text, String content) {
+        boolean match = text.getContent().equals(content);
+        return "收到消息内容为" + content + "!结果匹配！";
     }
 }

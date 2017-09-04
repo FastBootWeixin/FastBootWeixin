@@ -5,6 +5,7 @@ import com.mxixm.fastboot.weixin.config.invoker.WxInvokerConfiguration;
 import com.mxixm.fastboot.weixin.config.media.WxMediaConfiguration;
 import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageConfiguration;
 import com.mxixm.fastboot.weixin.config.server.WxBuildinMvcConfiguration;
+import com.mxixm.fastboot.weixin.config.server.WxWebConfiguration;
 import com.mxixm.fastboot.weixin.config.token.WxTokenConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
@@ -21,11 +22,17 @@ import java.lang.annotation.*;
 @Inherited
 @PropertySource("classpath:/wx.properties")
 @EnableConfigurationProperties(WxProperties.class)
-@Import({WxInvokerConfiguration.class, WxAsyncMessageConfiguration.class, WxBuildinMvcConfiguration.class, WxTokenConfiguration.class, WxMediaConfiguration.class})
+@Import({WxInvokerConfiguration.class,
+        WxAsyncMessageConfiguration.class,
+        WxBuildinMvcConfiguration.class,
+        WxTokenConfiguration.class,
+        WxMediaConfiguration.class,
+        WxWebConfiguration.class})
 public @interface EnableWxMvc {
 
     /**
      * 是否自动创建菜单
+     *
      * @return
      */
     boolean menuAutoCreate() default true;

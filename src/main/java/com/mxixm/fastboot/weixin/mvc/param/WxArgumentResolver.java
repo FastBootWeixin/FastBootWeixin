@@ -2,6 +2,7 @@ package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
@@ -75,6 +76,14 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
         return new RequestParamNamedValueInfo();
     }
 
+    /**
+     * 所有的转换都卸载了一起，有空可以分离为多个，抽象一层
+     * @param name
+     * @param parameter
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Override
     protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
@@ -86,9 +95,13 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
         if (parameter.getParameterType() == WxRequest.Body.class) {
             return wxRequest.getBody();
         }
-        if (parameter.getParameterType() == WxSession.class) {
+        if (WxSession.class.isAssignableFrom(parameter.getParameterType())) {
             return wxRequest.getWxSession();
         }
+        if (WxRequestBody.class.isAssignableFrom(parameter.getParameterType())) {
+            return WxRequestBody.of((Class)parameter.getParameterType(), wxRequest.getBody());
+        }
+
         // 如果可以获取用户则返回用户
         Object user = getUser(parameter, wxRequest);
         if (user != null) {

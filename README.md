@@ -199,7 +199,7 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 支持以下类型参数：
 - WxRequest:微信服务器的请求封装
 - WxRequest.Body:微信服务器的请求体内容封装
-- WxRequest.field:WxRequest里的任意属性名，都可以直接绑定到参数，但是要注意消息类型与参数值，有些消息不会有某些内容。暂时还不支持不同消息区分绑定的不同的Request类型，后续可加入支持。
+- WxRequest.Body.field:WxRequest里的任意属性名，都可以直接绑定到参数，但是要注意消息类型与参数值，有些消息不会有某些内容。暂时还不支持不同消息区分绑定的不同的Request类型，后续可加入支持。
 - WxSession:类比于HttpSession，默认实现使用fromUserName作为sessionId
 - WxUser:这个是较为特殊的类型，其实是通过WxUserProvider接口提供的，本框架提供一个默认的实现DefaultWxUserProvider implements WxUserProvider<WxUser>，该实现通过微信api获取用户信息，以WxUser类型返回，当然你也可以使用自己的实现类，只用声明为SpringBean即可自动注入，泛型类型也可以由你自己确定，参数中有该泛型类型的参数，都会被自动使用WxUserProvider.getUser获取并绑定到参数中。
 
@@ -263,17 +263,25 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 ### 五、暂时不支持的功能
 #### 1. 自定义客服回复消息
 之后可以加入支持，使用注解定义消息客服，类似于@RabbitListener的方式
-#### 2. 消息加解
+#### 2. 消息加解密
 没有想到好的方式把消息加解密融合到SpringMvc中
-#### 3. 公众号其他高级功能
+#### 3. 个性化菜单
+稍微有点麻烦，用户分类
+#### 4. 高级用户管理
+用户分组什么的是否有好的实现？暂时没有需求
+#### 5. 公众号其他高级功能
 如支付等
-#### 4. 待优化：WxMediaStore
+#### 6. 待优化：WxMediaStore
 
 ### 六、更新日志
 
-#### 0.0.1-SNAPSHOT:初始版本
+#### 0.0.1-SNAPSHOT
+初始版本
 
 #### 0.1.0-SNAPSHOT:
 1. 加入WxSession，类似HttpSession，默认实现中sessionId是fromUserName。如果自行提供WxSessionManager的实现类bean，则会使用你的Bean作为manager，默认实现是基于内存的，请自行扩展。
 2. 优化WxRequest，原始版本为直接把微信请求内容作为Request，更新为WxRequest为微信服务器请求的包装，内部的body属性为微信服务器请求体。
 3. 拆分不同的消息请求体
+
+#### 0.1.1-SNAPSHOT:
+优化消息参数绑定，新增指定消息体绑定，参考WxRequestBody

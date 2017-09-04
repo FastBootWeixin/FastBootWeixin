@@ -237,7 +237,7 @@ public class WxRequest {
         private ScanCodeInfo scanCodeInfo;
 
         /**
-         * event为pic_photo_or_album、pic_weixin才有
+         * event为pic_sysphoto、pic_photo_or_album、pic_weixin才有
          * 发送的图片信息
          */
         @XmlElement(name = "SendPicsInfo")
@@ -432,8 +432,8 @@ public class WxRequest {
              * 图片列表
              */
             @XmlElementWrapper(name = "PicList")
-            @XmlElements(@XmlElement(name = "item", type = SendPicsInfo.Item.class))
-            private List<SendPicsInfo.Item> picList;
+            @XmlElements(@XmlElement(name = "item", type = Item.class))
+            private List<Item> picList;
 
             @Data
             @XmlRootElement(name = "item")
