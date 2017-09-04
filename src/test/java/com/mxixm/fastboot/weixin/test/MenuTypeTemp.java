@@ -1,4 +1,4 @@
-package com.example.test;
+package com.mxixm.fastboot.weixin.test;
 
 public enum MenuTypeTemp {
 

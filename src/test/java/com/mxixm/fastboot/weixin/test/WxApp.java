@@ -1,10 +1,10 @@
-package com.mxixm.fastboot.weixin;
+package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.boot.SpringApplication;
 

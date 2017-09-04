@@ -1,4 +1,4 @@
-package com.example.test;
+package com.mxixm.fastboot.weixin.test;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package com.example.test;
+package com.mxixm.fastboot.weixin.test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

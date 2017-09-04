@@ -1,4 +1,4 @@
-package com.example.test;
+package com.mxixm.fastboot.weixin.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;

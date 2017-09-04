@@ -97,7 +97,11 @@ public class WxApp {
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
     @WxAsyncMessage
-    public String text(String content) {
+    public String text(WxRequest wxRequest, String content) {
+        WxSession wxSession = wxRequest.getWxSession();
+        if (wxSession != null && wxSession.getAttribute("last") != null) {
+            return "上次收到消息内容为" + wxSession.getAttribute("last");
+        }
         return "收到消息内容为" + content;
     }
 
@@ -107,7 +111,8 @@ public class WxApp {
      * @return
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
-    public WxMessage message(String content) {
+    public WxMessage message(WxSession wxSession, String content) {
+        wxSession.setAttribute("last", content);
         return WxMessage.News.builder()
                 .addItem(WxMessage.News.Item.builder().title(content).description("随便一点")
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
