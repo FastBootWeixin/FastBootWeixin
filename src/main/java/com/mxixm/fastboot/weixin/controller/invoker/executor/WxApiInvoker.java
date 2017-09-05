@@ -142,15 +142,25 @@ public class WxApiInvoker {
     }
 
     public <T> T patchForObject(String url, Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
-        return restTemplate.patchForObject(url, request, responseType, uriVariables);
+        return restTemplate.exchange(url, HttpMethod.PATCH, getHttpEntity(request), responseType, uriVariables).getBody();
     }
 
     public <T> T patchForObject(String url, Object request, Class<T> responseType, Map<String, ?> uriVariables) throws RestClientException {
-        return restTemplate.patchForObject(url, request, responseType, uriVariables);
+        return restTemplate.exchange(url, HttpMethod.PATCH, getHttpEntity(request), responseType, uriVariables).getBody();
     }
 
     public <T> T patchForObject(URI url, Object request, Class<T> responseType) throws RestClientException {
-        return restTemplate.patchForObject(url, request, responseType);
+        return restTemplate.exchange(url, HttpMethod.PATCH, getHttpEntity(request), responseType).getBody();
+    }
+
+    private HttpEntity getHttpEntity(Object request) {
+        if(request instanceof HttpEntity) {
+            return (HttpEntity)request;
+        } else if(request != null) {
+            return new HttpEntity(request);
+        } else {
+            return HttpEntity.EMPTY;
+        }
     }
 
     public void delete(String url, Object... uriVariables) throws RestClientException {
