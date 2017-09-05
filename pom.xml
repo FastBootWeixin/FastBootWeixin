@@ -5,8 +5,37 @@
 
     <groupId>com.mxixm.fastboot</groupId>
     <artifactId>weixin</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.2.SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <name>FastBootWeixin</name>
+    <description>Weixin Fast Boot Framework</description>
+    <url>https://github.com/FastBootWeixin/FastBootWeixin</url>
+    <organization>
+        <name>Guangshan Technology, Inc.</name>
+        <url>http://www.mxixm.com</url>
+    </organization>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/FastBootWeixin/FastBootWeixin.git</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>guangshan</id>
+            <name>HikariShine</name>
+            <email>guangshan1992 at qq.com</email>
+            <organization>Guangshan Technology, Inc.</organization>
+            <organizationUrl>https://github.com/FastBootWeixin/FastBootWeixin</organizationUrl>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+        </developer>
+    </developers>
 
     <!-- Inherit defaults from Spring Boot -->
     <parent>
@@ -17,21 +46,26 @@
 
     <properties>
 		<java.version>1.8</java.version>
-	</properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <!-- Add typical dependencies for a web application -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.mapdb/mapdb -->
         <!-- 本来想用最新版本的，但是最新版本依赖太多了！兼职就是巨无霸，于是换成老版本-->
