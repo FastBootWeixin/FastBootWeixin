@@ -1,5 +1,4 @@
 # How To Use
----------------------------------
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](http://weixin.mxixm.com)
 [![Maven Central](https://img.shields.io/badge/maven--central-0.1.2.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.alpha%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
