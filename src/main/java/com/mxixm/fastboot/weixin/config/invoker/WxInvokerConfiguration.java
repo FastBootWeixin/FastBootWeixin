@@ -63,7 +63,7 @@ public class WxInvokerConfiguration {
 
 	/**
 	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
-	 * @return
+	 * @return dummy
      */
 	@Bean(name = WxBeans.WX_API_INVOKER_NAME)
 	public WxApiInvoker wxApiInvoker() {
@@ -98,7 +98,7 @@ public class WxInvokerConfiguration {
 	 * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
 	 * 于是产生了循环依赖
 	 * @param wxAccessTokenManager
-	 * @return
+	 * @return dummy
 	 */
 	@Bean
 	public WxApiExecutor wxApiExecutor(WxAccessTokenManager wxAccessTokenManager) {
@@ -125,7 +125,7 @@ public class WxInvokerConfiguration {
 	/**
 	 * 只考虑微信的消息转换，后期可以优化
 	 * 其实这里完全可以使用系统的Bean，但是这里我想特殊处理，只对微信消息做转换，所以定制化了几个converter
-	 * @return
+	 * @return dummy
 	 */
 	private HttpMessageConverters getDefaultWxMessageConverters() {
 		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);

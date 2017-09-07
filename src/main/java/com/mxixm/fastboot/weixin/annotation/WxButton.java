@@ -18,7 +18,7 @@ public @interface WxButton {
 
     /**
      * 显示名称
-     * @return
+     * @return dummy
      */
     String name();
 
@@ -33,7 +33,7 @@ public @interface WxButton {
 
     /**
      * 这里可以写一个自动生成key的策略
-     * @return
+     * @return dummy
      */
     String key() default "";
 

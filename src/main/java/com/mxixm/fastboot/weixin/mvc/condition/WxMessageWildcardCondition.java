@@ -70,7 +70,7 @@ public final class WxMessageWildcardCondition extends AbstractRequestCondition<W
 	 * 拿通配符的长度判断，以后可以加入权重系统
 	 * @param other
 	 * @param request
-	 * @return
+	 * @return dummy
 	 */
 	@Override
 	public int compareTo(WxMessageWildcardCondition other, HttpServletRequest request) {

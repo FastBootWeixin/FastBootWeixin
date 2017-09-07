@@ -139,7 +139,7 @@ public class WxApiExecutor {
      * 要发送文件，使用这种方式，请查看源码：FormHttpMessageConverter
      * @param wxApiMethodInfo
      * @param args
-     * @return
+     * @return dummy
      */
     private Object getFormBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
@@ -197,7 +197,7 @@ public class WxApiExecutor {
     /**
      * 获取一个application/json头
      *
-     * @return
+     * @return dummy
      */
     private HttpHeaders buildJsonHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -208,7 +208,7 @@ public class WxApiExecutor {
     /**
      * text/xml头
      *
-     * @return
+     * @return dummy
      */
     private HttpHeaders buildXmlHeaders() {
         HttpHeaders headers = new HttpHeaders();

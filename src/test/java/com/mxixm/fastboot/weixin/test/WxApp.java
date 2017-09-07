@@ -91,7 +91,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，异步返回文本消息
      * @param content
-     * @return
+     * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
     @WxAsyncMessage
@@ -106,7 +106,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，同步返回图文消息
      * @param content
-     * @return
+     * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
     public WxMessage message(WxSession wxSession, String content) {
@@ -124,12 +124,12 @@ public class WxApp {
     /**
      * 接受用户文本消息，异步返回文本消息
      * @param content
-     * @return
+     * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
     @WxAsyncMessage
     public String text2(WxRequestBody.Text text, String content) {
         boolean match = text.getContent().equals(content);
-        return "收到消息内容为" + content + "!结果匹配！";
+        return "收到消息内容为" + content + "!结果匹配！" + match;
     }
 }

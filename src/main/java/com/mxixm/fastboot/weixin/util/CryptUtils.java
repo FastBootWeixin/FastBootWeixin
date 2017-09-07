@@ -29,7 +29,6 @@ public abstract class CryptUtils {
      * SHA 加密
      * @param data 需要加密的字符串
      * @return 加密之后的字符串
-     * @throws Exception
      */
     public static String encryptSHA1(String data) {
         // 验证传入的字符串

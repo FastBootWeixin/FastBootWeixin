@@ -44,7 +44,7 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
      * 或者是CharSequence的子类，且有注解WxButton或者WXMessageMapping
      *
      * @param returnType
-     * @return
+     * @return dummy
      */
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {

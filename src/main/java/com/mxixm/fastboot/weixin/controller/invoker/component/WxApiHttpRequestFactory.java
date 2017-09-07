@@ -54,7 +54,7 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
 
     /**
      * 获取连接工厂
-     * @return
+     * @return dummy
      */
     private ClientHttpRequestFactory getClientHttpRequestFactory() {
         HttpClient httpClient = getHttpClient();
@@ -71,7 +71,7 @@ public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
 
     /**
      * 获取HttpClient，判断是否启用HTTPS
-     * @return
+     * @return dummy
      */
     private HttpClient getHttpClient() {
         HttpClientBuilder builder = HttpClientBuilder.create();

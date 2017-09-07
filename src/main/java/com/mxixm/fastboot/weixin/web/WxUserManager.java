@@ -63,7 +63,7 @@ public class WxUserManager {
      * 只针对未认证的情况
      *
      * @param wxWebUser
-     * @return
+     * @return dummy
      */
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
         WxUser wxUser = this.getWxUser(wxWebUser.getOpenId());

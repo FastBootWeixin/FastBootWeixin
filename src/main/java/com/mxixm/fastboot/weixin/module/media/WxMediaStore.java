@@ -51,7 +51,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 根据文件查找tempMediaId
      * @param file
-     * @return
+     * @return String
      */
     public String findTempMediaIdByFile(File file) {
         StoreEntity storeEntity = tempMediaFileDb.get(file.getAbsolutePath());
@@ -65,7 +65,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 根据tempMediaId查找File
      * @param mediaId
-     * @return
+     * @return File
      */
     public File findFileByTempMediaId(String mediaId) {
         String filePath = tempMediaIdDb.get(mediaId);
@@ -75,7 +75,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 保存tempMedia到File
      * @param mediaId
-     * @return
+     * @return File
      */
     public File storeTempMediaToFile(String mediaId, Resource resource) throws IOException {
         WxMediaResource wxMediaResource = (WxMediaResource) resource;
@@ -163,7 +163,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 根据mediaId查找File
      * @param mediaId
-     * @return
+     * @return File
      */
     public File findFileByMediaId(String mediaId) {
         String filePath = mediaIdDb.get(mediaId);
@@ -205,7 +205,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 保存media到File
      * @param mediaId
-     * @return
+     * @return File
      */
     public File storeMediaToFile(String mediaId, Resource resource) throws IOException {
         String fileName = resource.getFilename();
@@ -227,7 +227,7 @@ public class WxMediaStore implements InitializingBean {
      * 根据file查找url
      * 暂时不考虑图片修改
      * @param file
-     * @return
+     * @return String
      */
     public String findUrlByFile(File file) {
         return urlDb.get(file.getAbsolutePath());
@@ -235,7 +235,6 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存图片URL到图片URL
-     * @return
      */
     public void storeUrlToUrl(String imgUrl, WxMedia.ImageResult result) {
         urlDb.put(imgUrl, result.getUrl());
@@ -247,14 +246,16 @@ public class WxMediaStore implements InitializingBean {
      * 根据imgUrl查找url
      * 暂时不考虑图片修改
      * @param imgUrl
-     * @return
+     * @return String
      */
     public String findUrlByUrl(String imgUrl) {
         return urlDb.get(imgUrl);
     }
 
     /**
-     * @return
+     * 保存文件到url
+     * @param file
+     * @param result
      */
     public void storeFileToUrl(File file, WxMedia.ImageResult result) {
         urlDb.put(file.getPath(), result.getUrl());

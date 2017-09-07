@@ -33,7 +33,7 @@ public @interface EnableWxMvc {
     /**
      * 是否自动创建菜单
      *
-     * @return
+     * @return dummy
      */
     boolean menuAutoCreate() default true;
 

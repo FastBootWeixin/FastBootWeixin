@@ -22,7 +22,7 @@ public interface WxUserProvider<T> {
      * 可能会有bug，当这个类的实现类有多个泛型时\
      * 没bug啦，改进了
      * @param clazz
-     * @return
+     * @return dummy
      */
     default boolean isMatch(Class<?> clazz) {
         Type[] types = this.getClass().getGenericInterfaces();

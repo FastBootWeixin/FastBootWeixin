@@ -16,13 +16,13 @@ public @interface WxEventMapping {
 
     /**
      * 请求事件的类型
-     * @return
+     * @return dummy
      */
     WxEvent.Type type();
 
     /**
      * 名称
-     * @return
+     * @return dummy
      */
     String name() default "";
 

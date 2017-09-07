@@ -40,7 +40,7 @@ public class WxJsonAdapters {
          * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
          * Deserializer后会把值送给convert
          * @param typeFactory
-         * @return
+         * @return dummy
          */
         @Override
         public JavaType getInputType(TypeFactory typeFactory) {
@@ -64,7 +64,7 @@ public class WxJsonAdapters {
          * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
          * Deserializer后会把值送给convert
          * @param typeFactory
-         * @return
+         * @return dummy
          */
         @Override
         public JavaType getInputType(TypeFactory typeFactory) {

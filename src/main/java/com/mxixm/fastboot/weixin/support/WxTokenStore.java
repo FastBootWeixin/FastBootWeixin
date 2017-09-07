@@ -13,7 +13,7 @@ public interface WxTokenStore {
 
 	/**
 	 * 获取Token
-	 * @return
+	 * @return dummy
 	 */
 	String getToken();
 
@@ -26,13 +26,13 @@ public interface WxTokenStore {
 
 	/**
 	 * 获取过期时间
-	 * @return
+	 * @return dummy
 	 */
 	long getExpireTime();
 
 	/**
 	 * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-	 * @return
+	 * @return dummy
 	 */
 	boolean lock();
 

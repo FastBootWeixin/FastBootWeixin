@@ -37,7 +37,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
 
 	/**
 	 * 获取Token
-	 * @return
+	 * @return dummy
 	 */
 	public String getToken() {
 		return token;
@@ -55,7 +55,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
 
 	/**
 	 * 获取过期时间
-	 * @return
+	 * @return dummy
 	 */
 	public long getExpireTime() {
 		return expireTime;
@@ -63,7 +63,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
 
 	/**
 	 * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-	 * @return
+	 * @return dummy
 	 */
 	public boolean lock() {
 		this.lock.lock();
@@ -78,7 +78,6 @@ public class MemoryWxTokenStore implements WxTokenStore {
 
 	/**
 	 * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-	 * @return
 	 */
 	public void unlock() {
 		this.lock.unlock();

@@ -16,25 +16,25 @@ public @interface WxMessageMapping {
 
     /**
      * 请求的消息类型
-     * @return
+     * @return dummy
      */
     WxMessage.Type type();
 
     /**
      * 通配符
-     * @return
+     * @return dummy
      */
     String[] wildcard() default "*";
 
     /**
      * 匹配模式，正则表达式，暂时不支持
-     * @return
+     * @return dummy
      */
     String pattern() default "";
 
     /**
      * 名称
-     * @return
+     * @return dummy
      */
     String name() default "";
 

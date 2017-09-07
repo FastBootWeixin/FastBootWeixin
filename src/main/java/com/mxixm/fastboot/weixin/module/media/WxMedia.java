@@ -51,7 +51,7 @@ public class WxMedia {
      * 静态工厂方法
      *
      * @param mediaId
-     * @return
+     * @return dummy
      */
     public static WxMedia of(String mediaId) {
         return new WxMedia(mediaId);
@@ -65,7 +65,7 @@ public class WxMedia {
         /**
          * 获取关键信息
          *
-         * @return
+         * @return dummy
          */
         String keyInfo();
 

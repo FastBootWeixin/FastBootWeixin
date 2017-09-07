@@ -66,7 +66,7 @@ public class WxMediaManager {
      * 本来应该再给get加个缓存的，但是我又偷懒了，get的时候不加缓存了，直接拿微信api的结果吧
      * @param video
      * @param description
-     * @return
+     * @return dummy
      */
     public String addVideoMedia(File video, WxMedia.Video description) {
         String mediaId = wxMediaStore.findMediaIdByFile(video);
@@ -149,7 +149,7 @@ public class WxMediaManager {
      * 这个怎么存呢？是否有必要存一个映射关系？
      *
      * @param news
-     * @return
+     * @return dummy
      */
     public WxMedia.NewsResult storeNews(WxMedia.News news) {
         return wxApiInvokeSpi.addNews(news);
@@ -168,7 +168,7 @@ public class WxMediaManager {
      * 主要限制是同一个接口相同的参数可能得到的是不同的结果
      *
      * @param mediaId
-     * @return
+     * @return dummy
      */
     public WxMedia.News getNews(String mediaId) {
         return wxApiInvokeSpi.getNewsMedia(WxMedia.of(mediaId));

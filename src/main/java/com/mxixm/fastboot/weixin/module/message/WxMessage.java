@@ -26,16 +26,16 @@ import java.util.List;
  * 真是尴尬，不仅格式不同，结构也不同，坑爹。。。
  * 特别是text消息，json的在text结构下，xml在顶级
  *
- * @author Guangshan
- * @JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
+ * 注解@JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
  * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
  * https://github.com/FasterXML/jackson-databind/issues/512
  * FastBootWeixin  WxMessage
  * <p>
  * 加入WxMessageTemplate用于发送消息
  * WxMessageConverter用于转换消息（把文件转换为media_id等）
+ * @author Guangshan
  * @summary FastBootWeixin  WxMessage
- * 2017, Guangshan Group All Rights Reserved
+ * @Copyright (c) 2017, Guangshan Group All Rights Reserved
  * @since 2017/8/2 23:21
  */
 @XmlRootElement(name = "xml")
@@ -802,7 +802,7 @@ public class WxMessage {
              * @param description
              * @param picUrl
              * @param url
-             * @return
+             * @return dummy
              */
             public Builder firstItem(String title, String description, String picUrl, String url) {
                 this.items.addFirst(new Item(title, description, picUrl, url));

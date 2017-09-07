@@ -25,7 +25,7 @@ public class WxRequestBody {
      * 类型声明写泛型上
      * @param clazz
      * @param <T>
-     * @return
+     * @return dummy
      */
     public static <T extends WxRequestBody> T of(Class<T> clazz, WxRequest.Body body) {
         WxRequestBody wxRequestBody = BeanUtils.instantiate(clazz);

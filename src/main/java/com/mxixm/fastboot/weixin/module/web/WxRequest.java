@@ -489,7 +489,7 @@ public class WxRequest {
 
         /**
          * @param name
-         * @return
+         * @return dummy
          */
         public Object getParameter(String name) {
             PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(this.getClass(), name);

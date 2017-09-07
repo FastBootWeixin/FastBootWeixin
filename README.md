@@ -93,7 +93,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，异步返回文本消息
      * @param content
-     * @return
+     * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
     @WxAsyncMessage
@@ -108,7 +108,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，同步返回图文消息
      * @param content
-     * @return
+     * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
     public WxMessage message(WxSession wxSession, String content) {
@@ -121,6 +121,18 @@ public class WxApp {
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
                         .url("http://baidu.com").build())
                 .build();
+    }
+
+    /**
+     * 接受用户文本消息，异步返回文本消息
+     * @param content
+     * @return dummy
+     */
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
+    @WxAsyncMessage
+    public String text2(WxRequestBody.Text text, String content) {
+        boolean match = text.getContent().equals(content);
+        return "收到消息内容为" + content + "!结果匹配！" + match;
     }
 }
 ```
@@ -260,7 +272,12 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 附加功能：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
 
-### 五、暂时不支持的功能
+### 五、相关链接
+1. [JavaDocs](weixin.mxixm.com)
+2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
+
+
+### 六、暂时不支持的功能
 #### 1. 自定义客服回复消息
 之后可以加入支持，使用注解定义消息客服，类似于@RabbitListener的方式
 #### 2. 消息加解密
@@ -273,7 +290,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 如支付等
 #### 6. 待优化：WxMediaStore
 
-### 六、更新日志
+### 七、更新日志
 
 #### 0.0.1-SNAPSHOT
 初始版本

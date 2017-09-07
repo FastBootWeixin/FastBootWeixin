@@ -51,7 +51,7 @@ public interface WxApiInvokeSpi {
      * @param type
      * @param media
      * @param description
-     * @return
+     * @return dummy
      */
     WxMedia.MediaResult uploadMedia(@WxApiParam("type") WxMedia.Type type,
                                     @WxApiForm("media") Resource media,
@@ -61,7 +61,7 @@ public interface WxApiInvokeSpi {
      * 同下面两个地址，没办法，返回类型不同，我也很无奈啊
      *
      * @param mediaId
-     * @return
+     * @return dummy
      */
     WxMediaResource getMedia(@WxApiBody WxMedia mediaId);
 
@@ -69,7 +69,7 @@ public interface WxApiInvokeSpi {
      * 主要限制是同一个接口相同的参数可能得到的是不同的结果
      *
      * @param mediaId
-     * @return
+     * @return dummy
      */
     WxMedia.News getNewsMedia(@WxApiBody WxMedia mediaId);
 
@@ -78,7 +78,7 @@ public interface WxApiInvokeSpi {
      * 代理中有这三个类型的值，加一个代理转换器，明天就做
      *
      * @param mediaId
-     * @return
+     * @return dummy
      */
     WxMedia.Video getVideoMedia(@WxApiBody WxMedia mediaId);
 

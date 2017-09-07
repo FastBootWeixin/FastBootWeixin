@@ -39,7 +39,7 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 	/**
 	 * 你问我为什么要偷梁换柱？当然是因为微信接口返回的是JSON，但是Content-Type却是Text_Pain啦，是否要考虑判断内容？
 	 * 暂时不需要，除非有些接口返回XML，也是这个头，那就坑爹了
-	 * @return
+	 * @return dummy
 	 */
 	@Override
 	public HttpHeaders getHeaders() {
@@ -58,7 +58,7 @@ public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 
 	/**
 	 * 装饰一下，返回可以重读的InputStream
-	 * @return
+	 * @return dummy
 	 * @throws IOException
 	 */
 	@Override

@@ -34,7 +34,7 @@ public class WxRedirectUtils {
      * 跳转到基本的微信认证页面
      *
      * @param url
-     * @return
+     * @return dummy
      */
     public static String baseRedirect(String url) {
         return BASE_REDIRECT + url;
@@ -44,7 +44,7 @@ public class WxRedirectUtils {
      * 跳转到带认证的微信认证页面
      *
      * @param url
-     * @return
+     * @return dummy
      */
     public static String authRedirect(String url) {
         return AUTH_REDIRECT + url;
@@ -108,7 +108,7 @@ public class WxRedirectUtils {
     /**
      * 判断是否是回调地址
      *
-     * @return
+     * @return dummy
      */
     private static boolean isCallback(String baseUrl, String url) {
         String callbackUrlHost;

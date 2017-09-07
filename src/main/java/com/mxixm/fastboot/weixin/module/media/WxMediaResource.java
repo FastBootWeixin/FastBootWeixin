@@ -99,7 +99,6 @@ public class WxMediaResource extends AbstractResource {
      * 覆盖FileSystemResource，用于兼容mediaManager中从本地文件获取的资源
      * 是否真的需要这么多成员变量？
      * @param file
-     * @throws IOException
      */
     public WxMediaResource(File file) {
         this.isFileResource = true;
@@ -127,7 +126,7 @@ public class WxMediaResource extends AbstractResource {
     /**
      * copy from StandardMultipartHttpServletRequest
      * @param disposition
-     * @return
+     * @return dummy
      */
     private String extractFilename(String disposition) {
         String fileName = extractFilename(disposition, FILENAME_KEY);
@@ -274,7 +273,7 @@ public class WxMediaResource extends AbstractResource {
 
     /**
      * body只在
-     * @return
+     * @return dummy
      */
     public byte[] getBody() {
         if (this.body == null && this.file != null) {

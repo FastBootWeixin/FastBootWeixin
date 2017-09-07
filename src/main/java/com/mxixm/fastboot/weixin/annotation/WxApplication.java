@@ -17,7 +17,7 @@ public @interface WxApplication {
 
 	/**
 	 * 是否自动创建菜单
-	 * @return
+	 * @return dummy
 	 */
 	@AliasFor(annotation = EnableWxMvc.class, attribute = "menuAutoCreate")
 	boolean menuAutoCreate() default true;
@@ -58,5 +58,5 @@ public @interface WxApplication {
 	 */
 	@AliasFor(annotation = ComponentScan.class, attribute = "basePackageClasses")
 	Class<?>[] scanBasePackageClasses() default {};
-	
+
 }

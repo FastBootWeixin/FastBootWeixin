@@ -26,11 +26,11 @@ public class WildcardUtils {
      * This is the same as often found on Dos/Unix command lines.
      * The check is case-sensitive always.
      * <pre>
-     * wildcardMatch("c.txt", "*.txt")      --> true
-     * wildcardMatch("c.txt", "*.jpg")      --> false
-     * wildcardMatch("a/b/c.txt", "a/b/*")  --> true
-     * wildcardMatch("c.txt", "*.???")      --> true
-     * wildcardMatch("c.txt", "*.????")     --> false
+     * wildcardMatch("c.txt", "*.txt")      -- true
+     * wildcardMatch("c.txt", "*.jpg")      -- false
+     * wildcardMatch("a/b/c.txt", "a/b/*")  -- true
+     * wildcardMatch("c.txt", "*.???")      -- true
+     * wildcardMatch("c.txt", "*.????")     -- false
      * </pre>
      * N.B. the sequence "*?" does not work properly at present in match strings.
      *

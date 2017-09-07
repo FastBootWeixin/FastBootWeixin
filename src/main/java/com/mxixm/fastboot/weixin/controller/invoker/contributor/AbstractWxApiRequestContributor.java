@@ -36,7 +36,7 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
      * @param cs
      * @param sourceType
      * @param value
-     * @return
+     * @return dummy
      */
     protected String formatUriValue(ConversionService cs, TypeDescriptor sourceType, Object value) {
         if (value == null) {
@@ -56,7 +56,7 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
     /**
      * 是否支持这个参数
      * @param parameter
-     * @return
+     * @return dummy
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
