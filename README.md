@@ -1,6 +1,10 @@
 # How To Use
+---------------------------------
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](http://weixin.mxixm.com)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.1.2.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.alpha%7Cjar)
+[![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-本框架基于SpringBoot实现，使用简单快捷，可以快速的完成一个微信公众号
+#### 本框架基于SpringBoot实现，使用简单快捷，可以快速的完成一个微信公众号
 
 在使用本框架前建议对[微信公众号开发文档](https://mp.weixin.qq.com/wiki)有所了解，不过在不了解公众号文档的情况下使用本框架也能完成一个简单的微信公众号。
 
@@ -10,8 +14,43 @@
 
 [微信测试公众号申请链接](https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=sandbox/login)
 
-#### 2. 准备完成，把本项目导入ide（后续会加入maven仓库）
+#### 2. 准备完成，创建maven项目并加入maven依赖
 
+```
+<!-- 支持1.4.0.RELEASE及以上 -->
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.6.RELEASE</version>
+</parent>
+
+<dependencies>
+    <!-- fastbootWeixin的核心依赖 -->
+    <dependency>
+        <groupId>com.mxixm</groupId>
+        <artifactId>fastboot-weixin</artifactId>
+        <version>0.1.2.alpha</version>
+    </dependency>
+
+    <!-- SpringBoot的web项目，必须 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- 暂时只能使用apache的http，后续可加入其它http支持 -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+    </dependency>
+</dependencies>
+```
+
+#### 3. 编写示例代码
 在resource目录下新建配置文件application.properties或者其他spring boot支持的配置文件类型，加入配置:
 
 - wx.token=随机生成的一串字母与数字，推荐使用随机生成32位的UUID
@@ -137,13 +176,13 @@ public class WxApp {
 }
 ```
 
-#### 3. 配置内网穿透
+#### 4. 配置内网穿透
 
 因为微信公众号需要配置自己的服务器接口，测试时可直接使用本地进行测试，使用内网穿透可以令微信公众平台访问到你自己本地的服务器。
 
 软件可使用[ngrok](https://www.ngrok.cc/)或者[natapp](https://natapp.cn/)，使用方式请参考两者官方文档。
 
-#### 4. 配置测试公众号
+#### 5. 配置测试公众号
 
 在测试公众号的接口配置信息中填写在第三步中生成的域名，token使用配置文件中的token，保存后，如果不出意外应该会验证成功。如有问题请及时反馈。
 
@@ -302,3 +341,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.1.1-SNAPSHOT:
 优化消息参数绑定，新增指定消息体绑定，参考WxRequestBody
+
+#### 0.1.2.SNAPSHOT & 0.1.2.alpha
+上传maven中央仓库，生成javadoc，以及一系列规范化

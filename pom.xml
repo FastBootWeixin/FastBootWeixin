@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mxixm</groupId>
-    <artifactId>fastboot.weixin</artifactId>
+    <artifactId>fastboot-weixin</artifactId>
     <version>0.1.2.alpha</version>
     <packaging>jar</packaging>
 
