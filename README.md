@@ -313,6 +313,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 ### 五、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)
 2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
+3. [OSChina仓库](https://git.oschina.net/kingshine/FastBootWeixin)
 
 
 ### 六、暂时不支持的功能
