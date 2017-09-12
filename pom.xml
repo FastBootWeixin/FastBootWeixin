@@ -39,16 +39,19 @@
     </developers>
 
     <!-- Inherit defaults from Spring Boot -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.0.RELEASE</version>
-    </parent>
+    <!--<parent>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-parent</artifactId>-->
+        <!--<version>1.5.4.RELEASE</version>-->
+    <!--</parent>-->
 
     <properties>
 		<java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <wx.httpclient.version>4.5.3</wx.httpclient.version>
+        <wx.httpcore.version>4.4.6</wx.httpcore.version>
+        <wx.springboot.version>1.5.4.RELEASE</wx.springboot.version>
     </properties>
 
     <!-- Add typical dependencies for a web application -->
@@ -56,16 +59,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${wx.springboot.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
+            <version>${wx.httpcore.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <version>${wx.httpclient.version}</version>
             <scope>provided</scope>
         </dependency>
         <!--这种方式不被推荐使用了，如果要引用自己的jar包请使用mvn install:install-file -Dfile=libpubnub-3.1.jar -DgroupId=pubnub -DartifactId=pubnub -Dversion=3.1 -Dpackaging=jar-->
