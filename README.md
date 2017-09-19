@@ -28,7 +28,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.1.2.alpha</version>
+        <version>0.1.2.beta</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -344,3 +344,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.1.2.SNAPSHOT & 0.1.2.alpha
 上传maven中央仓库，生成javadoc，以及一系列规范化
+
+#### 0.1.2.beta
+加入apache copyright，全部delombok

@@ -1,13 +1,26 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.message.adapters.WxXmlAdapters;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,31 +33,30 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * 所有消息都是通过Msg推送的
- * 坑啊，主动发消息竟然是json格式
- * 真是尴尬，不仅格式不同，结构也不同，坑爹。。。
- * 特别是text消息，json的在text结构下，xml在顶级
- *
- * 注解@JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
- * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
- * https://github.com/FasterXML/jackson-databind/issues/512
- * FastBootWeixin  WxMessage
- * <p>
- * 加入WxMessageTemplate用于发送消息
- * WxMessageConverter用于转换消息（把文件转换为media_id等）
- * @author Guangshan
- * @summary FastBootWeixin  WxMessage
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/2 23:21
- */
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.NONE)
-@NoArgsConstructor
-@Getter
 public class WxMessage {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
+    public WxMessage() {
+    }
+
+    public String getToUserName() {
+        return this.toUserName;
+    }
+
+    public String getFromUserName() {
+        return this.fromUserName;
+    }
+
+    public Date getCreateTime() {
+        return this.createTime;
+    }
+
+    public Type getMessageType() {
+        return this.messageType;
+    }
 
 
     /**
@@ -239,8 +251,6 @@ public class WxMessage {
 
     @XmlRootElement(name = "xml")
     @XmlAccessorType(XmlAccessType.FIELD)
-    @NoArgsConstructor
-    @Getter
     public static class Text extends WxMessage {
 
         @XmlElement(name = "Content")
@@ -253,19 +263,31 @@ public class WxMessage {
             this.body = body;
         }
 
+        public Text() {
+        }
+
         public static Builder builder() {
             Builder builder = new Builder();
             builder.msgType(Type.TEXT);
             return builder;
         }
 
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
         public static class Body {
 
             @JsonProperty("content")
             protected String content;
+
+            public Body(String content) {
+                this.content = content;
+            }
+
+            public Body() {
+            }
 
             public static class TextBodyAdaptor extends XmlAdapter<String, Body> {
 
@@ -306,9 +328,6 @@ public class WxMessage {
         }
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
     public static class MediaBody {
         @XmlElement(name = "MediaId", required = true)
         @JsonProperty("media_id")
@@ -319,6 +338,77 @@ public class WxMessage {
 
         @JsonIgnore
         protected String mediaUrl;
+
+        public MediaBody(String mediaId, String mediaPath, String mediaUrl) {
+            this.mediaId = mediaId;
+            this.mediaPath = mediaPath;
+            this.mediaUrl = mediaUrl;
+        }
+
+        public MediaBody() {
+        }
+
+        public String getMediaId() {
+            return this.mediaId;
+        }
+
+        public String getMediaPath() {
+            return this.mediaPath;
+        }
+
+        public String getMediaUrl() {
+            return this.mediaUrl;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public void setMediaPath(String mediaPath) {
+            this.mediaPath = mediaPath;
+        }
+
+        public void setMediaUrl(String mediaUrl) {
+            this.mediaUrl = mediaUrl;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof MediaBody)) return false;
+            final MediaBody other = (MediaBody) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$mediaId = this.getMediaId();
+            final Object other$mediaId = other.getMediaId();
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            final Object this$mediaPath = this.getMediaPath();
+            final Object other$mediaPath = other.getMediaPath();
+            if (this$mediaPath == null ? other$mediaPath != null : !this$mediaPath.equals(other$mediaPath))
+                return false;
+            final Object this$mediaUrl = this.getMediaUrl();
+            final Object other$mediaUrl = other.getMediaUrl();
+            if (this$mediaUrl == null ? other$mediaUrl != null : !this$mediaUrl.equals(other$mediaUrl)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $mediaId = this.getMediaId();
+            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+            final Object $mediaPath = this.getMediaPath();
+            result = result * PRIME + ($mediaPath == null ? 43 : $mediaPath.hashCode());
+            final Object $mediaUrl = this.getMediaUrl();
+            result = result * PRIME + ($mediaUrl == null ? 43 : $mediaUrl.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof MediaBody;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.message.WxMessage.MediaBody(mediaId=" + this.getMediaId() + ", mediaPath=" + this.getMediaPath() + ", mediaUrl=" + this.getMediaUrl() + ")";
+        }
     }
 
     public static class MediaBuilder<T extends MediaBuilder> extends Builder<MediaBuilder> {
@@ -349,8 +439,6 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class Image extends WxMessage {
 
         @XmlElement(name = "Image", required = true)
@@ -362,20 +450,46 @@ public class WxMessage {
             this.body = body;
         }
 
+        public Image() {
+        }
+
         public static Builder builder() {
             Builder builder = new Builder();
             builder.msgType(Type.IMAGE);
             return builder;
         }
 
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @Data
         public static class Body extends MediaBody {
 
             public Body(String mediaId, String mediaPath, String mediaUrl) {
                 super(mediaId, mediaPath, mediaUrl);
             }
 
+            public boolean equals(Object o) {
+                if (o == this) return true;
+                if (!(o instanceof Body)) return false;
+                final Body other = (Body) o;
+                if (!other.canEqual((Object) this)) return false;
+                return true;
+            }
+
+            public int hashCode() {
+                int result = 1;
+                return result;
+            }
+
+            protected boolean canEqual(Object other) {
+                return other instanceof Body;
+            }
+
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.module.message.WxMessage.Image.Body()";
+            }
         }
 
         public static class Builder extends WxMessage.MediaBuilder<Builder> {
@@ -395,8 +509,6 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class Voice extends WxMessage {
 
         @XmlElement(name = "Voice", required = true)
@@ -408,12 +520,41 @@ public class WxMessage {
             this.body = body;
         }
 
+        public Voice() {
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @NoArgsConstructor
-        @Data
         public static class Body extends MediaBody {
             public Body(String mediaId, String mediaPath, String mediaUrl) {
                 super(mediaId, mediaPath, mediaUrl);
+            }
+
+            public Body() {
+            }
+
+            public boolean equals(Object o) {
+                if (o == this) return true;
+                if (!(o instanceof Body)) return false;
+                final Body other = (Body) o;
+                if (!other.canEqual((Object) this)) return false;
+                return true;
+            }
+
+            public int hashCode() {
+                int result = 1;
+                return result;
+            }
+
+            protected boolean canEqual(Object other) {
+                return other instanceof Body;
+            }
+
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.module.message.WxMessage.Voice.Body()";
             }
         }
 
@@ -439,8 +580,6 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class Video extends WxMessage {
 
         @XmlElement(name = "Video")
@@ -452,10 +591,14 @@ public class WxMessage {
             this.body = body;
         }
 
+        public Video() {
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Data
         public static class Body extends MediaBody {
 
             @XmlElement(name = "ThumbMediaId")
@@ -476,6 +619,107 @@ public class WxMessage {
             @JsonIgnore
             protected String thumbMediaUrl;
 
+            public Body(String thumbMediaId, String title, String description, String thumbMediaPath, String thumbMediaUrl) {
+                this.thumbMediaId = thumbMediaId;
+                this.title = title;
+                this.description = description;
+                this.thumbMediaPath = thumbMediaPath;
+                this.thumbMediaUrl = thumbMediaUrl;
+            }
+
+            public Body() {
+            }
+
+            public String getThumbMediaId() {
+                return this.thumbMediaId;
+            }
+
+            public String getTitle() {
+                return this.title;
+            }
+
+            public String getDescription() {
+                return this.description;
+            }
+
+            public String getThumbMediaPath() {
+                return this.thumbMediaPath;
+            }
+
+            public String getThumbMediaUrl() {
+                return this.thumbMediaUrl;
+            }
+
+            public void setThumbMediaId(String thumbMediaId) {
+                this.thumbMediaId = thumbMediaId;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public void setThumbMediaPath(String thumbMediaPath) {
+                this.thumbMediaPath = thumbMediaPath;
+            }
+
+            public void setThumbMediaUrl(String thumbMediaUrl) {
+                this.thumbMediaUrl = thumbMediaUrl;
+            }
+
+            public boolean equals(Object o) {
+                if (o == this) return true;
+                if (!(o instanceof Body)) return false;
+                final Body other = (Body) o;
+                if (!other.canEqual((Object) this)) return false;
+                final Object this$thumbMediaId = this.getThumbMediaId();
+                final Object other$thumbMediaId = other.getThumbMediaId();
+                if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+                    return false;
+                final Object this$title = this.getTitle();
+                final Object other$title = other.getTitle();
+                if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+                final Object this$description = this.getDescription();
+                final Object other$description = other.getDescription();
+                if (this$description == null ? other$description != null : !this$description.equals(other$description))
+                    return false;
+                final Object this$thumbMediaPath = this.getThumbMediaPath();
+                final Object other$thumbMediaPath = other.getThumbMediaPath();
+                if (this$thumbMediaPath == null ? other$thumbMediaPath != null : !this$thumbMediaPath.equals(other$thumbMediaPath))
+                    return false;
+                final Object this$thumbMediaUrl = this.getThumbMediaUrl();
+                final Object other$thumbMediaUrl = other.getThumbMediaUrl();
+                if (this$thumbMediaUrl == null ? other$thumbMediaUrl != null : !this$thumbMediaUrl.equals(other$thumbMediaUrl))
+                    return false;
+                return true;
+            }
+
+            public int hashCode() {
+                final int PRIME = 59;
+                int result = 1;
+                final Object $thumbMediaId = this.getThumbMediaId();
+                result = result * PRIME + ($thumbMediaId == null ? 43 : $thumbMediaId.hashCode());
+                final Object $title = this.getTitle();
+                result = result * PRIME + ($title == null ? 43 : $title.hashCode());
+                final Object $description = this.getDescription();
+                result = result * PRIME + ($description == null ? 43 : $description.hashCode());
+                final Object $thumbMediaPath = this.getThumbMediaPath();
+                result = result * PRIME + ($thumbMediaPath == null ? 43 : $thumbMediaPath.hashCode());
+                final Object $thumbMediaUrl = this.getThumbMediaUrl();
+                result = result * PRIME + ($thumbMediaUrl == null ? 43 : $thumbMediaUrl.hashCode());
+                return result;
+            }
+
+            protected boolean canEqual(Object other) {
+                return other instanceof Body;
+            }
+
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.module.message.WxMessage.Video.Body(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", thumbMediaPath=" + this.getThumbMediaPath() + ", thumbMediaUrl=" + this.getThumbMediaUrl() + ")";
+            }
         }
 
         public static Builder builder() {
@@ -535,8 +779,6 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class Music extends WxMessage {
 
         @XmlElement(name = "Music")
@@ -548,13 +790,17 @@ public class WxMessage {
             this.body = body;
         }
 
+        public Music() {
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         /**
          * 其实可以再抽象一个thumbMediaBody的。。。我懒
          */
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Data
         public static class Body extends MediaBody {
 
             @XmlElement(name = "ThumbMediaId", required = true)
@@ -577,8 +823,20 @@ public class WxMessage {
             @JsonProperty("hqmusicurl")
             protected String hqMusicUrl;
 
+            public Body(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
+                this.thumbMediaId = thumbMediaId;
+                this.title = title;
+                this.description = description;
+                this.musicUrl = musicUrl;
+                this.hqMusicUrl = hqMusicUrl;
+            }
+
+            public Body() {
+            }
+
             /**
              * 懒省事，做个简单的替换
+             *
              * @param thumbMediaId
              */
             public void setMediaId(String thumbMediaId) {
@@ -587,6 +845,97 @@ public class WxMessage {
 
             public String getMediaId() {
                 return this.thumbMediaId;
+            }
+
+            public String getThumbMediaId() {
+                return this.thumbMediaId;
+            }
+
+            public String getTitle() {
+                return this.title;
+            }
+
+            public String getDescription() {
+                return this.description;
+            }
+
+            public String getMusicUrl() {
+                return this.musicUrl;
+            }
+
+            public String getHqMusicUrl() {
+                return this.hqMusicUrl;
+            }
+
+            public void setThumbMediaId(String thumbMediaId) {
+                this.thumbMediaId = thumbMediaId;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public void setMusicUrl(String musicUrl) {
+                this.musicUrl = musicUrl;
+            }
+
+            public void setHqMusicUrl(String hqMusicUrl) {
+                this.hqMusicUrl = hqMusicUrl;
+            }
+
+            public boolean equals(Object o) {
+                if (o == this) return true;
+                if (!(o instanceof Body)) return false;
+                final Body other = (Body) o;
+                if (!other.canEqual((Object) this)) return false;
+                final Object this$thumbMediaId = this.getThumbMediaId();
+                final Object other$thumbMediaId = other.getThumbMediaId();
+                if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+                    return false;
+                final Object this$title = this.getTitle();
+                final Object other$title = other.getTitle();
+                if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+                final Object this$description = this.getDescription();
+                final Object other$description = other.getDescription();
+                if (this$description == null ? other$description != null : !this$description.equals(other$description))
+                    return false;
+                final Object this$musicUrl = this.getMusicUrl();
+                final Object other$musicUrl = other.getMusicUrl();
+                if (this$musicUrl == null ? other$musicUrl != null : !this$musicUrl.equals(other$musicUrl))
+                    return false;
+                final Object this$hqMusicUrl = this.getHqMusicUrl();
+                final Object other$hqMusicUrl = other.getHqMusicUrl();
+                if (this$hqMusicUrl == null ? other$hqMusicUrl != null : !this$hqMusicUrl.equals(other$hqMusicUrl))
+                    return false;
+                return true;
+            }
+
+            public int hashCode() {
+                final int PRIME = 59;
+                int result = 1;
+                final Object $thumbMediaId = this.getThumbMediaId();
+                result = result * PRIME + ($thumbMediaId == null ? 43 : $thumbMediaId.hashCode());
+                final Object $title = this.getTitle();
+                result = result * PRIME + ($title == null ? 43 : $title.hashCode());
+                final Object $description = this.getDescription();
+                result = result * PRIME + ($description == null ? 43 : $description.hashCode());
+                final Object $musicUrl = this.getMusicUrl();
+                result = result * PRIME + ($musicUrl == null ? 43 : $musicUrl.hashCode());
+                final Object $hqMusicUrl = this.getHqMusicUrl();
+                result = result * PRIME + ($hqMusicUrl == null ? 43 : $hqMusicUrl.hashCode());
+                return result;
+            }
+
+            protected boolean canEqual(Object other) {
+                return other instanceof Body;
+            }
+
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.module.message.WxMessage.Music.Body(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", musicUrl=" + this.getMusicUrl() + ", hqMusicUrl=" + this.getHqMusicUrl() + ")";
             }
         }
 
@@ -662,8 +1011,6 @@ public class WxMessage {
      * 图文消息（点击跳转到外链）
      */
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class News extends WxMessage {
 
         /**
@@ -682,16 +1029,34 @@ public class WxMessage {
             this.body = body;
         }
 
+        public News() {
+        }
+
+        public Integer getArticleCount() {
+            return this.articleCount;
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Getter
         public static class Body {
 
             @XmlElements(@XmlElement(name = "item", type = Item.class))
             @JsonProperty("articles")
             protected List<Item> articles;
 
+            public Body(List<Item> articles) {
+                this.articles = articles;
+            }
+
+            public Body() {
+            }
+
+            public List<Item> getArticles() {
+                return this.articles;
+            }
         }
 
         /**
@@ -699,8 +1064,6 @@ public class WxMessage {
          * 写builder了，但是刚才还有个事情忘记了，不知道是啥了。
          */
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
         public static class Item {
 
             @XmlElement(name = "Title", required = true)
@@ -718,6 +1081,16 @@ public class WxMessage {
             @XmlElement(name = "Url", required = true)
             @JsonProperty("url")
             protected String url;
+
+            public Item(String title, String description, String picUrl, String url) {
+                this.title = title;
+                this.description = description;
+                this.picUrl = picUrl;
+                this.url = url;
+            }
+
+            public Item() {
+            }
 
             public String getPicUrl() {
                 return picUrl;
@@ -863,8 +1236,6 @@ public class WxMessage {
      * 发送图文消息（点击跳转到图文消息页面）
      */
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class MpNews extends WxMessage {
 
         @XmlElement(name = "Mpnews", required = true)
@@ -876,15 +1247,26 @@ public class WxMessage {
             this.body = body;
         }
 
+        public MpNews() {
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
         public static class Body {
 
             @XmlElement(name = "MediaId", required = true)
             @JsonProperty("media_id")
             protected String mediaId;
 
+            public Body(String mediaId) {
+                this.mediaId = mediaId;
+            }
+
+            public Body() {
+            }
         }
 
         public static Builder builder() {
@@ -919,8 +1301,6 @@ public class WxMessage {
      * 发送卡券
      */
     @XmlRootElement(name = "xml")
-    @NoArgsConstructor
-    @Getter
     public static class WxCard extends WxMessage {
 
         @XmlElement(name = "WxCard", required = true)
@@ -932,15 +1312,26 @@ public class WxMessage {
             this.body = body;
         }
 
+        public WxCard() {
+        }
+
+        public Body getBody() {
+            return this.body;
+        }
+
         @XmlAccessorType(XmlAccessType.NONE)
-        @AllArgsConstructor
-        @NoArgsConstructor
         public static class Body {
 
             @XmlElement(name = "CardId", required = true)
             @JsonProperty("card_id")
             protected String cardId;
 
+            public Body(String cardId) {
+                this.cardId = cardId;
+            }
+
+            public Body() {
+            }
         }
 
         public static Builder builder() {
@@ -971,7 +1362,6 @@ public class WxMessage {
         }
     }
 
-    @AllArgsConstructor
     public static class Status extends WxMessage {
         @JsonIgnore
         protected Type messageType;
@@ -982,6 +1372,11 @@ public class WxMessage {
         Status(String toUserName, String fromUserName, Date createTime, Type messageType, boolean isTyping) {
             super(toUserName, fromUserName, createTime, messageType);
             this.command = isTyping ? Command.TYPING : Command.CANCEL_TYPING;
+        }
+
+        public Status(Type messageType, Command command) {
+            this.messageType = messageType;
+            this.command = command;
         }
 
         private enum Command {

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.message.adapters;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -6,14 +23,6 @@ import com.fasterxml.jackson.databind.util.Converter;
 
 import java.util.Date;
 
-/**
- * FastBootWeixin  WxJsonAdapters
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxJsonAdapters
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/14 22:31
- */
 public class WxJsonAdapters {
 
     /*public static class WxDateDeserializer extends JsonDeserializer<Date> {
@@ -39,6 +48,7 @@ public class WxJsonAdapters {
         /**
          * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
          * Deserializer后会把值送给convert
+         *
          * @param typeFactory
          * @return dummy
          */
@@ -63,6 +73,7 @@ public class WxJsonAdapters {
         /**
          * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
          * Deserializer后会把值送给convert
+         *
          * @param typeFactory
          * @return dummy
          */

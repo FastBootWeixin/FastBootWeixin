@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.media;
 
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
@@ -26,14 +43,6 @@ import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-/**
- * FastBootWeixin  WxMediaResource
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxMediaResource
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/12 21:05
- */
 public class WxMediaResource extends AbstractResource {
 
     private static final String FILENAME_KEY = "filename=";
@@ -64,6 +73,7 @@ public class WxMediaResource extends AbstractResource {
 
     /**
      * 是否真的需要这么多成员变量？
+     *
      * @param httpInputMessage
      * @throws IOException
      */
@@ -98,6 +108,7 @@ public class WxMediaResource extends AbstractResource {
     /**
      * 覆盖FileSystemResource，用于兼容mediaManager中从本地文件获取的资源
      * 是否真的需要这么多成员变量？
+     *
      * @param file
      */
     public WxMediaResource(File file) {
@@ -125,6 +136,7 @@ public class WxMediaResource extends AbstractResource {
 
     /**
      * copy from StandardMultipartHttpServletRequest
+     *
      * @param disposition
      * @return dummy
      */
@@ -151,8 +163,7 @@ public class WxMediaResource extends AbstractResource {
             if (endIndex != -1) {
                 return filename.substring(1, endIndex);
             }
-        }
-        else {
+        } else {
             int endIndex = filename.indexOf(";");
             if (endIndex != -1) {
                 return filename.substring(0, endIndex);
@@ -171,8 +182,7 @@ public class WxMediaResource extends AbstractResource {
             Charset charset = null;
             try {
                 charset = Charset.forName(filename.substring(0, index));
-            }
-            catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException ex) {
                 // ignore
             }
             filename = filename.substring(index + 1);
@@ -246,6 +256,7 @@ public class WxMediaResource extends AbstractResource {
      * This implementation reads the entire InputStream to calculate the
      * content length. Subclasses will almost always be able to provide
      * a more optimal version of this, e.g. checking a File length.
+     *
      * @see #getInputStream()
      */
     @Override
@@ -273,6 +284,7 @@ public class WxMediaResource extends AbstractResource {
 
     /**
      * body只在
+     *
      * @return dummy
      */
     public byte[] getBody() {

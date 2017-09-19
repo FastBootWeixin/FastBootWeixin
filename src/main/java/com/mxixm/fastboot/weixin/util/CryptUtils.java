@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
@@ -7,14 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * FastBootWeixin  CryptUtils
- *
- * @author Guangshan
- * @summary FastBootWeixin  CryptUtils
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/7/16 23:37
- */
 public abstract class CryptUtils {
 
     private final static String KEY_SHA1 = "SHA-1";
@@ -22,11 +31,12 @@ public abstract class CryptUtils {
     /**
      * 全局数组
      */
-    private final static String[] hexDigits = { "0", "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
+    private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
     /**
      * SHA 加密
+     *
      * @param data 需要加密的字符串
      * @return 加密之后的字符串
      */
@@ -53,6 +63,7 @@ public abstract class CryptUtils {
 
     /**
      * 转换字节数组为十六进制字符串
+     *
      * @param bytes 字节数组
      * @return 十六进制字符串
      */
@@ -66,6 +77,7 @@ public abstract class CryptUtils {
 
     /**
      * 将一个字节转化成十六进制形式的字符串
+     *
      * @param b 字节数组
      * @return 字符串
      */

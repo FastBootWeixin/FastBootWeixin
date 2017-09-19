@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.media;
 
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
@@ -9,14 +26,6 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * FastBootWeixin  WxMediaManager
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxMediaManager
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/12 21:05
- */
 public class WxMediaManager {
 
     private WxApiInvokeSpi wxApiInvokeSpi;
@@ -64,6 +73,7 @@ public class WxMediaManager {
 
     /**
      * 本来应该再给get加个缓存的，但是我又偷懒了，get的时候不加缓存了，直接拿微信api的结果吧
+     *
      * @param video
      * @param description
      * @return dummy

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.config.invoker;
 
 import com.mxixm.fastboot.weixin.common.WxBeans;
@@ -43,46 +60,47 @@ import java.util.List;
 @ConditionalOnClass(RestTemplate.class)
 public class WxInvokerConfiguration {
 
-	private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-	private final WxProperties wxProperties;
+    private final WxProperties wxProperties;
 
-	private final ObjectProvider<HttpMessageConverters> messageConverters;
+    private final ObjectProvider<HttpMessageConverters> messageConverters;
 
-	public WxInvokerConfiguration(
-			WxProperties wxProperties,
-			ObjectProvider<HttpMessageConverters> messageConverters) {
-		this.wxProperties = wxProperties;
-		this.messageConverters = messageConverters;
-	}
+    public WxInvokerConfiguration(
+            WxProperties wxProperties,
+            ObjectProvider<HttpMessageConverters> messageConverters) {
+        this.wxProperties = wxProperties;
+        this.messageConverters = messageConverters;
+    }
 
-	@Bean
-	public WxContextUtils wxApplicationContextUtils() {
-		return new WxContextUtils();
-	}
+    @Bean
+    public WxContextUtils wxApplicationContextUtils() {
+        return new WxContextUtils();
+    }
 
-	/**
-	 * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
-	 * @return dummy
+    /**
+     * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
+     *
+     * @return dummy
      */
-	@Bean(name = WxBeans.WX_API_INVOKER_NAME)
-	public WxApiInvoker wxApiInvoker() {
-		RestTemplateBuilder builder = new RestTemplateBuilder();
-		builder = builder.requestFactory(new WxApiHttpRequestFactory(wxProperties))
-				.errorHandler(new WxResponseErrorHandler());
-		HttpMessageConverters converters = this.messageConverters.getIfUnique();
-		List<HttpMessageConverter<?>> converterList = new ArrayList<>();
-		// 加入默认转换
-		converterList.add(new WxHttpInputMessageConverter());
-		if (converters != null) {
-			converterList.addAll(converters.getConverters());
-			builder = builder.messageConverters(Collections.unmodifiableList(converterList));
-		}
-		return new WxApiInvoker(builder.build());
-	}
+    @Bean(name = WxBeans.WX_API_INVOKER_NAME)
+    public WxApiInvoker wxApiInvoker() {
+        RestTemplateBuilder builder = new RestTemplateBuilder();
+        builder = builder.requestFactory(new WxApiHttpRequestFactory(wxProperties))
+                .errorHandler(new WxResponseErrorHandler());
+        HttpMessageConverters converters = this.messageConverters.getIfUnique();
+        List<HttpMessageConverter<?>> converterList = new ArrayList<>();
+        // 加入默认转换
+        converterList.add(new WxHttpInputMessageConverter());
+        if (converters != null) {
+            converterList.addAll(converters.getConverters());
+            builder = builder.messageConverters(Collections.unmodifiableList(converterList));
+        }
+        return new WxApiInvoker(builder.build());
+    }
 
 	/*
-		┌─────┐
+        ┌─────┐
 	|  wxInvokerProxyFactory defined in class path resource [com/example/myproject/config/invoker/WxInvokerConfiguration.class]
 	↑     ↓
 	|  wxApiExecutor defined in class path resource [com/example/myproject/config/invoker/WxInvokerConfiguration.class]
@@ -94,48 +112,51 @@ public class WxInvokerConfiguration {
 	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxApiInvokeSpi com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
 	└─────┘
 	 */
-	/**
-	 * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
-	 * 于是产生了循环依赖
-	 * @param wxAccessTokenManager
-	 * @return dummy
-	 */
-	@Bean
-	public WxApiExecutor wxApiExecutor(WxAccessTokenManager wxAccessTokenManager) {
-		return new WxApiExecutor(wxApiInvoker(), wxAccessTokenManager);
-	}
 
-	@Bean
-	public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
-		return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxProperties, wxApiExecutor);
-	}
+    /**
+     * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
+     * 于是产生了循环依赖
+     *
+     * @param wxAccessTokenManager
+     * @return dummy
+     */
+    @Bean
+    public WxApiExecutor wxApiExecutor(WxAccessTokenManager wxAccessTokenManager) {
+        return new WxApiExecutor(wxApiInvoker(), wxAccessTokenManager);
+    }
+
+    @Bean
+    public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
+        return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxProperties, wxApiExecutor);
+    }
 
 
-	@Bean
-	@ConditionalOnMissingBean
-	public WxUserProvider userProvider(WxUserManager wxUserManager) {
-		return new DefaultWxUserProvider(wxUserManager);
-	}
+    @Bean
+    @ConditionalOnMissingBean
+    public WxUserProvider userProvider(WxUserManager wxUserManager) {
+        return new DefaultWxUserProvider(wxUserManager);
+    }
 
-	@Bean
-	public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
-		return new WxUserManager(wxTokenServer, wxApiInvokeSpi);
-	}
+    @Bean
+    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+        return new WxUserManager(wxTokenServer, wxApiInvokeSpi);
+    }
 
-	/**
-	 * 只考虑微信的消息转换，后期可以优化
-	 * 其实这里完全可以使用系统的Bean，但是这里我想特殊处理，只对微信消息做转换，所以定制化了几个converter
-	 * @return dummy
-	 */
-	private HttpMessageConverters getDefaultWxMessageConverters() {
-		StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-		stringConverter.setWriteAcceptCharset(false);
-		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-		Jaxb2RootElementHttpMessageConverter xmlConverter = new Jaxb2RootElementHttpMessageConverter();
-		AllEncompassingFormHttpMessageConverter formConverter = new AllEncompassingFormHttpMessageConverter();
-		ResourceHttpMessageConverter resourceConverter = new ResourceHttpMessageConverter();
-		HttpMessageConverters wxMessageConverters = new HttpMessageConverters(stringConverter, jsonConverter, xmlConverter, formConverter, resourceConverter);
-		return wxMessageConverters;
-	}
+    /**
+     * 只考虑微信的消息转换，后期可以优化
+     * 其实这里完全可以使用系统的Bean，但是这里我想特殊处理，只对微信消息做转换，所以定制化了几个converter
+     *
+     * @return dummy
+     */
+    private HttpMessageConverters getDefaultWxMessageConverters() {
+        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+        stringConverter.setWriteAcceptCharset(false);
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        Jaxb2RootElementHttpMessageConverter xmlConverter = new Jaxb2RootElementHttpMessageConverter();
+        AllEncompassingFormHttpMessageConverter formConverter = new AllEncompassingFormHttpMessageConverter();
+        ResourceHttpMessageConverter resourceConverter = new ResourceHttpMessageConverter();
+        HttpMessageConverters wxMessageConverters = new HttpMessageConverters(stringConverter, jsonConverter, xmlConverter, formConverter, resourceConverter);
+        return wxMessageConverters;
+    }
 
 }

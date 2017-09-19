@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
@@ -7,10 +24,10 @@ import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
@@ -45,7 +62,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
-    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxBuildinVerify.class, "verify", null);
+    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxBuildinVerify.class, "verify", (Class<?>[]) null);
 
     private final HandlerMethod wxVerifyMethodHandler;
 
@@ -142,7 +159,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 case MESSAGE:
                     handlerMethod = lookupMessageHandlerMethod(wxRequestBody);
                     break;
-                default:break;
+                default:
+                    break;
             }
             handleMatch(handlerMethod, request);
             return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
@@ -280,7 +298,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
 
         private final MultiValueMap<String, WxMappingInfo> wildcardLookup = new LinkedMultiValueMap<>();
-        
+
         private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
         public Map<WxMappingInfo, HandlerMethod> getMappings() {

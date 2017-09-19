@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.util;
 
 import java.util.*;
@@ -78,6 +95,7 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
 
     /**
      * 清理超过限制的缓存
+     *
      * @param map
      */
     public static void clearOverflowCache(CacheMap map) {
@@ -140,11 +158,12 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
     /**
      * remove其实是通过这个来实现的，但是这里功能明显导致删除会失败，结果会内存溢出，所以我重写了remove方法
      * 这里的entrySet实现可能是有点问题的，因为返回的是一个新的实例。
+     *
      * @return dummy
      */
     @Override
     public TreeSet<Entry<K, V>> entrySet() {
-        TreeSet<Entry<K, V>> entrySet = new TreeSet<>(Comparator.comparing(kvEntry -> ((CacheEntry)kvEntry).time));
+        TreeSet<Entry<K, V>> entrySet = new TreeSet<>(Comparator.comparing(kvEntry -> ((CacheEntry) kvEntry).time));
         Set<Entry<K, CacheEntry>> wrapEntrySet = entryMap.entrySet();
         for (Entry<K, CacheEntry> entry : wrapEntrySet) {
             entrySet.add(entry.getValue());

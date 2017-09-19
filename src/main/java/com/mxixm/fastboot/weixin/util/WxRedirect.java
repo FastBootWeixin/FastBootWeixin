@@ -1,18 +1,22 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-/**
- * FastBootWeixin  WxRedirect
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxRedirect
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/23 23:38
- */
-@Getter
-@AllArgsConstructor
 public class WxRedirect {
 
     /**
@@ -36,6 +40,29 @@ public class WxRedirect {
      * snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，即使在未关注的情况下，只要用户授权，也能获取其信息）
      */
     private boolean isBase;
+
+    public WxRedirect(String baseUrl, String url, String state, boolean isBase) {
+        this.baseUrl = baseUrl;
+        this.url = url;
+        this.state = state;
+        this.isBase = isBase;
+    }
+
+    public String getBaseUrl() {
+        return this.baseUrl;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public boolean isBase() {
+        return this.isBase;
+    }
 
     public static class Builder {
 

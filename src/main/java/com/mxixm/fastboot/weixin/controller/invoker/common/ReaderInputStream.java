@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.controller.invoker.common;
 
 
@@ -18,7 +35,7 @@ import java.util.Arrays;
 /**
  * 这个理论上用不上
  * 从谷歌复制的
- *
+ * <p>
  * An {@link InputStream} that converts characters from a {@link Reader} into bytes using an
  * arbitrary Charset.
  * <p>
@@ -69,8 +86,8 @@ public final class ReaderInputStream extends InputStream {
      * Creates a new input stream that will encode the characters from {@code reader} into bytes using
      * the given character set encoder.
      *
-     * @param reader     input source
-     * @param charset    character set used for encoding chars to bytes
+     * @param reader  input source
+     * @param charset character set used for encoding chars to bytes
      * @throws IllegalArgumentException if bufferSize is non-positive
      */
     public ReaderInputStream(Reader reader, Charset charset) {

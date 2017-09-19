@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.controller.invoker.contributor;
 
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
@@ -12,14 +29,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * FastBootWeixin  AbstractWxApiRequestContributor
- *
- * @author Guangshan
- * @summary FastBootWeixin  AbstractWxApiRequestContributor
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/10 22:15
- */
 public abstract class AbstractWxApiRequestContributor<T extends Annotation> implements UriComponentsContributor {
 
     private static final TypeDescriptor STRING_TYPE_DESCRIPTOR = TypeDescriptor.valueOf(String.class);
@@ -33,6 +42,7 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
 
     /**
      * 把参数格式化成字符串用于拼接url
+     *
      * @param cs
      * @param sourceType
      * @param value
@@ -41,20 +51,18 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
     protected String formatUriValue(ConversionService cs, TypeDescriptor sourceType, Object value) {
         if (value == null) {
             return null;
-        }
-        else if (value instanceof String) {
+        } else if (value instanceof String) {
             return (String) value;
-        }
-        else if (cs != null) {
+        } else if (cs != null) {
             return (String) cs.convert(value, sourceType, STRING_TYPE_DESCRIPTOR);
-        }
-        else {
+        } else {
             return value.toString();
         }
     }
 
     /**
      * 是否支持这个参数
+     *
      * @param parameter
      * @return dummy
      */

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.menu;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -5,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -14,8 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@ToString
 public class WxButtonItem {
 
     @JsonProperty("sub_button")
@@ -46,6 +59,9 @@ public class WxButtonItem {
     @JsonInclude(Include.NON_NULL)
     @JsonProperty("mediaId")
     private String mediaId;
+
+    public WxButtonItem() {
+    }
 
     public List<WxButtonItem> getSubButtons() {
         return subButtons;
@@ -123,7 +139,8 @@ public class WxButtonItem {
         if (getType() != that.getType()) return false;
         if (!getName().equals(that.getName())) return false;
         // VIEW会自动抹掉key，所以不是VIEW的时候才判断key
-        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null)) return false;
+        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null))
+            return false;
         if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) return false;
         return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
     }
@@ -173,6 +190,10 @@ public class WxButtonItem {
 
     public static WxButtonItem.Builder builder() {
         return new Builder();
+    }
+
+    public String toString() {
+        return "com.mxixm.fastboot.weixin.module.menu.WxButtonItem(subButtons=" + this.getSubButtons() + ", group=" + this.getGroup() + ", type=" + this.getType() + ", name=" + this.getName() + ", main=" + this.isMain() + ", order=" + this.getOrder() + ", key=" + this.getKey() + ", url=" + this.getUrl() + ", mediaId=" + this.getMediaId() + ")";
     }
 
     public static class Builder {

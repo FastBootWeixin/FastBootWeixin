@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,15 +31,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
-/**
- * FastBootWeixin  WxTokenServer
- * 注意拦截调用异常，如果是token过期，重新获取token并重试
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxTokenServer
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/7/23 17:14
- */
 public class WxTokenServer {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

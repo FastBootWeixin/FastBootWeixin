@@ -1,24 +1,33 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.message.processer;
 
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-/**
- * FastBootWeixin  WxCommonMessageProcesser
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxCommonMessageProcesser
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/20 22:53
- */
 public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> implements WxMessageProcesser<T> {
 
     protected WxMediaManager wxMediaManager;
@@ -48,7 +57,7 @@ public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> imple
             return false;
         }
         ParameterizedType parameterizedType = (ParameterizedType) type;
-        Class userClass =(Class)(parameterizedType.getActualTypeArguments()[0]);
+        Class userClass = (Class) (parameterizedType.getActualTypeArguments()[0]);
         if (userClass == null) {
             return false;
         }

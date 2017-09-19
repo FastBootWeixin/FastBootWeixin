@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
@@ -21,14 +38,6 @@ import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * FastBootWeixin  WxArgumentResolver
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxArgumentResolver
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/12 22:51
- */
 public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
     // 是否有更好的方式？有空参看源码
@@ -78,6 +87,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 
     /**
      * 所有的转换都卸载了一起，有空可以分离为多个，抽象一层
+     *
      * @param name
      * @param parameter
      * @param request
@@ -99,7 +109,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
             return wxRequest.getWxSession();
         }
         if (WxRequestBody.class.isAssignableFrom(parameter.getParameterType())) {
-            return WxRequestBody.of((Class)parameter.getParameterType(), wxRequest.getBody());
+            return WxRequestBody.of((Class) parameter.getParameterType(), wxRequest.getBody());
         }
 
         // 如果可以获取用户则返回用户

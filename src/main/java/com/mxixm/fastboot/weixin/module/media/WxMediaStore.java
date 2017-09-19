@@ -1,6 +1,22 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.media;
 
-import lombok.Builder;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
@@ -21,9 +37,8 @@ import java.util.concurrent.TimeUnit;
  * 数据库使用内嵌数据库，经过一天的maven仓库database embedded选型，暂时决定使用MapDB(200k，其实有700K)或者kahaDB(600k)
  * 还有一个PalDB，这些都不小，真不行了我自己实现一个好了。。。暂时先用现成的
  * MapDB最新版依赖真的太多了，不想用了，先用MapDB的老版本吧
- *
+ * <p>
  * 重要！这个store类要优化成callbace方式，且做的易于扩展，现在我自己都有点看不懂这个东西了
- *
  */
 public class WxMediaStore implements InitializingBean {
 
@@ -50,6 +65,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 根据文件查找tempMediaId
+     *
      * @param file
      * @return String
      */
@@ -64,6 +80,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 根据tempMediaId查找File
+     *
      * @param mediaId
      * @return File
      */
@@ -74,6 +91,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存tempMedia到File
+     *
      * @param mediaId
      * @return File
      */
@@ -99,6 +117,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存tempMedia到mediaStore
+     *
      * @param type
      * @param file
      * @param result
@@ -122,6 +141,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存tempMedia到mediaStore
+     *
      * @param type
      * @param result
      */
@@ -162,6 +182,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 根据mediaId查找File
+     *
      * @param mediaId
      * @return File
      */
@@ -204,6 +225,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存media到File
+     *
      * @param mediaId
      * @return File
      */
@@ -226,6 +248,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 根据file查找url
      * 暂时不考虑图片修改
+     *
      * @param file
      * @return String
      */
@@ -245,6 +268,7 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 根据imgUrl查找url
      * 暂时不考虑图片修改
+     *
      * @param imgUrl
      * @return String
      */
@@ -254,6 +278,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 保存文件到url
+     *
      * @param file
      * @param result
      */
@@ -265,6 +290,7 @@ public class WxMediaStore implements InitializingBean {
 
     /**
      * 只能用来删除永久素材
+     *
      * @param mediaId
      */
     public void deleteMedia(String mediaId) {
@@ -344,7 +370,6 @@ public class WxMediaStore implements InitializingBean {
     /**
      * 用于存储的实体
      */
-    @Builder
     private static class StoreEntity implements Serializable {
         /**
          * 文件路径
@@ -376,6 +401,68 @@ public class WxMediaStore implements InitializingBean {
          */
         private WxMedia.Type mediaType;
 
+        StoreEntity(String filePath, String mediaId, String mediaUrl, Date createTime, Date lastModifiedTime, WxMedia.Type mediaType) {
+            this.filePath = filePath;
+            this.mediaId = mediaId;
+            this.mediaUrl = mediaUrl;
+            this.createTime = createTime;
+            this.lastModifiedTime = lastModifiedTime;
+            this.mediaType = mediaType;
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private String filePath;
+            private String mediaId;
+            private String mediaUrl;
+            private Date createTime;
+            private Date lastModifiedTime;
+            private WxMedia.Type mediaType;
+
+            Builder() {
+            }
+
+            public Builder filePath(String filePath) {
+                this.filePath = filePath;
+                return this;
+            }
+
+            public Builder mediaId(String mediaId) {
+                this.mediaId = mediaId;
+                return this;
+            }
+
+            public Builder mediaUrl(String mediaUrl) {
+                this.mediaUrl = mediaUrl;
+                return this;
+            }
+
+            public Builder createTime(Date createTime) {
+                this.createTime = createTime;
+                return this;
+            }
+
+            public Builder lastModifiedTime(Date lastModifiedTime) {
+                this.lastModifiedTime = lastModifiedTime;
+                return this;
+            }
+
+            public Builder mediaType(WxMedia.Type mediaType) {
+                this.mediaType = mediaType;
+                return this;
+            }
+
+            public StoreEntity build() {
+                return new StoreEntity(filePath, mediaId, mediaUrl, createTime, lastModifiedTime, mediaType);
+            }
+
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.module.media.WxMediaStore.StoreEntity.Builder(filePath=" + this.filePath + ", mediaId=" + this.mediaId + ", mediaUrl=" + this.mediaUrl + ", createTime=" + this.createTime + ", lastModifiedTime=" + this.lastModifiedTime + ", mediaType=" + this.mediaType + ")";
+            }
+        }
     }
 
     /*

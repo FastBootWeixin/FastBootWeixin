@@ -1,28 +1,35 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.web;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * FastBootWeixin  WxRequestBody
- * 整理成请求体，是WxRequest.Body的转换
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxRequestBody
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/9/2 23:41
- */
-@Getter
 public class WxRequestBody {
 
     /**
      * 类型声明写泛型上
+     *
      * @param clazz
      * @param <T>
      * @return dummy
@@ -67,10 +74,25 @@ public class WxRequestBody {
         return this;
     }
 
+    public String getToUserName() {
+        return this.toUserName;
+    }
+
+    public String getFromUserName() {
+        return this.fromUserName;
+    }
+
+    public Date getCreateTime() {
+        return this.createTime;
+    }
+
+    public WxMessage.Type getMessageType() {
+        return this.messageType;
+    }
+
     /**
      * button事件的父类
      */
-    @Getter
     public static class Button extends WxRequestBody {
         /**
          * event类型有
@@ -94,12 +116,19 @@ public class WxRequestBody {
             this.eventKey = body.getEventKey();
             return this;
         }
+
+        public WxEvent.Type getEventType() {
+            return this.eventType;
+        }
+
+        public String getEventKey() {
+            return this.eventKey;
+        }
     }
 
     /**
      * click按钮的点击事件，其实就是event
      */
-    @Getter
     public static class Click extends Button {
         /**
          * 消息转换
@@ -114,7 +143,6 @@ public class WxRequestBody {
     /**
      * View的点击事件
      */
-    @Getter
     public static class View extends Button {
         /**
          * event类型为VIEW时才有
@@ -128,12 +156,15 @@ public class WxRequestBody {
             this.menuId = body.getMenuId();
             return this;
         }
+
+        public String getMenuId() {
+            return this.menuId;
+        }
     }
 
     /**
      * event类型为scancode_push、scancode_waitmsg才有
      */
-    @Getter
     public static class ScanCode extends Button {
 
         /**
@@ -157,12 +188,18 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getScanType() {
+            return this.scanType;
+        }
+
+        public String getScanResult() {
+            return this.scanResult;
+        }
     }
 
     /**
      * event为pic_sysphoto、pic_photo_or_album、pic_weixin才有
      */
-    @Getter
     public static class SendPicture extends Button {
 
         /**
@@ -188,12 +225,18 @@ public class WxRequestBody {
             return this;
         }
 
+        public Integer getCount() {
+            return this.count;
+        }
+
+        public List<String> getPicMd5SumList() {
+            return this.picMd5SumList;
+        }
     }
 
     /**
      * event为location_select时才有
      */
-    @Getter
     public static class SelectLocation extends Button {
 
         /**
@@ -236,12 +279,30 @@ public class WxRequestBody {
             return this;
         }
 
+        public Double getLocationX() {
+            return this.locationX;
+        }
+
+        public Double getLocationY() {
+            return this.locationY;
+        }
+
+        public Integer getScale() {
+            return this.scale;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public String getPoiname() {
+            return this.poiname;
+        }
     }
 
     /**
      * 所有消息类型的父类
      */
-    @Getter
     public static class Message extends WxRequestBody {
         /**
          * 通用
@@ -258,12 +319,19 @@ public class WxRequestBody {
             this.msgId = body.getMsgId();
             return this;
         }
+
+        public WxMessage.Type getMessageType() {
+            return this.messageType;
+        }
+
+        public Long getMsgId() {
+            return this.msgId;
+        }
     }
 
     /**
      * 文本消息
      */
-    @Getter
     public static class Text extends Message {
         /**
          * 消息
@@ -277,12 +345,14 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getContent() {
+            return this.content;
+        }
     }
 
     /**
      * 媒体消息的父类
      */
-    @Getter
     public static class MediaMessage extends Message {
         /**
          * 媒体ID
@@ -296,12 +366,14 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getMediaId() {
+            return this.mediaId;
+        }
     }
 
     /**
      * 图片媒体消息
      */
-    @Getter
     public static class Image extends MediaMessage {
         /**
          * image类型的消息有
@@ -316,12 +388,14 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getPicUrl() {
+            return this.picUrl;
+        }
     }
 
     /**
      * 声音媒体消息
      */
-    @Getter
     public static class Voice extends MediaMessage {
         /**
          * voice类型的消息有
@@ -342,12 +416,19 @@ public class WxRequestBody {
             this.recognition = body.getRecognition();
             return this;
         }
+
+        public String getFormat() {
+            return this.format;
+        }
+
+        public String getRecognition() {
+            return this.recognition;
+        }
     }
 
     /**
      * 视频消息
      */
-    @Getter
     public static class Video extends MediaMessage {
         /**
          * video、shortvideo类型才有
@@ -362,12 +443,14 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getThumbMediaId() {
+            return this.thumbMediaId;
+        }
     }
 
     /**
      * 地理位置消息
      */
-    @Getter
     public static class Location extends Message {
         /**
          * location类型才有
@@ -403,12 +486,26 @@ public class WxRequestBody {
             return this;
         }
 
+        public Double getLocationX() {
+            return this.locationX;
+        }
+
+        public Double getLocationY() {
+            return this.locationY;
+        }
+
+        public Integer getScale() {
+            return this.scale;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
     }
 
     /**
      * 链接消息
      */
-    @Getter
     public static class Link extends Message {
         /**
          * link类型才有
@@ -437,12 +534,22 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getTitle() {
+            return this.title;
+        }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
     }
 
     /**
      * Event事件的父类
      */
-    @Getter
     public static class Event extends WxRequestBody {
         /**
          * event类型有
@@ -457,12 +564,14 @@ public class WxRequestBody {
             return this;
         }
 
+        public WxEvent.Type getEventType() {
+            return this.eventType;
+        }
     }
 
     /**
      * 关注事件，包括扫描关注
      */
-    @Getter
     public static class Subscribe extends Event {
 
         /**
@@ -483,12 +592,18 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getEventKey() {
+            return this.eventKey;
+        }
+
+        public String getTicket() {
+            return this.ticket;
+        }
     }
 
     /**
      * 取关事件
      */
-    @Getter
     public static class Unsubscribe extends Event {
         /**
          * 消息转换
@@ -503,7 +618,6 @@ public class WxRequestBody {
     /**
      * 扫码事件
      */
-    @Getter
     public static class Scan extends Event {
 
         /**
@@ -524,12 +638,18 @@ public class WxRequestBody {
             return this;
         }
 
+        public String getEventKey() {
+            return this.eventKey;
+        }
+
+        public String getTicket() {
+            return this.ticket;
+        }
     }
 
     /**
      * 上报地理位置
      */
-    @Getter
     public static class LocationReport extends Event {
 
         /**
@@ -554,6 +674,18 @@ public class WxRequestBody {
             this.longitude = body.getLongitude();
             this.precision = body.getPrecision();
             return this;
+        }
+
+        public Double getLatitude() {
+            return this.latitude;
+        }
+
+        public Double getLongitude() {
+            return this.longitude;
+        }
+
+        public Double getPrecision() {
+            return this.precision;
         }
     }
 

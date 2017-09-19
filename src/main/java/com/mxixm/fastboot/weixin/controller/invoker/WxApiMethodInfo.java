@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.controller.invoker;
 
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
@@ -29,14 +46,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * FastBootWeixin  WxApiMethodInfo
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxApiMethodInfo
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/11 20:53
- */
 public class WxApiMethodInfo {
 
     private static final PathMatcher pathMatcher = new AntPathMatcher();
@@ -97,11 +106,11 @@ public class WxApiMethodInfo {
     private WxApiRequest.Method prepareRequestInfo(Method method) {
         // 保存参数类型，如果有设置的注解类型则为注解类型
         methodParameters = IntStream.range(0, method.getParameterCount()).mapToObj(i -> {
-                MethodParameter methodParameter = new SynthesizingMethodParameter(method, i);
-                methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
-                // 预热缓存
-                methodParameter.getParameterName();
-                return methodParameter;
+            MethodParameter methodParameter = new SynthesizingMethodParameter(method, i);
+            methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
+            // 预热缓存
+            methodParameter.getParameterName();
+            return methodParameter;
         }).collect(Collectors.toList());
         // 是不是全是简单属性,简单属性的数量
         long simpleParameterCount = methodParameters.stream()
@@ -150,6 +159,7 @@ public class WxApiMethodInfo {
 
     /**
      * 这里有个问题，如果原始连接是带有固定参数的，这里会解析出问题
+     *
      * @param args
      * @return dummy
      */

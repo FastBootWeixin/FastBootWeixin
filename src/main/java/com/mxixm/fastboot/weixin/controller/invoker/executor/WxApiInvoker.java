@@ -1,3 +1,20 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.controller.invoker.executor;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,14 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * FastBootWeixin  WxApiInvoker，RestTemplate的包装类
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxApiInvoker
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/13 10:58
- */
 public class WxApiInvoker {
 
     private RestTemplate restTemplate;
@@ -154,9 +163,9 @@ public class WxApiInvoker {
     }
 
     private HttpEntity getHttpEntity(Object request) {
-        if(request instanceof HttpEntity) {
-            return (HttpEntity)request;
-        } else if(request != null) {
+        if (request instanceof HttpEntity) {
+            return (HttpEntity) request;
+        } else if (request != null) {
             return new HttpEntity(request);
         } else {
             return HttpEntity.EMPTY;

@@ -1,12 +1,26 @@
+/*
+ * Copyright 2012-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.mxixm.fastboot.weixin.module.media;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mxixm.fastboot.weixin.module.message.adapters.WxJsonAdapters;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,21 +31,51 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * FastBootWeixin  WxMedia
- * 虽然叫素材，但是要和media区分好
- *
- * @author Guangshan
- * @summary FastBootWeixin  WxMedia
- * @Copyright (c) 2017, Guangshan Group All Rights Reserved
- * @since 2017/8/12 21:05
- */
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 public class WxMedia {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
+    public WxMedia(String mediaId) {
+        this.mediaId = mediaId;
+    }
+
+    public WxMedia() {
+    }
+
+    public String getMediaId() {
+        return this.mediaId;
+    }
+
+    public void setMediaId(String mediaId) {
+        this.mediaId = mediaId;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof WxMedia)) return false;
+        final WxMedia other = (WxMedia) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$mediaId = this.getMediaId();
+        final Object other$mediaId = other.getMediaId();
+        if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $mediaId = this.getMediaId();
+        result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof WxMedia;
+    }
+
+    public String toString() {
+        return "com.mxixm.fastboot.weixin.module.media.WxMedia(mediaId=" + this.getMediaId() + ")";
+    }
 
     public enum Type {
         @JsonProperty("image")
@@ -74,8 +118,6 @@ public class WxMedia {
     /**
      * 上传临时素材的响应
      */
-    @Data
-    @NoArgsConstructor
     public static class TempMediaResult implements Result {
 
         @JsonProperty("type")
@@ -88,16 +130,80 @@ public class WxMedia {
         @JsonProperty("created_at")
         private Date createdAt;
 
+        public TempMediaResult() {
+        }
+
         @Override
         public String keyInfo() {
             return this.mediaId;
+        }
+
+        public Type getType() {
+            return this.type;
+        }
+
+        public String getMediaId() {
+            return this.mediaId;
+        }
+
+        public Date getCreatedAt() {
+            return this.createdAt;
+        }
+
+        public void setType(Type type) {
+            this.type = type;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public void setCreatedAt(Date createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof TempMediaResult)) return false;
+            final TempMediaResult other = (TempMediaResult) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$type = this.getType();
+            final Object other$type = other.getType();
+            if (this$type == null ? other$type != null : !this$type.equals(other$type)) return false;
+            final Object this$mediaId = this.getMediaId();
+            final Object other$mediaId = other.getMediaId();
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            final Object this$createdAt = this.getCreatedAt();
+            final Object other$createdAt = other.getCreatedAt();
+            if (this$createdAt == null ? other$createdAt != null : !this$createdAt.equals(other$createdAt))
+                return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $type = this.getType();
+            result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+            final Object $mediaId = this.getMediaId();
+            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+            final Object $createdAt = this.getCreatedAt();
+            result = result * PRIME + ($createdAt == null ? 43 : $createdAt.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof TempMediaResult;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.TempMediaResult(type=" + this.getType() + ", mediaId=" + this.getMediaId() + ", createdAt=" + this.getCreatedAt() + ")";
         }
     }
 
     /**
      * 上传永久素材的接口
      */
-    @Data
     public static class MediaResult implements Result {
 
         @JsonProperty("url")
@@ -105,6 +211,9 @@ public class WxMedia {
 
         @JsonProperty("media_id")
         private String mediaId;
+
+        public MediaResult() {
+        }
 
         @Override
         public String keyInfo() {
@@ -114,41 +223,160 @@ public class WxMedia {
                 return mediaId;
             }
         }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public String getMediaId() {
+            return this.mediaId;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof MediaResult)) return false;
+            final MediaResult other = (MediaResult) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$url = this.getUrl();
+            final Object other$url = other.getUrl();
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            final Object this$mediaId = this.getMediaId();
+            final Object other$mediaId = other.getMediaId();
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $url = this.getUrl();
+            result = result * PRIME + ($url == null ? 43 : $url.hashCode());
+            final Object $mediaId = this.getMediaId();
+            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof MediaResult;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.MediaResult(url=" + this.getUrl() + ", mediaId=" + this.getMediaId() + ")";
+        }
     }
 
     /**
      * 上传图片的结果
      */
-    @Data
     public static class ImageResult implements Result {
 
         @JsonProperty("url")
         private String url;
 
+        public ImageResult() {
+        }
+
         @Override
         public String keyInfo() {
             return this.url;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof ImageResult)) return false;
+            final ImageResult other = (ImageResult) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$url = this.getUrl();
+            final Object other$url = other.getUrl();
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $url = this.getUrl();
+            result = result * PRIME + ($url == null ? 43 : $url.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof ImageResult;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.ImageResult(url=" + this.getUrl() + ")";
         }
     }
 
     /**
      * 上传图文消息的结果
      */
-    @Data
     public static class NewsResult implements Result {
 
         @JsonProperty("media_id")
         private String mediaId;
+
+        public NewsResult() {
+        }
 
         @Override
         public String keyInfo() {
             return this.mediaId;
         }
 
+        public String getMediaId() {
+            return this.mediaId;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof NewsResult)) return false;
+            final NewsResult other = (NewsResult) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$mediaId = this.getMediaId();
+            final Object other$mediaId = other.getMediaId();
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $mediaId = this.getMediaId();
+            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof NewsResult;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.NewsResult(mediaId=" + this.getMediaId() + ")";
+        }
     }
 
-    @Data
-    @NoArgsConstructor
     public static class Video implements Serializable {
 
         @JsonProperty("title")
@@ -165,8 +393,73 @@ public class WxMedia {
             this.introduction = introduction;
         }
 
+        public Video() {
+        }
+
         public static Builder builder() {
             return new Builder();
+        }
+
+        public String getTitle() {
+            return this.title;
+        }
+
+        public String getIntroduction() {
+            return this.introduction;
+        }
+
+        public String getDownUrl() {
+            return this.downUrl;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setIntroduction(String introduction) {
+            this.introduction = introduction;
+        }
+
+        public void setDownUrl(String downUrl) {
+            this.downUrl = downUrl;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof Video)) return false;
+            final Video other = (Video) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$title = this.getTitle();
+            final Object other$title = other.getTitle();
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            final Object this$introduction = this.getIntroduction();
+            final Object other$introduction = other.getIntroduction();
+            if (this$introduction == null ? other$introduction != null : !this$introduction.equals(other$introduction))
+                return false;
+            final Object this$downUrl = this.getDownUrl();
+            final Object other$downUrl = other.getDownUrl();
+            if (this$downUrl == null ? other$downUrl != null : !this$downUrl.equals(other$downUrl)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $title = this.getTitle();
+            result = result * PRIME + ($title == null ? 43 : $title.hashCode());
+            final Object $introduction = this.getIntroduction();
+            result = result * PRIME + ($introduction == null ? 43 : $introduction.hashCode());
+            final Object $downUrl = this.getDownUrl();
+            result = result * PRIME + ($downUrl == null ? 43 : $downUrl.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof Video;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.Video(title=" + this.getTitle() + ", introduction=" + this.getIntroduction() + ", downUrl=" + this.getDownUrl() + ")";
         }
 
         public static class Builder {
@@ -292,7 +585,6 @@ public class WxMedia {
     /**
      * 更新图文消息的实体，单条new
      */
-    @Data
     public static class New {
 
         /**
@@ -321,6 +613,67 @@ public class WxMedia {
 
         public static Builder builder() {
             return new Builder();
+        }
+
+        public String getMediaId() {
+            return this.mediaId;
+        }
+
+        public Integer getIndex() {
+            return this.index;
+        }
+
+        public Article getArticle() {
+            return this.article;
+        }
+
+        public void setMediaId(String mediaId) {
+            this.mediaId = mediaId;
+        }
+
+        public void setIndex(Integer index) {
+            this.index = index;
+        }
+
+        public void setArticle(Article article) {
+            this.article = article;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof New)) return false;
+            final New other = (New) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$mediaId = this.getMediaId();
+            final Object other$mediaId = other.getMediaId();
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            final Object this$index = this.getIndex();
+            final Object other$index = other.getIndex();
+            if (this$index == null ? other$index != null : !this$index.equals(other$index)) return false;
+            final Object this$article = this.getArticle();
+            final Object other$article = other.getArticle();
+            if (this$article == null ? other$article != null : !this$article.equals(other$article)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $mediaId = this.getMediaId();
+            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
+            final Object $index = this.getIndex();
+            result = result * PRIME + ($index == null ? 43 : $index.hashCode());
+            final Object $article = this.getArticle();
+            result = result * PRIME + ($article == null ? 43 : $article.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof New;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.New(mediaId=" + this.getMediaId() + ", index=" + this.getIndex() + ", article=" + this.getArticle() + ")";
         }
 
         public static class Builder {
@@ -359,8 +712,6 @@ public class WxMedia {
     /**
      * 图文消息的article
      */
-    @Data
-    @NoArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Article {
         /**
@@ -422,8 +773,136 @@ public class WxMedia {
             this.author = author;
         }
 
+        public Article() {
+        }
+
         public static Builder builder() {
             return new Builder();
+        }
+
+        public String getTitle() {
+            return this.title;
+        }
+
+        public String getThumbMediaId() {
+            return this.thumbMediaId;
+        }
+
+        public boolean isShowCoverPic() {
+            return this.showCoverPic;
+        }
+
+        public String getContent() {
+            return this.content;
+        }
+
+        public String getContentSourceUrl() {
+            return this.contentSourceUrl;
+        }
+
+        public String getAuthor() {
+            return this.author;
+        }
+
+        public String getDigest() {
+            return this.digest;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setThumbMediaId(String thumbMediaId) {
+            this.thumbMediaId = thumbMediaId;
+        }
+
+        public void setShowCoverPic(boolean showCoverPic) {
+            this.showCoverPic = showCoverPic;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public void setContentSourceUrl(String contentSourceUrl) {
+            this.contentSourceUrl = contentSourceUrl;
+        }
+
+        public void setAuthor(String author) {
+            this.author = author;
+        }
+
+        public void setDigest(String digest) {
+            this.digest = digest;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof Article)) return false;
+            final Article other = (Article) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$title = this.getTitle();
+            final Object other$title = other.getTitle();
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            final Object this$thumbMediaId = this.getThumbMediaId();
+            final Object other$thumbMediaId = other.getThumbMediaId();
+            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+                return false;
+            if (this.isShowCoverPic() != other.isShowCoverPic()) return false;
+            final Object this$content = this.getContent();
+            final Object other$content = other.getContent();
+            if (this$content == null ? other$content != null : !this$content.equals(other$content)) return false;
+            final Object this$contentSourceUrl = this.getContentSourceUrl();
+            final Object other$contentSourceUrl = other.getContentSourceUrl();
+            if (this$contentSourceUrl == null ? other$contentSourceUrl != null : !this$contentSourceUrl.equals(other$contentSourceUrl))
+                return false;
+            final Object this$author = this.getAuthor();
+            final Object other$author = other.getAuthor();
+            if (this$author == null ? other$author != null : !this$author.equals(other$author)) return false;
+            final Object this$digest = this.getDigest();
+            final Object other$digest = other.getDigest();
+            if (this$digest == null ? other$digest != null : !this$digest.equals(other$digest)) return false;
+            final Object this$url = this.getUrl();
+            final Object other$url = other.getUrl();
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $title = this.getTitle();
+            result = result * PRIME + ($title == null ? 43 : $title.hashCode());
+            final Object $thumbMediaId = this.getThumbMediaId();
+            result = result * PRIME + ($thumbMediaId == null ? 43 : $thumbMediaId.hashCode());
+            result = result * PRIME + (this.isShowCoverPic() ? 79 : 97);
+            final Object $content = this.getContent();
+            result = result * PRIME + ($content == null ? 43 : $content.hashCode());
+            final Object $contentSourceUrl = this.getContentSourceUrl();
+            result = result * PRIME + ($contentSourceUrl == null ? 43 : $contentSourceUrl.hashCode());
+            final Object $author = this.getAuthor();
+            result = result * PRIME + ($author == null ? 43 : $author.hashCode());
+            final Object $digest = this.getDigest();
+            result = result * PRIME + ($digest == null ? 43 : $digest.hashCode());
+            final Object $url = this.getUrl();
+            result = result * PRIME + ($url == null ? 43 : $url.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof Article;
+        }
+
+        public String toString() {
+            return "com.mxixm.fastboot.weixin.module.media.WxMedia.Article(title=" + this.getTitle() + ", thumbMediaId=" + this.getThumbMediaId() + ", showCoverPic=" + this.isShowCoverPic() + ", content=" + this.getContent() + ", contentSourceUrl=" + this.getContentSourceUrl() + ", author=" + this.getAuthor() + ", digest=" + this.getDigest() + ", url=" + this.getUrl() + ")";
         }
 
         public static class Builder {
