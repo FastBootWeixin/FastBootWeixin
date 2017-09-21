@@ -31,6 +31,13 @@ import org.springframework.context.annotation.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxAsyncMessageConfiguration
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:32
+ * @since 0.1.2
+ */
 @Configuration
 public class WxAsyncMessageConfiguration {
 

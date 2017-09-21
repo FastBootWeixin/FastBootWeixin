@@ -26,6 +26,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * FastBootWeixin WxBufferingInputMessageWrapper
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 public final class WxBufferingInputMessageWrapper implements HttpInputMessage, Closeable {
 
     private final HttpInputMessage httpInputMessage;

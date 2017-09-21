@@ -20,7 +20,12 @@ package com.mxixm.fastboot.weixin.controller.invoker.annotation;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxApiBody
  * 是否有必要再加一个WxApiFile，传入路径参数？
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:31
+ * @since 0.1.2
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

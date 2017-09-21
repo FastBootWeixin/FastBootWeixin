@@ -26,6 +26,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
+/**
+ * FastBootWeixin WxApiHttpRequest
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
+ */
 public final class WxApiHttpRequest implements ClientHttpRequest {
 
     private ClientHttpRequest delegate;

@@ -23,6 +23,13 @@ import com.fasterxml.jackson.databind.util.Converter;
 
 import java.util.Date;
 
+/**
+ * FastBootWeixin WxJsonAdapters
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxJsonAdapters {
 
     /*public static class WxDateDeserializer extends JsonDeserializer<Date> {

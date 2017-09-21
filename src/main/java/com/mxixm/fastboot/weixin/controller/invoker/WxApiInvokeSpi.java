@@ -27,6 +27,13 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import org.springframework.core.io.Resource;
 
+/**
+ * FastBootWeixin WxApiInvokeSpi
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public interface WxApiInvokeSpi {
 
     String getCallbackIp();

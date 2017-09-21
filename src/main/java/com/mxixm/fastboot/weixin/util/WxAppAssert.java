@@ -19,6 +19,13 @@ package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 
+/**
+ * FastBootWeixin WxAppAssert
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public abstract class WxAppAssert {
 
     public static void notNull(Object object, String message) {

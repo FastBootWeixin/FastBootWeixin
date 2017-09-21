@@ -56,6 +56,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxInvokerConfiguration
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:31
+ * @since 0.1.2
+ */
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
 public class WxInvokerConfiguration {

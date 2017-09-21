@@ -22,6 +22,13 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 
+/**
+ * FastBootWeixin WxResponseExtractor
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
+ */
 public interface WxResponseExtractor<T> {
 
     /**

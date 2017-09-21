@@ -24,6 +24,13 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
 
+/**
+ * FastBootWeixin WxAccessTokenManager
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class WxAccessTokenManager implements InitializingBean {
 
     private WxTokenStore wxTokenStore;

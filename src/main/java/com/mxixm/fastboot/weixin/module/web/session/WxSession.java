@@ -19,6 +19,13 @@ package com.mxixm.fastboot.weixin.module.web.session;
 
 import java.util.Iterator;
 
+/**
+ * FastBootWeixin WxSession
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:44
+ * @since 0.1.2
+ */
 public interface WxSession {
 
     /**

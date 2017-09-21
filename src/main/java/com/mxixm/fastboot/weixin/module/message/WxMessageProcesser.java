@@ -23,6 +23,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+/**
+ * FastBootWeixin WxMessageProcesser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:42
+ * @since 0.1.2
+ */
 public interface WxMessageProcesser<T extends WxMessage> {
 
     T process(WxRequest wxRequest, T wxMessage);

@@ -17,6 +17,13 @@
 
 package com.mxixm.fastboot.weixin.module;
 
+/**
+ * FastBootWeixin Wx
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:44
+ * @since 0.1.2
+ */
 public class Wx {
 
     /**

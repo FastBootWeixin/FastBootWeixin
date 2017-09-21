@@ -23,6 +23,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * FastBootWeixin WxWebUser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:47
+ * @since 0.1.2
+ */
 public class WxWebUser implements Serializable {
 
     /**

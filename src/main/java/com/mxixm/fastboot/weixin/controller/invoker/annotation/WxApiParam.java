@@ -22,6 +22,13 @@ import org.springframework.web.bind.annotation.ValueConstants;
 
 import java.lang.annotation.*;
 
+/**
+ * FastBootWeixin WxApiParam
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

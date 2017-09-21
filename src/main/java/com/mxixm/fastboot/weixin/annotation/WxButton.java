@@ -22,7 +22,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxButton
  * 待支持：参数从变量中取
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:27
+ * @since 0.1.2
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

@@ -30,6 +30,13 @@ import org.springframework.context.annotation.Lazy;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin WxMediaConfiguration
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:31
+ * @since 0.1.2
+ */
 @Configuration
 public class WxMediaConfiguration {
 

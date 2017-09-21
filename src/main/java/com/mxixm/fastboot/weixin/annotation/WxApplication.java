@@ -24,6 +24,13 @@ import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
+/**
+ * FastBootWeixin WxApplication
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:30
+ * @since 0.1.2
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

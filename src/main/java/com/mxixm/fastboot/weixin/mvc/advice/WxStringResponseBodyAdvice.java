@@ -44,12 +44,14 @@ import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 
 /**
+ * FastBootWeixin WxStringResponseBodyAdvice
  * ResponseBodyAdvice Spring 4.1以上才支持。
  * 这个作用是为响应自动添加fromUser
  * 不加这个注解会有问题@ControllerAdvice，不识别
  *
  * @author Guangshan
- * @since 2017年8月15日
+ * @date 2017/08/15 23:43
+ * @since 0.1.2
  */
 @ControllerAdvice
 public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, Ordered {

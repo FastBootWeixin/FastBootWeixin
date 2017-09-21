@@ -49,6 +49,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * FastBootWeixin WxApiHttpRequestFactory
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
+ */
 public class WxApiHttpRequestFactory implements ClientHttpRequestFactory {
 
     private WxProperties wxProperties;

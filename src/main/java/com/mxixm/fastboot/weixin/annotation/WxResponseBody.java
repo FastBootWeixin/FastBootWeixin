@@ -21,6 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.annotation.*;
 
+/**
+ * FastBootWeixin WxResponseBody
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:29
+ * @since 0.1.2
+ */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

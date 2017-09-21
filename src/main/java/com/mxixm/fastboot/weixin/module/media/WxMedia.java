@@ -31,6 +31,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxMedia
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:38
+ * @since 0.1.2
+ */
 public class WxMedia {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

@@ -25,6 +25,13 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 import java.io.File;
 
+/**
+ * FastBootWeixin WxVideoMessageProcesser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessage.Video> {
 
     public WxVideoMessageProcesser(WxMediaManager wxMediaManager) {

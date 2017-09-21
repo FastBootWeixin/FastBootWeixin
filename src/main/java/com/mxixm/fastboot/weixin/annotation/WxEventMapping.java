@@ -22,7 +22,12 @@ import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxEventMapping
  * 微信请求绑定
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:28
+ * @since 0.1.2
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

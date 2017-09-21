@@ -24,6 +24,13 @@ import com.mxixm.fastboot.weixin.module.message.adapters.WxJsonAdapters;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxUser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:42
+ * @since 0.1.2
+ */
 public class WxUser {
 
     /**

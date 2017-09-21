@@ -33,6 +33,13 @@ import org.springframework.util.StringUtils;
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 
+/**
+ * FastBootWeixin WxMenuManager
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

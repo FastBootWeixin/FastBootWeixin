@@ -24,6 +24,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * FastBootWeixin CryptUtils
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:47
+ * @since 0.1.2
+ */
 public abstract class CryptUtils {
 
     private final static String KEY_SHA1 = "SHA-1";

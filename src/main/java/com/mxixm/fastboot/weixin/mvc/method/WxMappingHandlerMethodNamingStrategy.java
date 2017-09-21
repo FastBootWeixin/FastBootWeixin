@@ -21,11 +21,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerMethodMappingNamingStrategy;
 
+/**
+ * FastBootWeixin WxMappingHandlerMethodNamingStrategy
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public class WxMappingHandlerMethodNamingStrategy
         implements HandlerMethodMappingNamingStrategy<WxMappingInfo> {
 
     public static final String SEPARATOR = "#";
-
 
     @Override
     public String getName(HandlerMethod handlerMethod, WxMappingInfo mapping) {

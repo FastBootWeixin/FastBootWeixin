@@ -30,6 +30,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * FastBootWeixin WxApiResponseExtractor
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxApiResponseExtractor {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

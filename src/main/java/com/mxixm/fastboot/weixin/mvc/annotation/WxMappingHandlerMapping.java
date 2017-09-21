@@ -49,6 +49,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+/**
+ * FastBootWeixin WxMappingHandlerMapping
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean {
 
     /**

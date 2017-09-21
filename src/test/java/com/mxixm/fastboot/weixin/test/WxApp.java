@@ -26,6 +26,13 @@ import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.boot.SpringApplication;
 
+/**
+ * FastBootWeixin WxApp
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:47
+ * @since 0.1.2
+ */
 @WxApplication
 @WxController
 public class WxApp {

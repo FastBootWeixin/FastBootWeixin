@@ -38,12 +38,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.invoke.MethodHandles;
 
 /**
+ * FastBootWeixin WxMessageResponseBodyAdvice
  * ResponseBodyAdvice Spring 4.1以上才支持。
  * 这个作用是为响应自动添加fromUser
  * 不加这个注解会有问题@ControllerAdvice，不识别
  *
  * @author Guangshan
- * @since 2017年8月15日
+ * @date 2017/08/15 23:43
+ * @since 0.1.2
  */
 @ControllerAdvice
 public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage>, Ordered {

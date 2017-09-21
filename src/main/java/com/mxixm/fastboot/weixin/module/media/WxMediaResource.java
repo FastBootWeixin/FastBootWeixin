@@ -43,6 +43,13 @@ import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+/**
+ * FastBootWeixin WxMediaResource
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:38
+ * @since 0.1.2
+ */
 public class WxMediaResource extends AbstractResource {
 
     private static final String FILENAME_KEY = "filename=";

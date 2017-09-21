@@ -47,6 +47,13 @@ import java.io.Reader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * FastBootWeixin WxApiExecutor
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxApiExecutor {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

@@ -25,6 +25,13 @@ import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * FastBootWeixin MemoryWxTokenStore
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class MemoryWxTokenStore implements WxTokenStore {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

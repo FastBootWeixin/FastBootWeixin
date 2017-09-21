@@ -20,7 +20,12 @@ package com.mxixm.fastboot.weixin.annotation;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxMapping
  * 标记是微信的Mapping，包括WxButton、WxEventMapping、WxMessageMapping
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:28
+ * @since 0.1.2
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

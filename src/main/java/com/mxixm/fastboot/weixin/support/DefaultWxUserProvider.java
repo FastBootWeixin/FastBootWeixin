@@ -20,6 +20,13 @@ package com.mxixm.fastboot.weixin.support;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 
+/**
+ * FastBootWeixin DefaultWxUserProvider
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class DefaultWxUserProvider implements WxUserProvider<WxUser> {
 
     private WxUserManager wxUserManager;

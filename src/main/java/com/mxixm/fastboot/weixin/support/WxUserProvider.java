@@ -21,6 +21,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+/**
+ * FastBootWeixin WxUserProvider
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public interface WxUserProvider<T> {
 
     T getUser(String userName);

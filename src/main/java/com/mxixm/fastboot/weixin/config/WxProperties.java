@@ -26,6 +26,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxProperties
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:33
+ * @since 0.1.2
+ */
 @ConfigurationProperties(prefix = "wx")
 public class WxProperties implements InitializingBean {
 

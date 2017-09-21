@@ -24,6 +24,13 @@ import com.mxixm.fastboot.weixin.util.CacheMap;
 
 import java.util.Date;
 
+/**
+ * FastBootWeixin WxUserManager
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:47
+ * @since 0.1.2
+ */
 public class WxUserManager {
 
     private final CacheMap<String, WxWebUser> webUserCache = CacheMap.<String, WxWebUser>builder()

@@ -29,6 +29,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxButtonItem
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxButtonItem {
 
     @JsonProperty("sub_button")

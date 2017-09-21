@@ -21,8 +21,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * FastBootWeixin CacheMap
  * 用来存储短暂对象的缓存类，实现Map接口，内部有一个定时器用来清除过期（30秒）的对象。
  * 扩展了两个功能
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
  */
 public class CacheMap<K, V> extends AbstractMap<K, V> {
 

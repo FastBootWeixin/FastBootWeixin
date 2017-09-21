@@ -33,6 +33,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxMessage
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.NONE)
 public class WxMessage {

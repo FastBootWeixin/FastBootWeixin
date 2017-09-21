@@ -34,6 +34,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * FastBootWeixin WxInvokerProxyFactory
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterceptor, BeanClassLoaderAware, FactoryBean<T> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

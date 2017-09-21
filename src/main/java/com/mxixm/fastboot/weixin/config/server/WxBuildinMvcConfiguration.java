@@ -58,6 +58,13 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxBuildinMvcConfiguration
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:33
+ * @since 0.1.2
+ */
 @Configuration
 public class WxBuildinMvcConfiguration implements ImportAware {
 

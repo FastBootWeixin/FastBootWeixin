@@ -29,6 +29,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * FastBootWeixin WxMessageProcesseChain
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxMessageProcesseChain implements WxMessageProcesser<WxMessage> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

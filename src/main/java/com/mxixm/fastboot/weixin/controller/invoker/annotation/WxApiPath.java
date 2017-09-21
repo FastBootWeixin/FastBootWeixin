@@ -19,6 +19,13 @@ package com.mxixm.fastboot.weixin.controller.invoker.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * FastBootWeixin WxApiPath
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

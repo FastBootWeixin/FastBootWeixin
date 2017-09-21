@@ -23,6 +23,13 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
+/**
+ * FastBootWeixin WxNewsMessageProcesser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxNewsMessageProcesser implements WxMessageProcesser<WxMessage.News> {
 
     public WxMessage.News process(WxRequest wxRequest, WxMessage.News wxMessage) {

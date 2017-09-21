@@ -29,6 +29,13 @@ import org.springframework.context.annotation.Configuration;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin WxWebConfiguration
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:33
+ * @since 0.1.2
+ */
 @Configuration
 public class WxWebConfiguration {
 

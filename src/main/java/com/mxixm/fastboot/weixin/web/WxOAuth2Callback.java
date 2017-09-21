@@ -21,7 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * FastBootWeixin WxOAuth2Callback
  * 登录校验通过之后执行一些业务逻辑
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
  */
 public interface WxOAuth2Callback {
 

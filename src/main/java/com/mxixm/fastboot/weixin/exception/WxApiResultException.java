@@ -24,6 +24,13 @@ import org.springframework.util.StringUtils;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 
+/**
+ * FastBootWeixin WxApiResultException
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
+ */
 public class WxApiResultException extends WxApiException {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

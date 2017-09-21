@@ -24,6 +24,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * FastBootWeixin DefaultWxSession
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:43
+ * @since 0.1.2
+ */
 public class DefaultWxSession implements WxSession, Serializable {
 
     private static final long serialVersionUID = 1L;

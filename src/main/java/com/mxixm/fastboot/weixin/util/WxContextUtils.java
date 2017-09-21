@@ -25,6 +25,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 
+/**
+ * FastBootWeixin WxContextUtils
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class WxContextUtils implements ApplicationListener<ApplicationReadyEvent>, Ordered {
 
     private static ConfigurableBeanFactory configurableBeanFactory;

@@ -22,8 +22,13 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxMessageMapping
  * 微信消息请求绑定
  * 暂时不想做pattern匹配
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:28
+ * @since 0.1.2
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

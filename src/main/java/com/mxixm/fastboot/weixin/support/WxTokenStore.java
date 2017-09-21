@@ -17,6 +17,13 @@
 
 package com.mxixm.fastboot.weixin.support;
 
+/**
+ * FastBootWeixin WxTokenStore
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public interface WxTokenStore {
 
     /**

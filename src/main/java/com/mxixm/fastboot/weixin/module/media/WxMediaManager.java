@@ -26,6 +26,13 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * FastBootWeixin WxMediaManager
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:38
+ * @since 0.1.2
+ */
 public class WxMediaManager {
 
     private WxApiInvokeSpi wxApiInvokeSpi;

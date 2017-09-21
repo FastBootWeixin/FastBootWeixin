@@ -21,6 +21,13 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
+/**
+ * FastBootWeixin WxCommonMessageProcesser
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxCommonMessageProcesser implements WxMessageProcesser<WxMessage> {
 
     public WxMessage process(WxRequest wxRequest, WxMessage wxMessage) {

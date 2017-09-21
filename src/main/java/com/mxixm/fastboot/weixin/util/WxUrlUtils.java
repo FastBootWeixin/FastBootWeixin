@@ -21,6 +21,13 @@ import org.springframework.util.StringUtils;
 
 import java.net.URI;
 
+/**
+ * FastBootWeixin WxUrlUtils
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public abstract class WxUrlUtils {
 
     public static String mediaUrl(String requestUrl, String url) {

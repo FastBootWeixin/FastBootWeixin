@@ -26,6 +26,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * FastBootWeixin WxRedirectUtils
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class WxRedirectUtils {
 
     public static final String BASE_REDIRECT = "br:";

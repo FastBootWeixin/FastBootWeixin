@@ -27,6 +27,13 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 
+/**
+ * FastBootWeixin WxHttpInputMessageConverter
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 public class WxHttpInputMessageConverter extends AbstractHttpMessageConverter<HttpInputMessage> {
 
     public WxHttpInputMessageConverter() {

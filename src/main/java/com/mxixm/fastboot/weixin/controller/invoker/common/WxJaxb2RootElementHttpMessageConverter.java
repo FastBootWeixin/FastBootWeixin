@@ -28,6 +28,13 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin WxJaxb2RootElementHttpMessageConverter
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 public class WxJaxb2RootElementHttpMessageConverter extends Jaxb2RootElementHttpMessageConverter {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

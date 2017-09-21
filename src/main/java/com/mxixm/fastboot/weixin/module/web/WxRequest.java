@@ -42,6 +42,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxRequest
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:44
+ * @since 0.1.2
+ */
 public class WxRequest {
 
     private static Jaxb2RootElementHttpMessageConverter xmlConverter = new Jaxb2RootElementHttpMessageConverter();

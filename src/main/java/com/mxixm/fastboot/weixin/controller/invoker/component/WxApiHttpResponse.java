@@ -29,6 +29,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 
+/**
+ * FastBootWeixin WxApiHttpResponse
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
+ */
 public final class WxApiHttpResponse extends AbstractClientHttpResponse {
 
     private static final int WX_API_ERROR_CODE_END = 15;

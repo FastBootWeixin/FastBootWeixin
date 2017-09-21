@@ -25,8 +25,14 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * FastBootWeixin WxCategoryCondition
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public final class WxCategoryCondition extends AbstractWxEnumCondition<Wx.Category> {
-
 
     public WxCategoryCondition(Wx.Category... types) {
         super(types);

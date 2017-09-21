@@ -31,8 +31,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 
 /**
+ * FastBootWeixin WxOAuth2Interceptor
  * 微信oauth2的interceptor
  * 如果重定向的url中有参数，微信也会原封不动的把这些参数加上，再把自己的参数往后面加，所以我觉得state应该没什么卵用了，自己拼参数就足够了
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2.
  */
 public class WxOAuth2Interceptor implements HandlerInterceptor {
 

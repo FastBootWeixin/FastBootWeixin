@@ -25,8 +25,14 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * FastBootWeixin WxMessageTypeCondition
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public final class WxMessageTypeCondition extends AbstractWxEnumCondition<WxMessage.Type> {
-
 
     public WxMessageTypeCondition(WxMessage.Type... types) {
         super(types);

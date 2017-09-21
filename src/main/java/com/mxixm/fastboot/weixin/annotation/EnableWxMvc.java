@@ -31,7 +31,12 @@ import org.springframework.context.annotation.PropertySource;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin EnableWxMvc
  * PropertySource注解不能放在ConfigurationProperties注解上，否则这个注解只对当前类有效，不会写入环境中
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:27
+ * @since 0.1.2
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

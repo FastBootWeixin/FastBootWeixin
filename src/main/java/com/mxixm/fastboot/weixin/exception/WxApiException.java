@@ -17,6 +17,13 @@
 
 package com.mxixm.fastboot.weixin.exception;
 
+/**
+ * FastBootWeixin WxApiException
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
+ */
 public class WxApiException extends WxException {
 
     public WxApiException(String message) {

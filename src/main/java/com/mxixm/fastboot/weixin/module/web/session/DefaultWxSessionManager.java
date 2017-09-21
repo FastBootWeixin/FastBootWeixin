@@ -25,6 +25,13 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin DefaultWxSessionManager
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:44
+ * @since 0.1.2
+ */
 public class DefaultWxSessionManager implements WxSessionManager, InitializingBean {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

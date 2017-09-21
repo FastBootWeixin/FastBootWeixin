@@ -20,7 +20,12 @@ package com.mxixm.fastboot.weixin.annotation;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxAsyncMessage
  * 标记异步发送消息
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:28
+ * @since 0.1.2
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

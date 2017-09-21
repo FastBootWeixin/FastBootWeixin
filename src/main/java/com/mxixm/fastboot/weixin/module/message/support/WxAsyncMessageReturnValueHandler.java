@@ -41,6 +41,13 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * FastBootWeixin WxAsyncMessageReturnValueHandler
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValueHandler, InitializingBean, DisposableBean {
 
     // 异步执行器

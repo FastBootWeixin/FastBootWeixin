@@ -23,6 +23,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.util.UriComponentsBuilder;
 
+/**
+ * FastBootWeixin WxApiTypeInfo
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxApiTypeInfo {
 
     private static final String WX_API_PROPERTY_PREFIX = "wx.url";

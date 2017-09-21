@@ -20,6 +20,13 @@ package com.mxixm.fastboot.weixin.module.message;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
+/**
+ * FastBootWeixin WxMessageTemplate
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:40
+ * @since 0.1.2
+ */
 public class WxMessageTemplate {
 
     /**
@@ -44,6 +51,11 @@ public class WxMessageTemplate {
 
     public void sendMessage(WxMessage wxMessage) {
         this.wxApiInvokeSpi.sendMessage(wxMessage);
+    }
+
+    public void sendMessage(String toUserName, WxMessage wxMessage) {
+        wxMessage.setToUserName(toUserName);
+        this.sendMessage(wxMessage);
     }
 
 }

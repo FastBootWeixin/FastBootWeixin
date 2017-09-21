@@ -30,6 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * FastBootWeixin WxApiInvoker
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxApiInvoker {
 
     private RestTemplate restTemplate;

@@ -23,6 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * FastBootWeixin WxBuildinVerify
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxBuildinVerify {
 
     private final String token;

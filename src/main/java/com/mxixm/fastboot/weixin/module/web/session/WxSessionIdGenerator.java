@@ -19,6 +19,13 @@ package com.mxixm.fastboot.weixin.module.web.session;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
+/**
+ * FastBootWeixin WxSessionIdGenerator
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:44
+ * @since 0.1.2
+ */
 public interface WxSessionIdGenerator {
 
     String generate(WxRequest wxRequest);

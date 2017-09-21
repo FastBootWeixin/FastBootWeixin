@@ -23,6 +23,13 @@ import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 
+/**
+ * FastBootWeixin WxBeans
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:30
+ * @since 0.1.2
+ */
 public class WxBeans {
 
     public static final String WX_API_INVOKER_NAME = "WxApiInvoker";

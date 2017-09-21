@@ -28,7 +28,12 @@ import java.io.Reader;
 import java.util.Random;
 
 /**
+ * FastBootWeixin WxWebUtils
  * 绑定一些参数
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
  */
 public class WxWebUtils {
 

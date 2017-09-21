@@ -34,6 +34,13 @@ import org.springframework.web.context.ServletContextAware;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 
+/**
+ * FastBootWeixin WxMediaResourceMessageConverter
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverter implements ServletContextAware {
 
     private ServletContext servletContext;

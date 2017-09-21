@@ -17,6 +17,13 @@
 
 package com.mxixm.fastboot.weixin.exception;
 
+/**
+ * FastBootWeixin WxAppException
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
+ */
 public class WxAppException extends WxException {
 
     private final Throwable original;

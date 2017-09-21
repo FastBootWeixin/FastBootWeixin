@@ -25,6 +25,13 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * FastBootWeixin WxButtonTypeCondition
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public final class WxButtonTypeCondition extends AbstractWxEnumCondition<WxButton.Type> {
 
 

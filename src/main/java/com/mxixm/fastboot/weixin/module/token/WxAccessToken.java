@@ -19,6 +19,13 @@ package com.mxixm.fastboot.weixin.module.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * FastBootWeixin WxAccessToken
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:42
+ * @since 0.1.2
+ */
 public class WxAccessToken {
 
     @JsonProperty("access_token")

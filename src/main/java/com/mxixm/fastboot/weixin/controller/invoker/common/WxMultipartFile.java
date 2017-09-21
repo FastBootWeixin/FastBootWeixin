@@ -31,6 +31,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+/**
+ * FastBootWeixin WxMultipartFile
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:34
+ * @since 0.1.2
+ */
 public class WxMultipartFile implements MultipartFile, Serializable {
 
     protected static final Log logger = LogFactory.getLog(WxMultipartFile.class);

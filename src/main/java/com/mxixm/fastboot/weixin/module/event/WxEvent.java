@@ -20,6 +20,13 @@ package com.mxixm.fastboot.weixin.module.event;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
 
+/**
+ * FastBootWeixin WxEvent
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:25
+ * @since 0.1.2
+ */
 public class WxEvent {
 
     public enum Type {

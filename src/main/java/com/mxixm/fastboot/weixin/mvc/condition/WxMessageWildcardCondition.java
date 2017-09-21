@@ -26,8 +26,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * FastBootWeixin WxMessageWildcardCondition
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:45
+ * @since 0.1.2
+ */
 public final class WxMessageWildcardCondition extends AbstractRequestCondition<WxMessageWildcardCondition> {
-
 
     private Collection<String> wildcards;
 

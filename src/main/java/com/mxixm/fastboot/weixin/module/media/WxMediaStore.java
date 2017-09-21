@@ -33,12 +33,18 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * FastBootWeixin WxMediaStore
+ *
  * media存储器，提供媒体文件获取，媒体文件保存，转换文件等功能
  * 数据库使用内嵌数据库，经过一天的maven仓库database embedded选型，暂时决定使用MapDB(200k，其实有700K)或者kahaDB(600k)
  * 还有一个PalDB，这些都不小，真不行了我自己实现一个好了。。。暂时先用现成的
  * MapDB最新版依赖真的太多了，不想用了，先用MapDB的老版本吧
  * <p>
- * 重要！这个store类要优化成callbace方式，且做的易于扩展，现在我自己都有点看不懂这个东西了
+ * 重要！这个store类要优化成callback方式，且做的易于扩展，现在我自己都有点看不懂这个东西了
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
  */
 public class WxMediaStore implements InitializingBean {
 

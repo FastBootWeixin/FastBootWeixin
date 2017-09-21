@@ -22,6 +22,13 @@ import org.apache.commons.logging.LogFactory;
 
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin WxAccessTokenException
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
+ */
 public class WxAccessTokenException extends WxApiResultException {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

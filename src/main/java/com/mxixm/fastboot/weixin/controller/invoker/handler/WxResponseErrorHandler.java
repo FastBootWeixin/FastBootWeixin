@@ -34,7 +34,12 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * FastBootWeixin WxResponseErrorHandler
  * 增加api异常判断
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
  */
 public class WxResponseErrorHandler implements ResponseErrorHandler {
 

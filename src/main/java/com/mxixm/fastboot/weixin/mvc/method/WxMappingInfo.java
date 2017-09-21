@@ -34,6 +34,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxMappingInfo
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

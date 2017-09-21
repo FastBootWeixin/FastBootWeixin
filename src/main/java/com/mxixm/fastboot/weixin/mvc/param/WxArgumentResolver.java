@@ -38,6 +38,13 @@ import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * FastBootWeixin WxArgumentResolver
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:46
+ * @since 0.1.2
+ */
 public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
     // 是否有更好的方式？有空参看源码

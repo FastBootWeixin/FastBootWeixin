@@ -24,9 +24,13 @@ import org.springframework.web.bind.annotation.ValueConstants;
 import java.lang.annotation.*;
 
 /**
+ * FastBootWeixin WxApiRequest
  * 标记一个类为代理调用类
  *
  * @see WxInvokerProxyFactory
+ * @author Guangshan
+ * @date 2017/09/21 23:31
+ * @since 0.1.2
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

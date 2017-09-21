@@ -20,7 +20,12 @@ package com.mxixm.fastboot.weixin.module.web.session;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
+ * FastBootWeixin WxSessionManager
  * 其实只用暴露getWxSession就可以了
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:42
+ * @since 0.1.2
  */
 public interface WxSessionManager {
 

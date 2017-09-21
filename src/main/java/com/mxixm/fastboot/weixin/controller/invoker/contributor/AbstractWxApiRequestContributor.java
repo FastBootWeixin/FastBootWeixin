@@ -29,6 +29,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+/**
+ * FastBootWeixin AbstractWxApiRequestContributor
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:35
+ * @since 0.1.2
+ */
 public abstract class AbstractWxApiRequestContributor<T extends Annotation> implements UriComponentsContributor {
 
     private static final TypeDescriptor STRING_TYPE_DESCRIPTOR = TypeDescriptor.valueOf(String.class);

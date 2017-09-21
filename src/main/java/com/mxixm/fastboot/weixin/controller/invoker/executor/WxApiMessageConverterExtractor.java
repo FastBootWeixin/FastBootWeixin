@@ -32,6 +32,13 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Type;
 import java.util.List;
 
+/**
+ * FastBootWeixin WxApiMessageConverterExtractor
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:36
+ * @since 0.1.2
+ */
 public class WxApiMessageConverterExtractor<T> implements WxResponseExtractor<T> {
 
     private final Type responseType;

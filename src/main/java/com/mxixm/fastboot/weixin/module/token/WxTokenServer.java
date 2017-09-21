@@ -31,6 +31,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
+/**
+ * FastBootWeixin WxTokenServer
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:42
+ * @since 0.1.2
+ */
 public class WxTokenServer {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());

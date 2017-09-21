@@ -20,6 +20,13 @@ package com.mxixm.fastboot.weixin.util;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * FastBootWeixin WildcardUtils
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:47
+ * @since 0.1.2
+ */
 public class WildcardUtils {
 
     //-----------------------------------------------------------------------

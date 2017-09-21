@@ -23,6 +23,13 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * FastBootWeixin WxApiResponseException
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:37
+ * @since 0.1.2
+ */
 public class WxApiResponseException extends WxApiException {
 
     private HttpStatus statusCode;

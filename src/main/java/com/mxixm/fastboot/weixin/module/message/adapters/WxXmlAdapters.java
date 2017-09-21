@@ -23,6 +23,13 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Date;
 
+/**
+ * FastBootWeixin WxXmlAdapters
+ *
+ * @author Guangshan
+ * @date 2017/09/21 23:39
+ * @since 0.1.2
+ */
 public class WxXmlAdapters {
 
     /**
