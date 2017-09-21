@@ -1,13 +1,13 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.1.2.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.alpha%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven----central-0.1.2.rc-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.rc%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
 
 在使用本框架前建议对[微信公众号开发文档](https://mp.weixin.qq.com/wiki)有所了解，不过在不了解公众号文档的情况下使用本框架也能完成一个简单的微信公众号。
 
-> 注意：目前发布的是beta版，可能仍有部分bug，生产环境使用需谨慎。当然也不要不使用哈，欢迎大家提issue和contribute，开源项目需要大家共同来共享，谢谢~
+> 注意：目前发布的是rc版，可能仍有部分bug，生产环境使用需谨慎。当然也不要不使用哈，欢迎大家提issue和contribute，开源项目需要大家共同来共享，谢谢~
 
 ### 一、简单示例：
 
@@ -358,3 +358,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.1.2.beta
 加入apache copyright，全部delombok
+
+#### 0.1.2.rc
+上次加入copyright时不小心把所有文件的头注释删掉了，目前补回一部分，等全部补回后加入微信卡券功能，发布release版本
