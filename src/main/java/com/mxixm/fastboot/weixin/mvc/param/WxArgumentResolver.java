@@ -18,11 +18,13 @@
 package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
+import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
+import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.MethodParameter;
@@ -43,6 +45,8 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
     // 是否有更好的方式？有空参看源码
     private WxUserProvider wxUserProvider;
 
+    private WxUserManager wxUserManager;
+
     /**
      * 从谁发的，也不要了，用一个处理
      */
@@ -58,8 +62,9 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
     @Deprecated
     public static final String WX_TO_USER = "toUser";
 
-    public WxArgumentResolver(WxUserProvider wxUserProvider) {
+    public WxArgumentResolver(WxUserManager wxUserManager, WxUserProvider wxUserProvider) {
         super();
+        this.wxUserManager = wxUserManager;
         this.wxUserProvider = wxUserProvider;
     }
 
@@ -70,6 +75,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
      */
     public WxArgumentResolver(ConfigurableBeanFactory beanFactory) {
         super(beanFactory);
+        this.wxUserManager = beanFactory.getBean(WxUserManager.class);
         this.wxUserProvider = beanFactory.getBean(WxUserProvider.class);
     }
 
@@ -104,6 +110,9 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
         }
         if (parameter.getParameterType() == WxRequest.Body.class) {
             return wxRequest.getBody();
+        }
+        if (parameter.getParameterType() == WxUser.class) {
+            return wxUserManager.getWxUser(wxRequest.getBody().getFromUserName());
         }
         if (WxSession.class.isAssignableFrom(parameter.getParameterType())) {
             return wxRequest.getWxSession();
