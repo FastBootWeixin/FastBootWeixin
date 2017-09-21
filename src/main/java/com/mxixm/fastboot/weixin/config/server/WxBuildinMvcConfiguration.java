@@ -33,6 +33,7 @@ import com.mxixm.fastboot.weixin.mvc.annotation.WxMappingHandlerMapping;
 import com.mxixm.fastboot.weixin.mvc.param.WxArgumentResolver;
 import com.mxixm.fastboot.weixin.support.WxUserProvider;
 import com.mxixm.fastboot.weixin.web.WxOAuth2Interceptor;
+import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -162,7 +163,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
             if (beanFactory instanceof ConfigurableBeanFactory) {
                 argumentResolvers.add(new WxArgumentResolver((ConfigurableBeanFactory) beanFactory));
             } else {
-                argumentResolvers.add(new WxArgumentResolver(beanFactory.getBean(WxUserProvider.class)));
+                argumentResolvers.add(new WxArgumentResolver(beanFactory.getBean(WxUserManager.class), beanFactory.getBean(WxUserProvider.class)));
             }
             returnValueHandlers.add(beanFactory.getBean(WxAsyncMessageReturnValueHandler.class));
             argumentResolvers.addAll(requestMappingHandlerAdapter.getArgumentResolvers());

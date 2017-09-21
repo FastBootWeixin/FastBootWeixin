@@ -52,7 +52,8 @@ public class WxApp {
      * 定义微信菜单
      */
     @WxButton(group = WxButton.Group.RIGHT, main = true, name = "右")
-    public void right() {
+    public String right() {
+        return "点击右边菜单";
     }
 
     /**
@@ -76,13 +77,7 @@ public class WxApp {
             name = "点击链接")
     @WxAsyncMessage
     public WxMessage link() {
-        return WxMessage.News.builder()
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com/")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://qipei.mxixm.com/vendor/")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://smc24f.natappfree.cc/vendor/82")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a0e54054e2fb7c0&redirect_uri=http://smc24f.natappfree.cc/vendor/82&response_type=code&scope=snsapi_base&state#wechat_redirect")
-                .build();
+        return WxMessage.Text.builder().content("点击了菜单链接").build();
     }
 
     /**
@@ -95,8 +90,6 @@ public class WxApp {
     public WxMessage news() {
         return WxMessage.News.builder()
                 .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com/")
-                .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://qipei.mxixm.com/vendor/")
                 .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://smc24f.natappfree.cc/vendor/82")
                 .addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a0e54054e2fb7c0&redirect_uri=http://smc24f.natappfree.cc/vendor/82&response_type=code&scope=snsapi_base&state#wechat_redirect")
                 .build();
@@ -136,16 +129,9 @@ public class WxApp {
      * @return dummy
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
-    public WxMessage message(WxSession wxSession, String content) {
+    public String message(WxSession wxSession, String content) {
         wxSession.setAttribute("last", content);
-        return WxMessage.News.builder()
-                .addItem(WxMessage.News.Item.builder().title(content).description("随便一点")
-                        .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
-                        .url("http://baidu.com").build())
-                .addItem(WxMessage.News.Item.builder().title("第二条").description("随便二点")
-                        .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
-                        .url("http://baidu.com").build())
-                .build();
+        return "收到文本内容为" + content;
     }
 
     /**

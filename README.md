@@ -3,9 +3,11 @@
 [![Maven Central](https://img.shields.io/badge/maven--central-0.1.2.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.alpha%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-#### 本框架基于SpringBoot实现，使用简单快捷，可以快速的完成一个微信公众号
+#### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
 
 在使用本框架前建议对[微信公众号开发文档](https://mp.weixin.qq.com/wiki)有所了解，不过在不了解公众号文档的情况下使用本框架也能完成一个简单的微信公众号。
+
+> 注意：目前发布的是beta版，可能仍有部分bug，生产环境使用需谨慎。当然也不要不使用哈，欢迎大家提issue和contribute，开源项目需要大家共同来共享，谢谢~
 
 ### 一、简单示例：
 
@@ -185,8 +187,17 @@ public class WxApp {
 
 在测试公众号的接口配置信息中填写在第三步中生成的域名，token使用配置文件中的token，保存后，如果不出意外应该会验证成功。如有问题请及时反馈。
 
+### 二、示例图解
 
-### 二、示例说明
+#### 菜单示例
+
+![菜单示例](assets/button-simple.jpg)
+
+#### 消息示例
+
+![消息示例](assets/message-simple.jpg)
+
+### 三、示例说明
 
 上面的示例在启动后，请关注自己的公众号，此时公众号的菜单应该是有两个主菜单：左、右，同时左有两个子菜单：文本消息、点击链接。
 
@@ -200,7 +211,7 @@ public class WxApp {
 
 当有用户退订公众号时，会在System.out中打印用户昵称 + "退订了公众号"
 
-### 三、示例讲解
+### 四、示例讲解
 
 注解@WxApplication用于声明该应用为微信application，并使用SpringApplication启动。若已有SpringBoot环境，请在你的@SpringApplication类上加入注解@EnableWxMvc，效果一样。可以看源码。
 
@@ -229,7 +240,7 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 注解@WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")与上面相同，不同的是wildcard通配符，该通配符支持对消息内容做通配，覆盖该通配逻辑的会进入下面的执行逻辑。
 
-### 四、功能支持
+### 五、功能支持
 
 #### 1. Spring Boot风格的启动方式
 
@@ -310,13 +321,13 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 附加功能：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
 
-### 五、相关链接
+### 六、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)
 2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
 3. [OSChina仓库](https://git.oschina.net/kingshine/FastBootWeixin)
 
 
-### 六、暂时不支持的功能
+### 七、暂时不支持的功能
 #### 1. 自定义客服回复消息
 之后可以加入支持，使用注解定义消息客服，类似于@RabbitListener的方式
 #### 2. 消息加解密
@@ -329,7 +340,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 如支付等
 #### 6. 待优化：WxMediaStore
 
-### 七、更新日志
+### 八、更新日志
 
 #### 0.0.1-SNAPSHOT
 初始版本
