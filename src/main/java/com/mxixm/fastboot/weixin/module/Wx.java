@@ -17,10 +17,10 @@
 package com.mxixm.fastboot.weixin.module;
 
 /**
- * FastBootWeixin Wx
+ * FastBootWeixin Wx 微信常量类
  *
  * @author Guangshan
- * @date 2017/09/21 23:44
+ * @date 2017/8/5 21:34
  * @since 0.1.2
  */
 public class Wx {

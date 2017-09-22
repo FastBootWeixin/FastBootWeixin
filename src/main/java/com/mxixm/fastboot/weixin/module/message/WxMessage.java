@@ -34,9 +34,24 @@ import java.util.List;
 
 /**
  * FastBootWeixin WxMessage
+ 
+ * 所有消息都是通过Msg推送的
+ * 坑啊，主动发消息竟然是json格式
+ * 真是尴尬，不仅格式不同，结构也不同，坑爹。。。
+ * 特别是text消息，json的在text结构下，xml在顶级
  *
+ * 注解@JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
+ * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
+ * https://github.com/FasterXML/jackson-databind/issues/512
+ * FastBootWeixin  WxMessage
+ * <p>
+ * 加入WxMessageTemplate用于发送消息
+ * WxMessageConverter用于转换消息（把文件转换为media_id等）
+ * 注解@JsonUnwrapped @XmlElementWrapper这两个对于XML和JSON完全相反的功能，两个都只提供了一个。。。
+ * https://stackoverflow.com/questions/16202583/xmlelementwrapper-for-unwrapped-collections
+ * https://github.com/FasterXML/jackson-databind/issues/512
  * @author Guangshan
- * @date 2017/09/21 23:39
+ * @date 2017/8/2 23:21
  * @since 0.1.2
  */
 @XmlRootElement(name = "xml")

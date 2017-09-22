@@ -24,9 +24,11 @@ import java.util.stream.Stream;
 
 /**
  * FastBootWeixin WxBuildinVerify
+ * 可以优化成内置的方式
+ * 之后可以改造为endPoint方式
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/7/16 23:37
  * @since 0.1.2
  */
 public class WxBuildinVerify {

@@ -27,7 +27,7 @@ import java.util.List;
  * FastBootWeixin WxUser
  *
  * @author Guangshan
- * @date 2017/09/21 23:42
+ * @date 2017/8/5 22:29
  * @since 0.1.2
  */
 public class WxUser {

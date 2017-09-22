@@ -23,7 +23,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  * FastBootWeixin WxMessageTemplate
  *
  * @author Guangshan
- * @date 2017/09/21 23:40
+ * @date 2017/8/20 20:20
  * @since 0.1.2
  */
 public class WxMessageTemplate {

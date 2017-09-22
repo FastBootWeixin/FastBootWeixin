@@ -25,9 +25,10 @@ import java.time.Instant;
 
 /**
  * FastBootWeixin WxAccessTokenManager
+ * 暂时没有定时任务，懒获取
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/7/23 18:26
  * @since 0.1.2
  */
 public class WxAccessTokenManager implements InitializingBean {

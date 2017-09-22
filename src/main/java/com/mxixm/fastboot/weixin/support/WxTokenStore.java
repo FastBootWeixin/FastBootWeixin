@@ -18,9 +18,10 @@ package com.mxixm.fastboot.weixin.support;
 
 /**
  * FastBootWeixin WxTokenStore
+ * 注意考虑分布式存储，或许需要加一个lock，因为获取之后上一个会失效，所以不能完全交给setToken方法自己加锁
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/7/23 17:08
  * @since 0.1.2
  */
 public interface WxTokenStore {

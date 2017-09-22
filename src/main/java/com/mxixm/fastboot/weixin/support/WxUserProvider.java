@@ -22,9 +22,11 @@ import java.util.Arrays;
 
 /**
  * FastBootWeixin WxUserProvider
+ * 用户提供器接口
+ * 关于fromUser和toUser可以再考虑考虑
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/8/5 21:50
  * @since 0.1.2
  */
 public interface WxUserProvider<T> {

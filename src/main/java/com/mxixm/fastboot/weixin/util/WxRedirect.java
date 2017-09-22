@@ -20,7 +20,7 @@ package com.mxixm.fastboot.weixin.util;
  * FastBootWeixin WxRedirect
  *
  * @author Guangshan
- * @date 2017/09/22 0:01
+ * @date 2017/8/23 23:38
  * @since 0.1.2
  */
 public class WxRedirect {

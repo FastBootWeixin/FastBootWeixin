@@ -20,7 +20,7 @@ package com.mxixm.fastboot.weixin.exception;
  * FastBootWeixin WxApiException
  *
  * @author Guangshan
- * @date 2017/09/21 23:37
+ * @date 2017/8/12 14:48
  * @since 0.1.2
  */
 public class WxApiException extends WxException {

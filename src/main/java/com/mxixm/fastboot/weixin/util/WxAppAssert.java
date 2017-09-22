@@ -22,7 +22,7 @@ import com.mxixm.fastboot.weixin.exception.WxAppException;
  * FastBootWeixin WxAppAssert
  *
  * @author Guangshan
- * @date 2017/09/21 23:58
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
 public abstract class WxAppAssert {

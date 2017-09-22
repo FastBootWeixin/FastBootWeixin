@@ -28,7 +28,7 @@ import org.springframework.core.Ordered;
  * FastBootWeixin WxContextUtils
  *
  * @author Guangshan
- * @date 2017/09/21 23:59
+ * @date 2017/8/11 21:03
  * @since 0.1.2
  */
 public class WxContextUtils implements ApplicationListener<ApplicationReadyEvent>, Ordered {

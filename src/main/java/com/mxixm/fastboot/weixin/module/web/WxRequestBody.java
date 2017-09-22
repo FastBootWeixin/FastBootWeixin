@@ -26,9 +26,10 @@ import java.util.stream.Collectors;
 
 /**
  * FastBootWeixin WxRequestBody
+ * 整理成请求体，是WxRequest.Body的转换
  *
  * @author Guangshan
- * @date 2017/09/21 23:44
+ * @date 2017/9/2 23:41
  * @since 0.1.2
  */
 public class WxRequestBody {

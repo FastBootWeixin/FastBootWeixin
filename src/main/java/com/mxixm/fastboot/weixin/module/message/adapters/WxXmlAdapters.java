@@ -26,7 +26,7 @@ import java.util.Date;
  * FastBootWeixin WxXmlAdapters
  *
  * @author Guangshan
- * @date 2017/09/21 23:39
+ * @date 2017/8/5 23:43
  * @since 0.1.2
  */
 public class WxXmlAdapters {

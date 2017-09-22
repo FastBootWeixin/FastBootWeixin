@@ -26,7 +26,7 @@ import com.mxixm.fastboot.weixin.web.WxUserManager;
  * FastBootWeixin WxBeans
  *
  * @author Guangshan
- * @date 2017/09/21 23:30
+ * @date 2017/07/23 17:08
  * @since 0.1.2
  */
 public class WxBeans {

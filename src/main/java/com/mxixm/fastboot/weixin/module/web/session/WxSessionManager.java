@@ -23,7 +23,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  * 其实只用暴露getWxSession就可以了
  *
  * @author Guangshan
- * @date 2017/09/21 23:42
+ * @date 2017/9/2 22:44
  * @since 0.1.2
  */
 public interface WxSessionManager {

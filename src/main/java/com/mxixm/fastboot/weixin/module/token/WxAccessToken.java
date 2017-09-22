@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * FastBootWeixin WxAccessToken
  *
  * @author Guangshan
- * @date 2017/09/21 23:42
+ * @date 2017/7/23 17:45
  * @since 0.1.2
  */
 public class WxAccessToken {

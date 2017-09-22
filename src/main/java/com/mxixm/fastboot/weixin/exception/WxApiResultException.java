@@ -25,9 +25,10 @@ import java.util.Arrays;
 
 /**
  * FastBootWeixin WxApiResultException
+ * https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433747234
  *
  * @author Guangshan
- * @date 2017/09/21 23:37
+ * @date 2017/7/23 23:38
  * @since 0.1.2
  */
 public class WxApiResultException extends WxApiException {

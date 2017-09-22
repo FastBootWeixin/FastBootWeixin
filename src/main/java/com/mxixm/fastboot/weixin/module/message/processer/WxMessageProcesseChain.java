@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * FastBootWeixin WxMessageProcesseChain
  *
  * @author Guangshan
- * @date 2017/09/21 23:39
+ * @date 2017/08/20 23:39
  * @since 0.1.2
  */
 public class WxMessageProcesseChain implements WxMessageProcesser<WxMessage> {

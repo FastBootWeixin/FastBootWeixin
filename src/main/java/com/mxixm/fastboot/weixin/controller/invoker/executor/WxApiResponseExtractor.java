@@ -31,9 +31,10 @@ import java.util.Map;
 
 /**
  * FastBootWeixin WxApiResponseExtractor
+ * todo 有必要把所有用到的集合考虑是否换成线程安全的
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/8/13 11:14
  * @since 0.1.2
  */
 public class WxApiResponseExtractor {

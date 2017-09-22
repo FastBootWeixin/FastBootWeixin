@@ -35,7 +35,7 @@ import java.util.List;
  * FastBootWeixin WxApiMessageConverterExtractor
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/8/13 10:58
  * @since 0.1.2
  */
 public class WxApiMessageConverterExtractor<T> implements WxResponseExtractor<T> {

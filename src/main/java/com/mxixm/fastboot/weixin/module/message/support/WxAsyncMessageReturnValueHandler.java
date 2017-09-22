@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * FastBootWeixin WxAsyncMessageReturnValueHandler
  *
  * @author Guangshan
- * @date 2017/09/21 23:39
+ * @date 2017/8/20 22:53
  * @since 0.1.2
  */
 public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValueHandler, InitializingBean, DisposableBean {

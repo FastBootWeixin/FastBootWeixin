@@ -27,6 +27,9 @@ import java.util.List;
 
 /**
  * FastBootWeixin WxProperties
+ * 总的配置类
+ * Spring的统一用法是注入configuration的类，然后只在这个类中使用，所有属性都用set或者构造方法设置进去
+ * 而不是像我的用法一样，直接整个属性放进去了，之后可以尝试这样去重构
  *
  * @author Guangshan
  * @date 2017/09/21 23:33

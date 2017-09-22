@@ -31,7 +31,7 @@ import java.util.Map;
  * FastBootWeixin WxApiPathContributor
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/08/10 22:15
  * @since 0.1.2
  */
 public class WxApiPathContributor extends AbstractWxApiRequestContributor<WxApiPath>

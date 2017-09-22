@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * FastBootWeixin WxController
  *
  * @author Guangshan
- * @date 2017/09/21 23:30
+ * @date 2017/08/12 22:51
  * @since 0.1.2
  */
 @Target({ElementType.TYPE})

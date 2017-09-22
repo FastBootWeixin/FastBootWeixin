@@ -34,7 +34,7 @@ import java.io.Serializable;
  * FastBootWeixin WxMultipartFile
  *
  * @author Guangshan
- * @date 2017/09/21 23:34
+ * @date 2017/08/23 22:31
  * @since 0.1.2
  */
 public class WxMultipartFile implements MultipartFile, Serializable {

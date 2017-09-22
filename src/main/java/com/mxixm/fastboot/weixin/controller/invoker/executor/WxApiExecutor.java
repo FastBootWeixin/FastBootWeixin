@@ -48,9 +48,10 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * FastBootWeixin WxApiExecutor
+ * 注意拦截调用异常，如果是token过期，重新获取token并重试
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/07/23 17:14
  * @since 0.1.2
  */
 public class WxApiExecutor {

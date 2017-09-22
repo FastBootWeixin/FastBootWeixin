@@ -27,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
  * FastBootWeixin CryptUtils
  *
  * @author Guangshan
- * @date 2017/09/21 23:47
+ * @date 2017/7/16 23:37
  * @since 0.1.2
  */
 public abstract class CryptUtils {

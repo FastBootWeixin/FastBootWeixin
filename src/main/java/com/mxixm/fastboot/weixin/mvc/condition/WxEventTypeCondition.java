@@ -28,7 +28,7 @@ import java.util.Set;
  * FastBootWeixin WxEventTypeCondition
  *
  * @author Guangshan
- * @date 2017/09/21 23:45
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
 public final class WxEventTypeCondition extends AbstractWxEnumCondition<WxEvent.Type> {

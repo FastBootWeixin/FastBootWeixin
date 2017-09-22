@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 扩展了两个功能
  *
  * @author Guangshan
- * @date 2017/09/21 23:45
+ * @date 2017/8/5 21:50
  * @since 0.1.2
  */
 public class CacheMap<K, V> extends AbstractMap<K, V> {

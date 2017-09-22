@@ -27,7 +27,7 @@ import java.util.*;
  * FastBootWeixin AbstractWxEnumCondition
  *
  * @author Guangshan
- * @date 2017/09/21 23:45
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
 public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends AbstractRequestCondition<AbstractWxEnumCondition<T>> {

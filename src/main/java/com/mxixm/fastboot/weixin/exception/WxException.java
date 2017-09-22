@@ -20,7 +20,7 @@ package com.mxixm.fastboot.weixin.exception;
  * FastBootWeixin WxException
  *
  * @author Guangshan
- * @date 2017/09/21 23:38
+ * @date 2017/7/23 23:38
  * @since 0.1.2
  */
 public class WxException extends RuntimeException {

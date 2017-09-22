@@ -35,9 +35,10 @@ import java.io.IOException;
 
 /**
  * FastBootWeixin WxMediaResourceMessageConverter
+ * 覆盖默认的ResourceHttpMessageConverter，因为默认的支持不完善
  *
  * @author Guangshan
- * @date 2017/09/21 23:34
+ * @date 2017/08/23 22:31
  * @since 0.1.2
  */
 public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverter implements ServletContextAware {

@@ -21,9 +21,11 @@ import java.util.Stack;
 
 /**
  * FastBootWeixin WildcardUtils
+ * 通配符匹配
+ * copy from filenameUtils
  *
  * @author Guangshan
- * @date 2017/09/21 23:47
+ * @date 2017/8/21 22:47
  * @since 0.1.2
  */
 public class WildcardUtils {

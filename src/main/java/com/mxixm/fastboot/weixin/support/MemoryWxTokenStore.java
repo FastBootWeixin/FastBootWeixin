@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * FastBootWeixin MemoryWxTokenStore
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/7/23 17:08
  * @since 0.1.2
  */
 public class MemoryWxTokenStore implements WxTokenStore {

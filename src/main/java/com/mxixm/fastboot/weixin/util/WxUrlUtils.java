@@ -24,7 +24,7 @@ import java.net.URI;
  * FastBootWeixin WxUrlUtils
  *
  * @author Guangshan
- * @date 2017/09/22 0:01
+ * @date 2017/8/20 23:56
  * @since 0.1.2
  */
 public abstract class WxUrlUtils {

@@ -37,7 +37,7 @@ import java.util.List;
  * FastBootWeixin WxMappingInfo
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
 public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {

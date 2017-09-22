@@ -49,7 +49,7 @@ import java.util.stream.IntStream;
  * FastBootWeixin WxApiMethodInfo
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/8/11 20:53
  * @since 0.1.2
  */
 public class WxApiMethodInfo {

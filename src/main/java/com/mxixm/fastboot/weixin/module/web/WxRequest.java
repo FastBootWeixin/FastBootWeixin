@@ -45,7 +45,7 @@ import java.util.List;
  * FastBootWeixin WxRequest
  *
  * @author Guangshan
- * @date 2017/09/21 23:44
+ * @date 2017/9/2 22:44
  * @since 0.1.2
  */
 public class WxRequest {

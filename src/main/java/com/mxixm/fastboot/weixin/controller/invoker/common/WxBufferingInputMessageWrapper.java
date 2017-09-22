@@ -27,9 +27,10 @@ import java.io.InputStream;
 
 /**
  * FastBootWeixin WxBufferingInputMessageWrapper
+ * 数据全部放入buffer
  *
  * @author Guangshan
- * @date 2017/09/21 23:34
+ * @date 2017/08/13 10:53
  * @since 0.1.2
  */
 public final class WxBufferingInputMessageWrapper implements HttpInputMessage, Closeable {

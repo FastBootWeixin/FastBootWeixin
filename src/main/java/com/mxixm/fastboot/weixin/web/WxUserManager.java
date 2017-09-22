@@ -27,7 +27,7 @@ import java.util.Date;
  * FastBootWeixin WxUserManager
  *
  * @author Guangshan
- * @date 2017/09/22 0:02
+ * @date 2017/8/22 23:34
  * @since 0.1.2
  */
 public class WxUserManager {

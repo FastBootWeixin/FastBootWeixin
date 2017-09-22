@@ -46,7 +46,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  * FastBootWeixin WxMediaResource
  *
  * @author Guangshan
- * @date 2017/09/21 23:38
+ * @date 2017/8/12 21:05
  * @since 0.1.2
  */
 public class WxMediaResource extends AbstractResource {

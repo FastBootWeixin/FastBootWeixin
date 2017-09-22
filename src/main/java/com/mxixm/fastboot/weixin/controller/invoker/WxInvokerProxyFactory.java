@@ -37,7 +37,7 @@ import java.util.Map;
  * FastBootWeixin WxInvokerProxyFactory
  *
  * @author Guangshan
- * @date 2017/09/21 23:36
+ * @date 2017/8/11 21:01
  * @since 0.1.2
  */
 public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterceptor, BeanClassLoaderAware, FactoryBean<T> {

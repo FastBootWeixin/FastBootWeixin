@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
  * FastBootWeixin DefaultWxSession
  *
  * @author Guangshan
- * @date 2017/09/21 23:43
+ * @date 2017/9/3 16:42
  * @since 0.1.2
  */
 public class DefaultWxSession implements WxSession, Serializable {

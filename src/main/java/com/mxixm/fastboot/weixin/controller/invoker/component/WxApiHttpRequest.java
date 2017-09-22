@@ -27,9 +27,10 @@ import java.net.URI;
 
 /**
  * FastBootWeixin WxApiHttpRequest
+ * 包装ClientHttpRequest，用于生成包装过的ClientHttpResponse
  *
  * @author Guangshan
- * @date 2017/09/21 23:35
+ * @date 2017/08/23 22:31
  * @since 0.1.2
  */
 public final class WxApiHttpRequest implements ClientHttpRequest {

@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
  * FastBootWeixin WxRedirectUtils
  *
  * @author Guangshan
- * @date 2017/09/22 0:01
+ * @date 2017/8/23 23:43
  * @since 0.1.2
  */
 public class WxRedirectUtils {

@@ -22,7 +22,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  * FastBootWeixin DefaultWxSessionIdGenerator
  *
  * @author Guangshan
- * @date 2017/09/21 23:43
+ * @date 2017/9/3 16:42
  * @since 0.1.2
  */
 public class DefaultWxSessionIdGenerator implements WxSessionIdGenerator {

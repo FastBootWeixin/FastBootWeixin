@@ -23,7 +23,7 @@ import com.mxixm.fastboot.weixin.web.WxUserManager;
  * FastBootWeixin DefaultWxUserProvider
  *
  * @author Guangshan
- * @date 2017/09/21 23:46
+ * @date 2017/8/5 21:54
  * @since 0.1.2
  */
 public class DefaultWxUserProvider implements WxUserProvider<WxUser> {

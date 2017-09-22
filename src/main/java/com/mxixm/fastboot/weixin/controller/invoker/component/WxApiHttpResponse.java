@@ -30,9 +30,10 @@ import java.io.PushbackInputStream;
 
 /**
  * FastBootWeixin WxApiHttpResponse
+ * 包装AbstractClientHttpResponse，包装InputStream为pushbackInputStream，用于取前几个字符
  *
  * @author Guangshan
- * @date 2017/09/21 23:35
+ * @date 2017/08/23 22:31
  * @since 0.1.2
  */
 public final class WxApiHttpResponse extends AbstractClientHttpResponse {

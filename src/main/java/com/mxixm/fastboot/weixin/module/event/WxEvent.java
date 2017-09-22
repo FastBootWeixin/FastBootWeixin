@@ -23,7 +23,7 @@ import com.mxixm.fastboot.weixin.module.Wx;
  * FastBootWeixin WxEvent
  *
  * @author Guangshan
- * @date 2017/09/21 23:25
+ * @date 2017/7/23 23:38
  * @since 0.1.2
  */
 public class WxEvent {

@@ -26,7 +26,7 @@ import java.util.Arrays;
  * FastBootWeixin WxMessageProcesser
  *
  * @author Guangshan
- * @date 2017/09/21 23:42
+ * @date 2017/8/20 22:24
  * @since 0.1.2
  */
 public interface WxMessageProcesser<T extends WxMessage> {

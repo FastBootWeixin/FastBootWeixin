@@ -32,7 +32,7 @@ import java.util.Map;
  * FastBootWeixin WxApiParamContributor
  *
  * @author Guangshan
- * @date 2017/09/21 23:35
+ * @date 2017/08/10 22:15
  * @since 0.1.2
  */
 public class WxApiParamContributor extends AbstractWxApiRequestContributor<WxApiParam> {

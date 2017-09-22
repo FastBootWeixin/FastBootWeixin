@@ -29,7 +29,7 @@ import java.io.IOException;
  * FastBootWeixin WxMediaManager
  *
  * @author Guangshan
- * @date 2017/09/21 23:38
+ * @date 2017/8/12 21:05
  * @since 0.1.2
  */
 public class WxMediaManager {
