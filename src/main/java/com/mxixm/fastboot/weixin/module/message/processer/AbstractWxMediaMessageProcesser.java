@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.message.processer;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
@@ -42,7 +43,7 @@ public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> imple
         this.wxMediaManager = wxMediaManager;
     }
 
-    protected WxMessage.MediaBody processBody(WxRequest wxRequest, WxMessage.MediaBody body) {
+    protected WxMessageBody.Media processBody(WxRequest wxRequest, WxMessageBody.Media body) {
         if (body.getMediaId() == null) {
             // 优先使用path
             if (body.getMediaPath() != null) {

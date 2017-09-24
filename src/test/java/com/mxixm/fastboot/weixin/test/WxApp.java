@@ -17,13 +17,22 @@
 package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
+import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * FastBootWeixin WxApp
@@ -35,6 +44,9 @@ import org.springframework.boot.SpringApplication;
 @WxApplication
 @WxController
 public class WxApp {
+
+    @Autowired
+    WxApiInvokeSpi wxApiInvokeSpi;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -62,8 +74,8 @@ public class WxApp {
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIRST,
             name = "文本消息")
-    public String leftFirst(WxRequest wxRequest, WxUser wxUser) {
-        return "测试文本消息";
+    public WxMessage leftFirst(WxRequest wxRequest, WxUser wxUser) {
+        return WxMessage.Text.builder().content("测试文本消息").build();
     }
 
     /**
@@ -145,4 +157,29 @@ public class WxApp {
         boolean match = text.getContent().equals(content);
         return "收到消息内容为" + content + "!结果匹配！" + match;
     }
+
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "群发*")
+    @WxAsyncMessage
+    public WxMessage groupMessage(String content) {
+        String tagId = content.substring("群发".length());
+        return WxMessage.Text.builder().content("pKS9_xJ6hvk4uLPOsHNPmnVRw0vE").toGroup(Integer.parseInt(tagId)).build();
+    }
+
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
+    public List<WxMessage> cardMessage(String content) {
+        Integer tagId = Integer.parseInt(content.substring("卡券".length()));
+        WxTagUser.UserList userList = wxApiInvokeSpi.listUserByTag(WxTagUser.listUser(tagId));
+        return userList.getOpenIdList().stream().flatMap(u -> {
+            List<WxMessage> l = new ArrayList();
+            l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
+            l.add(WxMessage.WxCard.builder().cardId("pKS9_xPsM7ZCw7BW1U2lRRN-J2Qg").toUser(u).build());
+            return l.stream();
+        }).collect(Collectors.toList());
+    }
+
+    @RequestMapping("card")
+    public Object test() {
+        return wxApiInvokeSpi.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY));
+    }
+
 }

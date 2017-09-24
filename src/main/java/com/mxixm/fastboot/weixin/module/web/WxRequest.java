@@ -408,6 +408,12 @@ public class WxRequest {
         @XmlElement(name = "MsgId")
         private Long msgId;
 
+        /**
+         * 模板消息推送结果
+         */
+        @XmlElement(name = "Status")
+        private String status;
+
         public String getToUserName() {
             return this.toUserName;
         }
@@ -530,6 +536,14 @@ public class WxRequest {
 
         public Long getMsgId() {
             return this.msgId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
 
         public void setToUserName(String toUserName) {
@@ -866,7 +880,7 @@ public class WxRequest {
         }
 
         public String toString() {
-            return "com.mxixm.fastboot.weixin.module.web.WxRequest.Body(toUserName=" + this.getToUserName() + ", fromUserName=" + this.getFromUserName() + ", createTime=" + this.getCreateTime() + ", messageType=" + this.getMessageType() + ", category=" + this.getCategory() + ", eventType=" + this.getEventType() + ", buttonType=" + this.getButtonType() + ", eventKey=" + this.getEventKey() + ", menuId=" + this.getMenuId() + ", scanCodeInfo=" + this.getScanCodeInfo() + ", sendPicsInfo=" + this.getSendPicsInfo() + ", sendLocationInfo=" + this.getSendLocationInfo() + ", content=" + this.getContent() + ", picUrl=" + this.getPicUrl() + ", mediaId=" + this.getMediaId() + ", format=" + this.getFormat() + ", recognition=" + this.getRecognition() + ", thumbMediaId=" + this.getThumbMediaId() + ", locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", url=" + this.getUrl() + ", ticket=" + this.getTicket() + ", latitude=" + this.getLatitude() + ", longitude=" + this.getLongitude() + ", precision=" + this.getPrecision() + ", expiredTime=" + this.getExpiredTime() + ", failTime=" + this.getFailTime() + ", failReason=" + this.getFailReason() + ", msgId=" + this.getMsgId() + ")";
+            return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody(toUser=" + this.getToUserName() + ", fromUser=" + this.getFromUserName() + ", createTime=" + this.getCreateTime() + ", messageType=" + this.getMessageType() + ", category=" + this.getCategory() + ", eventType=" + this.getEventType() + ", buttonType=" + this.getButtonType() + ", eventKey=" + this.getEventKey() + ", menuId=" + this.getMenuId() + ", scanCodeInfo=" + this.getScanCodeInfo() + ", sendPicsInfo=" + this.getSendPicsInfo() + ", sendLocationInfo=" + this.getSendLocationInfo() + ", content=" + this.getContent() + ", picUrl=" + this.getPicUrl() + ", mediaId=" + this.getMediaId() + ", format=" + this.getFormat() + ", recognition=" + this.getRecognition() + ", thumbMediaId=" + this.getThumbMediaId() + ", locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", url=" + this.getUrl() + ", ticket=" + this.getTicket() + ", latitude=" + this.getLatitude() + ", longitude=" + this.getLongitude() + ", precision=" + this.getPrecision() + ", expiredTime=" + this.getExpiredTime() + ", failTime=" + this.getFailTime() + ", failReason=" + this.getFailReason() + ", msgId=" + this.getMsgId() + ")";
         }
 
         /**
@@ -938,7 +952,7 @@ public class WxRequest {
             }
 
             public String toString() {
-                return "com.mxixm.fastboot.weixin.module.web.WxRequest.Body.ScanCodeInfo(scanType=" + this.getScanType() + ", scanResult=" + this.getScanResult() + ")";
+                return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.ScanCodeInfo(scanType=" + this.getScanType() + ", scanResult=" + this.getScanResult() + ")";
             }
         }
 
@@ -1010,7 +1024,7 @@ public class WxRequest {
             }
 
             public String toString() {
-                return "com.mxixm.fastboot.weixin.module.web.WxRequest.Body.SendPicsInfo(count=" + this.getCount() + ", picList=" + this.getPicList() + ")";
+                return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendPicsInfo(count=" + this.getCount() + ", picList=" + this.getPicList() + ")";
             }
 
             @XmlRootElement(name = "item")
@@ -1058,7 +1072,7 @@ public class WxRequest {
                 }
 
                 public String toString() {
-                    return "com.mxixm.fastboot.weixin.module.web.WxRequest.Body.SendPicsInfo.Item(picMd5Sum=" + this.getPicMd5Sum() + ")";
+                    return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendPicsInfo.Item(picMd5Sum=" + this.getPicMd5Sum() + ")";
                 }
             }
         }
@@ -1190,7 +1204,7 @@ public class WxRequest {
             }
 
             public String toString() {
-                return "com.mxixm.fastboot.weixin.module.web.WxRequest.Body.SendLocationInfo(locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", poiname=" + this.getPoiname() + ")";
+                return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendLocationInfo(locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", poiname=" + this.getPoiname() + ")";
             }
         }
 

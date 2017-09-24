@@ -19,6 +19,8 @@ package com.mxixm.fastboot.weixin.module.message;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
+import java.util.Collection;
+
 /**
  * FastBootWeixin WxMessageTemplate
  *
@@ -49,11 +51,34 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxMessage wxMessage) {
-        this.wxApiInvokeSpi.sendMessage(wxMessage);
+        if (wxMessage.filter == null && wxMessage.toUsers == null) {
+            this.wxApiInvokeSpi.sendUserMessage(wxMessage);
+        } else {
+            this.wxApiInvokeSpi.sendGroupMessage(wxMessage);
+        }
     }
 
-    public void sendMessage(String toUserName, WxMessage wxMessage) {
-        wxMessage.setToUserName(toUserName);
+    public void sendMessage(String toUser, WxMessage wxMessage) {
+        wxMessage.setToUser(toUser);
+        this.sendMessage(wxMessage);
+    }
+
+    public void sendGroupMessage(WxMessage wxMessage) {
+        wxMessage.filter = new WxMessage.Filter();
+        wxMessage.toUsers = null;
+        this.sendMessage(wxMessage);
+    }
+
+    public void sendGroupMessage(int tagId, WxMessage wxMessage) {
+        wxMessage.filter = new WxMessage.Filter();
+        wxMessage.filter.tagId = tagId;
+        wxMessage.toUsers = null;
+        this.sendMessage(wxMessage);
+    }
+
+    public void sendGroupMessage(Collection<String> toUsers, WxMessage wxMessage) {
+        wxMessage.toUsers = toUsers;
+        wxMessage.filter = null;
         this.sendMessage(wxMessage);
     }
 

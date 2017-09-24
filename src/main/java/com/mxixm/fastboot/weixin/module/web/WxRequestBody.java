@@ -623,6 +623,38 @@ public class WxRequestBody {
     }
 
     /**
+     * 模板消息相关事件
+     */
+    public static class Template extends Event {
+
+        /**
+         * 模板消息结果：是否要枚举化？
+         */
+        private String status;
+
+        private Long msgId;
+
+        /**
+         * 消息转换
+         */
+        @Override
+        public Template of(WxRequest.Body body) {
+            super.of(body);
+            this.status = body.getStatus();
+            this.msgId = body.getMsgId();
+            return this;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public Long getMsgId() {
+            return msgId;
+        }
+    }
+
+    /**
      * 扫码事件
      */
     public static class Scan extends Event {

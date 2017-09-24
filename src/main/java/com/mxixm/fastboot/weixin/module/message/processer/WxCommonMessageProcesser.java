@@ -20,6 +20,8 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
+import java.util.Date;
+
 /**
  * FastBootWeixin WxCommonMessageProcesser
  *
@@ -34,11 +36,14 @@ public class WxCommonMessageProcesser implements WxMessageProcesser<WxMessage> {
         if (wxMessage == null) {
             return wxMessage;
         }
-        if (wxMessage.getToUserName() == null) {
-            wxMessage.setToUserName(wxRequest.getBody().getFromUserName());
+        if (wxMessage.getToUser() == null) {
+            wxMessage.setToUser(wxRequest.getBody().getFromUserName());
         }
-        if (wxMessage.getFromUserName() == null) {
-            wxMessage.setFromUserName(wxRequest.getBody().getToUserName());
+        if (wxMessage.getFromUser() == null) {
+            wxMessage.setFromUser(wxRequest.getBody().getToUserName());
+        }
+        if (wxMessage.getCreateTime() == null) {
+            wxMessage.setCreateTime(new Date());
         }
         return wxMessage;
     }

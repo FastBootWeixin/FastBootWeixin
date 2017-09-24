@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.module.message.adapters;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Date;
@@ -74,6 +75,22 @@ public class WxXmlAdapters {
         @Override
         public String marshal(WxEvent.Type type) throws Exception {
             return type.name().toUpperCase();
+        }
+    }
+
+    /**
+     * 文本消息体转换器
+     */
+    public static class TextBodyAdaptor extends XmlAdapter<String, WxMessageBody.Text> {
+
+        @Override
+        public WxMessageBody.Text unmarshal(String v) throws Exception {
+            return new WxMessageBody.Text(v);
+        }
+
+        @Override
+        public String marshal(WxMessageBody.Text v) throws Exception {
+            return v.getContent();
         }
     }
 

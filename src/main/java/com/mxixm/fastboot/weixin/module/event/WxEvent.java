@@ -99,6 +99,11 @@ public class WxEvent {
         SCAN_AND_SUBSCRIBE(Wx.Category.EVENT),
 
         /**
+         * 在模版消息发送任务完成后，微信服务器会将是否送达成功作为通知，发送到开发者中心中填写的服务器配置地址中。
+         */
+        TEMPLATESENDJOBFINISH(Wx.Category.EVENT),
+
+        /**
          * 理论上应该拆分个系统Category里面
          * 系统事件：资质认证成功（此时立即获得接口权限）
          */

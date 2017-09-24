@@ -150,10 +150,10 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
     /*
         if (WX_TO_USER.equals(parameter.getParameterName())) {
             // 尝试转换toUser
-            return wxUserProvider.getToUser(wxRequest.getToUserName());
+            return wxUserProvider.getToUser(wxRequest.getToUser());
         } else if (WX_FROM_USER.equals(parameter.getParameterName())) {
             // 尝试转换fromUser
-            return wxUserProvider.getFromUser(wxRequest.getFromUserName());
+            return wxUserProvider.getFromUser(wxRequest.getFromUser());
         }
      */
 

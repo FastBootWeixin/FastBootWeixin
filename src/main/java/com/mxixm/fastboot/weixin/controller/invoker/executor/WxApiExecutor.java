@@ -110,7 +110,7 @@ public class WxApiExecutor {
 
     private Object getObjectBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         MethodParameter methodParameter = wxApiMethodInfo.getMethodParameters().stream()
-                .filter(p -> BeanUtils.isSimpleValueType(p.getParameterType()) || p.hasParameterAnnotation(WxApiBody.class))
+                .filter(p -> !BeanUtils.isSimpleValueType(p.getParameterType()) || p.hasParameterAnnotation(WxApiBody.class))
                 .findFirst().orElse(null);
         if (methodParameter == null) {
             throw new WxAppException("没有可处理的参数");

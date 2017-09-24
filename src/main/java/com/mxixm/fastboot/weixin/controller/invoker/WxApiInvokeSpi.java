@@ -19,10 +19,14 @@ package com.mxixm.fastboot.weixin.controller.invoker;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiBody;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiParam;
+import com.mxixm.fastboot.weixin.module.extend.WxCard;
+import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.user.WxTag;
+import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import org.springframework.core.io.Resource;
 
@@ -103,10 +107,35 @@ public interface WxApiInvokeSpi {
 
     void clearQuota(@WxApiBody String appid);
 
-    void sendMessage(@WxApiBody WxMessage wxMessage);
+    void sendUserMessage(@WxApiBody WxMessage wxMessage);
+
+    void sendGroupMessage(@WxApiBody WxMessage wxMessage);
 
     void setMessageStatus(@WxApiBody WxMessage.Status status);
 
+    WxQrCode.Result createQrCode(WxQrCode wxQrCode);
+
+    WxMediaResource showQrCode(@WxApiParam("ticket") String ticket);
 //    batchGetMedia();
+
+    WxTagUser.UserList listUserByTag(WxTagUser wxTagUser);
+
+    WxTag createTag(WxTag wxTag);
+
+    WxTag.TagList getTags(WxTag wxTag);
+
+    WxTag updateTag(WxTag wxTag);
+
+    void deleteTag(WxTag wxTag);
+
+    void batchTagging(WxTagUser wxTagUser);
+
+    void batchUntagging(WxTagUser wxTagUser);
+
+    WxTagUser.TagIdList listTagByUser(WxTagUser wxTagUser);
+
+    WxCard.CardResult getCards(WxCard.ListSelector listSelector);
+
+    WxCard cardInfo(WxCard.ListSelector listSelector);
 
 }

@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.message.processer;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
@@ -46,7 +47,7 @@ public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxM
         return wxMessage;
     }
 
-    protected WxMessage.Video.Body processVideoBody(WxRequest wxRequest, WxMessage.Video.Body body) {
+    protected WxMessageBody.Video processVideoBody(WxRequest wxRequest, WxMessageBody.Video body) {
         if (body.getThumbMediaId() == null) {
             // 优先使用path
             if (body.getThumbMediaPath() != null) {
