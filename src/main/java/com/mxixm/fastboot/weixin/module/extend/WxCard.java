@@ -18,6 +18,8 @@ package com.mxixm.fastboot.weixin.module.extend;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.mxixm.fastboot.weixin.module.extend.adapters.WxJsonAdapters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,10 @@ public class WxCard {
 
     @JsonProperty("card")
     private Card card;
+
+    public Card getCard() {
+        return card;
+    }
 
     public static class Card {
 
@@ -63,17 +69,42 @@ public class WxCard {
             GENERAL_COUPON
         }
 
+        public Body getBody() {
+            switch (cardType) {
+                case CASH:
+                    return cash;
+                case DISCOUNT:
+                    return discount;
+                case GIFT:
+                    return gift;
+                case GROUPON:
+                    return groupOn;
+                case GENERAL_COUPON:
+                    return groupOn;
+            }
+            return null;
+        }
+
         /**
          * 卡券类型。
          */
         @JsonProperty("card_type")
-        private String cardType;
+        private Type cardType;
 
         @JsonProperty("groupon")
         private GroupOn groupOn;
 
         @JsonProperty("cash")
         private Cash cash;
+
+        @JsonProperty("discount")
+        private Discount discount;
+
+        @JsonProperty("gift")
+        private Gift gift;
+
+        @JsonProperty("general_coupon")
+        private GeneralCoupon generalCoupon;
 
         public static class Body {
 
@@ -86,6 +117,21 @@ public class WxCard {
             @JsonProperty("advanced_info")
             protected AdvancedInfo advancedInfo;
 
+            public BaseInfo getBaseInfo() {
+                return baseInfo;
+            }
+
+            public void setBaseInfo(BaseInfo baseInfo) {
+                this.baseInfo = baseInfo;
+            }
+
+            public AdvancedInfo getAdvancedInfo() {
+                return advancedInfo;
+            }
+
+            public void setAdvancedInfo(AdvancedInfo advancedInfo) {
+                this.advancedInfo = advancedInfo;
+            }
         }
 
         /**
@@ -168,6 +214,13 @@ public class WxCard {
             /**
              * 卡券的商户logo，建议像素为300*300。
              */
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            @JsonProperty("id")
+            private String id;
+
+            /**
+             * 卡券的商户logo，建议像素为300*300。
+             */
             @JsonProperty("logo_url")
             private String logoUrl;
 
@@ -222,6 +275,7 @@ public class WxCard {
             /**
              * 券颜色。按色彩规范标注填写Color010-Color100。
              */
+            @JsonDeserialize(converter = WxJsonAdapters.WxStringColorConverter.class)
             @JsonProperty("color")
             private Color color;
 
@@ -254,6 +308,10 @@ public class WxCard {
 
                 public String getRGB() {
                     return RGB;
+                }
+
+                public static Color of(String RGB) {
+                    return Arrays.stream(Color.values()).filter(c -> c.RGB.equals(RGB)).findFirst().orElse(null);
                 }
             }
 
@@ -541,6 +599,286 @@ public class WxCard {
             // @JsonProperty("source")
             // private String source;
 
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getLogoUrl() {
+                return logoUrl;
+            }
+
+            public void setLogoUrl(String logoUrl) {
+                this.logoUrl = logoUrl;
+            }
+
+            public CodeType getCodeType() {
+                return codeType;
+            }
+
+            public void setCodeType(CodeType codeType) {
+                this.codeType = codeType;
+            }
+
+            public String getBrandName() {
+                return brandName;
+            }
+
+            public void setBrandName(String brandName) {
+                this.brandName = brandName;
+            }
+
+            public String getTitle() {
+                return title;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public Color getColor() {
+                return color;
+            }
+
+            public void setColor(Color color) {
+                this.color = color;
+            }
+
+            public String getNotice() {
+                return notice;
+            }
+
+            public void setNotice(String notice) {
+                this.notice = notice;
+            }
+
+            public String getDescription() {
+                return description;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public DateInfo getDateInfo() {
+                return dateInfo;
+            }
+
+            public void setDateInfo(DateInfo dateInfo) {
+                this.dateInfo = dateInfo;
+            }
+
+            public Sku getSku() {
+                return sku;
+            }
+
+            public void setSku(Sku sku) {
+                this.sku = sku;
+            }
+
+            public Boolean getUseCustomCode() {
+                return useCustomCode;
+            }
+
+            public void setUseCustomCode(Boolean useCustomCode) {
+                this.useCustomCode = useCustomCode;
+            }
+
+            public CodeMode getGetCustomCodeMode() {
+                return getCustomCodeMode;
+            }
+
+            public void setGetCustomCodeMode(CodeMode getCustomCodeMode) {
+                this.getCustomCodeMode = getCustomCodeMode;
+            }
+
+            public String getServicePhone() {
+                return servicePhone;
+            }
+
+            public void setServicePhone(String servicePhone) {
+                this.servicePhone = servicePhone;
+            }
+
+            public Integer getGetLimit() {
+                return getLimit;
+            }
+
+            public void setGetLimit(Integer getLimit) {
+                this.getLimit = getLimit;
+            }
+
+            public Integer getUseLimit() {
+                return useLimit;
+            }
+
+            public void setUseLimit(Integer useLimit) {
+                this.useLimit = useLimit;
+            }
+
+            public Boolean getBindOpenId() {
+                return bindOpenId;
+            }
+
+            public void setBindOpenId(Boolean bindOpenId) {
+                this.bindOpenId = bindOpenId;
+            }
+
+            public Boolean getCanShare() {
+                return canShare;
+            }
+
+            public void setCanShare(Boolean canShare) {
+                this.canShare = canShare;
+            }
+
+            public Boolean getCanGiveFriend() {
+                return canGiveFriend;
+            }
+
+            public void setCanGiveFriend(Boolean canGiveFriend) {
+                this.canGiveFriend = canGiveFriend;
+            }
+
+            public List<Integer> getLocationIdList() {
+                return locationIdList;
+            }
+
+            public void setLocationIdList(List<Integer> locationIdList) {
+                this.locationIdList = locationIdList;
+            }
+
+            public Boolean getUseAllLocations() {
+                return useAllLocations;
+            }
+
+            public void setUseAllLocations(Boolean useAllLocations) {
+                this.useAllLocations = useAllLocations;
+            }
+
+            public String getCenterTitle() {
+                return centerTitle;
+            }
+
+            public void setCenterTitle(String centerTitle) {
+                this.centerTitle = centerTitle;
+            }
+
+            public String getCenterSubTitle() {
+                return centerSubTitle;
+            }
+
+            public void setCenterSubTitle(String centerSubTitle) {
+                this.centerSubTitle = centerSubTitle;
+            }
+
+            public String getCenterUrl() {
+                return centerUrl;
+            }
+
+            public void setCenterUrl(String centerUrl) {
+                this.centerUrl = centerUrl;
+            }
+
+            public String getCenterAppBrandUserName() {
+                return centerAppBrandUserName;
+            }
+
+            public void setCenterAppBrandUserName(String centerAppBrandUserName) {
+                this.centerAppBrandUserName = centerAppBrandUserName;
+            }
+
+            public String getCenterAppBrandPass() {
+                return centerAppBrandPass;
+            }
+
+            public void setCenterAppBrandPass(String centerAppBrandPass) {
+                this.centerAppBrandPass = centerAppBrandPass;
+            }
+
+            public String getCustomUrlName() {
+                return customUrlName;
+            }
+
+            public void setCustomUrlName(String customUrlName) {
+                this.customUrlName = customUrlName;
+            }
+
+            public String getCustomUrl() {
+                return customUrl;
+            }
+
+            public void setCustomUrl(String customUrl) {
+                this.customUrl = customUrl;
+            }
+
+            public String getCustomUrlSubTitle() {
+                return customUrlSubTitle;
+            }
+
+            public void setCustomUrlSubTitle(String customUrlSubTitle) {
+                this.customUrlSubTitle = customUrlSubTitle;
+            }
+
+            public String getCustomAppBrandUserName() {
+                return customAppBrandUserName;
+            }
+
+            public void setCustomAppBrandUserName(String customAppBrandUserName) {
+                this.customAppBrandUserName = customAppBrandUserName;
+            }
+
+            public String getCustomAppBrandPass() {
+                return customAppBrandPass;
+            }
+
+            public void setCustomAppBrandPass(String customAppBrandPass) {
+                this.customAppBrandPass = customAppBrandPass;
+            }
+
+            public String getPromotionUrlName() {
+                return promotionUrlName;
+            }
+
+            public void setPromotionUrlName(String promotionUrlName) {
+                this.promotionUrlName = promotionUrlName;
+            }
+
+            public String getPromotionUrl() {
+                return promotionUrl;
+            }
+
+            public void setPromotionUrl(String promotionUrl) {
+                this.promotionUrl = promotionUrl;
+            }
+
+            public String getPromotionUrlSubTitle() {
+                return promotionUrlSubTitle;
+            }
+
+            public void setPromotionUrlSubTitle(String promotionUrlSubTitle) {
+                this.promotionUrlSubTitle = promotionUrlSubTitle;
+            }
+
+            public String getPromotionAppBrandUserName() {
+                return promotionAppBrandUserName;
+            }
+
+            public void setPromotionAppBrandUserName(String promotionAppBrandUserName) {
+                this.promotionAppBrandUserName = promotionAppBrandUserName;
+            }
+
+            public String getPromotionAppBrandPass() {
+                return promotionAppBrandPass;
+            }
+
+            public void setPromotionAppBrandPass(String promotionAppBrandPass) {
+                this.promotionAppBrandPass = promotionAppBrandPass;
+            }
         }
 
         /**
@@ -686,7 +1024,7 @@ public class WxCard {
              * 非必填
              */
             @JsonProperty("time_limit")
-            private String timeLimit;
+            private List<TimeLimit> timeLimits;
 
             public static class TimeLimit {
 
@@ -753,9 +1091,11 @@ public class WxCard {
     public static class WhiteList {
 
         @JsonProperty("openid")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private List<String> openIds;
 
         @JsonProperty("usernames")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private List<String> usernames;
 
         WhiteList(List<String> openIds, List<String> usernames) {

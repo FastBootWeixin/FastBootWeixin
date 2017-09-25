@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.extend;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -67,9 +68,11 @@ public class WxQrCode {
     public static class ActionInfo {
 
         @JsonProperty("scene")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private Scene scene;
 
         @JsonProperty("card")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         private Card card;
 
         public static class Card {
@@ -84,12 +87,14 @@ public class WxQrCode {
              * 场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
              */
             @JsonProperty("scene_id")
+            @JsonInclude(JsonInclude.Include.NON_NULL)
             private Integer sceneId;
 
             /**
              * 场景值ID（字符串形式的ID），字符串类型，长度限制为1到64
              */
             @JsonProperty("scene_str")
+            @JsonInclude(JsonInclude.Include.NON_NULL)
             private String sceneStr;
         }
 

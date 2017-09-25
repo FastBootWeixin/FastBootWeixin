@@ -177,9 +177,17 @@ public class WxApp {
         }).collect(Collectors.toList());
     }
 
+    @RequestMapping("cards")
+    public List<WxCard> cards() {
+        return wxApiInvokeSpi.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
+                .getCardIdList().stream().map(id -> {
+            return wxApiInvokeSpi.cardInfo(WxCard.CardSelector.info(id));
+        }).collect(Collectors.toList());
+    }
+
     @RequestMapping("card")
-    public Object test() {
-        return wxApiInvokeSpi.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY));
+    public WxCard card() {
+        return wxApiInvokeSpi.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
     }
 
 }

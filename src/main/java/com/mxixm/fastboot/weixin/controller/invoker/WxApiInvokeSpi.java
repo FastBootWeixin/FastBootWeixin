@@ -122,7 +122,7 @@ public interface WxApiInvokeSpi {
 
     WxTag createTag(WxTag wxTag);
 
-    WxTag.TagList getTags(WxTag wxTag);
+    WxTag.TagList getTags();
 
     WxTag updateTag(WxTag wxTag);
 
@@ -136,6 +136,6 @@ public interface WxApiInvokeSpi {
 
     WxCard.CardResult getCards(WxCard.ListSelector listSelector);
 
-    WxCard cardInfo(WxCard.ListSelector listSelector);
+    WxCard cardInfo(WxCard.CardSelector cardSelector);
 
 }
