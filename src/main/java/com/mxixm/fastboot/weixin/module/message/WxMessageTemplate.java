@@ -58,6 +58,10 @@ public class WxMessageTemplate {
         }
     }
 
+    public void sendMessage(String toUser, String wxMessageContent) {
+        this.sendMessage(toUser, WxMessage.Text.builder().content(wxMessageContent).build());
+    }
+
     public void sendMessage(String toUser, WxMessage wxMessage) {
         wxMessage.setToUser(toUser);
         this.sendMessage(wxMessage);
