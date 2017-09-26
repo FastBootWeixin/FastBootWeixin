@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.extend;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -66,8 +67,36 @@ public class WxCard {
             /**
              * 优惠券
              */
-            GENERAL_COUPON
+            GENERAL_COUPON,
+
+            /**
+             * 会员卡
+             */
+            MEMBER_CARD,
+            /**
+             * 景点门票
+             */
+            SCENIC_TICKET,
+            /**
+             * 电影票
+             */
+            MOVIE_TICKET,
+            /**
+             * 飞机票
+             */
+            BOARDING_PASS,
+            /**
+             * 会议门票
+             */
+            MEETING_TICKET,
+            /**
+             * 汽车票
+             */
+            BUS_TICKET
         }
+
+        @JsonIgnore
+        private Body body;
 
         public Body getBody() {
             switch (cardType) {
@@ -81,6 +110,8 @@ public class WxCard {
                     return groupOn;
                 case GENERAL_COUPON:
                     return groupOn;
+                case MEMBER_CARD:
+                    return memberCard;
             }
             return null;
         }
@@ -105,6 +136,9 @@ public class WxCard {
 
         @JsonProperty("general_coupon")
         private GeneralCoupon generalCoupon;
+
+        @JsonProperty("member_card")
+        private MemberCard memberCard;
 
         public static class Body {
 
@@ -202,6 +236,13 @@ public class WxCard {
              */
             @JsonProperty("deal_detail")
             private String dealDetail;
+
+        }
+
+        /**
+         * 会员卡
+         */
+        public static class MemberCard extends Body {
 
         }
 
@@ -356,11 +397,16 @@ public class WxCard {
                     /**
                      * 表示固定时长 自领取后按天算。
                      */
-                    DATE_TYPE_FIX_TERM
+                    DATE_TYPE_FIX_TERM,
+
+                    /**
+                     *
+                     */
+                    DATE_TYPE_PERMANENT
                 }
 
                 /**
-                 * ype为DATE_TYPE_FIX_TIME_RANGE时专用，表示起用时间。从1970年1月1日00:00:00至起用时间的秒数，
+                 * type为DATE_TYPE_FIX_TIME_RANGE时专用，表示起用时间。从1970年1月1日00:00:00至起用时间的秒数，
                  * 最终需转换为字符串形态传入。（东八区时间,UTC+8，单位为秒）
                  */
                 @JsonProperty("begin_timestamp")

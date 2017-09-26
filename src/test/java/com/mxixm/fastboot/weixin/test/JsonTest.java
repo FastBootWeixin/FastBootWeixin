@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 
@@ -30,7 +31,67 @@ public class JsonTest {
         Test test = new Test();
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(test));
-        String text = "{\"errcode\":0,\"errmsg\":\"ok\",\"card\":{\"card_type\":\"DISCOUNT\",\"discount\":{\"base_info\":{\"id\":\"pKS9_xMBmNqlcWD-uAkD1pOy09Qw\",\"logo_url\":\"http:\\/\\/mmbiz.qpic.cn\\/mmbiz\\/iaL1LJM1mF9aRKPZJkmG8xXhiaHqkKSVMMWeN3hLut7X7hicFNjakmx ibMLGWpXrEXB33367o7zHN0CwngnQY7zb7g\\/0\",\"code_type\":\"CODE_TYPE_TEXT\",\"brand_name\":\"光闪餐厅\",\"title\":\"666元双人火锅套餐\",\"sub_title\":\"周末狂欢必备\",\"date_info\":{\"type\":\"DATE_TYPE_FIX_TERM\",\"fixed_term\":15,\"fixed_begin_term\":0},\"color\":\"#63b359\",\"notice\":\"使用时向服务员出示此券\",\"service_phone\":\"020-88888888\",\"description\":\"不可与其他优惠同享如需团购券发票，请在消时向商户提出店内均可使用，仅限堂食\",\"location_id_list\":[],\"status\":\"CARD_STATUS_NOT_VERIFY\",\"sku\":{\"quantity\":499999,\"total_quantity\":500000},\"create_time\":1506178445,\"update_time\":1506178445,\"custom_url_name\":\"立即使用\",\"custom_url\":\"http:\\/\\/www.qq.com\",\"custom_url_sub_title\":\"6个汉字tips\",\"promotion_url\":\"http:\\/\\/www.qq.com\",\"promotion_url_name\":\"更多优惠\",\"area_code_list\":[]},\"discount\":30,\"advanced_info\":{\"time_limit\":[],\"text_image_list\":[],\"business_service\":[],\"consume_share_card_list\":[],\"share_friends\":false}}}}";
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        String text = "{\n" +
+                "    \"errcode\": 0,\n" +
+                "    \"errmsg\": \"ok\",\n" +
+                "    \"card\": {\n" +
+                "        \"card_type\": \"MEMBER_CARD\",\n" +
+                "        \"member_card\": {\n" +
+                "            \"base_info\": {\n" +
+                "                \"id\": \"pi1hxwBxNY9mXj7WMYGwUDHt5ZeM\",\n" +
+                "                \"logo_url\": \"http://mmbiz.qpic.cn/mmbiz_jpg/YDfptbsN0Ydm1AQqTsTutyjZiaSj6bT4tHzZS4RFpSk93p62W7mPOZW0g3BsqPrqtc3CP9ibVCCriaCiacTibw3MlGA/0?wx_fmt=jpeg\",\n" +
+                "                \"code_type\": \"CODE_TYPE_TEXT\",\n" +
+                "                \"brand_name\": \"食荳集市CHO-COLLECTOR\",\n" +
+                "                \"title\": \"会员卡\",\n" +
+                "                \"date_info\": {\n" +
+                "                    \"type\": \"DATE_TYPE_PERMANENT\"\n" +
+                "                },\n" +
+                "                \"color\": \"#ee903c\",\n" +
+                "                \"notice\": \"到店请出示会员卡号\",\n" +
+                "                \"description\": \"详情请咨询店内工作人员\\n本店享有最终解释权\",\n" +
+                "                \"location_id_list\": [\n" +
+                "                    481397789,\n" +
+                "                    481397788,\n" +
+                "                    481397791\n" +
+                "                ],\n" +
+                "                \"get_limit\": 1,\n" +
+                "                \"can_share\": false,\n" +
+                "                \"can_give_friend\": false,\n" +
+                "                \"use_custom_code\": false,\n" +
+                "                \"status\": \"CARD_STATUS_VERIFY_OK\",\n" +
+                "                \"sku\": {\n" +
+                "                    \"quantity\": 99999897,\n" +
+                "                    \"total_quantity\": 100000000\n" +
+                "                },\n" +
+                "                \"create_time\": 1505884577,\n" +
+                "                \"update_time\": 1505979627,\n" +
+                "                \"area_code_list\": []\n" +
+                "            },\n" +
+                "            \"supply_bonus\": false,\n" +
+                "            \"bonus_url\": \"https://cvip.meituan.com/point\",\n" +
+                "            \"supply_balance\": false,\n" +
+                "            \"balance_url\": \"https://cvip.meituan.com/deposit\",\n" +
+                "            \"prerogative\": \"会员卡:\\n消费20.0元可获得1积分\\n得到五元代金券1张 \\n凡食荳集市会员可享受所有菜品八五折优惠（不含饮品）\\n\\n\",\n" +
+                "            \"activate_url\": \"\",\n" +
+                "            \"custom_cell1\": {\n" +
+                "                \"name\": \"立即使用\",\n" +
+                "                \"url\": \"https://cvip.meituan.com/member\"\n" +
+                "            },\n" +
+                "            \"auto_activate\": false,\n" +
+                "            \"wx_activate\": true,\n" +
+                "            \"wx_activate_after_submit\": false,\n" +
+                "            \"wx_activate_after_submit_url\": \"\",\n" +
+                "            \"advanced_info\": {\n" +
+                "                \"time_limit\": [],\n" +
+                "                \"text_image_list\": [],\n" +
+                "                \"business_service\": [],\n" +
+                "                \"consume_share_card_list\": [],\n" +
+                "                \"share_friends\": false\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
         WxCard wxCard = objectMapper.readValue(text, WxCard.class);
         System.out.println(wxCard);
 
