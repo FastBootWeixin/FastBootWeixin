@@ -21,4 +21,4 @@
  * @date 2017/9/24 15:53
  * @since 这个包里面的是失败的消息重构。。。不舍得删，先留着
  */
-package com.mxixm.fastboot.weixin.module.message.failed;
+package com.mxixm.fastboot.weixin.test.failed;

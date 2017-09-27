@@ -62,11 +62,11 @@ public class WxMediaStore implements InitializingBean {
      */
     private HTreeMap<String, String> urlDb;
 
-    private String defaultFilePath = "~/weixin/media/file/";
+    private String defaultFilePath = "weixin/media/file/";
 
-    private String defaultTempFilePath = "~/weixin/media/file/temp/";
+    private String defaultTempFilePath = "weixin/media/file/temp/";
 
-    private String defaultDbPath = "~/weixin/media/db/store.db";
+    private String defaultDbPath = "weixin/media/db/store.db";
 
     /**
      * 根据文件查找tempMediaId

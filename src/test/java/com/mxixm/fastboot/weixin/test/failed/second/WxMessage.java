@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.failed;
+package com.mxixm.fastboot.weixin.test.failed.second;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,9 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.invoke.MethodHandles;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * FastBootWeixin WxMessage
@@ -172,10 +170,82 @@ public class WxMessage {
     @JsonProperty("msgtype")
     protected Type messageType;
 
+    /**
+     * 消息的基础字段
+     * 开发者微信号
+     */
+    @XmlElement(name = "ToUserName", required = true)
+    @JsonProperty("touser")
+    protected String toUser;
+
+    /**
+     * 消息的基础字段
+     * 发送方帐号（一个OpenID）
+     */
+    @XmlElement(name = "FromUserName", required = true)
+    @JsonIgnore
+    protected String fromUser;
+
+    /**
+     * 消息的基础字段
+     * 消息创建时间 （整型）
+     */
+    @XmlJavaTypeAdapter(WxXmlAdapters.CreateTimeAdaptor.class)
+    @XmlElement(name = "CreateTime", required = true)
+    @JsonIgnore
+    protected Date createTime;
+
     protected WxMessageBody body;
 
-    public WxMessage.Type getMessageType() {
-        return this.messageType;
+    @JsonProperty("touser")
+    protected Collection<String> toUsers;
+
+    @JsonProperty("filter")
+    protected Filter filter;
+
+    /**
+     * 群发的filter结构
+     */
+    static class Filter {
+
+        @JsonProperty("isToAll")
+        protected boolean isToAll = true;
+
+        @JsonProperty("tag_id")
+        protected Integer tagId;
+
+    }
+
+    public String getToUser() {
+        return toUser;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
+    }
+
+    public String getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
     WxMessage(Type messageType) {
@@ -212,13 +282,112 @@ public class WxMessage {
             return new WxMessage(messageType, body);
         }
 
+        public UserMessageBuilder toUser() {
+            return new UserMessageBuilder(this);
+        }
+
+        public GroupMessageBuilder toGroup() {
+            return new GroupMessageBuilder(this);
+        }
+
+        public UserMessageBuilder toUser(String user) {
+            return new UserMessageBuilder(this).toUserName(user);
+        }
+
+        public GroupMessageBuilder toGroup(int tagId) {
+            return new GroupMessageBuilder(this).toTag(tagId);
+        }
+
+        public GroupMessageBuilder toGroup(Collection<String> userList) {
+            return new GroupMessageBuilder(this).toUsers(userList);
+        }
+
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Builder(messageType=" + this.messageType + ")";
         }
     }
 
+    public static class UserMessageBuilder {
+
+        protected Builder builder;
+        protected String toUserName;
+        protected String fromUserName;
+        protected Date createTime;
+
+        UserMessageBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        public UserMessageBuilder toUserName(String toUserName) {
+            this.toUserName = toUserName;
+            return this;
+        }
+
+        public UserMessageBuilder fromUserName(String fromUserName) {
+            this.fromUserName = fromUserName;
+            return this;
+        }
+
+        public UserMessageBuilder createTime(Date createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public WxMessage build() {
+            WxMessage wxMessage = builder.build();
+            wxMessage.fromUser = fromUserName;
+            wxMessage.toUser = toUserName;
+            wxMessage.createTime = createTime == null ? new Date() : createTime;
+            return wxMessage;
+        }
+
+    }
+
+    public static class GroupMessageBuilder {
+
+        protected Builder builder;
+        protected Collection<String> toUsers = new HashSet<>();
+        protected Filter filter = new Filter();
+
+        GroupMessageBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        public GroupMessageBuilder toTag(int tagId) {
+            filter.isToAll = false;
+            filter.tagId = tagId;
+            return this;
+        }
+
+        public GroupMessageBuilder toUsers(Collection<String> userList) {
+            this.toUsers = userList;
+            return this;
+        }
+
+        public GroupMessageBuilder addUser(String user) {
+            this.toUsers.add(user);
+            return this;
+        }
+
+        public GroupMessageBuilder addUsers(Collection<String> users) {
+            this.toUsers.addAll(users);
+            return this;
+        }
+
+        public WxMessage build() {
+            WxMessage wxMessage = builder.build();
+            if (toUsers.isEmpty()) {
+                wxMessage.filter = filter;
+            } else {
+                wxMessage.toUsers = toUsers;
+            }
+            return wxMessage;
+        }
+
+    }
+
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Text extends WxMessage {
 
         @XmlElement(name = "Content")
@@ -296,6 +465,7 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Image extends WxMessage {
 
         @XmlElement(name = "Image", required = true)
@@ -336,6 +506,7 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Voice extends WxMessage {
 
         @XmlElement(name = "Voice", required = true)
@@ -376,6 +547,7 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Video extends WxMessage {
 
         @XmlElement(name = "Video")
@@ -451,6 +623,7 @@ public class WxMessage {
     }
 
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Music extends WxMessage {
 
         @XmlElement(name = "Music")
@@ -468,7 +641,6 @@ public class WxMessage {
         public WxMessageBody.Music getBody() {
             return this.body;
         }
-
 
         public static Builder builder() {
             Builder builder = new Builder();
@@ -542,6 +714,7 @@ public class WxMessage {
      * 图文消息（点击跳转到外链）
      */
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class News extends WxMessage {
 
         /**
@@ -656,14 +829,23 @@ public class WxMessage {
      * 发送图文消息（点击跳转到图文消息页面）
      */
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class MpNews extends WxMessage {
 
         @XmlElement(name = "Mpnews", required = true)
         @JsonProperty("mpnews")
         protected WxMessageBody.MpNews body;
 
-        MpNews(Type messageType, WxMessageBody.MpNews body) {
+
+        /**
+         * 图文消息被判定为转载时，是否继续群发。1为继续群发（转载），0为停止群发。该参数默认为0。
+         */
+        @JsonProperty("send_ignore_reprint")
+        protected int sendIgnoreReprint;
+
+        MpNews(Type messageType, int sendIgnoreReprint, WxMessageBody.MpNews body) {
             super(messageType);
+            this.sendIgnoreReprint = sendIgnoreReprint;
             this.body = body;
         }
 
@@ -684,6 +866,8 @@ public class WxMessage {
 
             protected String mediaId;
 
+            protected boolean sendIgnoreReprint;
+
             Builder() {
             }
 
@@ -692,8 +876,13 @@ public class WxMessage {
                 return this;
             }
 
+            public Builder sendIgnoreReprint(boolean sendIgnoreReprint) {
+                this.sendIgnoreReprint = sendIgnoreReprint;
+                return this;
+            }
+
             public MpNews build() {
-                return new MpNews(messageType, new WxMessageBody.MpNews(mediaId));
+                return new MpNews(messageType, sendIgnoreReprint ? 1 : 0, new WxMessageBody.MpNews(mediaId));
             }
 
             public String toString() {
@@ -706,6 +895,7 @@ public class WxMessage {
      * 发送卡券
      */
     @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class WxCard extends WxMessage {
 
         @XmlElement(name = "WxCard", required = true)

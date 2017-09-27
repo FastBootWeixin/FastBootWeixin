@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message;
+package com.mxixm.fastboot.weixin.test.failed.first;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.message.adapters.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * FastBootWeixin WxMessage
@@ -53,7 +57,7 @@ import java.util.*;
  */
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.NONE)
-public class WxMessage<T extends WxMessageBody> {
+public class WxMessage {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -168,78 +172,44 @@ public class WxMessage<T extends WxMessageBody> {
     @JsonProperty("msgtype")
     protected Type messageType;
 
-    public Type getMessageType() {
-        return messageType;
-    }
+    protected WxMessageBody body;
 
-    protected void setMessageType(Type messageType) {
-        this.messageType = messageType;
-    }
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected T body;
-
-    protected void setBody(T wxMessageBody) {
-        this.body = wxMessageBody;
-    }
-
-    public T getBody() {
-        return this.body;
+    public WxMessage.Type getMessageType() {
+        return this.messageType;
     }
 
     WxMessage(Type messageType) {
-        this.setMessageType(messageType);
+        this.messageType = messageType;
     }
 
-    WxMessage(Type messageType, T body) {
-        this.setMessageType(messageType);
-        this.setBody(body);
+    WxMessage(Type messageType, WxMessageBody body) {
+        this.messageType = messageType;
+        this.body = body;
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder<B extends Builder, M extends WxMessageBody> {
-
+    public static class Builder<T extends Builder> {
         protected Type messageType;
-        protected M body;
+        protected WxMessageBody body;
 
         Builder() {
         }
 
-        protected B msgType(Type msgType) {
+        protected T msgType(Type msgType) {
             this.messageType = msgType;
-            return (B) this;
+            return (T) this;
         }
 
-        protected B body(M body) {
+        protected T body(WxMessageBody body) {
             this.body = body;
-            return (B) this;
+            return (T) this;
         }
 
         public WxMessage build() {
             return new WxMessage(messageType, body);
-        }
-
-        public WxUserMessage.UserMessageBuilder toUser() {
-            return new WxUserMessage.UserMessageBuilder(this);
-        }
-
-        public WxGroupMessage.GroupMessageBuilder toGroup() {
-            return new WxGroupMessage.GroupMessageBuilder(this);
-        }
-
-        public WxUserMessage.UserMessageBuilder toUser(String user) {
-            return new WxUserMessage.UserMessageBuilder(this).toUserName(user);
-        }
-
-        public WxGroupMessage.GroupMessageBuilder toGroup(int tagId) {
-            return new WxGroupMessage.GroupMessageBuilder(this).toTag(tagId);
-        }
-
-        public WxGroupMessage.GroupMessageBuilder toGroup(Collection<String> userList) {
-            return new WxGroupMessage.GroupMessageBuilder(this).toUsers(userList);
         }
 
         public String toString() {
@@ -247,43 +217,58 @@ public class WxMessage<T extends WxMessageBody> {
         }
     }
 
-    public static class TextBuilder extends WxMessage.Builder<Builder, WxMessageBody.Text> {
+    @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Text extends WxMessage {
 
-        private String content;
+        @XmlElement(name = "Content")
+        @XmlJavaTypeAdapter(WxXmlAdapters.TextBodyAdaptor.class)
+        @JsonProperty("text")
+        protected WxMessageBody.Text body;
 
-        TextBuilder() {
-            super();
-            msgType(Type.TEXT);
-            body(new WxMessageBody.Text(content));
+        Text(Type messageType, WxMessageBody.Text body) {
+            super(messageType);
+            this.body = body;
         }
 
-        // 父类如何返回？
-        // 使用泛型搞定了
-        public Builder content(String content) {
-            this.content = content;
-            return this;
+        public Text() {
         }
 
-//        public Text build() {
-//            return new Text(messageType, );
-//        }
-
-        public String toString() {
-            return "com.example.myproject.module.message.WxMessage.Text.Builder(content=" + this.content + ")";
-        }
-    }
-
-    public static class Text {
-
-        public static TextBuilder builder() {
-            TextBuilder builder = new TextBuilder();
+        public static Builder builder() {
+            Builder builder = new Builder();
             builder.msgType(Type.TEXT);
             return builder;
         }
 
+        public WxMessageBody.Text getBody() {
+            return this.body;
+        }
+
+        public static class Builder extends WxMessage.Builder<Builder> {
+
+            private String content;
+
+            Builder() {
+            }
+
+            // 父类如何返回？
+            // 使用泛型搞定了
+            public Builder content(String content) {
+                this.content = content;
+                return this;
+            }
+
+            public Text build() {
+                return new Text(messageType, new WxMessageBody.Text(content));
+            }
+
+            public String toString() {
+                return "com.example.myproject.module.message.WxMessage.Text.Builder(content=" + this.content + ")";
+            }
+        }
     }
 
-    public static class MediaBuilder<T extends MediaBuilder> extends Builder<MediaBuilder, WxMessageBody.Media> {
+    public static class MediaBuilder<T extends MediaBuilder> extends Builder<MediaBuilder> {
 
         protected String mediaId;
 
@@ -311,7 +296,6 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class Image extends WxMessage {
 
         @XmlElement(name = "Image", required = true)
@@ -336,7 +320,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this.body;
         }
 
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public static class Builder extends MediaBuilder<Builder> {
 
             Builder() {
             }
@@ -352,7 +336,6 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class Voice extends WxMessage {
 
         @XmlElement(name = "Voice", required = true)
@@ -377,7 +360,7 @@ public class WxMessage<T extends WxMessageBody> {
             return builder;
         }
 
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public static class Builder extends MediaBuilder<Builder> {
 
             Builder() {
             }
@@ -393,7 +376,6 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class Video extends WxMessage {
 
         @XmlElement(name = "Video")
@@ -422,7 +404,7 @@ public class WxMessage<T extends WxMessageBody> {
          * 上面的body和下面的body风格不一致。。。算了，什么时候强迫症犯了再改好了
          * 加了几个参数之后发现还是下面这种方式好啊。。。
          */
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public static class Builder extends MediaBuilder<Builder> {
 
             protected WxMessageBody.Video body;
 
@@ -469,7 +451,6 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class Music extends WxMessage {
 
         @XmlElement(name = "Music")
@@ -488,13 +469,14 @@ public class WxMessage<T extends WxMessageBody> {
             return this.body;
         }
 
+
         public static Builder builder() {
             Builder builder = new Builder();
             builder.msgType(Type.MUSIC);
             return builder;
         }
 
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public static class Builder extends MediaBuilder<Builder> {
 
             protected WxMessageBody.Music body;
 
@@ -560,7 +542,6 @@ public class WxMessage<T extends WxMessageBody> {
      * 图文消息（点击跳转到外链）
      */
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class News extends WxMessage {
 
         /**
@@ -596,7 +577,7 @@ public class WxMessage<T extends WxMessageBody> {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.News> {
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             // 是叫items呢还是articles呢
             protected LinkedList<WxMessageBody.News.Item> items;
@@ -675,23 +656,14 @@ public class WxMessage<T extends WxMessageBody> {
      * 发送图文消息（点击跳转到图文消息页面）
      */
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class MpNews extends WxMessage {
 
         @XmlElement(name = "Mpnews", required = true)
         @JsonProperty("mpnews")
         protected WxMessageBody.MpNews body;
 
-
-        /**
-         * 图文消息被判定为转载时，是否继续群发。1为继续群发（转载），0为停止群发。该参数默认为0。
-         */
-        @JsonProperty("send_ignore_reprint")
-        protected int sendIgnoreReprint;
-
-        MpNews(Type messageType, int sendIgnoreReprint, WxMessageBody.MpNews body) {
+        MpNews(Type messageType, WxMessageBody.MpNews body) {
             super(messageType);
-            this.sendIgnoreReprint = sendIgnoreReprint;
             this.body = body;
         }
 
@@ -708,11 +680,9 @@ public class WxMessage<T extends WxMessageBody> {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.MpNews> {
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             protected String mediaId;
-
-            protected boolean sendIgnoreReprint;
 
             Builder() {
             }
@@ -722,13 +692,8 @@ public class WxMessage<T extends WxMessageBody> {
                 return this;
             }
 
-            public Builder sendIgnoreReprint(boolean sendIgnoreReprint) {
-                this.sendIgnoreReprint = sendIgnoreReprint;
-                return this;
-            }
-
             public MpNews build() {
-                return new MpNews(messageType, sendIgnoreReprint ? 1 : 0, new WxMessageBody.MpNews(mediaId));
+                return new MpNews(messageType, new WxMessageBody.MpNews(mediaId));
             }
 
             public String toString() {
@@ -741,14 +706,13 @@ public class WxMessage<T extends WxMessageBody> {
      * 发送卡券
      */
     @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
     public static class WxCard extends WxMessage {
 
         @XmlElement(name = "WxCard", required = true)
         @JsonProperty("wxcard")
-        protected WxMessageBody.WxCard body;
+        protected WxMessageBody.Card body;
 
-        WxCard(Type messageType, WxMessageBody.WxCard body) {
+        WxCard(Type messageType, WxMessageBody.Card body) {
             super(messageType);
             this.body = body;
         }
@@ -756,7 +720,7 @@ public class WxMessage<T extends WxMessageBody> {
         public WxCard() {
         }
 
-        public WxMessageBody.WxCard getBody() {
+        public WxMessageBody.Card getBody() {
             return this.body;
         }
 
@@ -766,7 +730,7 @@ public class WxMessage<T extends WxMessageBody> {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.WxCard> {
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             protected String cardId;
 
@@ -779,7 +743,7 @@ public class WxMessage<T extends WxMessageBody> {
             }
 
             public WxCard build() {
-                return new WxCard(messageType, new WxMessageBody.WxCard(cardId));
+                return new WxCard(messageType, new WxMessageBody.Card(cardId));
             }
 
             public String toString() {
@@ -805,7 +769,7 @@ public class WxMessage<T extends WxMessageBody> {
             this.command = command;
         }
 
-        public enum Command {
+        private enum Command {
 
             @JsonProperty("Typing")
             TYPING,
@@ -819,7 +783,7 @@ public class WxMessage<T extends WxMessageBody> {
             return builder;
         }
 
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody> {
+        public static class Builder extends WxMessage.Builder<Builder> {
 
             protected boolean isTyping;
 

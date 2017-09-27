@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.failed;
+package com.mxixm.fastboot.weixin.test.failed.second;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 /**
  * fastboot-weixin  WxMessageBody
+ * 其中@XmlType是干啥的？因为JAXBContext中不能有相同类名，或者说不能有相同的@XmlType的name，默认使用的是类名
+ * 所以这里显式指定一下类型名。
  *
  * @author Guangshan
  * @date 2017/9/24 14:08
@@ -35,6 +34,7 @@ import java.util.List;
 public class WxMessageBody {
 
     @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "TextBody")
     public static class Text extends WxMessageBody {
 
         @JsonProperty("content")
@@ -53,6 +53,8 @@ public class WxMessageBody {
     }
 
 
+    @XmlType(name = "MediaBody")
+    @XmlAccessorType(XmlAccessType.NONE)
     public static class Media extends WxMessageBody {
         @XmlElement(name = "MediaId", required = true)
         @JsonProperty("media_id")
@@ -136,8 +138,11 @@ public class WxMessageBody {
         }
     }
 
+    @XmlType(name = "ImageBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Image extends Media {
+
+        public Image() {}
 
         public Image(String mediaId, String mediaPath, String mediaUrl) {
             super(mediaId, mediaPath, mediaUrl);
@@ -165,6 +170,7 @@ public class WxMessageBody {
         }
     }
 
+    @XmlType(name = "VoiceBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Voice extends Media {
         public Voice(String mediaId, String mediaPath, String mediaUrl) {
@@ -196,6 +202,7 @@ public class WxMessageBody {
         }
     }
 
+    @XmlType(name = "VideoBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Video extends Media {
 
@@ -323,6 +330,7 @@ public class WxMessageBody {
     /**
      * 其实可以再抽象一个thumbMediaBody的。。。我懒
      */
+    @XmlType(name = "MusicBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Music extends Media {
 
@@ -463,6 +471,7 @@ public class WxMessageBody {
     }
 
 
+    @XmlType(name = "NewsBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class News extends WxMessageBody {
 
@@ -575,6 +584,7 @@ public class WxMessageBody {
 
     }
 
+    @XmlType(name = "MpNewsBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class MpNews extends WxMessageBody {
 
@@ -590,6 +600,7 @@ public class WxMessageBody {
         }
     }
 
+    @XmlType(name = "CardBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Card extends WxMessageBody {
 

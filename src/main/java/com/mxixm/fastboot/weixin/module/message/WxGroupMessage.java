@@ -1,0 +1,268 @@
+/*
+ * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mxixm.fastboot.weixin.module.message;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.BeanUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+/**
+ * fastboot-weixin  WxGroupMessage
+ *
+ * @author Guangshan
+ * @date 2017/9/24 14:25
+ * @since 0.1.3
+ */
+public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
+
+    private static Map<Type, Class<? extends WxGroupMessage>> classMap = new HashMap<>();
+
+    static {
+        classMap.put(Type.TEXT, WxGroupMessage.Text.class);
+        classMap.put(Type.IMAGE, WxGroupMessage.Image.class);
+        classMap.put(Type.VOICE, WxGroupMessage.Voice.class);
+        classMap.put(Type.VIDEO, WxGroupMessage.Video.class);
+        classMap.put(Type.MUSIC, WxGroupMessage.Music.class);
+        classMap.put(Type.NEWS, WxGroupMessage.News.class);
+        classMap.put(Type.MPNEWS, WxGroupMessage.MpNews.class);
+        classMap.put(Type.WXCARD, WxGroupMessage.WxCard.class);
+    }
+
+    @JsonProperty("touser")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    protected Collection<String> toUsers;
+
+    @JsonProperty("filter")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    protected Filter filter;
+
+    /**
+     * 群发的filter结构
+     */
+    static class Filter {
+
+        @JsonProperty("isToAll")
+        protected boolean isToAll = true;
+
+        @JsonProperty("tag_id")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        protected Integer tagId;
+
+    }
+
+    public static class GroupMessageBuilder {
+
+        protected Builder builder;
+        protected Collection<String> toUsers = new HashSet<>();
+        protected Filter filter = new Filter();
+
+        GroupMessageBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        public GroupMessageBuilder toTag(int tagId) {
+            filter.isToAll = false;
+            filter.tagId = tagId;
+            return this;
+        }
+
+        public GroupMessageBuilder toUsers(Collection<String> userList) {
+            this.toUsers = userList;
+            return this;
+        }
+
+        public GroupMessageBuilder addUser(String user) {
+            this.toUsers.add(user);
+            return this;
+        }
+
+        public GroupMessageBuilder addUsers(Collection<String> users) {
+            this.toUsers.addAll(users);
+            return this;
+        }
+
+        public WxGroupMessage build() {
+            WxGroupMessage wxGroupMessage;
+            if (classMap.containsKey(builder.messageType)) {
+                wxGroupMessage = BeanUtils.instantiate(classMap.get(builder.messageType));
+            } else {
+                wxGroupMessage = new WxGroupMessage();
+            }
+            wxGroupMessage.setBody(builder.body);
+            if (toUsers.isEmpty()) {
+                wxGroupMessage.filter = filter;
+            } else {
+                wxGroupMessage.toUsers = toUsers;
+            }
+            return wxGroupMessage;
+        }
+
+    }
+
+    public static class Text extends WxGroupMessage<WxMessageBody.Text> {
+
+        @JsonProperty("text")
+        protected WxMessageBody.Text body;
+
+        @Override
+        public WxMessageBody.Text getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.Text body) {
+            this.body = body;
+        }
+    }
+
+    public static class Image extends WxGroupMessage<WxMessageBody.Image> {
+
+        @JsonProperty("image")
+        protected WxMessageBody.Image body;
+
+        @Override
+        public WxMessageBody.Image getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.Image body) {
+            this.body = body;
+        }
+    }
+
+    public static class Voice extends WxGroupMessage<WxMessageBody.Voice> {
+
+        @JsonProperty("voice")
+        protected WxMessageBody.Voice body;
+
+        @Override
+        public WxMessageBody.Voice getBody() {
+            return body;
+        }
+
+        public void setBody(WxMessageBody.Voice body) {
+            this.body = body;
+        }
+    }
+
+    public static class Video extends WxGroupMessage<WxMessageBody.Video> {
+
+        @JsonProperty("video")
+        protected WxMessageBody.Video body;
+
+        @Override
+        public WxMessageBody.Video getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.Video body) {
+            this.body = body;
+        }
+    }
+
+    public static class Music extends WxGroupMessage<WxMessageBody.Music> {
+
+        @JsonProperty("music")
+        protected WxMessageBody.Music body;
+
+        @Override
+        public WxMessageBody.Music getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.Music body) {
+            this.body = body;
+        }
+    }
+
+    /**
+     * 图文消息（点击跳转到外链）
+     */
+    public static class News extends WxGroupMessage<WxMessageBody.News> {
+
+        /**
+         * 图文消息个数，限制为8条以内
+         */
+        @JsonProperty("news")
+        protected WxMessageBody.News body;
+
+        @Override
+        public WxMessageBody.News getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.News body) {
+            this.body = body;
+        }
+    }
+
+    /**
+     * 发送图文消息（点击跳转到图文消息页面）
+     */
+    public static class MpNews extends WxGroupMessage<WxMessageBody.MpNews> {
+
+        @JsonProperty("mpnews")
+        protected WxMessageBody.MpNews body;
+
+
+        /**
+         * 图文消息被判定为转载时，是否继续群发。1为继续群发（转载），0为停止群发。该参数默认为0。
+         */
+        @JsonProperty("send_ignore_reprint")
+        protected int sendIgnoreReprint;
+
+        @Override
+        public WxMessageBody.MpNews getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.MpNews body) {
+            this.body = body;
+            this.sendIgnoreReprint = body.sendIgnoreReprint == null ? 0 : sendIgnoreReprint;
+        }
+    }
+
+    /**
+     * 发送卡券
+     */
+    public static class WxCard extends WxGroupMessage<WxMessageBody.WxCard> {
+
+        @JsonProperty("wxcard")
+        protected WxMessageBody.WxCard body;
+
+        @Override
+        public WxMessageBody.WxCard getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.WxCard body) {
+            this.body = body;
+        }
+    }
+
+}

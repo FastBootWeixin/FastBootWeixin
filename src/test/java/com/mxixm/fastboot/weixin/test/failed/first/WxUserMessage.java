@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.failed;
+package com.mxixm.fastboot.weixin.test.failed.first;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
