@@ -65,7 +65,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
     public WxStringResponseBodyAdvice(WxMessageProcesser wxMessageProcesser) {
         this.wxMessageProcesser = wxMessageProcesser;
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(WxMessage.Text.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(WxUserMessage.Text.class);
             xmlConverter = jaxbContext.createMarshaller();
         } catch (JAXBException e) {
             throw new WxAppException(e);

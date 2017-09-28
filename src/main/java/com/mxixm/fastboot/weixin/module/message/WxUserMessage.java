@@ -158,6 +158,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
             } else {
                 wxUserMessage = new WxUserMessage();
             }
+            wxUserMessage.setMessageType(builder.messageType);
             wxUserMessage.setBody(builder.body);
             wxUserMessage.setToUser(toUser);
             wxUserMessage.setFromUser(fromUser);

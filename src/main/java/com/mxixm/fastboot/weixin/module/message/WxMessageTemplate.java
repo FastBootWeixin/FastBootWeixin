@@ -47,14 +47,6 @@ public class WxMessageTemplate {
         this.wxMessageProcesser = wxMessageProcesser;
     }
 
-    public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
-        this.sendMessage(wxMessageProcesser.process(wxRequest, wxMessage));
-    }
-
-    public void sendMessage(WxRequest wxRequest, String wxMessageContent) {
-        this.sendMessage(wxRequest, WxMessage.Text.builder().content(wxMessageContent).build());
-    }
-
     public void sendMessage(WxMessage wxMessage) {
         if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
             this.wxApiInvokeSpi.sendUserMessage((WxUserMessage) wxMessage);
@@ -65,8 +57,28 @@ public class WxMessageTemplate {
         }
     }
 
+    public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
+        this.sendMessage(wxMessageProcesser.process(wxRequest, wxMessage));
+    }
+
+    public void sendUserMessage(WxRequest wxRequest, WxMessage wxMessage) {
+        this.sendMessage(wxRequest, wxMessage);
+    }
+
+    public void sendMessage(WxRequest wxRequest, String wxMessageContent) {
+        this.sendMessage(wxRequest, WxMessage.Text.builder().content(wxMessageContent).build());
+    }
+
+    public void sendUserMessage(WxRequest wxRequest, String wxMessageContent) {
+        this.sendMessage(wxRequest, wxMessageContent);
+    }
+
     public void sendMessage(String toUser, String wxMessageContent) {
-        this.sendMessage(toUser, WxMessage.Text.builder().content(wxMessageContent).build());
+        this.sendUserMessage(toUser, WxMessage.Text.builder().content(wxMessageContent).build());
+    }
+
+    public void sendUserMessage(String toUser, String wxMessageContent) {
+        this.sendMessage(toUser, wxMessageContent);
     }
 
     public void sendMessage(String toUser, WxMessage wxMessage) {
@@ -75,8 +87,16 @@ public class WxMessageTemplate {
         this.sendMessage(wxMessage);
     }
 
+    public void sendUserMessage(String toUser, WxMessage wxMessage) {
+        this.sendMessage(toUser, wxMessage);
+    }
+
     public void sendGroupMessage(WxMessage wxMessage) {
         this.sendMessage(wxMessage.toGroupMessage());
+    }
+
+    public void sendMessage(int tagId, WxMessage wxMessage) {
+        this.sendGroupMessage(tagId, wxMessage);
     }
 
     public void sendGroupMessage(int tagId, WxMessage wxMessage) {
@@ -85,6 +105,10 @@ public class WxMessageTemplate {
         wxGroupMessage.filter.tagId = tagId;
         wxGroupMessage.toUsers = null;
         this.sendMessage(wxMessage);
+    }
+
+    public void sendMessage(Collection<String> toUsers, WxMessage wxMessage) {
+        this.sendGroupMessage(toUsers, wxMessage);
     }
 
     public void sendGroupMessage(Collection<String> toUsers, WxMessage wxMessage) {
