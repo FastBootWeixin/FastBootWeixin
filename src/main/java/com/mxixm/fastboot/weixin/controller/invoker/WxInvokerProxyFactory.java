@@ -89,6 +89,9 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
     @Override
     public Object invoke(MethodInvocation inv) throws Throwable {
         if (ReflectionUtils.isObjectMethod(inv.getMethod())) {
+            if ("toString".equals(inv.getMethod().getName())) {
+                return methodCache.toString();
+            }
             return ReflectionUtils.invokeMethod(inv.getMethod(), inv.getThis(), inv.getArguments());
         }
         WxApiMethodInfo wxApiMethodInfo = methodCache.get(inv.getMethod());

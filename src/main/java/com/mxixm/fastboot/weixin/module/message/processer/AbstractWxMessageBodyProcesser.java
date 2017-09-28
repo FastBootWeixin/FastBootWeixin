@@ -14,50 +14,38 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer.user;
+package com.mxixm.fastboot.weixin.module.message.processer;
 
-import com.mxixm.fastboot.weixin.module.media.WxMedia;
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
-import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * FastBootWeixin AbstractWxMediaMessageProcesser
+ * FastBootWeixin AbstractWxGroupMediaMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class AbstractWxMediaMessageProcesser<T extends WxUserMessage> implements WxMessageProcesser<T> {
+public abstract class AbstractWxMessageBodyProcesser<T extends WxMessage<B>, B extends WxMessageBody> implements WxMessageProcesser<T> {
 
-    protected WxMediaManager wxMediaManager;
-
-    public AbstractWxMediaMessageProcesser(WxMediaManager wxMediaManager) {
-        this.wxMediaManager = wxMediaManager;
-    }
-
-    protected WxMessageBody.Media processBody(WxRequest wxRequest, WxMessageBody.Media body) {
-        if (body.getMediaId() == null) {
-            // 优先使用path
-            if (body.getMediaPath() != null) {
-                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File(body.getMediaPath()));
-                body.setMediaId(mediaId);
-            } else if (body.getMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), body.getMediaUrl());
-                String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
-                body.setMediaId(mediaId);
-            }
+    @Override
+    public T process(WxRequest wxRequest, T wxMessage) {
+        if (wxMessage == null) {
+            return wxMessage;
         }
-        return body;
+        B body = processBody(wxRequest, wxMessage.getBody());
+        if (wxMessage.getBody() != body) {
+            // TODO: 2017/9/28 返回了不同实例，是否需要替换body？
+        }
+        return wxMessage;
     }
+
+    protected abstract B processBody(WxRequest wxRequest, B body);
 
     public boolean supports(WxRequest wxRequest, T wxMessage) {
         Type type = this.getClass().getGenericSuperclass();

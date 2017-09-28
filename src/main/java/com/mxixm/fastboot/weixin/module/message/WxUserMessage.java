@@ -78,27 +78,27 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
     @JsonIgnore
     protected Date createTime;
 
-    public String getToUser() {
+    protected String getToUser() {
         return this.toUser;
     }
 
-    public String getFromUser() {
+    protected String getFromUser() {
         return this.fromUser;
     }
 
-    public Date getCreateTime() {
+    protected Date getCreateTime() {
         return this.createTime;
     }
 
-    public void setFromUser(String fromUser) {
+    protected void setFromUser(String fromUser) {
         this.fromUser = fromUser;
     }
 
-    public void setToUser(String toUser) {
+    protected void setToUser(String toUser) {
         this.toUser = toUser;
     }
 
-    public void setCreateTime(Date createTime) {
+    protected void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

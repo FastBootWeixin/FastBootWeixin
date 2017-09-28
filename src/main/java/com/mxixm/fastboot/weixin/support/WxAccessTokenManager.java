@@ -64,7 +64,7 @@ public class WxAccessTokenManager implements InitializingBean {
             }
         } else {
             // 加锁失败，直接获取当前token
-            // TODO: 2017/7/23 考虑一个更完善的方案，这个方案可能是由问题的
+            // TODO: 2017/7/23 考虑一个更完善的方案，这个方案可能是有问题的
             // 因为如果此时获取了旧的token，但是如果旧的token失效了，那么此时请求会失败
             // 如果设置了请求token失败时重新获取的策略，很有可能造成线程阻塞。
         }

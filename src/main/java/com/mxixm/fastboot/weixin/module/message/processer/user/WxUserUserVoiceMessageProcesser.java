@@ -14,24 +14,30 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message;
+package com.mxixm.fastboot.weixin.module.message.processer.user;
 
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxCommonMessageProcesser
- * 暂时没有用
+ * FastBootWeixin WxGroupVoiceMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class WxGroupMessageProcesser<T extends WxGroupMessage> implements WxMessageProcesser<T> {
+public class WxUserUserVoiceMessageProcesser extends AbstractWxUserMediaMessageProcesser<WxUserMessage.Voice, WxMessageBody.Voice> {
 
-    public T process(WxRequest wxRequest, T wxMessage) {
-        return processInternal(wxMessage);
+    public WxUserUserVoiceMessageProcesser(WxMediaManager wxMediaManager) {
+        super(wxMediaManager);
     }
 
-    public abstract T processInternal(T wxMessage);
+    @Override
+    protected WxMessageBody.Voice processBody(WxRequest wxRequest, WxMessageBody.Voice body) {
+        super.processBody(wxRequest, body);
+        return body;
+    }
 
 }

@@ -27,9 +27,9 @@ import java.util.Date;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxUserMessageProcesser<T extends WxUserMessage> implements WxMessageProcesser<T> {
+public class WxUserMessageProcesser implements WxMessageProcesser<WxUserMessage> {
 
-    public T process(WxRequest wxRequest, T wxMessage) {
+    public WxUserMessage process(WxRequest wxRequest, WxUserMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
             return wxMessage;

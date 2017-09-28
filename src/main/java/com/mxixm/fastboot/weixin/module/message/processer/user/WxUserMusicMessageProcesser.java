@@ -17,28 +17,27 @@
 package com.mxixm.fastboot.weixin.module.message.processer.user;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxMusicMessageProcesser
+ * FastBootWeixin WxGroupMusicMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxMusicMessageProcesser extends AbstractWxMediaMessageProcesser<WxUserMessage.Music> {
+public class WxUserMusicMessageProcesser extends AbstractWxUserMediaMessageProcesser<WxUserMessage.Music, WxMessageBody.Music> {
 
-    public WxMusicMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxUserMusicMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
-    public WxUserMessage.Music process(WxRequest wxRequest, WxUserMessage.Music wxMessage) {
-        if (wxMessage == null) {
-            return wxMessage;
-        }
-        processBody(wxRequest, wxMessage.getBody());
-        return wxMessage;
+    @Override
+    protected WxMessageBody.Music processBody(WxRequest wxRequest, WxMessageBody.Music body) {
+        super.processBody(wxRequest, body);
+        return body;
     }
 
 }

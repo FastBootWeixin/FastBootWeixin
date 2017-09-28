@@ -26,25 +26,22 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import java.io.File;
 
 /**
- * FastBootWeixin WxVideoMessageProcesser
+ * FastBootWeixin WxGroupVideoMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxUserMessage.Video> {
+public class WxUserVideoMessageProcesser extends AbstractWxUserMediaMessageProcesser<WxUserMessage.Video, WxMessageBody.Video> {
 
-    public WxVideoMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxUserVideoMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
-    public WxUserMessage.Video process(WxRequest wxRequest, WxUserMessage.Video wxMessage) {
-        if (wxMessage == null) {
-            return wxMessage;
-        }
-        processBody(wxRequest, wxMessage.getBody());
-        processVideoBody(wxRequest, wxMessage.getBody());
-        return wxMessage;
+    protected WxMessageBody.Video processBody(WxRequest wxRequest, WxMessageBody.Video body) {
+        super.processBody(wxRequest, body);
+        processVideoBody(wxRequest, body);
+        return body;
     }
 
     protected WxMessageBody.Video processVideoBody(WxRequest wxRequest, WxMessageBody.Video body) {
