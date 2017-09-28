@@ -18,7 +18,10 @@ package com.mxixm.fastboot.weixin.module.message;
 
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 
 /**
@@ -29,6 +32,8 @@ import java.util.Collection;
  * @since 0.1.2
  */
 public class WxMessageTemplate {
+
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     /**
      * 暂时不想加入客服系统，要加入的话可以写个EnableWxCustomer
@@ -51,10 +56,12 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxMessage wxMessage) {
-        if (wxMessage.filter == null && wxMessage.toUsers == null) {
-            this.wxApiInvokeSpi.sendUserMessage(wxMessage);
+        if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
+            this.wxApiInvokeSpi.sendUserMessage((WxUserMessage) wxMessage);
+        } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
+            this.wxApiInvokeSpi.sendGroupMessage((WxGroupMessage) wxMessage);
         } else {
-            this.wxApiInvokeSpi.sendGroupMessage(wxMessage);
+            logger.error("不能处理的消息类型" + wxMessage);
         }
     }
 
@@ -63,26 +70,27 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(String toUser, WxMessage wxMessage) {
-        wxMessage.setToUser(toUser);
+        WxUserMessage wxUserMessage = wxMessage.toUserMessage();
+        wxUserMessage.setToUser(toUser);
         this.sendMessage(wxMessage);
     }
 
     public void sendGroupMessage(WxMessage wxMessage) {
-        wxMessage.filter = new WxMessage.Filter();
-        wxMessage.toUsers = null;
-        this.sendMessage(wxMessage);
+        this.sendMessage(wxMessage.toGroupMessage());
     }
 
     public void sendGroupMessage(int tagId, WxMessage wxMessage) {
-        wxMessage.filter = new WxMessage.Filter();
-        wxMessage.filter.tagId = tagId;
-        wxMessage.toUsers = null;
+        WxGroupMessage wxGroupMessage = wxMessage.toGroupMessage();
+        wxGroupMessage.filter = new WxGroupMessage.Filter();
+        wxGroupMessage.filter.tagId = tagId;
+        wxGroupMessage.toUsers = null;
         this.sendMessage(wxMessage);
     }
 
     public void sendGroupMessage(Collection<String> toUsers, WxMessage wxMessage) {
-        wxMessage.toUsers = toUsers;
-        wxMessage.filter = null;
+        WxGroupMessage wxGroupMessage = wxMessage.toGroupMessage();
+        wxGroupMessage.filter = null;
+        wxGroupMessage.toUsers = toUsers;
         this.sendMessage(wxMessage);
     }
 

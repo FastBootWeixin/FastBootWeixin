@@ -18,9 +18,7 @@ package com.mxixm.fastboot.weixin.module.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.message.adapters.WxXmlAdapters;
-import com.mxixm.fastboot.weixin.module.user.WxUser;
+import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import org.springframework.beans.BeanUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,6 +50,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
         classMap.put(Type.NEWS, WxUserMessage.News.class);
         classMap.put(Type.MPNEWS, WxUserMessage.MpNews.class);
         classMap.put(Type.WXCARD, WxUserMessage.WxCard.class);
+        classMap.put(Type.STATUS, WxUserMessage.Status.class);
     }
 
     /**
@@ -60,7 +59,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
      */
     @XmlElement(name = "ToUserName", required = true)
     @JsonProperty("touser")
-    protected String toUserName;
+    protected String toUser;
 
     /**
      * 消息的基础字段
@@ -68,7 +67,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
      */
     @XmlElement(name = "FromUserName", required = true)
     @JsonIgnore
-    protected String fromUserName;
+    protected String fromUser;
 
     /**
      * 消息的基础字段
@@ -79,24 +78,24 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
     @JsonIgnore
     protected Date createTime;
 
-    public String getToUserName() {
-        return this.toUserName;
+    public String getToUser() {
+        return this.toUser;
     }
 
-    public String getFromUserName() {
-        return this.fromUserName;
+    public String getFromUser() {
+        return this.fromUser;
     }
 
     public Date getCreateTime() {
         return this.createTime;
     }
 
-    public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
     }
 
-    public void setToUserName(String toUserName) {
-        this.toUserName = toUserName;
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
     }
 
     public void setCreateTime(Date createTime) {
@@ -115,10 +114,10 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
         super(messageType, wxMessageBody);
     }
 
-    WxUserMessage(Type messageType, T wxMessageBody, String toUserName, String fromUserName, Date createTime) {
+    WxUserMessage(Type messageType, T wxMessageBody, String toUser, String fromUser, Date createTime) {
         super(messageType, wxMessageBody);
-        this.setToUserName(toUserName);
-        this.setFromUserName(fromUserName);
+        this.setToUser(toUser);
+        this.setFromUser(fromUser);
         this.setCreateTime(createTime);
     }
 
@@ -129,21 +128,21 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
     public static class UserMessageBuilder {
 
         protected Builder builder;
-        protected String toUserName;
-        protected String fromUserName;
+        protected String toUser;
+        protected String fromUser;
         protected Date createTime;
 
         UserMessageBuilder(Builder builder) {
             this.builder = builder;
         }
 
-        public UserMessageBuilder toUserName(String toUserName) {
-            this.toUserName = toUserName;
+        public UserMessageBuilder toUser(String toUser) {
+            this.toUser = toUser;
             return this;
         }
 
-        public UserMessageBuilder fromUserName(String fromUserName) {
-            this.fromUserName = fromUserName;
+        public UserMessageBuilder fromUser(String fromUser) {
+            this.fromUser = fromUser;
             return this;
         }
 
@@ -160,8 +159,8 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
                 wxUserMessage = new WxUserMessage();
             }
             wxUserMessage.setBody(builder.body);
-            wxUserMessage.setToUserName(toUserName);
-            wxUserMessage.setFromUserName(fromUserName);
+            wxUserMessage.setToUser(toUser);
+            wxUserMessage.setFromUser(fromUser);
             wxUserMessage.setCreateTime(createTime);
             return wxUserMessage;
         }
@@ -336,16 +335,19 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
         }
     }
 
-    public static class Status extends WxUserMessage<WxMessageBody> {
+    public static class Status extends WxUserMessage<WxMessageBody.Status> {
         @JsonIgnore
         protected Type messageType;
 
-        @JsonProperty("command")
-        protected WxMessage.Status.Command command;
+        @JsonIgnore
+        protected WxMessageBody.Status body;
 
-        Status(boolean isTyping) {
-            super();
-            this.command = isTyping ? WxMessage.Status.Command.TYPING : WxMessage.Status.Command.CANCEL_TYPING;
+        @JsonProperty("command")
+        protected WxMessageBody.Status.Command command;
+
+        @Override
+        public void setBody(WxMessageBody.Status body) {
+            this.command = body.isTyping ? WxMessageBody.Status.Command.TYPING : WxMessageBody.Status.Command.CANCEL_TYPING;
         }
 
     }

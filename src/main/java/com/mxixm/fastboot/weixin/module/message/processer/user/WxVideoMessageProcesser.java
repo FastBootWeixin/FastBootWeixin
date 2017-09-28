@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processer.user;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
@@ -32,13 +32,13 @@ import java.io.File;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessage.Video> {
+public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxUserMessage.Video> {
 
     public WxVideoMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
-    public WxMessage.Video process(WxRequest wxRequest, WxMessage.Video wxMessage) {
+    public WxUserMessage.Video process(WxRequest wxRequest, WxUserMessage.Video wxMessage) {
         if (wxMessage == null) {
             return wxMessage;
         }

@@ -24,7 +24,9 @@ import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
+import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTag;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
@@ -107,11 +109,11 @@ public interface WxApiInvokeSpi {
 
     void clearQuota(@WxApiBody String appid);
 
-    void sendUserMessage(@WxApiBody WxMessage wxMessage);
+    void sendUserMessage(@WxApiBody WxUserMessage wxMessage);
 
-    void sendGroupMessage(@WxApiBody WxMessage wxMessage);
+    void sendGroupMessage(@WxApiBody WxGroupMessage wxMessage);
 
-    void setMessageStatus(@WxApiBody WxMessage.Status status);
+    void setMessageStatus(@WxApiBody WxUserMessage.Status status);
 
     WxQrCode.Result createQrCode(WxQrCode wxQrCode);
 

@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processer.user;
 
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
-import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 /**
- * FastBootWeixin WxNewsMessageProcesser
+ * FastBootWeixin WxVoiceMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxNewsMessageProcesser implements WxMessageProcesser<WxMessage.News> {
+public class WxVoiceMessageProcesser extends AbstractWxMediaMessageProcesser<WxUserMessage.Voice> {
 
-    public WxMessage.News process(WxRequest wxRequest, WxMessage.News wxMessage) {
+    public WxVoiceMessageProcesser(WxMediaManager wxMediaManager) {
+        super(wxMediaManager);
+    }
+
+    public WxUserMessage.Voice process(WxRequest wxRequest, WxUserMessage.Voice wxMessage) {
         if (wxMessage == null) {
             return wxMessage;
         }
-        wxMessage.getBody().getArticles().stream().forEach(i -> {
-            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), i.getPicUrl()));
-            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestURL().toString(), i.getUrl()));
-        });
+        processBody(wxRequest, wxMessage.getBody());
         return wxMessage;
     }
 

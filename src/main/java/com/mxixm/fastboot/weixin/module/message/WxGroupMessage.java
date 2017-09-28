@@ -58,7 +58,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
     /**
      * 群发的filter结构
      */
-    static class Filter {
+    protected static class Filter {
 
         @JsonProperty("isToAll")
         protected boolean isToAll = true;
@@ -242,7 +242,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
         @Override
         public void setBody(WxMessageBody.MpNews body) {
             this.body = body;
-            this.sendIgnoreReprint = body.sendIgnoreReprint == null ? 0 : sendIgnoreReprint;
+            this.sendIgnoreReprint = body.sendIgnoreReprint ? 1 : 0;
         }
     }
 

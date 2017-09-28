@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxMusicMessageProcesser
+ * FastBootWeixin WxCommonMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxMusicMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessage.Music> {
+public abstract class WxGroupMessageProcesser<T extends WxGroupMessage> implements WxMessageProcesser<T> {
 
-    public WxMusicMessageProcesser(WxMediaManager wxMediaManager) {
-        super(wxMediaManager);
+    public T process(WxRequest wxRequest, T wxMessage) {
+        return processInternal(wxMessage);
     }
 
-    public WxMessage.Music process(WxRequest wxRequest, WxMessage.Music wxMessage) {
-        if (wxMessage == null) {
-            return wxMessage;
-        }
-        processBody(wxRequest, wxMessage.getBody());
-        return wxMessage;
-    }
+    public abstract T processInternal(T wxMessage);
 
 }

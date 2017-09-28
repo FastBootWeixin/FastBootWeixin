@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.module.media;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mxixm.fastboot.weixin.module.message.adapters.WxJsonAdapters;
+import com.mxixm.fastboot.weixin.module.adapters.WxJsonAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

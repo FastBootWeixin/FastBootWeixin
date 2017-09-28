@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.util.Date;
@@ -29,9 +27,9 @@ import java.util.Date;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxCommonMessageProcesser implements WxMessageProcesser<WxMessage> {
+public class WxUserMessageProcesser<T extends WxUserMessage> implements WxMessageProcesser<T> {
 
-    public WxMessage process(WxRequest wxRequest, WxMessage wxMessage) {
+    public T process(WxRequest wxRequest, T wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
             return wxMessage;

@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processer.user;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxVoiceMessageProcesser
+ * FastBootWeixin WxImageMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxVoiceMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessage.Voice> {
+public class WxImageMessageProcesser extends AbstractWxMediaMessageProcesser<WxUserMessage.Image> {
 
-    public WxVoiceMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxImageMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
-    public WxMessage.Voice process(WxRequest wxRequest, WxMessage.Voice wxMessage) {
+    public WxUserMessage.Image process(WxRequest wxRequest, WxUserMessage.Image wxMessage) {
         if (wxMessage == null) {
             return wxMessage;
         }

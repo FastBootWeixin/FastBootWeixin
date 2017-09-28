@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processer.user;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
@@ -35,7 +36,7 @@ import java.lang.reflect.Type;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class AbstractWxMediaMessageProcesser<T extends WxMessage> implements WxMessageProcesser<T> {
+public abstract class AbstractWxMediaMessageProcesser<T extends WxUserMessage> implements WxMessageProcesser<T> {
 
     protected WxMediaManager wxMediaManager;
 

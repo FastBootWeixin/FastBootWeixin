@@ -44,6 +44,7 @@ public @interface WxMessageMapping {
 
     /**
      * 通配符
+     * todo 加入括号pathVaribale，根据非通配符长度计算权重。正则与此相同。
      *
      * @return dummy
      */

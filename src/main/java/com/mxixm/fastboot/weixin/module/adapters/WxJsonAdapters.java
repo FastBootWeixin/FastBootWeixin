@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.adapters;
+package com.mxixm.fastboot.weixin.module.adapters;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.Converter;
+import com.mxixm.fastboot.weixin.module.extend.WxCard;
 
 import java.util.Date;
 
@@ -91,6 +92,31 @@ public class WxJsonAdapters {
         @Override
         public JavaType getOutputType(TypeFactory typeFactory) {
             return typeFactory.constructType(Integer.class);
+        }
+    }
+
+    public static class WxStringColorConverter implements Converter<String, WxCard.Card.BaseInfo.Color> {
+
+        @Override
+        public WxCard.Card.BaseInfo.Color convert(String value) {
+            return WxCard.Card.BaseInfo.Color.of(value);
+        }
+
+        /**
+         * 这个的作用是提供输入类型，JackSon根据输入类型去找Deserializer，找到后执行Deserializer
+         * Deserializer后会把值送给convert
+         *
+         * @param typeFactory
+         * @return dummy
+         */
+        @Override
+        public JavaType getInputType(TypeFactory typeFactory) {
+            return typeFactory.constructType(String.class);
+        }
+
+        @Override
+        public JavaType getOutputType(TypeFactory typeFactory) {
+            return typeFactory.constructType(WxCard.Card.BaseInfo.Color.class);
         }
     }
 

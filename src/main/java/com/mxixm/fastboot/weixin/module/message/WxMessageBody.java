@@ -598,7 +598,7 @@ public class WxMessageBody {
          */
         @JsonIgnore
         @XmlTransient
-        protected Integer sendIgnoreReprint;
+        protected boolean sendIgnoreReprint;
 
         public MpNews(String mediaId) {
             this.mediaId = mediaId;
@@ -626,5 +626,25 @@ public class WxMessageBody {
         public WxCard() {
         }
     }
+
+    /**
+     * 发送状态消息的封装
+     */
+    public static class Status extends WxMessageBody {
+        @JsonIgnore
+        protected boolean isTyping;
+
+        public enum Command {
+
+            @JsonProperty("Typing")
+            TYPING,
+            @JsonProperty("CancelTyping")
+            CANCEL_TYPING
+
+        }
+
+    }
+
+
 
 }

@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.processer.*;
+import com.mxixm.fastboot.weixin.module.message.processer.user.*;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

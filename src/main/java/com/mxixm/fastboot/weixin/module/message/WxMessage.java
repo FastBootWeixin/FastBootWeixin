@@ -16,18 +16,22 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.message.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * FastBootWeixin WxMessage
@@ -139,7 +143,13 @@ public class WxMessage<T extends WxMessageBody> {
          * 发送卡券
          */
         @JsonProperty("wxcard")
-        WXCARD(Intent.SEND, Wx.Category.MESSAGE);
+        WXCARD(Intent.SEND, Wx.Category.MESSAGE),
+
+        /**
+         * 发送写入状态
+         */
+        @JsonProperty("status")
+        STATUS(Intent.SEND, Wx.Category.MESSAGE);
 
         private Intent intent;
 
@@ -156,6 +166,22 @@ public class WxMessage<T extends WxMessageBody> {
 
         public Wx.Category[] getCategories() {
             return categories;
+        }
+    }
+
+    public WxUserMessage toUserMessage() {
+        if (this instanceof WxUserMessage) {
+            return (WxUserMessage) this;
+        } else {
+            return WxMessage.builder().msgType(this.messageType).body(this.body).toUser().build();
+        }
+    }
+
+    public WxGroupMessage toGroupMessage() {
+        if (this instanceof WxGroupMessage) {
+            return (WxGroupMessage) this;
+        } else {
+            return WxMessage.builder().msgType(this.messageType).body(this.body).toGroup().build();
         }
     }
 
@@ -218,8 +244,12 @@ public class WxMessage<T extends WxMessageBody> {
             return (B) this;
         }
 
-        public WxMessage build() {
-            return new WxMessage(messageType, body);
+        /**
+         * 调用默认build返回WxUserMessage
+         * @return
+         */
+        public WxUserMessage build() {
+            return toUser().build();
         }
 
         public WxUserMessage.UserMessageBuilder toUser() {
@@ -231,7 +261,7 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public WxUserMessage.UserMessageBuilder toUser(String user) {
-            return new WxUserMessage.UserMessageBuilder(this).toUserName(user);
+            return new WxUserMessage.UserMessageBuilder(this).toUser(user);
         }
 
         public WxGroupMessage.GroupMessageBuilder toGroup(int tagId) {
@@ -247,43 +277,40 @@ public class WxMessage<T extends WxMessageBody> {
         }
     }
 
-    public static class TextBuilder extends WxMessage.Builder<Builder, WxMessageBody.Text> {
-
-        private String content;
+    public static class TextBuilder extends WxMessage.Builder<TextBuilder, WxMessageBody.Text> {
 
         TextBuilder() {
             super();
             msgType(Type.TEXT);
-            body(new WxMessageBody.Text(content));
+            body(new WxMessageBody.Text());
         }
 
         // 父类如何返回？
         // 使用泛型搞定了
-        public Builder content(String content) {
-            this.content = content;
+        public TextBuilder content(String content) {
+            this.body.content = content;
             return this;
         }
 
-//        public Text build() {
-//            return new Text(messageType, );
-//        }
-
         public String toString() {
-            return "com.example.myproject.module.message.WxMessage.Text.Builder(content=" + this.content + ")";
+            return "com.example.myproject.module.message.WxMessage.Text.Builder(body=" + this.body + ")";
         }
     }
 
     public static class Text {
 
         public static TextBuilder builder() {
-            TextBuilder builder = new TextBuilder();
-            builder.msgType(Type.TEXT);
-            return builder;
+            return textBuilder();
         }
 
     }
 
-    public static class MediaBuilder<T extends MediaBuilder> extends Builder<MediaBuilder, WxMessageBody.Media> {
+    public static TextBuilder textBuilder() {
+        return new TextBuilder();
+    }
+
+    public static class MediaBuilder<B extends MediaBuilder, M extends WxMessageBody.Media>
+            extends Builder<B, M> {
 
         protected String mediaId;
 
@@ -294,551 +321,388 @@ public class WxMessage<T extends WxMessageBody> {
         MediaBuilder() {
         }
 
-        public T mediaId(String mediaId) {
-            this.mediaId = mediaId;
-            return (T) this;
+        public B mediaId(String mediaId) {
+            this.body.mediaId = mediaId;
+            return (B) this;
         }
 
-        public T mediaPath(String mediaPath) {
-            this.mediaPath = mediaPath;
-            return (T) this;
+        public B mediaPath(String mediaPath) {
+            this.body.mediaPath = mediaPath;
+            return (B) this;
         }
 
-        public T mediaUrl(String mediaUrl) {
-            this.mediaUrl = mediaUrl;
-            return (T) this;
+        public B mediaUrl(String mediaUrl) {
+            this.body.mediaUrl = mediaUrl;
+            return (B) this;
+        }
+
+    }
+
+    public static class ImageBuilder extends WxMessage.MediaBuilder<ImageBuilder, WxMessageBody.Image> {
+
+        ImageBuilder() {
+            super();
+            this.msgType(Type.IMAGE);
+            this.body(new WxMessageBody.Image());
+        }
+
+    }
+
+    public static class Image {
+
+        public static ImageBuilder builder() {
+            return imageBuilder();
+        }
+
+    }
+
+    public static ImageBuilder imageBuilder() {
+        return new ImageBuilder();
+    }
+
+
+    public static class VoiceBuilder extends WxMessage.MediaBuilder<VoiceBuilder, WxMessageBody.Voice> {
+
+        VoiceBuilder() {
+            super();
+            this.msgType(Type.VOICE);
+            this.body(new WxMessageBody.Voice());
+        }
+
+    }
+
+    public static class Voice {
+
+        public static VoiceBuilder builder() {
+            return voiceBuilder();
+        }
+
+    }
+
+    public static VoiceBuilder voiceBuilder() {
+        return new VoiceBuilder();
+    }
+
+
+    /**
+     * 上面的body和下面的body风格不一致。。。算了，什么时候强迫症犯了再改好了
+     * 加了几个参数之后发现还是下面这种方式好啊。。。
+     */
+    public static class VideoBuilder extends WxMessage.MediaBuilder<VideoBuilder, WxMessageBody.Video> {
+
+        VideoBuilder() {
+            super();
+            this.msgType(Type.VIDEO);
+            this.body(new WxMessageBody.Video());
+        }
+
+        public VideoBuilder body(String mediaId, String thumbMediaId, String title, String description) {
+            this.body.mediaId = mediaId;
+            this.body.thumbMediaId = thumbMediaId;
+            this.body.title = title;
+            this.body.description = description;
+            return this;
+        }
+
+        public VideoBuilder thumbMediaPath(String thumbMediaPath) {
+            this.body.thumbMediaPath = thumbMediaPath;
+            return this;
+        }
+
+        public VideoBuilder thumbMediaUrl(String thumbMediaUrl) {
+            this.body.thumbMediaUrl = thumbMediaUrl;
+            return this;
+        }
+
+        public VideoBuilder title(String title) {
+            this.body.title = title;
+            return this;
+        }
+
+        public VideoBuilder description(String description) {
+            this.body.description = description;
+            return this;
+        }
+
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
         }
     }
 
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class Image extends WxMessage {
 
-        @XmlElement(name = "Image", required = true)
-        @JsonProperty("image")
-        protected WxMessageBody.Image body;
+    public static class Video {
 
-        Image(Type messageType, WxMessageBody.Image body) {
-            super(messageType);
-            this.body = body;
+        public static VideoBuilder builder() {
+            return videoBuilder();
         }
 
-        public Image() {
+    }
+
+    public static VideoBuilder videoBuilder() {
+        return new VideoBuilder();
+    }
+
+
+    public static class MusicBuilder extends WxMessage.MediaBuilder<MusicBuilder, WxMessageBody.Music> {
+
+        MusicBuilder() {
+            super();
+            this.msgType(Type.MUSIC);
+            this.body(new WxMessageBody.Music());
         }
 
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.IMAGE);
-            return builder;
+        public MusicBuilder body(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
+            this.body.thumbMediaId = thumbMediaId;
+            this.body.title = title;
+            this.body.description = description;
+            this.body.musicUrl = musicUrl;
+            this.body.hqMusicUrl = hqMusicUrl;
+            return this;
         }
 
-        public WxMessageBody.Image getBody() {
-            return this.body;
+        public MusicBuilder thumbMediaId(String thumbMediaId) {
+            this.body.thumbMediaId = thumbMediaId;
+            return this;
         }
 
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public MusicBuilder thumbMediaPath(String thumbMediaPath) {
+            this.body.mediaPath = thumbMediaPath;
+            return this;
+        }
 
-            Builder() {
-            }
+        public MusicBuilder thumbMediaUrl(String thumbMediaUrl) {
+            this.body.mediaUrl = thumbMediaUrl;
+            return this;
+        }
 
-            public Image build() {
-                return new Image(messageType, new WxMessageBody.Image(mediaId, mediaPath, mediaUrl));
-            }
+        public MusicBuilder title(String title) {
+            this.body.title = title;
+            return this;
+        }
 
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.mediaId + ")";
-            }
+        public MusicBuilder description(String description) {
+            this.body.description = description;
+            return this;
+        }
+
+        public MusicBuilder musicUrl(String musicUrl) {
+            this.body.musicUrl = musicUrl;
+            return this;
+        }
+
+        public MusicBuilder hqMusicUrl(String hqMusicUrl) {
+            this.body.hqMusicUrl = hqMusicUrl;
+            return this;
+        }
+
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
         }
     }
 
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class Voice extends WxMessage {
-
-        @XmlElement(name = "Voice", required = true)
-        @JsonProperty("voice")
-        protected WxMessageBody.Voice body;
-
-        Voice(Type messageType, WxMessageBody.Voice body) {
-            super(messageType);
-            this.body = body;
-        }
-
-        public Voice() {
-        }
-
-        public WxMessageBody.Voice getBody() {
-            return this.body;
-        }
-
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.VOICE);
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
-
-            Builder() {
-            }
-
-            public Voice build() {
-                return new Voice(messageType, new WxMessageBody.Voice(mediaId, mediaPath, mediaUrl));
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.mediaId + ")";
-            }
-        }
+    public static MusicBuilder musicBuilder() {
+        return new MusicBuilder();
     }
 
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class Video extends WxMessage {
+    public static class Music {
 
-        @XmlElement(name = "Video")
-        @JsonProperty("video")
-        protected WxMessageBody.Video body;
-
-        Video(Type messageType, WxMessageBody.Video body) {
-            super(messageType);
-            this.body = body;
+        public static MusicBuilder builder() {
+            return musicBuilder();
         }
 
-        public Video() {
-        }
+    }
 
-        public WxMessageBody.Video getBody() {
-            return this.body;
-        }
 
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.VIDEO);
-            return builder;
+    public static class NewsBuilder extends WxMessage.Builder<NewsBuilder, WxMessageBody.News> {
+
+        // 是叫items呢还是articles呢
+        protected LinkedList<WxMessageBody.News.Item> items;
+
+        protected WxMessageBody.News.Item lastItem;
+
+        NewsBuilder() {
+            super();
+            this.msgType(Type.NEWS);
+            this.body(new WxMessageBody.News());
+            items = new LinkedList<>();
         }
 
         /**
-         * 上面的body和下面的body风格不一致。。。算了，什么时候强迫症犯了再改好了
-         * 加了几个参数之后发现还是下面这种方式好啊。。。
+         * 添加主article，就是最上面那个大图
+         *
+         * @param title
+         * @param description
+         * @param picUrl
+         * @param url
+         * @return dummy
          */
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
+        public NewsBuilder firstItem(String title, String description, String picUrl, String url) {
+            this.items.addFirst(new WxMessageBody.News.Item(title, description, picUrl, url));
+            return prepare();
+        }
 
-            protected WxMessageBody.Video body;
+        public NewsBuilder firstItem(WxMessageBody.News.Item item) {
+            this.items.addFirst(item);
+            return prepare();
+        }
 
-            Builder() {
-                body = new WxMessageBody.Video();
+        public NewsBuilder addItem(String title, String description, String picUrl, String url) {
+            this.items.addLast(new WxMessageBody.News.Item(title, description, picUrl, url));
+            return prepare();
+        }
+
+        public NewsBuilder addItem(WxMessageBody.News.Item item) {
+            this.items.addLast(item);
+            return prepare();
+        }
+
+        public NewsBuilder addItems(Collection<WxMessageBody.News.Item> item) {
+            this.items.addAll(item);
+            return prepare();
+        }
+
+        public NewsBuilder lastItem(WxMessageBody.News.Item item) {
+            this.lastItem = item;
+            return prepare();
+        }
+
+        // 这里关于最后项目的判断应该能优化一下，今天太累了，明天改2017年8月7日00:18:52
+        // 由于消息重构，这里变了，可能性能有问题，但是实在没办法。2017年9月28日10:47:24
+        public NewsBuilder prepare() {
+            // 这里可能不是一个好的代码习惯，可能会造成items变量名混乱。
+            List<WxMessageBody.News.Item> items = this.items;
+            if (this.items.size() > 7) {
+                if (this.lastItem != null) {
+                    logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
+                    items = this.items.subList(0, 7);
+                    items.add(this.lastItem);
+                } else if (this.items.size() > 8) {
+                    logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
+                    items = this.items.subList(0, 8);
+                }
+            } else if (this.lastItem != null) {
+                items.add(this.lastItem);
             }
+            this.body.articles = items;
+            return this;
+        }
 
-            public Builder body(String mediaId, String thumbMediaId, String title, String description) {
-                this.body.mediaId = mediaId;
-                this.body.thumbMediaId = thumbMediaId;
-                this.body.title = title;
-                this.body.description = description;
-                return this;
-            }
-
-            public Builder thumbMediaPath(String thumbMediaPath) {
-                this.body.thumbMediaPath = thumbMediaPath;
-                return this;
-            }
-
-            public Builder thumbMediaUrl(String thumbMediaUrl) {
-                this.body.thumbMediaUrl = thumbMediaUrl;
-                return this;
-            }
-
-            public Builder title(String title) {
-                this.body.title = title;
-                return this;
-            }
-
-            public Builder description(String description) {
-                this.body.description = description;
-                return this;
-            }
-
-            public Video build() {
-                return new Video(messageType, body);
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
-            }
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.items.toString() + ")";
         }
     }
 
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class Music extends WxMessage {
 
-        @XmlElement(name = "Music")
-        @JsonProperty("music")
-        protected WxMessageBody.Music body;
-
-        Music(Type messageType, WxMessageBody.Music body) {
-            super(messageType);
-            this.body = body;
-        }
-
-        public Music() {
-        }
-
-        public WxMessageBody.Music getBody() {
-            return this.body;
-        }
-
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.MUSIC);
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.MediaBuilder<Builder> {
-
-            protected WxMessageBody.Music body;
-
-            Builder() {
-                body = new WxMessageBody.Music();
-            }
-
-            public Builder body(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
-                this.body.thumbMediaId = thumbMediaId;
-                this.body.title = title;
-                this.body.description = description;
-                this.body.musicUrl = musicUrl;
-                this.body.hqMusicUrl = hqMusicUrl;
-                return this;
-            }
-
-            public Builder thumbMediaId(String thumbMediaId) {
-                this.body.thumbMediaId = thumbMediaId;
-                return this;
-            }
-
-            public Builder thumbMediaPath(String thumbMediaPath) {
-                this.body.mediaPath = thumbMediaPath;
-                return this;
-            }
-
-            public Builder thumbMediaUrl(String thumbMediaUrl) {
-                this.body.mediaUrl = thumbMediaUrl;
-                return this;
-            }
-
-            public Builder title(String title) {
-                this.body.title = title;
-                return this;
-            }
-
-            public Builder description(String description) {
-                this.body.description = description;
-                return this;
-            }
-
-            public Builder musicUrl(String musicUrl) {
-                this.body.musicUrl = musicUrl;
-                return this;
-            }
-
-            public Builder hqMusicUrl(String hqMusicUrl) {
-                this.body.hqMusicUrl = hqMusicUrl;
-                return this;
-            }
-
-            public Music build() {
-                return new Music(messageType, body);
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
-            }
-        }
+    public static NewsBuilder newsBuilder() {
+        return new NewsBuilder();
     }
 
     /**
      * 图文消息（点击跳转到外链）
      */
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class News extends WxMessage {
+    public static class News {
+        public static NewsBuilder builder() {
+            return newsBuilder();
+        }
+    }
 
-        /**
-         * 图文消息个数，限制为8条以内
-         */
-        @XmlElement(name = "ArticleCount", required = true)
-        protected Integer articleCount;
 
-        @XmlElement(name = "Articles", required = true)
-        @JsonProperty("news")
-        protected WxMessageBody.News body;
+    public static class MpNewsBuilder extends WxMessage.Builder<MpNewsBuilder, WxMessageBody.MpNews> {
 
-        News(Type messageType, WxMessageBody.News body) {
-            super(messageType);
-            this.articleCount = body.getArticles().size();
-            this.body = body;
+        MpNewsBuilder() {
+            super();
+            this.msgType(Type.MPNEWS);
+            this.body(new WxMessageBody.MpNews());
         }
 
-        public News() {
+        public MpNewsBuilder mediaId(String mediaId) {
+            this.body.mediaId = mediaId;
+            return this;
         }
 
-        public Integer getArticleCount() {
-            return this.articleCount;
+        public MpNewsBuilder sendIgnoreReprint(boolean sendIgnoreReprint) {
+            this.body.sendIgnoreReprint = sendIgnoreReprint;
+            return this;
         }
 
-        public WxMessageBody.News getBody() {
-            return this.body;
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }
+    }
 
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.NEWS);
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.News> {
-
-            // 是叫items呢还是articles呢
-            protected LinkedList<WxMessageBody.News.Item> items;
-
-            protected WxMessageBody.News.Item lastItem;
-
-            Builder() {
-                items = new LinkedList<>();
-            }
-
-            /**
-             * 添加主article，就是最上面那个大图
-             *
-             * @param title
-             * @param description
-             * @param picUrl
-             * @param url
-             * @return dummy
-             */
-            public Builder firstItem(String title, String description, String picUrl, String url) {
-                this.items.addFirst(new WxMessageBody.News.Item(title, description, picUrl, url));
-                return this;
-            }
-
-            public Builder firstItem(WxMessageBody.News.Item item) {
-                this.items.addFirst(item);
-                return this;
-            }
-
-            public Builder addItem(String title, String description, String picUrl, String url) {
-                this.items.addLast(new WxMessageBody.News.Item(title, description, picUrl, url));
-                return this;
-            }
-
-            public Builder addItem(WxMessageBody.News.Item item) {
-                this.items.addLast(item);
-                return this;
-            }
-
-            public Builder addItems(Collection<WxMessageBody.News.Item> item) {
-                this.items.addAll(item);
-                return this;
-            }
-
-            public Builder lastItem(WxMessageBody.News.Item item) {
-                this.lastItem = item;
-                return this;
-            }
-
-            // 这里关于最后项目的判断应该能优化一下，今天太累了，明天改2017年8月7日00:18:52
-            public News build() {
-                // 这里可能不是一个好的代码习惯，可能会造成items变量名混乱。
-                List<WxMessageBody.News.Item> items = this.items;
-                if (this.items.size() > 7) {
-                    if (this.lastItem != null) {
-                        logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
-                        items = this.items.subList(0, 7);
-                        items.add(this.lastItem);
-                    } else if (this.items.size() > 8) {
-                        logger.warn("图文消息至多只能有八条，最后的图文消息将被忽略");
-                        items = this.items.subList(0, 8);
-                    }
-                } else if (this.lastItem != null) {
-                    items.add(this.lastItem);
-                }
-                return new News(messageType, new WxMessageBody.News(items));
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.items.toString() + ")";
-            }
-        }
+    public static MpNewsBuilder mpNewsBuilder() {
+        return new MpNewsBuilder();
     }
 
     /**
      * 发送图文消息（点击跳转到图文消息页面）
      */
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class MpNews extends WxMessage {
+    public static class MpNews {
+        public static MpNewsBuilder builder() {
+            return mpNewsBuilder();
+        }
+    }
 
-        @XmlElement(name = "Mpnews", required = true)
-        @JsonProperty("mpnews")
-        protected WxMessageBody.MpNews body;
+    public static class WxCardBuilder extends WxMessage.Builder<WxCardBuilder, WxMessageBody.WxCard> {
 
-
-        /**
-         * 图文消息被判定为转载时，是否继续群发。1为继续群发（转载），0为停止群发。该参数默认为0。
-         */
-        @JsonProperty("send_ignore_reprint")
-        protected int sendIgnoreReprint;
-
-        MpNews(Type messageType, int sendIgnoreReprint, WxMessageBody.MpNews body) {
-            super(messageType);
-            this.sendIgnoreReprint = sendIgnoreReprint;
-            this.body = body;
+        WxCardBuilder() {
+            super();
+            this.msgType(Type.WXCARD);
+            this.body(new WxMessageBody.WxCard());
         }
 
-        public MpNews() {
+        public WxCardBuilder cardId(String cardId) {
+            this.body.cardId = cardId;
+            return this;
         }
 
-        public WxMessageBody.MpNews getBody() {
-            return this.body;
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }
+    }
 
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.MPNEWS);
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.MpNews> {
-
-            protected String mediaId;
-
-            protected boolean sendIgnoreReprint;
-
-            Builder() {
-            }
-
-            public Builder mediaId(String mediaId) {
-                this.mediaId = mediaId;
-                return this;
-            }
-
-            public Builder sendIgnoreReprint(boolean sendIgnoreReprint) {
-                this.sendIgnoreReprint = sendIgnoreReprint;
-                return this;
-            }
-
-            public MpNews build() {
-                return new MpNews(messageType, sendIgnoreReprint ? 1 : 0, new WxMessageBody.MpNews(mediaId));
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.mediaId + ")";
-            }
-        }
+    public static WxCardBuilder wxCardBuilder() {
+        return new WxCardBuilder();
     }
 
     /**
      * 发送卡券
      */
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.NONE)
-    public static class WxCard extends WxMessage {
+    public static class WxCard {
 
-        @XmlElement(name = "WxCard", required = true)
-        @JsonProperty("wxcard")
-        protected WxMessageBody.WxCard body;
-
-        WxCard(Type messageType, WxMessageBody.WxCard body) {
-            super(messageType);
-            this.body = body;
-        }
-
-        public WxCard() {
-        }
-
-        public WxMessageBody.WxCard getBody() {
-            return this.body;
-        }
-
-        public static Builder builder() {
-            Builder builder = new Builder();
-            builder.msgType(Type.WXCARD);
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody.WxCard> {
-
-            protected String cardId;
-
-            Builder() {
-            }
-
-            public Builder cardId(String cardId) {
-                this.cardId = cardId;
-                return this;
-            }
-
-            public WxCard build() {
-                return new WxCard(messageType, new WxMessageBody.WxCard(cardId));
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.cardId + ")";
-            }
+        public static WxCardBuilder builder() {
+            return wxCardBuilder();
         }
     }
 
-    public static class Status extends WxMessage {
-        @JsonIgnore
-        protected Type messageType;
+    public static class StatusBuilder extends WxMessage.Builder<StatusBuilder, WxMessageBody.Status> {
 
-        @JsonProperty("command")
-        protected Command command;
-
-        Status(Type messageType, boolean isTyping) {
-            super(messageType);
-            this.command = isTyping ? Command.TYPING : Command.CANCEL_TYPING;
+        StatusBuilder() {
+            super();
+            this.msgType(Type.STATUS);
+            this.body(new WxMessageBody.Status());
         }
 
-        public Status(Type messageType, Command command) {
-            this.messageType = messageType;
-            this.command = command;
+        public Builder isTyping(boolean isTyping) {
+            this.body.isTyping = isTyping;
+            return this;
         }
 
-        public enum Command {
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
+        }
+    }
 
-            @JsonProperty("Typing")
-            TYPING,
-            @JsonProperty("CancelTyping")
-            CANCEL_TYPING
+    public static StatusBuilder statusBuilder() {
+        return new StatusBuilder();
+    }
 
+    public static class Status {
+
+        public static StatusBuilder builder() {
+            return statusBuilder();
         }
 
-        public static Builder builder() {
-            Builder builder = new Builder();
-            return builder;
-        }
-
-        public static class Builder extends WxMessage.Builder<Builder, WxMessageBody> {
-
-            protected boolean isTyping;
-
-            Builder() {
-            }
-
-            public Builder isTyping(boolean isTyping) {
-                this.isTyping = isTyping;
-                return this;
-            }
-
-            public Status build() {
-                return new Status(messageType, isTyping);
-            }
-
-            public String toString() {
-                return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.isTyping + ")";
-            }
-        }
     }
 
 }

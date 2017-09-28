@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.test.failed.second;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.message.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

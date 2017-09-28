@@ -5,7 +5,7 @@
 
     <groupId>com.mxixm</groupId>
     <artifactId>fastboot-weixin</artifactId>
-    <version>0.1.3.alpha</version>
+    <version>0.2.0.alpha</version>
     <packaging>jar</packaging>
 
     <name>FastBootWeixin</name>
