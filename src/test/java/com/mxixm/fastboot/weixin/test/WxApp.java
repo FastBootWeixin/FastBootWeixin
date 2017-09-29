@@ -107,6 +107,19 @@ public class WxApp {
     }
 
     /**
+     * 定义微信菜单，并接受事件
+     */
+    @WxButton(type = WxButton.Type.CLICK,
+            group = WxButton.Group.LEFT,
+            order = WxButton.Order.THIRD,
+            name = "图片消息")
+    public WxMessage imgae() {
+        return WxMessage.imageBuilder()
+                .mediaUrl("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png")
+                .build();
+    }
+
+    /**
      * 接受微信事件
      *
      * @param wxRequest

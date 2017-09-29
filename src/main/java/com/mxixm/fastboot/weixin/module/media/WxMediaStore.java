@@ -360,10 +360,11 @@ public class WxMediaStore implements InitializingBean {
             dbFile.createNewFile();
         }
         db = DBMaker.newFileDB(dbFile)
-                .transactionDisable()
+//                .transactionDisable()
                 .cacheDisable()
                 .asyncWriteEnable()
-                .checksumEnable()
+                .asyncWriteFlushDelay(100)
+//                .checksumEnable()
                 .closeOnJvmShutdown().make();
         tempMediaFileDb = db.createHashMap("tempMediaFile").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
         tempMediaIdDb = db.createHashMap("tempMediaId").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
