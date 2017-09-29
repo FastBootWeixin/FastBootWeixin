@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.media;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
@@ -366,11 +367,26 @@ public class WxMediaStore implements InitializingBean {
                 .asyncWriteFlushDelay(100)
 //                .checksumEnable()
                 .closeOnJvmShutdown().make();
-        tempMediaFileDb = db.createHashMap("tempMediaFile").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
-        tempMediaIdDb = db.createHashMap("tempMediaId").expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
-        mediaFileDb = db.createHashMap("mediaFile").makeOrGet();
-        mediaIdDb = db.createHashMap("mediaId").makeOrGet();
-        urlDb = db.createHashMap("imageUrl").makeOrGet();
+        tempMediaFileDb = db.createHashMap("tempMediaFile")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
+        tempMediaIdDb = db.createHashMap("tempMediaId")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .expireAfterWrite(3, TimeUnit.DAYS).makeOrGet();
+        mediaFileDb = db.createHashMap("mediaFile")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .makeOrGet();
+        mediaIdDb = db.createHashMap("mediaId")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .makeOrGet();
+        urlDb = db.createHashMap("imageUrl")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .makeOrGet();
     }
 
     /**
