@@ -22,9 +22,9 @@ import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.processer.WxMessageProcesseChain;
-import com.mxixm.fastboot.weixin.module.message.processer.group.*;
-import com.mxixm.fastboot.weixin.module.message.processer.user.*;
+import com.mxixm.fastboot.weixin.module.message.processer.*;
+import com.mxixm.fastboot.weixin.module.message.processer.group.WxGroupNewsMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.processer.user.WxUserNewsMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -78,16 +78,13 @@ public class WxAsyncMessageConfiguration {
         List<WxMessageProcesser> list = new ArrayList<>();
 
         list.add(new WxUserMessageProcesser());
-        list.add(new WxUserImageMessageProcesser(wxMediaManager));
-        list.add(new WxUserUserVoiceMessageProcesser(wxMediaManager));
-        list.add(new WxUserMusicMessageProcesser(wxMediaManager));
-        list.add(new WxUserVideoMessageProcesser(wxMediaManager));
-        list.add(new WxUserNewsMessageProcesser());
 
-        list.add(new WxGroupImageMessageProcesser(wxMediaManager));
-        list.add(new WxGroupVoiceMessageProcesser(wxMediaManager));
-        list.add(new WxGroupMusicMessageProcesser(wxMediaManager));
-        list.add(new WxGroupVideoMessageProcesser(wxMediaManager));
+        list.add(new WxImageMessageProcesser(wxMediaManager));
+        list.add(new WxVoiceMessageProcesser(wxMediaManager));
+        list.add(new WxMusicMessageProcesser(wxMediaManager));
+        list.add(new WxVideoMessageProcesser(wxMediaManager));
+
+        list.add(new WxUserNewsMessageProcesser());
         list.add(new WxGroupNewsMessageProcesser());
 
         return list;

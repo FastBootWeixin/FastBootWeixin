@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer.user;
+package com.mxixm.fastboot.weixin.module.message.processer;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxGroupMusicMessageProcesser
+ * FastBootWeixin WxGroupImageMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxUserMusicMessageProcesser extends AbstractWxUserMediaMessageProcesser<WxUserMessage.Music, WxMessageBody.Music> {
+public class WxImageMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Image> {
 
-    public WxUserMusicMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxImageMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
+    /**
+     * 其实这个可以不写
+     * @param wxRequest
+     * @param body
+     * @return Image
+     */
     @Override
-    protected WxMessageBody.Music processBody(WxRequest wxRequest, WxMessageBody.Music body) {
+    protected WxMessageBody.Image processBody(WxRequest wxRequest, WxMessageBody.Image body) {
         super.processBody(wxRequest, body);
         return body;
     }

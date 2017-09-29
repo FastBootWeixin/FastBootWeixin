@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.module.message.processer.user;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.message.processer.AbstractWxMessageBodyProcesser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
@@ -30,7 +29,7 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxUserNewsMessageProcesser extends AbstractWxMessageBodyProcesser<WxUserMessage.News, WxMessageBody.News> {
+public class WxUserNewsMessageProcesser extends AbstractWxMessageBodyProcesser<WxMessageBody.News> {
 
     @Override
     protected WxMessageBody.News processBody(WxRequest wxRequest, WxMessageBody.News body) {

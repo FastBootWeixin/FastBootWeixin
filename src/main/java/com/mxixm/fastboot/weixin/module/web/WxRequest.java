@@ -18,9 +18,9 @@ package com.mxixm.fastboot.weixin.module.web;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
+import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.WxWebUtils;

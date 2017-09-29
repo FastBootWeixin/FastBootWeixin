@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer.group;
+package com.mxixm.fastboot.weixin.module.message.processer;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxGroupImageMessageProcesser
+ * FastBootWeixin WxGroupMusicMessageProcesser
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxGroupImageMessageProcesser extends AbstractWxGroupMediaMessageProcesser<WxGroupMessage.Image, WxMessageBody.Image> {
+public class WxMusicMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Music> {
 
-    public WxGroupImageMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxMusicMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 
     @Override
-    protected WxMessageBody.Image processBody(WxRequest wxRequest, WxMessageBody.Image body) {
+    protected WxMessageBody.Music processBody(WxRequest wxRequest, WxMessageBody.Music body) {
         super.processBody(wxRequest, body);
         return body;
     }
