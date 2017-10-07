@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.support;
 
 import com.mxixm.fastboot.weixin.module.user.WxUser;
+import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 
 /**

@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 
@@ -48,7 +49,7 @@ public class WxUserVideoMessageProcesser extends AbstractWxUserMediaMessageProce
         if (body.getThumbMediaId() == null) {
             // 优先使用path
             if (body.getThumbMediaPath() != null) {
-                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new File(body.getThumbMediaPath()));
+                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getThumbMediaUrl() != null) {
                 String url = WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), body.getThumbMediaUrl());

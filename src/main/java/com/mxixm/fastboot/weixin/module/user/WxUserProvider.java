@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.support;
+package com.mxixm.fastboot.weixin.module.user;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

@@ -18,8 +18,9 @@ package com.mxixm.fastboot.weixin.config.media;
 
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.media.WxMediaStore;
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.support.MapDbWxMediaStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -53,7 +54,7 @@ public class WxMediaConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public WxMediaStore wxMediaStore() {
-        return new WxMediaStore();
+        return new MapDbWxMediaStore();
     }
 
     @Bean

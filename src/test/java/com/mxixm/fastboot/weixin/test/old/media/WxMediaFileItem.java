@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.media;
+package com.mxixm.fastboot.weixin.test.old.media;
 
 /**
  * FastBootWeixin  WxMediaResource

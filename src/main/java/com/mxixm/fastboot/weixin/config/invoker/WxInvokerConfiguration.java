@@ -28,7 +28,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.handler.WxResponseErrorHandl
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.support.DefaultWxUserProvider;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
-import com.mxixm.fastboot.weixin.support.WxUserProvider;
+import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;

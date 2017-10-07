@@ -30,7 +30,7 @@ import com.mxixm.fastboot.weixin.mvc.advice.WxMessageResponseBodyAdvice;
 import com.mxixm.fastboot.weixin.mvc.advice.WxStringResponseBodyAdvice;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxMappingHandlerMapping;
 import com.mxixm.fastboot.weixin.mvc.param.WxArgumentResolver;
-import com.mxixm.fastboot.weixin.support.WxUserProvider;
+import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.web.WxOAuth2Interceptor;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;
