@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer.user;
+package com.mxixm.fastboot.weixin.module.message.processer;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -33,9 +32,9 @@ import java.io.File;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxUserVideoMessageProcesser extends AbstractWxUserMediaMessageProcesser<WxUserMessage.Video, WxMessageBody.Video> {
+public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Video> {
 
-    public WxUserVideoMessageProcesser(WxMediaManager wxMediaManager) {
+    public WxVideoMessageProcesser(WxMediaManager wxMediaManager) {
         super(wxMediaManager);
     }
 

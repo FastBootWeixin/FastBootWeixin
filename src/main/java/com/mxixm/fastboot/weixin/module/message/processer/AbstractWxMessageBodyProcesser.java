@@ -31,10 +31,10 @@ import java.lang.reflect.Type;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class AbstractWxMessageBodyProcesser<T extends WxMessage<B>, B extends WxMessageBody> implements WxMessageProcesser<T> {
+public abstract class AbstractWxMessageBodyProcesser<B extends WxMessageBody> implements WxMessageProcesser<WxMessage<B>> {
 
     @Override
-    public T process(WxRequest wxRequest, T wxMessage) {
+    public WxMessage<B> process(WxRequest wxRequest, WxMessage<B> wxMessage) {
         if (wxMessage == null) {
             return wxMessage;
         }
@@ -47,7 +47,7 @@ public abstract class AbstractWxMessageBodyProcesser<T extends WxMessage<B>, B e
 
     protected abstract B processBody(WxRequest wxRequest, B body);
 
-    public boolean supports(WxRequest wxRequest, T wxMessage) {
+    public boolean supports(WxRequest wxRequest, WxMessage<B> wxMessage) {
         Type type = this.getClass().getGenericSuperclass();
         if (!(type instanceof ParameterizedType)) {
             return false;
@@ -57,7 +57,7 @@ public abstract class AbstractWxMessageBodyProcesser<T extends WxMessage<B>, B e
         if (userClass == null) {
             return false;
         }
-        return userClass.isAssignableFrom(wxMessage.getClass());
+        return userClass.isAssignableFrom(wxMessage.getBody().getClass());
     }
 
 }

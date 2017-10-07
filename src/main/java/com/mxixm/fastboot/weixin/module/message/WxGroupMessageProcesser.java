@@ -26,12 +26,14 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class WxGroupMessageProcesser<T extends WxGroupMessage> implements WxMessageProcesser<T> {
+public class WxGroupMessageProcesser implements WxMessageProcesser<WxGroupMessage> {
 
-    public T process(WxRequest wxRequest, T wxMessage) {
+    public WxGroupMessage process(WxRequest wxRequest, WxGroupMessage wxMessage) {
         return processInternal(wxMessage);
     }
 
-    public abstract T processInternal(T wxMessage);
+    public WxGroupMessage processInternal(WxGroupMessage wxMessage) {
+        return wxMessage;
+    }
 
 }
