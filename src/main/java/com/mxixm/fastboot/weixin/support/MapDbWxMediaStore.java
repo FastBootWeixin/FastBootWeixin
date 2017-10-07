@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -196,13 +197,18 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
             dbFile.createNewFile();
         }
         db = DBMaker.newFileDB(dbFile)
-                .transactionDisable()
                 .cacheDisable()
                 .asyncWriteEnable()
-                .checksumEnable()
+                .asyncWriteFlushDelay(100)
                 .closeOnJvmShutdown().make();
-        mediaDb = db.createHashMap("media").makeOrGet();
-        mediaIdDb = db.createHashMap("mediaId").makeOrGet();
+        mediaDb = db.createHashMap("media")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .makeOrGet();
+        mediaIdDb = db.createHashMap("mediaId")
+                .keySerializer(Serializer.STRING)
+                .counterEnable()
+                .makeOrGet();
     }
 
     /**
