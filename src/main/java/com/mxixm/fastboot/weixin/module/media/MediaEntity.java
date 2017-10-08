@@ -36,8 +36,8 @@ public class MediaEntity extends MediaQuery {
     public MediaEntity() {
     }
 
-    MediaEntity(String key, String resourcePath, String resourceUrl, Long modifiedTime, String mediaId, String mediaUrl, WxMedia.Type type, Long createdTime, boolean isTemp, Resource resource) {
-        super(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, isTemp);
+    MediaEntity(String key, String resourcePath, String resourceUrl, Long modifiedTime, String mediaId, String mediaUrl, WxMedia.Type type, Long createdTime, WxMediaStore.Type storeType, Resource resource) {
+        super(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, storeType);
         this.resource = resource;
     }
 
@@ -65,7 +65,7 @@ public class MediaEntity extends MediaQuery {
         }
 
         public MediaEntity build() {
-            return new MediaEntity(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, isTemp, resource);
+            return new MediaEntity(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, storeType, resource);
         }
 
         public String toString() {

@@ -103,7 +103,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
             mediaDb.remove(mediaQuery.getKey());
             return true;
         }
-        if (storeEntity.isTemp) {
+        if (Type.TEMP.equals(storeEntity.storeType)) {
             if (System.currentTimeMillis() - storeEntity.createdTime >= tempExpired) {
                 mediaIdDb.remove(storeEntity.mediaId);
                 mediaDb.remove(mediaQuery.getKey());
@@ -122,11 +122,13 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
     public MediaEntity store(MediaEntity mediaEntity) {
         StoreEntity storeEntity = StoreEntity.builder()
                 .resourcePath(mediaEntity.getResourcePath())
+                .resourceUrl(mediaEntity.getResourceUrl())
                 .createdTime(mediaEntity.getCreatedTime())
                 .modifiedTime(mediaEntity.getModifiedTime())
-                .mediaType(mediaEntity.getType())
+                .mediaType(mediaEntity.getMediaType())
                 .mediaId(mediaEntity.getMediaId())
-                .isTemp(mediaEntity.isTemp())
+                .mediaUrl(mediaEntity.getMediaUrl())
+                .storeType(mediaEntity.getStoreType())
                 .build();
         mediaDb.put(mediaEntity.getKey(), storeEntity);
         if (mediaEntity.getMediaId() != null) {
@@ -157,7 +159,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
         if (fileName == null) {
             fileName = mediaEntity.getMediaId();
         }
-        File file = new File(StringUtils.applyRelativePath(mediaEntity.isTemp() ? defaultTempFilePath : defaultFilePath, fileName));
+        File file = new File(StringUtils.applyRelativePath(Type.TEMP.equals(mediaEntity.getStoreType()) ? defaultTempFilePath : defaultFilePath, fileName));
         if (file.exists()) {
             return new FileSystemResource(file);
         }
@@ -253,9 +255,9 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
         /**
          * 是否是临时资源
          */
-        private boolean isTemp;
+        private WxMediaStore.Type storeType;
 
-        StoreEntity(String resourcePath, String resourceUrl, String mediaId, String mediaUrl, Long createdTime, Long modifiedTime, WxMedia.Type mediaType, boolean isTemp) {
+        StoreEntity(String resourcePath, String resourceUrl, String mediaId, String mediaUrl, Long createdTime, Long modifiedTime, WxMedia.Type mediaType, WxMediaStore.Type storeType) {
             this.resourcePath = resourcePath;
             this.resourceUrl = resourceUrl;
             this.mediaId = mediaId;
@@ -263,16 +265,18 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
             this.createdTime = createdTime;
             this.modifiedTime = modifiedTime;
             this.mediaType = mediaType;
-            this.isTemp = isTemp;
+            this.storeType = storeType;
         }
 
         void fillMediaEntity(MediaEntity mediaEntity) {
-            mediaEntity.setKey(resourcePath != null ? resourcePath : resourceUrl);
+            mediaEntity.setResourcePath(resourcePath);
+            mediaEntity.setResourceUrl(resourceUrl);
             mediaEntity.setMediaId(mediaId);
             mediaEntity.setMediaUrl(mediaUrl);
             mediaEntity.setCreatedTime(createdTime);
             mediaEntity.setModifiedTime(modifiedTime);
-            mediaEntity.setType(mediaType);
+            mediaEntity.setMediaType(mediaType);
+            mediaEntity.setStoreType(storeType);
             if (resourcePath != null) {
                 mediaEntity.setResource(new FileSystemResource(resourcePath));
             } else if (resourceUrl != null) {
@@ -296,7 +300,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
             private Long createdTime;
             private Long modifiedTime;
             private WxMedia.Type mediaType;
-            private boolean isTemp;
+            private WxMediaStore.Type storeType;
 
             Builder() {
             }
@@ -336,13 +340,13 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
                 return this;
             }
 
-            public Builder isTemp(boolean isTemp) {
-                this.isTemp = isTemp;
+            public Builder storeType(WxMediaStore.Type storeType) {
+                this.storeType = storeType;
                 return this;
             }
 
             public StoreEntity build() {
-                return new StoreEntity(resourcePath, resourceUrl, mediaId, mediaUrl, createdTime, modifiedTime, mediaType, isTemp);
+                return new StoreEntity(resourcePath, resourceUrl, mediaId, mediaUrl, createdTime, modifiedTime, mediaType, storeType);
             }
 
             public String toString() {

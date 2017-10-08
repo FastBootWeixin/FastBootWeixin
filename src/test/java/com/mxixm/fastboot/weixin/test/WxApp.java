@@ -20,6 +20,8 @@ import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
+import com.mxixm.fastboot.weixin.module.media.WxMedia;
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
@@ -28,6 +30,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -47,6 +50,9 @@ public class WxApp {
 
     @Autowired
     WxApiInvokeSpi wxApiInvokeSpi;
+
+    @Autowired
+    WxMediaManager wxMediaManager;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -201,6 +207,12 @@ public class WxApp {
     @RequestMapping("card")
     public WxCard card() {
         return wxApiInvokeSpi.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
+    }
+
+
+    @RequestMapping("mediaUpload")
+    public String mediaUpload() {
+        return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
     }
 
 }

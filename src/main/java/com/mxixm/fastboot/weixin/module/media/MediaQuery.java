@@ -59,7 +59,7 @@ public class MediaQuery {
     /**
      * mediaType媒体类型
      */
-    private WxMedia.Type type;
+    private WxMedia.Type mediaType;
 
     /**
      * 资源创建时间
@@ -69,22 +69,22 @@ public class MediaQuery {
     /**
      * 是否是临时资源
      */
-    private boolean isTemp;
+    private WxMediaStore.Type storeType;
 
     MediaQuery() {
 
     }
 
-    MediaQuery(String key, String resourcePath, String resourceUrl, Long modifiedTime, String mediaId, String mediaUrl, WxMedia.Type type, Long createdTime, boolean isTemp) {
+    MediaQuery(String key, String resourcePath, String resourceUrl, Long modifiedTime, String mediaId, String mediaUrl, WxMedia.Type mediaType, Long createdTime, WxMediaStore.Type storeType) {
         this.key = key;
         this.resourcePath = resourcePath;
         this.resourceUrl = resourceUrl;
         this.modifiedTime = modifiedTime;
         this.mediaId = mediaId;
         this.mediaUrl = mediaUrl;
-        this.type = type;
+        this.mediaType = mediaType;
         this.createdTime = createdTime;
-        this.isTemp = isTemp;
+        this.storeType = storeType;
     }
 
     public static MediaQueryBuilder builder() {
@@ -96,7 +96,7 @@ public class MediaQuery {
             StringBuilder sb = new StringBuilder();
             sb.append(resourcePath != null ? resourcePath : resourceUrl);
             sb.append(":");
-            sb.append(isTemp);
+            sb.append(storeType);
             key = sb.toString();
         }
         return key;
@@ -130,12 +130,12 @@ public class MediaQuery {
         this.mediaUrl = mediaUrl;
     }
 
-    public WxMedia.Type getType() {
-        return type;
+    public WxMedia.Type getMediaType() {
+        return mediaType;
     }
 
-    public void setType(WxMedia.Type type) {
-        this.type = type;
+    public void setMediaType(WxMedia.Type mediaType) {
+        this.mediaType = mediaType;
     }
 
     public Long getCreatedTime() {
@@ -146,12 +146,12 @@ public class MediaQuery {
         this.createdTime = createdTime;
     }
 
-    public boolean isTemp() {
-        return isTemp;
+    public WxMediaStore.Type getStoreType() {
+        return storeType;
     }
 
-    public void setTemp(boolean temp) {
-        isTemp = temp;
+    public void setStoreType(WxMediaStore.Type storeType) {
+        this.storeType = storeType;
     }
 
     public void setResourcePath(String resourcePath) {
@@ -179,7 +179,7 @@ public class MediaQuery {
         protected String mediaUrl;
         protected WxMedia.Type type;
         protected Long createdTime;
-        protected boolean isTemp;
+        WxMediaStore.Type storeType;
 
         MediaQueryBuilder() {
         }
@@ -224,17 +224,17 @@ public class MediaQuery {
             return this;
         }
 
-        public MediaQueryBuilder isTemp(boolean isTemp) {
-            this.isTemp = isTemp;
+        public MediaQueryBuilder storeType(WxMediaStore.Type storeType) {
+            this.storeType = storeType;
             return this;
         }
 
         public MediaQuery build() {
-            return new MediaQuery(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, isTemp);
+            return new MediaQuery(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, storeType);
         }
 
         public String toString() {
-            return "com.mxixm.fastboot.weixin.module.media.MediaQuery.MediaQueryBuilder(key=" + this.key + ", resourcePath=" + this.resourcePath + ", resourceUrl=" + this.resourceUrl + ", modifiedTime=" + this.modifiedTime + ", mediaId=" + this.mediaId + ", mediaUrl=" + this.mediaUrl + ", type=" + this.type + ", createdTime=" + this.createdTime + ", isTemp=" + this.isTemp + ")";
+            return "com.mxixm.fastboot.weixin.module.media.MediaQuery.MediaQueryBuilder(key=" + this.key + ", resourcePath=" + this.resourcePath + ", resourceUrl=" + this.resourceUrl + ", modifiedTime=" + this.modifiedTime + ", mediaId=" + this.mediaId + ", mediaUrl=" + this.mediaUrl + ", type=" + this.type + ", createdTime=" + this.createdTime + ", isTemp=" + this.storeType + ")";
         }
     }
 }

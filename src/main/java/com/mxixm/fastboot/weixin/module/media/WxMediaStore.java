@@ -29,6 +29,10 @@ import java.io.IOException;
  */
 public interface WxMediaStore {
 
+    enum Type {
+        TEMP, MATERIAL, IMAGE
+    }
+
     MediaEntity query(MediaQuery mediaQuery);
 
     MediaEntity store(MediaEntity mediaEntity);

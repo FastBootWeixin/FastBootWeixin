@@ -36,37 +36,37 @@ public class WxMediaManager {
 
     private WxApiInvokeSpi wxApiInvokeSpi;
 
-    private WxMediaStore WxMediaStore;
+    private WxMediaStore wxMediaStore;
 
     private WxApiInvoker wxApiInvoker;
 
-    public WxMediaManager(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker, WxMediaStore WxMediaStore) {
+    public WxMediaManager(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker, WxMediaStore wxMediaStore) {
         this.wxApiInvokeSpi = wxApiInvokeSpi;
         this.wxApiInvoker = wxApiInvoker;
-        this.WxMediaStore = WxMediaStore;
+        this.wxMediaStore = wxMediaStore;
     }
 
     public String addTempMedia(WxMedia.Type type, Resource resource) {
         String resourcePath = WxMediaUtils.resourcePath(resource);
         Date modifiedTime = WxMediaUtils.resourceModifiedTime(resource);
-        MediaEntity mediaEntity = query(resourcePath, null, true, null, modifiedTime);
+        MediaEntity mediaEntity = query(resourcePath, null, WxMediaStore.Type.TEMP, null, modifiedTime);
         if (mediaEntity != null && mediaEntity.getMediaId() != null) {
             return mediaEntity.getMediaId();
         }
         WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, resource);
-        store(resourcePath, null, type, true,
+        store(resourcePath, null, type, WxMediaStore.Type.TEMP,
                 result.getMediaId(), null, result.getCreatedAt(), modifiedTime);
         return result.getMediaId();
     }
 
     public String addTempMediaByUrl(WxMedia.Type type, String url) {
-        MediaEntity mediaEntity = query(null, url, true, null, null);
+        MediaEntity mediaEntity = query(null, url, WxMediaStore.Type.TEMP, null, null);
         if (mediaEntity != null && mediaEntity.getMediaId() != null) {
             return mediaEntity.getMediaId();
         }
         Resource resource = wxApiInvoker.getForObject(url, Resource.class);
         WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, resource);
-        store(null, url, type, true,
+        store(null, url, type, WxMediaStore.Type.TEMP,
                 result.getMediaId(), null, result.getCreatedAt(), null);
         return result.getMediaId();
     }
@@ -74,12 +74,12 @@ public class WxMediaManager {
     public String addMedia(WxMedia.Type type, Resource resource) {
         String resourcePath = WxMediaUtils.resourcePath(resource);
         Date modifiedTime = WxMediaUtils.resourceModifiedTime(resource);
-        MediaEntity mediaEntity = query(resourcePath, null, false, null, modifiedTime);
+        MediaEntity mediaEntity = query(resourcePath, null, WxMediaStore.Type.MATERIAL, null, modifiedTime);
         if (mediaEntity != null && mediaEntity.getMediaId() != null) {
             return mediaEntity.getMediaId();
         }
         WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(type, resource, null);
-        store(resourcePath, null, type, false,
+        store(resourcePath, null, type, WxMediaStore.Type.MATERIAL,
                 result.getMediaId(), result.getUrl(), new Date(), modifiedTime);
         return result.getMediaId();
     }
@@ -94,12 +94,12 @@ public class WxMediaManager {
     public String addVideoMedia(Resource resource, WxMedia.Video video) {
         String resourcePath = WxMediaUtils.resourcePath(resource);
         Date modifiedTime = WxMediaUtils.resourceModifiedTime(resource);
-        MediaEntity mediaEntity = query(resourcePath, null, false, null, modifiedTime);
+        MediaEntity mediaEntity = query(resourcePath, null, WxMediaStore.Type.MATERIAL, null, modifiedTime);
         if (mediaEntity != null && mediaEntity.getMediaId() != null) {
             return mediaEntity.getMediaId();
         }
         WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(WxMedia.Type.VIDEO, resource, video);
-        store(resourcePath, null, WxMedia.Type.VIDEO, false,
+        store(resourcePath, null, WxMedia.Type.VIDEO, WxMediaStore.Type.MATERIAL,
                 result.getMediaId(), result.getUrl(), new Date(), modifiedTime);
         return result.getMediaId();
     }
@@ -109,93 +109,93 @@ public class WxMediaManager {
     }
 
     public Resource getTempMedia(String mediaId) {
-        MediaEntity mediaEntity = query(null, null, true, mediaId, null);
+        MediaEntity mediaEntity = query(null, null, WxMediaStore.Type.TEMP, mediaId, null);
         if (mediaEntity != null && mediaEntity.getResource() != null) {
             return mediaEntity.getResource();
         }
         WxMediaResource wxMediaResource = wxApiInvokeSpi.getTempMedia(mediaId);
-        return storeResource(wxMediaResource, null, true, mediaId, null, null, null);
+        return storeResource(wxMediaResource, null, WxMediaStore.Type.TEMP, mediaId, null, null, null);
     }
 
     public Resource getMedia(String mediaId) {
-        MediaEntity mediaEntity = query(null, null, false, mediaId, null);
+        MediaEntity mediaEntity = query(null, null, WxMediaStore.Type.MATERIAL, mediaId, null);
         if (mediaEntity != null && mediaEntity.getResource() != null) {
             return mediaEntity.getResource();
         }
         WxMediaResource wxMediaResource = wxApiInvokeSpi.getMedia(WxMedia.of(mediaId));
-        return storeResource(wxMediaResource, null, false, mediaId, null, null, null);
+        return storeResource(wxMediaResource, null, WxMediaStore.Type.MATERIAL, mediaId, null, null, null);
     }
 
     public String addImg(Resource resource) {
         String resourcePath = WxMediaUtils.resourcePath(resource);
         Date modifiedTime = WxMediaUtils.resourceModifiedTime(resource);
-        MediaEntity mediaEntity = query(resourcePath, null, false, null, modifiedTime);
+        MediaEntity mediaEntity = query(resourcePath, null, WxMediaStore.Type.IMAGE, null, modifiedTime);
         if (mediaEntity != null && mediaEntity.getMediaUrl() != null) {
             return mediaEntity.getMediaUrl();
         }
         WxMedia.ImageResult imageResult = wxApiInvokeSpi.uploadImg(resource);
-        store(resourcePath, null, WxMedia.Type.IMAGE, false,
+        store(resourcePath, null, WxMedia.Type.IMAGE, WxMediaStore.Type.IMAGE,
                 null, imageResult.getUrl(), new Date(), modifiedTime);
         return imageResult.getUrl();
     }
 
     public String addImgByUrl(String url) {
-        MediaEntity mediaEntity = query(null, url, false, null, null);
+        MediaEntity mediaEntity = query(null, url, WxMediaStore.Type.IMAGE, null, null);
         if (mediaEntity != null && mediaEntity.getMediaId() != null) {
             return mediaEntity.getMediaUrl();
         }
         Resource resource = wxApiInvoker.getForObject(url, Resource.class);
         WxMedia.ImageResult imageResult = wxApiInvokeSpi.uploadImg(resource);
-        store(null, url, WxMedia.Type.IMAGE, false,
+        store(null, url, WxMedia.Type.IMAGE, WxMediaStore.Type.IMAGE,
                 null, imageResult.getUrl(), new Date(), null);
         return imageResult.getUrl();
     }
 
     public String getImgByUrl(String imgUrl) {
-        MediaEntity mediaEntity = query(null, imgUrl, false, null, null);
+        MediaEntity mediaEntity = query(null, imgUrl, WxMediaStore.Type.IMAGE, null, null);
         if (mediaEntity != null) {
             return mediaEntity.getMediaUrl();
         }
         return null;
     }
 
-    private MediaEntity query(String resourcePath, String resourceUrl, boolean isTemp, String mediaId, Date modifiedTime) {
+    private MediaEntity query(String resourcePath, String resourceUrl, WxMediaStore.Type storeType, String mediaId, Date modifiedTime) {
         MediaQuery mediaQuery = MediaQuery.builder()
                 .resourcePath(resourcePath)
                 .resourceUrl(resourceUrl)
-                .isTemp(isTemp)
+                .storeType(storeType)
                 .mediaId(mediaId)
                 .modifiedTime(modifiedTime != null ? modifiedTime.getTime() : null)
                 .build();
-        return WxMediaStore.query(mediaQuery);
+        return wxMediaStore.query(mediaQuery);
     }
 
-    private MediaEntity store(String resourcePath, String resourceUrl, WxMedia.Type type, boolean isTemp, String mediaId, String mediaUrl, Date createdTime, Date modifiedTime) {
+    private MediaEntity store(String resourcePath, String resourceUrl, WxMedia.Type type, WxMediaStore.Type storeType, String mediaId, String mediaUrl, Date createdTime, Date modifiedTime) {
         MediaEntity mediaEntity = (MediaEntity) MediaEntity.builder()
                 .resourcePath(resourcePath)
                 .resourceUrl(resourceUrl)
                 .type(type)
-                .isTemp(isTemp)
+                .storeType(storeType)
                 .mediaId(mediaId)
                 .mediaUrl(mediaUrl)
                 .createdTime(createdTime != null ? createdTime.getTime() : System.currentTimeMillis())
                 .modifiedTime(modifiedTime != null ? modifiedTime.getTime() : (createdTime == null ? System.currentTimeMillis() : createdTime.getTime()))
                 .build();
-        return WxMediaStore.store(mediaEntity);
+        return wxMediaStore.store(mediaEntity);
     }
 
-    private Resource storeResource(Resource resource, WxMedia.Type type, boolean isTemp, String mediaId, String mediaUrl, Date createdTime, Date modifiedTime) {
+    private Resource storeResource(Resource resource, WxMedia.Type type, WxMediaStore.Type storeType, String mediaId, String mediaUrl, Date createdTime, Date modifiedTime) {
         MediaEntity mediaEntity = (MediaEntity) MediaEntity.builder()
                 .resource(resource)
                 .type(type)
-                .isTemp(isTemp)
+                .storeType(storeType)
                 .mediaId(mediaId)
                 .mediaUrl(mediaUrl)
                 .createdTime(createdTime != null ? createdTime.getTime() : System.currentTimeMillis())
                 .modifiedTime(modifiedTime != null ? modifiedTime.getTime() : (createdTime == null ? System.currentTimeMillis() : createdTime.getTime()))
                 .build();
         try {
-            return WxMediaStore.storeResource(mediaEntity);
+            return wxMediaStore.storeResource(mediaEntity);
         } catch (IOException e) {
             throw new WxApiException("获取媒体文件失败", e);
         }
