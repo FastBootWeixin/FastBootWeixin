@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.1.2.rc-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.1.2.rc%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.2.0.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.2.0.alpha%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
@@ -30,7 +30,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.1.2.rc</version>
+        <version>0.2.0.alpha</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -292,6 +292,8 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 上面消息发送中的媒体其实也是通过素材管理器来实现的。
 
+0.2.0.alpha 版本优化存储，使用接口WxMediaStore来管理媒体存储，开发者可自行实现该接口并注册为Spring的Bean来替换默认的MapDbWxMediaStore。各接口具体使用可参考MapDbWxMediaStore。这里还可以提供一个基于内存的实现来替换MapDb。
+
 #### 7. 内置AccessToken管理
 
 本框架提供WxTokenStore接口来存储token，并提供一个默认的基于内存的实现MemoryWxTokenStore，若有分布式需要可以自行实现该接口，并把实现类作为Bean注入Spring即可。
@@ -338,7 +340,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 用户分组什么的是否有好的实现？暂时没有需求
 #### 5. 公众号其他高级功能
 如支付等
-#### 6. 待优化：WxMediaStore
+#### 6. 待优化：WxMediaStore 完成
 
 ### 八、更新日志
 
@@ -361,3 +363,8 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.1.2.rc
 上次加入copyright时不小心把所有文件的头注释删掉了，目前补回一部分，等全部补回后加入微信卡券功能，发布release版本
+
+#### 0.2.0.alpha
+1. 新增卡券相关接口、推广（二维码与短链接）相关接口
+2. 重构消息功能，消息推送现支持群发和单发
+3. 重构媒体存储模块，现在更容易替换为自己的实现，详情参考Wiki
