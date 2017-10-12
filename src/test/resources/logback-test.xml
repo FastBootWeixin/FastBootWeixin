@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="pattern"
+        value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceNo}] &lt;%t&gt; %logger{80} :%msg%n" />
+	
+	<appender name="ROOT_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<layout name="StandardFormat" class="ch.qos.logback.classic.PatternLayout">
+			<pattern>${pattern}</pattern>
+		</layout>
+	</appender>
+	<root level="debug">
+		<appender-ref ref="ROOT_CONSOLE"/>
+	</root>
+</configuration>

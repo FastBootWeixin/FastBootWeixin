@@ -85,6 +85,7 @@ public class WxMessage<T extends WxMessageBody> {
         @JsonProperty("text")
         TEXT(Intent.ALL, Wx.Category.MESSAGE),
 
+
         /**
          * 图片消息
          */
@@ -149,7 +150,13 @@ public class WxMessage<T extends WxMessageBody> {
          * 发送写入状态
          */
         @JsonProperty("status")
-        STATUS(Intent.SEND, Wx.Category.MESSAGE);
+        STATUS(Intent.SEND, Wx.Category.MESSAGE),
+
+        /**
+         * 发送模板消息
+         */
+        @JsonProperty("template")
+        TEMPLATE(Intent.SEND, Wx.Category.MESSAGE);
 
         private Intent intent;
 
@@ -192,6 +199,7 @@ public class WxMessage<T extends WxMessageBody> {
     @XmlJavaTypeAdapter(WxXmlAdapters.MsgTypeAdaptor.class)
     @XmlElement(name = "MsgType", required = true)
     @JsonProperty("msgtype")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Type messageType;
 
     public Type getMessageType() {
@@ -254,6 +262,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public WxUserMessage.UserMessageBuilder toUser() {
             return new WxUserMessage.UserMessageBuilder(this);
+        }
+
+
+        public WxTemplateMessage.TemplateMessageBuilder toTemplate() {
+            return new WxTemplateMessage.TemplateMessageBuilder((TemplateBuilder) this);
         }
 
         public WxGroupMessage.GroupMessageBuilder toGroup() {
@@ -603,6 +616,79 @@ public class WxMessage<T extends WxMessageBody> {
     public static class News {
         public static NewsBuilder builder() {
             return newsBuilder();
+        }
+    }
+
+
+
+
+    public static class TemplateBuilder extends WxMessage.Builder<TemplateBuilder, WxMessageBody.Template> {
+
+        TemplateBuilder() {
+            super();
+            this.msgType(Type.TEMPLATE);
+            this.body(new WxMessageBody.Template());
+        }
+
+        public TemplateBuilder body(WxMessageBody.Template.TemplateDate first, WxMessageBody.Template.TemplateDate keynote1, WxMessageBody.Template.TemplateDate keynote2,
+                                 WxMessageBody.Template.TemplateDate keynote3, WxMessageBody.Template.TemplateDate keynote4, WxMessageBody.Template.TemplateDate keynote5,
+                                 WxMessageBody.Template.TemplateDate remark) {
+            this.body.first = first;
+            this.body.keynote1 = keynote1;
+            this.body.keynote2 = keynote2;
+            this.body.keynote3 = keynote3;
+            this.body.keynote4 = keynote4;
+            this.body.keynote5 = keynote5;
+            this.body.remark = remark;
+
+            return this;
+        }
+
+        public TemplateBuilder first(WxMessageBody.Template.TemplateDate first) {
+            this.body.first = first;
+            return this;
+        }
+        public TemplateBuilder keynote1(WxMessageBody.Template.TemplateDate keynote1) {
+            this.body.keynote1 = keynote1;
+            return this;
+        }
+        public TemplateBuilder keynote2(WxMessageBody.Template.TemplateDate keynote2) {
+            this.body.keynote2 = keynote2;
+            return this;
+        }
+        public TemplateBuilder keynote3(WxMessageBody.Template.TemplateDate keynote3) {
+            this.body.keynote3 = keynote3;
+            return this;
+        }
+        public TemplateBuilder keynote4(WxMessageBody.Template.TemplateDate keynote4) {
+            this.body.keynote4 = keynote4;
+            return this;
+        }
+        public TemplateBuilder keynote5(WxMessageBody.Template.TemplateDate keynote5) {
+            this.body.keynote5 = keynote5;
+            return this;
+        }
+        public TemplateBuilder remark(WxMessageBody.Template.TemplateDate remark) {
+            this.body.remark = remark;
+            return this;
+        }
+
+        public String toString() {
+            return "com.example.myproject.module.message.WxMessage.Template.Builder(body=" + this.body + ")";
+        }
+    }
+
+
+    public static TemplateBuilder templateBuilder() {
+        return new TemplateBuilder();
+    }
+
+    /**
+     * 模板消息
+     */
+    public static class Template {
+        public static TemplateBuilder builder() {
+            return templateBuilder();
         }
     }
 
