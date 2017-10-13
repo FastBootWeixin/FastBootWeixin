@@ -23,6 +23,8 @@ import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
@@ -54,9 +56,11 @@ public class WxApp {
     @Autowired
     WxMediaManager wxMediaManager;
 
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
     }
+
 
     /**
      * 定义微信菜单
@@ -81,6 +85,7 @@ public class WxApp {
             order = WxButton.Order.FIRST,
             name = "文本消息")
     public WxMessage leftFirst(WxRequest wxRequest, WxUser wxUser) {
+
         return WxMessage.Text.builder().content("测试文本消息").build();
     }
 
@@ -182,6 +187,21 @@ public class WxApp {
     public WxMessage groupMessage(String content) {
         String tagId = content.substring("群发".length());
         return WxMessage.Text.builder().content("pKS9_xJ6hvk4uLPOsHNPmnVRw0vE").toGroup(Integer.parseInt(tagId)).build();
+    }
+
+
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "模板*")
+    public String templateMessage(String content) {
+        WxTemplateMessage templateMessage =WxMessage.Template.builder()
+                .keynote1(WxMessageBody.Template.TemplateDate.builder().value("1324.76").color("#FF0000").build())
+                .keynote2(WxMessageBody.Template.TemplateDate.builder().value("2017-10-25").color("#0000FF").build())
+                .toTemplate()
+                .templateId("t-nZAoDAtxzHt_qkao906A4ohITGM2UXc9iapSK_zLc")
+                .toUser("ouLdp0X-VsXIW7pvthnUVkwC-xwU")
+                .url("http://www.baidu.com")
+                .build();
+        wxApiInvokeSpi.sendTemplateMessage(templateMessage);
+        return "模板消息已发送";
     }
 
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
