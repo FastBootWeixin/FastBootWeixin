@@ -24,6 +24,7 @@ import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
@@ -55,6 +56,9 @@ public class WxApp {
 
     @Autowired
     WxMediaManager wxMediaManager;
+
+    @Autowired
+    WxMessageTemplate wxMessageTemplate;
 
 
     public static void main(String[] args) throws Exception {
@@ -142,6 +146,17 @@ public class WxApp {
     }
 
     /**
+     * 接受微信事件
+     *
+     * @param wxUser
+     */
+    @WxEventMapping(type = WxEvent.Type.TEMPLATESENDJOBFINISH)
+    public void template(WxRequestBody.Template template, WxUser wxUser) {
+        // 模板消息发送完成的回调
+        System.out.println(template.toString());
+    }
+
+    /**
      * 接受用户文本消息，异步返回文本消息
      *
      * @param content
@@ -196,10 +211,10 @@ public class WxApp {
                 .data("keynote1", "1324.76", "#FF0000")
                 .data("keynote2", "2017-10-25", "#0000FF")
                 .templateId("IIXwm9TJ5F-tAXPdqP7D4xL6rRK-lVwpNWlVRIsZ9Wo")
-                .toUser(text.getFromUserName())
+                .toUser("oKS9_xLsaQsSmvhSZI5EHgUHorLs")
                 .url("http://www.baidu.com")
                 .build();
-        wxApiInvokeSpi.sendTemplateMessage(templateMessage);
+        wxMessageTemplate.sendTemplateMessage(templateMessage);
         return "模板消息已发送";
     }
 
