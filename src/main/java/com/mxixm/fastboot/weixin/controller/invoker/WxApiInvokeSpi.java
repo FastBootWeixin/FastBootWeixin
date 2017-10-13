@@ -111,9 +111,9 @@ public interface WxApiInvokeSpi {
 
     void sendTemplateMessage(@WxApiBody WxTemplateMessage wxTemplateMessage);
 
-    void sendUserMessage(@WxApiBody WxUserMessage wxMessage);
+    WxTemplateMessage.Result sendUserMessage(@WxApiBody WxUserMessage wxMessage);
 
-    void sendGroupMessage(@WxApiBody WxGroupMessage wxMessage);
+    WxGroupMessage.Result sendGroupMessage(@WxApiBody WxGroupMessage wxMessage);
 
     void setMessageStatus(@WxApiBody WxUserMessage.Status status);
 
@@ -138,7 +138,7 @@ public interface WxApiInvokeSpi {
 
     WxTagUser.TagIdList listTagByUser(WxTagUser wxTagUser);
 
-    WxCard.CardResult getCards(WxCard.ListSelector listSelector);
+    WxCard.Result getCards(WxCard.ListSelector listSelector);
 
     WxCard cardInfo(WxCard.CardSelector cardSelector);
 

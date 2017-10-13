@@ -52,6 +52,8 @@ public class WxMessageTemplate {
             this.wxApiInvokeSpi.sendUserMessage((WxUserMessage) wxMessage);
         } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
             this.wxApiInvokeSpi.sendGroupMessage((WxGroupMessage) wxMessage);
+        } else if (WxTemplateMessage.class.isAssignableFrom(wxMessage.getClass())) {
+            this.wxApiInvokeSpi.sendTemplateMessage((WxTemplateMessage) wxMessage);
         } else {
             logger.error("不能处理的消息类型" + wxMessage);
         }
@@ -116,6 +118,15 @@ public class WxMessageTemplate {
         wxGroupMessage.filter = null;
         wxGroupMessage.toUsers = toUsers;
         this.sendMessage(wxMessage);
+    }
+
+    public void sendTemplateMessage(WxTemplateMessage wxTemplateMessage) {
+        this.sendMessage(wxTemplateMessage);
+    }
+
+    public void sendTemplateMessage(String toUser, WxTemplateMessage wxTemplateMessage) {
+        wxTemplateMessage.setToUser(toUser);
+        this.sendMessage(wxTemplateMessage);
     }
 
 }

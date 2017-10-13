@@ -5,7 +5,7 @@
 
     <groupId>com.mxixm</groupId>
     <artifactId>fastboot-weixin</artifactId>
-    <version>0.2.0.alpha</version>
+    <version>0.2.1.alpha</version>
     <packaging>jar</packaging>
 
     <name>FastBootWeixin</name>
@@ -29,6 +29,17 @@
             <id>guangshan</id>
             <name>HikariShine</name>
             <email>guangshan1992 at qq.com</email>
+            <organization>Guangshan Technology, Inc.</organization>
+            <organizationUrl>https://github.com/FastBootWeixin/FastBootWeixin</organizationUrl>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+        <developer>
+            <id>liguopeng</id>
+            <name>Li Guopeng</name>
+            <email>375062849@qq.com</email>
             <organization>Guangshan Technology, Inc.</organization>
             <organizationUrl>https://github.com/FastBootWeixin/FastBootWeixin</organizationUrl>
             <roles>

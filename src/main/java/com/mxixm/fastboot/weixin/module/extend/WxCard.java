@@ -1287,7 +1287,7 @@ public class WxCard {
     /**
      * 卡券列表
      */
-    public static class CardResult {
+    public static class Result {
 
         @JsonProperty("errcode")
         private Integer errorCode;

@@ -16,55 +16,50 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.xml.bind.annotation.XmlElement;
 
 /**
  * fastboot-weixin  WxGroupMessage
  *
- * @author Guangshan
+ * @author LGP
  * @date 2017/9/24 14:25
- * @since 0.1.3
+ * @since 0.2.1
  */
 public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
 
     /**
      * 消息的基础字段
-     * 开发者微信号
+     * 发送方帐号（一个OpenID）
      */
-    @XmlElement(name = "ToUserName", required = true)
     @JsonProperty("touser")
     protected String toUser;
 
     /**
-     * 消息的基础字段
-     * 发送方帐号（一个OpenID）
+     * 模板ID
      */
-    @XmlElement(name = "FromUserName", required = true)
-    @JsonIgnore
-    protected String fromUser;
-
-
-    @XmlElement(name = "TemplateId", required = true)
     @JsonProperty("template_id")
     protected String templateId;
 
-
+    /**
+     * 模板跳转链接
+     */
     @JsonProperty("url")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected String url;
 
-
-    @JsonProperty("miniprogram")
+    /**
+     * 跳小程序所需数据，不需跳小程序可不用传该数据
+     */
+    @JsonProperty("miniProgram")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    protected Miniprogram miniprogram;
+    protected MiniProgram miniProgram;
 
+    /**
+     * 模板数据
+     */
     @JsonProperty("data")
     protected WxMessageBody.Template body;
-
 
     @Override
     public WxMessageBody.Template getBody() {
@@ -76,35 +71,43 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
         this.body = body;
     }
 
+    public String getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
+    }
+
     /**
      * 消息模板链接的小程序
      */
-    protected static class Miniprogram{
+    protected static class MiniProgram {
+        /**
+         * 所需跳转到的小程序appid（该小程序appid必须与发模板消息的公众号是绑定关联关系）
+         */
         @JsonProperty("appid" )
         protected String appId;
+        /**
+         * 所需跳转到小程序的具体页面路径，支持带参数,（示例index?foo=bar）
+         */
         @JsonProperty("pagepath")
         protected String pagePath;
 
-        public Miniprogram(String appId, String pagePath) {
+        public MiniProgram(String appId, String pagePath) {
             this.appId = appId;
             this.pagePath = pagePath;
         }
 
-        public Miniprogram() {
-        }
     }
 
     public static class TemplateMessageBuilder {
 
-        protected TemplateBuilder builder;//
+        protected WxMessageBody.Template body = new WxMessageBody.Template();//
         protected String toUser;
         protected String templateId;
         protected String url;
-        protected Miniprogram miniprogram ;
-
-        TemplateMessageBuilder(TemplateBuilder builder) {
-            this.builder =  builder;
-        }
+        protected MiniProgram miniProgram;
 
         public TemplateMessageBuilder templateId(String templateId) {
             this.templateId = templateId;
@@ -120,25 +123,75 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
             return this;
         }
 
-        public TemplateMessageBuilder miniprogram(String appId,String pagePath) {
-            this.miniprogram = new Miniprogram(appId,pagePath);
+        public TemplateMessageBuilder miniProgram(String appId, String pagePath) {
+            this.miniProgram = new MiniProgram(appId,pagePath);
             return this;
         }
 
+        public TemplateMessageBuilder data(String name, String value, String color) {
+            WxMessageBody.Template.TemplateData data = new  WxMessageBody.Template.TemplateData(value, color);
+            this.body.put(name, data);
+            return this;
+        }
 
+        public TemplateMessageBuilder data(String name, String value) {
+            WxMessageBody.Template.TemplateData data = new  WxMessageBody.Template.TemplateData(value);
+            this.body.put(name, data);
+            return this;
+        }
 
         public WxTemplateMessage build() {
             WxTemplateMessage templateMessage = new WxTemplateMessage();
-            templateMessage.setBody( builder.body);
+            templateMessage.setBody(body);
             templateMessage.toUser = toUser;
             templateMessage.templateId = templateId;
             templateMessage.url = url;
-            templateMessage.miniprogram = miniprogram;
+            templateMessage.miniProgram = miniProgram;
             return templateMessage;
         }
 
     }
 
+    /**
+     * 模板消息结果
+     */
+    public static class Result {
 
+        @JsonProperty("errcode")
+        private Integer errorCode;
+
+        @JsonProperty("errmsg")
+        private String errorMessage;
+
+        /**
+         * 消息发送任务的ID
+         */
+        @JsonProperty("msg_id")
+        private Long messageId;
+
+        public Integer getErrorCode() {
+            return errorCode;
+        }
+
+        public void setErrorCode(Integer errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        public Long getMessageId() {
+            return messageId;
+        }
+
+        public void setMessageId(Long messageId) {
+            this.messageId = messageId;
+        }
+    }
 
 }

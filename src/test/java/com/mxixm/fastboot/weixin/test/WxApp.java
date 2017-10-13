@@ -191,13 +191,12 @@ public class WxApp {
 
 
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "模板*")
-    public String templateMessage(String content) {
-        WxTemplateMessage templateMessage =WxMessage.Template.builder()
-                .keynote1(WxMessageBody.Template.TemplateDate.builder().value("1324.76").color("#FF0000").build())
-                .keynote2(WxMessageBody.Template.TemplateDate.builder().value("2017-10-25").color("#0000FF").build())
-                .toTemplate()
-                .templateId("t-nZAoDAtxzHt_qkao906A4ohITGM2UXc9iapSK_zLc")
-                .toUser("ouLdp0X-VsXIW7pvthnUVkwC-xwU")
+    public String templateMessage(WxRequestBody.Text text) {
+        WxTemplateMessage templateMessage = WxMessage.templateBuilder()
+                .data("keynote1", "1324.76", "#FF0000")
+                .data("keynote2", "2017-10-25", "#0000FF")
+                .templateId("IIXwm9TJ5F-tAXPdqP7D4xL6rRK-lVwpNWlVRIsZ9Wo")
+                .toUser(text.getFromUserName())
                 .url("http://www.baidu.com")
                 .build();
         wxApiInvokeSpi.sendTemplateMessage(templateMessage);

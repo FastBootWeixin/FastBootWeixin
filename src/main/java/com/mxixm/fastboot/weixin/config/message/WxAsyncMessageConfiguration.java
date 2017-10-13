@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
+import com.mxixm.fastboot.weixin.module.message.WxTemplateMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.processer.*;
 import com.mxixm.fastboot.weixin.module.message.processer.group.WxGroupNewsMessageProcesser;
@@ -78,6 +79,7 @@ public class WxAsyncMessageConfiguration {
         List<WxMessageProcesser> list = new ArrayList<>();
 
         list.add(new WxUserMessageProcesser());
+        list.add(new WxTemplateMessageProcesser());
 
         list.add(new WxImageMessageProcesser(wxMediaManager));
         list.add(new WxVoiceMessageProcesser(wxMediaManager));

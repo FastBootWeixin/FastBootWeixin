@@ -21,7 +21,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.xml.bind.annotation.*;
-import java.util.List;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * fastboot-weixin  WxMessageBody
@@ -586,171 +589,6 @@ public class WxMessageBody {
     }
 
 
-    public static class Template extends WxMessageBody {
-
-        @JsonProperty("first")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate first;
-
-        @JsonProperty("keynote1")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate keynote1;
-
-        @JsonProperty("keynote2")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate keynote2;
-
-        @JsonProperty("keynote3")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate keynote3;
-
-        @JsonProperty("keynote4")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate keynote4;
-
-        @JsonProperty("keynote5")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate keynote5;
-
-        @JsonProperty("remark")
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        protected TemplateDate remark;
-
-
-        public Template(TemplateDate first, TemplateDate keynote1, TemplateDate keynote2, TemplateDate keynote3, TemplateDate keynote4, TemplateDate keynote5, TemplateDate remark) {
-            this.first = first;
-            this.keynote1 = keynote1;
-            this.keynote2 = keynote2;
-            this.keynote3 = keynote3;
-            this.keynote4 = keynote4;
-            this.keynote5 = keynote5;
-            this.remark = remark;
-        }
-
-        public Template() {
-        }
-
-        public TemplateDate getFirst() {
-            return first;
-        }
-
-        public void setFirst(TemplateDate first) {
-            this.first = first;
-        }
-
-        public TemplateDate getKeynote1() {
-            return keynote1;
-        }
-
-        public void setKeynote1(TemplateDate keynote1) {
-            this.keynote1 = keynote1;
-        }
-
-        public TemplateDate getKeynote2() {
-            return keynote2;
-        }
-
-        public void setKeynote2(TemplateDate keynote2) {
-            this.keynote2 = keynote2;
-        }
-
-        public TemplateDate getKeynote3() {
-            return keynote3;
-        }
-
-        public void setKeynote3(TemplateDate keynote3) {
-            this.keynote3 = keynote3;
-        }
-
-        public TemplateDate getKeynote4() {
-            return keynote4;
-        }
-
-        public void setKeynote4(TemplateDate keynote4) {
-            this.keynote4 = keynote4;
-        }
-
-        public TemplateDate getKeynote5() {
-            return keynote5;
-        }
-
-        public void setKeynote5(TemplateDate keynote5) {
-            this.keynote5 = keynote5;
-        }
-
-        public TemplateDate getRemark() {
-            return remark;
-        }
-
-        public void setRemark(TemplateDate remark) {
-            this.remark = remark;
-        }
-
-        public static class TemplateDate {
-            @JsonProperty("value")
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            protected String value;
-            @JsonProperty("color")
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            protected String color;
-
-            public TemplateDate(String value, String color) {
-                this.value = value;
-                this.color = color;
-            }
-
-            public TemplateDate() {
-            }
-
-            public String getValue() {
-                return value;
-            }
-
-            public void setValue(String value) {
-                this.value = value;
-            }
-
-            public String getColor() {
-                return color;
-            }
-
-            public void setColor(String color) {
-                this.color = color;
-            }
-
-            public static Builder builder() {
-                return new Builder();
-            }
-            public static class Builder {
-                private String value;
-                private String color;
-
-                public Builder() {
-                }
-
-                public Builder value(String value) {
-                    this.value = value;
-                    return this;
-                }
-
-                public Builder color(String color) {
-                    this.color = color;
-                    return this;
-                }
-
-                public TemplateDate build() {
-                    return new TemplateDate(value,color);
-                }
-
-                public String toString() {
-                    return "com.example.myproject.module.message.WxMessage.Template.TemplateDate.TemplateDateBuilder(value=" + this.value + ", color=" + this.color + ")";
-                }
-            }
-
-
-        }
-    }
-
 
     @XmlType(name = "MpNewsBody")
     @XmlAccessorType(XmlAccessType.NONE)
@@ -813,6 +651,113 @@ public class WxMessageBody {
 
     }
 
+    /**
+     * 模板消息体
+     */
+    public static class Template extends WxMessageBody implements Map<String, Template.TemplateData> {
+
+        private Map<String, TemplateData> templateDateMap = new HashMap<>();
+
+        public int size() {
+            return templateDateMap.size();
+        }
+
+        public TemplateData get(Object key) {
+            return templateDateMap.get(key);
+        }
+
+        public Set<Map.Entry<String, TemplateData>> entrySet() {
+            return templateDateMap.entrySet();
+        }
+
+        public void putAll(Map<? extends String, ? extends TemplateData> m) {
+            templateDateMap.putAll(m);
+        }
+
+        public boolean containsKey(Object key) {
+            return templateDateMap.containsKey(key);
+        }
+
+        public TemplateData put(String key, TemplateData value) {
+            return templateDateMap.put(key, value);
+        }
+
+        public void clear() {
+            templateDateMap.clear();
+        }
+
+        public TemplateData remove(Object key) {
+            return templateDateMap.remove(key);
+        }
+
+        public boolean containsValue(Object value) {
+            return templateDateMap.containsValue(value);
+        }
+
+        public Set<String> keySet() {
+            return templateDateMap.keySet();
+        }
+
+        public boolean isEmpty() {
+            return templateDateMap.isEmpty();
+        }
+
+        public Collection<TemplateData> values() {
+            return templateDateMap.values();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return templateDateMap.equals(o);
+        }
+
+        @Override
+        public int hashCode() {
+            return templateDateMap.hashCode();
+        }
+
+        public static class TemplateData {
+
+            /**
+             * 值
+             */
+            @JsonProperty("value")
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            protected String value;
+
+            /**
+             * 模板内容字体颜色，不填默认为黑色
+             */
+            @JsonProperty("color")
+            @JsonInclude(JsonInclude.Include.NON_NULL)
+            protected String color;
+
+            public TemplateData(String value, String color) {
+                this.value = value;
+                this.color = color;
+            }
+
+            public TemplateData(String value) {
+                this.value = value;
+            }
+
+            public String getValue() {
+                return value;
+            }
+
+            public void setValue(String value) {
+                this.value = value;
+            }
+
+            public String getColor() {
+                return color;
+            }
+
+            public void setColor(String color) {
+                this.color = color;
+            }
+        }
+    }
 
 
 }

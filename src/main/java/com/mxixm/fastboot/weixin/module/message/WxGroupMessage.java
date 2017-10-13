@@ -265,4 +265,80 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
         }
     }
 
+    /**
+     * 群发消息结果
+     */
+    public static class Result {
+
+        @JsonProperty("errcode")
+        private Integer errorCode;
+
+        @JsonProperty("errmsg")
+        private String errorMessage;
+
+        /**
+         * 消息发送任务的ID
+         */
+        @JsonProperty("msg_id")
+        private Long messageId;
+
+        /**
+         * 消息的数据ID，，该字段只有在群发图文消息时，才会出现。可以用于在图文分析数据接口中，
+         * 获取到对应的图文消息的数据，是图文分析数据接口中的msgid字段中的前半部分，详见图文分析数据接口中的msgid字段的介绍
+         */
+        @JsonProperty("msg_data_id")
+        private Long messageDataId;
+
+        @JsonProperty("msg_status")
+        private Status messageStatus;
+
+        public Integer getErrorCode() {
+            return errorCode;
+        }
+
+        public void setErrorCode(Integer errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        public Long getMessageId() {
+            return messageId;
+        }
+
+        public void setMessageId(Long messageId) {
+            this.messageId = messageId;
+        }
+
+        public Long getMessageDataId() {
+            return messageDataId;
+        }
+
+        public void setMessageDataId(Long messageDataId) {
+            this.messageDataId = messageDataId;
+        }
+
+        public Status getMessageStatus() {
+            return messageStatus;
+        }
+
+        public void setMessageStatus(Status messageStatus) {
+            this.messageStatus = messageStatus;
+        }
+
+        public enum Status {
+            SEND_SUCCESS,
+            SENDING,
+            SEND_FAIL,
+            DELETE
+        }
+
+    }
+
 }
