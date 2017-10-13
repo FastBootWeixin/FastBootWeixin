@@ -86,7 +86,7 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
         /**
          * 所需跳转到的小程序appid（该小程序appid必须与发模板消息的公众号是绑定关联关系）
          */
-        @JsonProperty("appid" )
+        @JsonProperty("appid")
         protected String appId;
         /**
          * 所需跳转到小程序的具体页面路径，支持带参数,（示例index?foo=bar）
@@ -118,24 +118,25 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
             this.toUser = toUser;
             return this;
         }
+
         public TemplateMessageBuilder url(String url) {
             this.url = url;
             return this;
         }
 
         public TemplateMessageBuilder miniProgram(String appId, String pagePath) {
-            this.miniProgram = new MiniProgram(appId,pagePath);
+            this.miniProgram = new MiniProgram(appId, pagePath);
             return this;
         }
 
         public TemplateMessageBuilder data(String name, String value, String color) {
-            WxMessageBody.Template.TemplateData data = new  WxMessageBody.Template.TemplateData(value, color);
+            WxMessageBody.Template.TemplateData data = new WxMessageBody.Template.TemplateData(value, color);
             this.body.put(name, data);
             return this;
         }
 
         public TemplateMessageBuilder data(String name, String value) {
-            WxMessageBody.Template.TemplateData data = new  WxMessageBody.Template.TemplateData(value);
+            WxMessageBody.Template.TemplateData data = new WxMessageBody.Template.TemplateData(value);
             this.body.put(name, data);
             return this;
         }
