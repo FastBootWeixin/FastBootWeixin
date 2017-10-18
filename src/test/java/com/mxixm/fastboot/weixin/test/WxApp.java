@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +145,31 @@ public class WxApp {
     public void unsubscribe(WxRequest wxRequest, WxUser wxUser) {
         System.out.println(wxUser.getNickName() + "退订了公众号");
     }
+
+    /**
+     * 接受微信事件
+     *
+     * @param wxRequest
+     * @param wxUser
+     */
+    @WxEventMapping(type = WxEvent.Type.SUBSCRIBE)
+    public String subscribe(WxRequest wxRequest, WxUser wxUser) {
+        return "欢迎您关注本公众号，本公众号使用FastBootWeixin框架开发，简单极速开发微信公众号，你值得拥有";
+    }
+
+    /**
+     * 接受微信事件
+     *
+     */
+    @WxEventMapping(type = WxEvent.Type.LOCATION)
+    public WxMessage location(WxRequestBody.LocationReport location) {
+        return WxMessage.News.builder()
+                .addItem("接受到您的地理位置", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://mxixm.com")
+                .addItem("纬度" + location.getLatitude(), "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://smc24f.natappfree.cc/vendor/82")
+                .addItem("经度" + location.getLongitude(), "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2a0e54054e2fb7c0&redirect_uri=http://smc24f.natappfree.cc/vendor/82&response_type=code&scope=snsapi_base&state#wechat_redirect")
+                .build();
+    }
+
 
     /**
      * 接受微信事件

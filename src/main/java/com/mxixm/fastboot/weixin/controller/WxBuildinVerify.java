@@ -17,8 +17,11 @@
 package com.mxixm.fastboot.weixin.controller;
 
 import com.mxixm.fastboot.weixin.util.CryptUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.invoke.MethodHandles;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +36,8 @@ import java.util.stream.Stream;
  */
 public class WxBuildinVerify {
 
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
+
     private final String token;
 
     public WxBuildinVerify(String token) {
@@ -41,10 +46,14 @@ public class WxBuildinVerify {
 
     @ResponseBody
     public String verify(String signature, String timestamp, String nonce, String echostr) {
+        logger.info("======verify start======");
+        logger.info("signature:" + signature + "," + "timestamp:" + timestamp + "," + "nonce:" + nonce + "," + "echostr:" + echostr);
         String rawString = Stream.of(token, timestamp, nonce).sorted().collect(Collectors.joining());
         if (signature.equals(CryptUtils.encryptSHA1(rawString))) {
+            logger.info("======verify success end======");
             return echostr;
         }
+        logger.info("======verify failed end, and before sha1 string is " + rawString + " ======");
         return null;
     }
 

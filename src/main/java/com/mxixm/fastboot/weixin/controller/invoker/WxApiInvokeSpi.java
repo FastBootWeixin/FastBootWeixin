@@ -109,9 +109,9 @@ public interface WxApiInvokeSpi {
 
     void clearQuota(@WxApiBody String appid);
 
-    void sendTemplateMessage(@WxApiBody WxTemplateMessage wxTemplateMessage);
+    WxTemplateMessage.Result sendTemplateMessage(@WxApiBody WxTemplateMessage wxTemplateMessage);
 
-    WxTemplateMessage.Result sendUserMessage(@WxApiBody WxUserMessage wxMessage);
+    void sendUserMessage(@WxApiBody WxUserMessage wxMessage);
 
     WxGroupMessage.Result sendGroupMessage(@WxApiBody WxGroupMessage wxMessage);
 

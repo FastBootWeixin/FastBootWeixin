@@ -20,7 +20,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxBufferingInputMessageWrapper;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.Resource;

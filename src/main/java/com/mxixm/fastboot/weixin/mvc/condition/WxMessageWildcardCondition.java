@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.mvc.condition;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 

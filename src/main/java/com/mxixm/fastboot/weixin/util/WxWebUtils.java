@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.mvc;
+package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.web.WxWebUser;

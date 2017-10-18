@@ -21,7 +21,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiParamContributor;
 import com.mxixm.fastboot.weixin.controller.invoker.contributor.WxApiPathContributor;
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;

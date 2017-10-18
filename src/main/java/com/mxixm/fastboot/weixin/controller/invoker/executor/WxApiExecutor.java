@@ -25,7 +25,7 @@ import com.mxixm.fastboot.weixin.controller.invoker.annotation.WxApiRequest;
 import com.mxixm.fastboot.weixin.controller.invoker.common.ReaderInputStream;
 import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
 import com.mxixm.fastboot.weixin.util.WxAppAssert;
 import org.apache.commons.logging.Log;

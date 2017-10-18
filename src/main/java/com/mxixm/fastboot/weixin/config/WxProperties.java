@@ -45,6 +45,11 @@ public class WxProperties implements InitializingBean {
     private String appsecret;
 
     /**
+     * 微信接口配置信息里的path路径
+     */
+    private String path = "/";
+
+    /**
      * 用户在网页授权页同意授权给公众号后，微信会将授权数据传给一个回调页面，回调页面需在此域名下，以确保安全可靠
      */
     private String callbackUrl;
@@ -75,6 +80,14 @@ public class WxProperties implements InitializingBean {
         Wx.Environment.instance().setWxAppSecret(this.appsecret);
         Wx.Environment.instance().setWxToken(this.token);
         Wx.Environment.instance().setCallbackUrl(this.callbackUrl);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getToken() {

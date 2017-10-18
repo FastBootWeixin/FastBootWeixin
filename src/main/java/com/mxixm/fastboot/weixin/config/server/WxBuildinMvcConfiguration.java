@@ -94,7 +94,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     @Bean
     public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager) {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxBuildinVerify(), wxMenuManager(), wxSessionManager);
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager(), wxSessionManager);
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }

@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.web;
 
-import com.mxixm.fastboot.weixin.mvc.WxWebUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

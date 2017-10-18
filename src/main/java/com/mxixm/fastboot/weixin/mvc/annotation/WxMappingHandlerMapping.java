@@ -76,13 +76,16 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     // 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
     private final MappingRegistry mappingRegistry = new MappingRegistry();
 
+    private final String path;
+
     // 可以加一个开关功能:已经加了
     private WxMenuManager wxMenuManager;
 
     private WxSessionManager wxSessionManager;
 
-    public WxMappingHandlerMapping(WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager) {
+    public WxMappingHandlerMapping(String path, WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager) {
         super();
+        this.path = (path.startsWith("/") ? "" : "/") + path;
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
         this.wxMenuManager = wxMenuManager;
         this.wxSessionManager = wxSessionManager;
@@ -93,7 +96,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         // 只接受根目录的请求
-        if (!"/".equals(lookupPath)) {
+        if (!path.equals(lookupPath)) {
             return null;
         }
         if (isWxVerifyRequest(request)) {
