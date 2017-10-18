@@ -242,6 +242,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return info;
     }
 
+    @Override
+    protected HandlerMethod createHandlerMethod(Object handler, Method method) {
+        return new HandlerMethod(handler, method);
+    }
+
     private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
         WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
         // 由于这个机制，所以无法为同一个方法绑定多个WxButton、WxEventMapping、WxMessageMapping
