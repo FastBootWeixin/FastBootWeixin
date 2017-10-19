@@ -109,7 +109,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
     @Override
     protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) throws Exception {
         HttpServletRequest servletRequest = request.getNativeRequest(HttpServletRequest.class);
-        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(servletRequest);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
         // 类型匹配，直接返回
         if (parameter.getParameterType() == WxRequest.class) {
             return wxRequest;

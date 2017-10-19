@@ -93,7 +93,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
             return body;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(servletRequest);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
         WxUserMessage text = WxMessage.Text.builder().content(body).build();
         return parseXml(wxMessageProcesser.process(wxRequest, text));
     }

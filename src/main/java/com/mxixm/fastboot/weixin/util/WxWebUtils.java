@@ -19,12 +19,13 @@ package com.mxixm.fastboot.weixin.util;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.core.io.InputStreamSource;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Random;
 
 /**
  * FastBootWeixin WxWebUtils
@@ -43,16 +44,16 @@ public class WxWebUtils {
 
     public static final String WX_SESSION_USER = "WX_SESSION_USER";
 
-    public static void setWxRequestToRequestAttribute(HttpServletRequest request, WxRequest wxRequest) {
+    public static void setWxRequestToRequest(HttpServletRequest request, WxRequest wxRequest) {
         request.setAttribute(WX_REQUEST_ATTRIBUTE, wxRequest);
     }
 
-    public static WxRequest getWxRequestFromRequestAttribute(HttpServletRequest request) {
+    public static WxRequest getWxRequestFromRequest(HttpServletRequest request) {
         return (WxRequest) request.getAttribute(WX_REQUEST_ATTRIBUTE);
     }
 
-    public static WxRequest.Body getWxRequestBodyFromRequestAttribute(HttpServletRequest request) {
-        WxRequest wxRequest = getWxRequestFromRequestAttribute(request);
+    public static WxRequest.Body getWxRequestBodyFromRequest(HttpServletRequest request) {
+        WxRequest wxRequest = getWxRequestFromRequest(request);
         if (wxRequest == null) {
             return null;
         }
@@ -81,25 +82,46 @@ public class WxWebUtils {
                 InputStreamSource.class.isAssignableFrom(paramType));
     }
 
-
     /**
-     * hello world
-     *
-     * @param args
+     * 同上面方法，不过request从RequestContextHolder中取
+     * @param wxRequest
      */
-    public static void main1(String... args) {
-        System.out.println(randomString(-229985452) + ' ' + randomString(-147909649));
+    public static void setWxRequestToRequest(WxRequest wxRequest) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            requestAttributes.setAttribute(WX_REQUEST_ATTRIBUTE, wxRequest, RequestAttributes.SCOPE_REQUEST);
+        }
     }
 
-    public static String randomString(int seed) {
-        Random rand = new Random(seed);
-        StringBuilder sb = new StringBuilder();
-        while (true) {
-            int n = rand.nextInt(27);
-            if (n == 0) break;
-            sb.append((char) ('`' + n));
+    public static WxRequest getWxRequestFromRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            return (WxRequest) requestAttributes.getAttribute(WX_REQUEST_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         }
-        return sb.toString();
+        return null;
+    }
+
+    public static WxRequest.Body getWxRequestBodyFromRequest() {
+        WxRequest wxRequest = getWxRequestFromRequest();
+        if (wxRequest == null) {
+            return null;
+        }
+        return wxRequest.getBody();
+    }
+
+    public static void setWxWebUserToSession(WxWebUser wxWebUser) {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            requestAttributes.setAttribute(WX_SESSION_USER, wxWebUser, RequestAttributes.SCOPE_SESSION);
+        }
+    }
+
+    public static WxWebUser getWxWebUserFromSession() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null) {
+            return (WxWebUser) requestAttributes.getAttribute(WX_SESSION_USER, RequestAttributes.SCOPE_SESSION);
+        }
+        return null;
     }
 
 }

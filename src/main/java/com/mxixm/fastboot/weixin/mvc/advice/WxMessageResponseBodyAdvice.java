@@ -77,7 +77,7 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
             return body;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequestAttribute(servletRequest);
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
         return wxMessageProcesser.process(wxRequest, body);
     }
 

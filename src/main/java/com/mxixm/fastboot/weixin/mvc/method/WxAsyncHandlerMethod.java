@@ -16,22 +16,26 @@
 
 package com.mxixm.fastboot.weixin.mvc.method;
 
-import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
+import com.mxixm.fastboot.weixin.exception.WxApiException;
+import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import org.springframework.beans.BeanUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.method.HandlerMethod;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * fastboot-weixin  WxAsyncHandlerMethod
- * 做成异步消息队列
+ * 记录下拦截的过程，本来是不打算使用动态代理来实现的
+ * 重写HandlerMethod类，在调用时获取被包装过的method和object，调用invoke直接返回，异步再调用真实method
+ * 但是刚开始就出现了意料外的情况，因为Spring框架的ServletInvocableHandlerMethod(HandlerMethod handlerMethod)是这样构造出来的
+ * 直接使用了handlerMethod里的原变量，所以我这里重写get是无效的，而且是final。无奈只能强制用反射设置了值。
+ * 结果又出现了坑，因为我这个invoke接受Object...作为参数，我以为Method.invoke传入object[]，在这里是可以接收的。
+ * 其实是不行的，method.invoke接收Object...之后，参数取出来为Object[]，而在真实调用时，又会把Object[]解析为一个一个的参数。
+ * 而我的invoke方法接收Object...，其实是只有一个参数的，参数类型是数组。而上面invoke把Object[]解析为一个一个参数，而不是整体作为一个参数。于是就挂了
  *
  * @author Guangshan
  * @date 2017/10/18 22:40
@@ -39,60 +43,68 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class WxAsyncHandlerMethod extends HandlerMethod {
 
-    private WxRequest wxRequest;
+    private final WxAsyncMethodHolder wxAsyncMethodHolder;
 
-    // 异步执行器
-    private ThreadPoolExecutor asyncExecutor;
+    public final static Method INVOKE_METHOD = ClassUtils.getMethod(WxAsyncMethodHolder.class, "invoke", (Class<?>[]) null);
 
-    // 封装一个单独的类用于包装asyncExecutor、wxMessageTemplate等
-    private WxMessageTemplate wxMessageTemplate;
-
-    private final Method delegateMethod = ClassUtils.getMethod(AsyncMethod.class, "call", (Class<?>[]) null);
-
-    // 代理对象
-    private AsyncMethod asyncMethod;
-
-    /**
-     * 参考spring的异步怎么做的
-     */
-    public WxAsyncHandlerMethod(WxRequest wxRequest, ThreadPoolExecutor asyncExecutor, Object bean, Method method) {
+    public WxAsyncHandlerMethod(Object bean, Method method, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
         super(bean, method);
-        this.wxRequest = wxRequest;
-        this.asyncExecutor = asyncExecutor;
-        this.asyncMethod = new AsyncMethod(super.getBean(), super.getBridgedMethod());
+        this.wxAsyncMethodHolder = new WxAsyncMethodHolder(bean, method, wxAsyncMessageTemplate);
     }
 
     @Override
     protected Method getBridgedMethod() {
-        return delegateMethod;
+        return INVOKE_METHOD;
     }
 
     @Override
     public Object getBean() {
-        return asyncMethod;
+        return wxAsyncMethodHolder;
     }
 
-    private static class AsyncMethod {
+    public WxAsyncHandlerMethod init() {
 
-        private Method method;
+        Field field = null;
+        try {
+            field = HandlerMethod.class.getDeclaredField("bean");
+            field.setAccessible(true);
+            field.set(this, wxAsyncMethodHolder);
+            field = HandlerMethod.class.getDeclaredField("bridgedMethod");
+            field.setAccessible(true);
+            field.set(this, INVOKE_METHOD);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
 
-        private Object bean;
+    }
 
-        AsyncMethod(Object bean, Method method) {
+    public static class WxAsyncMethodHolder {
+
+        private final Method method;
+
+        private final Object bean;
+
+        private final WxAsyncMessageTemplate wxAsyncMessageTemplate;
+
+        public WxAsyncMethodHolder(Object bean, Method method, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
             this.bean = bean;
             this.method = method;
+            this.wxAsyncMessageTemplate = wxAsyncMessageTemplate;
         }
 
-        public void call(Object[] args) {
-            try {
-                Object returnValue = method.invoke(bean, args);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        public void invoke(Object... args) {
+            WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
+            wxAsyncMessageTemplate.send(wxRequest, () -> {
+                try {
+                    return method.invoke(bean, args);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new WxApiException(e.getMessage(), e);
+                }
+            });
         }
 
     }
+
 
 }
