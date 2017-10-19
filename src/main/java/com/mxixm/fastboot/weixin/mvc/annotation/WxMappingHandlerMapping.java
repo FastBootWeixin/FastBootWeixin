@@ -251,8 +251,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             handler = this.getApplicationContext().getAutowireCapableBeanFactory().getBean(beanName);
         }
         if (AnnotatedElementUtils.hasAnnotation(method, WxAsyncMessage.class) || AnnotatedElementUtils.hasAnnotation(handler.getClass(), WxAsyncMessage.class)) {
-            return new WxAsyncHandlerMethod(handler, method, wxAsyncMessageTemplate).init();
-            // return new HandlerMethod(handler, method);
+//            return new WxAsyncHandlerMethod(handler, method, wxAsyncMessageTemplate).init();
+             return new HandlerMethod(handler, method);
         } else {
             return new HandlerMethod(handler, method);
         }

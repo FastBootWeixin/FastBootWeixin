@@ -37,6 +37,8 @@ import java.lang.reflect.Method;
  * 其实是不行的，method.invoke接收Object...之后，参数取出来为Object[]，而在真实调用时，又会把Object[]解析为一个一个的参数。
  * 而我的invoke方法接收Object...，其实是只有一个参数的，参数类型是数组。而上面invoke把Object[]解析为一个一个参数，而不是整体作为一个参数。于是就挂了
  *
+ * 还有一个方法是重写HandlerMethodAdaptor，但是这样就有点小题大作了，还不如直接用动态代理，参考@Async
+ *
  * @author Guangshan
  * @date 2017/10/18 22:40
  * @since 0.2.1
@@ -93,7 +95,7 @@ public class WxAsyncHandlerMethod extends HandlerMethod {
             this.wxAsyncMessageTemplate = wxAsyncMessageTemplate;
         }
 
-        public void invoke(Object... args) {
+        public Object invoke(Object... args) {
             WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
             wxAsyncMessageTemplate.send(wxRequest, () -> {
                 try {
@@ -102,9 +104,7 @@ public class WxAsyncHandlerMethod extends HandlerMethod {
                     throw new WxApiException(e.getMessage(), e);
                 }
             });
+            return null;
         }
-
     }
-
-
 }
