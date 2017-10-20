@@ -19,7 +19,9 @@ package com.mxixm.fastboot.weixin.module.message.support;
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.core.MethodParameter;
@@ -64,13 +66,15 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         // 如果是iterable或者array，都作为asyncMessage消息处理
         boolean isIterableType = Iterable.class.isAssignableFrom(returnType.getParameterType());
         boolean isArrayType = returnType.getParameterType().isArray();
-        boolean isWxAsyncMessage = AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), WxAsyncMessage.class) ||
-                returnType.hasMethodAnnotation(WxAsyncMessage.class) || isIterableType || isArrayType;
+        boolean isGroupMessage = WxGroupMessage.class.isAssignableFrom(returnType.getParameterType());
+        boolean isTemplateMessage = WxTemplateMessage.class.isAssignableFrom(returnType.getParameterType());
+        // 理论上WxAsyncMessage已经被上层处理过了，这里保险起见再处理一次
+        boolean needAsyncSend = isIterableType || isArrayType || isGroupMessage || isTemplateMessage;
         Class realType = getGenericType(returnType);
         boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
         boolean isWxStringMessage = CharSequence.class.isAssignableFrom(realType) &&
                 returnType.hasMethodAnnotation(WxMapping.class);
-        return isWxAsyncMessage && (isWxMessage || isWxStringMessage);
+        return needAsyncSend && (isWxMessage || isWxStringMessage);
     }
 
     @Override

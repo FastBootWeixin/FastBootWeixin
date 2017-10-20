@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.mvc.method;
+package com.mxixm.fastboot.weixin.test.failed;
 
 import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.method.HandlerMethod;
 
@@ -28,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * fastboot-weixin  WxAsyncHandlerMethod
+ * fastboot-weixin  WxAsyncHandlerFactory
  * 记录下拦截的过程，本来是不打算使用动态代理来实现的
  * 重写HandlerMethod类，在调用时获取被包装过的method和object，调用invoke直接返回，异步再调用真实method
  * 但是刚开始就出现了意料外的情况，因为Spring框架的ServletInvocableHandlerMethod(HandlerMethod handlerMethod)是这样构造出来的
@@ -107,4 +110,5 @@ public class WxAsyncHandlerMethod extends HandlerMethod {
             return null;
         }
     }
+
 }

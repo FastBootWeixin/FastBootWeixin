@@ -49,7 +49,6 @@ import java.util.stream.Collectors;
  */
 @WxApplication
 @WxController
-@EnableAsync
 public class WxApp {
 
     @Autowired
@@ -60,9 +59,6 @@ public class WxApp {
 
     @Autowired
     WxMessageTemplate wxMessageTemplate;
-
-    @Autowired
-    TestAsync testAsync;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -105,7 +101,6 @@ public class WxApp {
             name = "点击链接")
     @WxAsyncMessage
     public WxMessage link(WxRequest wxRequest) {
-        testAsync.async("b");
         return WxMessage.Text.builder().content("点击了菜单链接").build();
     }
 

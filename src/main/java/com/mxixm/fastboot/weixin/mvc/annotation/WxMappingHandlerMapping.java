@@ -26,7 +26,8 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
-import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerMethod;
+import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
+import com.mxixm.fastboot.weixin.mvc.method.WxAsyncMethodInterceptor;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
@@ -78,11 +79,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     private final String path;
 
     // 可以加一个开关功能:已经加了
-    private WxMenuManager wxMenuManager;
+    private final WxMenuManager wxMenuManager;
 
-    private WxSessionManager wxSessionManager;
+    private final WxSessionManager wxSessionManager;
 
-    private WxAsyncMessageTemplate wxAsyncMessageTemplate;
+    private final WxAsyncMethodInterceptor wxAsyncMethodInterceptor;
 
     public WxMappingHandlerMapping(String path, WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
         super();
@@ -90,7 +91,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
         this.wxMenuManager = wxMenuManager;
         this.wxSessionManager = wxSessionManager;
-        this.wxAsyncMessageTemplate = wxAsyncMessageTemplate;
+        this.wxAsyncMethodInterceptor = new WxAsyncMethodInterceptor(wxAsyncMessageTemplate);
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
     }
 
@@ -251,8 +252,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             handler = this.getApplicationContext().getAutowireCapableBeanFactory().getBean(beanName);
         }
         if (AnnotatedElementUtils.hasAnnotation(method, WxAsyncMessage.class) || AnnotatedElementUtils.hasAnnotation(handler.getClass(), WxAsyncMessage.class)) {
-//            return new WxAsyncHandlerMethod(handler, method, wxAsyncMessageTemplate).init();
-             return new HandlerMethod(handler, method);
+//            return new WxAsyncHandlerFactory(handler, method, wxAsyncMessageTemplate);
+             return new HandlerMethod(WxAsyncHandlerFactory.createProxy(handler, wxAsyncMethodInterceptor), method);
         } else {
             return new HandlerMethod(handler, method);
         }
