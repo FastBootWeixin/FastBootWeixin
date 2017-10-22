@@ -50,14 +50,20 @@ import java.util.Map;
  */
 public class WxAsyncHandlerFactory {
 
-    public final static Map<String, Object> cache = new HashMap<>();
+    public final Map<String, Object> cache = new HashMap<>();
 
-    public static Object createProxy(Object bean, MethodInterceptor interceptor) {
+    private final WxAsyncMethodInterceptor wxAsyncMethodInterceptor;
+
+    public WxAsyncHandlerFactory(WxAsyncMessageTemplate wxAsyncMessageTemplate) {
+        wxAsyncMethodInterceptor = new WxAsyncMethodInterceptor(wxAsyncMessageTemplate);
+    }
+
+    public Object createHandler(Object bean) {
         Object proxy = cache.get(bean.getClass().getName());
         if (proxy == null) {
             ProxyFactory proxyFactory = new ProxyFactory();
             proxyFactory.setTarget(bean);
-            proxyFactory.addAdvice(interceptor);
+            proxyFactory.addAdvice(wxAsyncMethodInterceptor);
             proxy = proxyFactory.getProxy(bean.getClass().getClassLoader());
             cache.put(bean.getClass().getName(), proxy);
         }

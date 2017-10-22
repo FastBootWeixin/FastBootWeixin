@@ -27,7 +27,6 @@ import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
-import com.mxixm.fastboot.weixin.mvc.method.WxAsyncMethodInterceptor;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
@@ -72,18 +71,22 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final HandlerMethod wxVerifyMethodHandler;
 
-    // mappingRegistry同父类完全不同，故自己创建一个
-    // 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
+    /**
+     * mappingRegistry同父类完全不同，故自己创建一个
+     * 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
+     */
     private final MappingRegistry mappingRegistry = new MappingRegistry();
 
     private final String path;
 
-    // 可以加一个开关功能:已经加了
+    /**
+     * 可以加一个开关功能:已经加了
+     */
     private final WxMenuManager wxMenuManager;
 
     private final WxSessionManager wxSessionManager;
 
-    private final WxAsyncMethodInterceptor wxAsyncMethodInterceptor;
+    private final WxAsyncHandlerFactory wxAsyncHandlerFactory;
 
     public WxMappingHandlerMapping(String path, WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
         super();
@@ -91,7 +94,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
         this.wxMenuManager = wxMenuManager;
         this.wxSessionManager = wxSessionManager;
-        this.wxAsyncMethodInterceptor = new WxAsyncMethodInterceptor(wxAsyncMessageTemplate);
+        this.wxAsyncHandlerFactory = new WxAsyncHandlerFactory(wxAsyncMessageTemplate);
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
     }
 
@@ -256,8 +259,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             handler = this.getApplicationContext().getAutowireCapableBeanFactory().getBean(beanName);
         }
         if (AnnotatedElementUtils.hasAnnotation(method, WxAsyncMessage.class) || AnnotatedElementUtils.hasAnnotation(handler.getClass(), WxAsyncMessage.class)) {
-//            return new WxAsyncHandlerFactory(handler, method, wxAsyncMessageTemplate);
-             return new HandlerMethod(WxAsyncHandlerFactory.createProxy(handler, wxAsyncMethodInterceptor), method);
+            return new HandlerMethod(wxAsyncHandlerFactory.createHandler(handler), method);
         } else {
             return new HandlerMethod(handler, method);
         }
