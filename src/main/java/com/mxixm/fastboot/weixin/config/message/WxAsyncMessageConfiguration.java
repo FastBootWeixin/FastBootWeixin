@@ -27,6 +27,7 @@ import com.mxixm.fastboot.weixin.module.message.processer.*;
 import com.mxixm.fastboot.weixin.module.message.processer.group.WxGroupNewsMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.processer.user.WxUserNewsMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
+import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -60,12 +61,17 @@ public class WxAsyncMessageConfiguration {
     @Bean
     @Lazy
     public WxAsyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler() {
-        return new WxAsyncMessageReturnValueHandler(wxProperties, wxMessageTemplate());
+        return new WxAsyncMessageReturnValueHandler(wxProperties, wxAsyncMessageTemplate());
     }
 
     @Bean
     public WxMessageTemplate wxMessageTemplate() {
         return new WxMessageTemplate(wxApiInvokeSpi, wxMessageProcesser());
+    }
+
+    @Bean
+    public WxAsyncMessageTemplate wxAsyncMessageTemplate() {
+        return new WxAsyncMessageTemplate(wxProperties, wxMessageTemplate());
     }
 
     @Bean

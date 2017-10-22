@@ -68,7 +68,7 @@ public final class WxMessageWildcardCondition extends AbstractRequestCondition<W
 
     @Override
     public WxMessageWildcardCondition getMatchingCondition(HttpServletRequest request) {
-        WxRequest.Body wxRequestBody = WxWebUtils.getWxRequestBodyFromRequestAttribute(request);
+        WxRequest.Body wxRequestBody = WxWebUtils.getWxRequestBodyFromRequest(request);
         if (wxRequestBody == null || wxRequestBody.getContent() == null) {
             return null;
         }

@@ -23,7 +23,6 @@ import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
@@ -34,8 +33,8 @@ import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,6 @@ public class WxApp {
 
     @Autowired
     WxMessageTemplate wxMessageTemplate;
-
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -90,7 +88,6 @@ public class WxApp {
             order = WxButton.Order.FIRST,
             name = "文本消息")
     public WxMessage leftFirst(WxRequest wxRequest, WxUser wxUser) {
-
         return WxMessage.Text.builder().content("测试文本消息").build();
     }
 
@@ -103,7 +100,7 @@ public class WxApp {
             url = "http://baidu.com",
             name = "点击链接")
     @WxAsyncMessage
-    public WxMessage link() {
+    public WxMessage link(WxRequest wxRequest) {
         return WxMessage.Text.builder().content("点击了菜单链接").build();
     }
 

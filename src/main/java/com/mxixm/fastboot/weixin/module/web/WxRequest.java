@@ -63,7 +63,7 @@ public class WxRequest {
         this.wxSessionManager = wxSessionManager;
         // ServletWebRequest
         body = (Body) xmlConverter.read(Body.class, new ServletServerHttpRequest(request));
-        WxWebUtils.setWxRequestToRequestAttribute(request, this);
+        WxWebUtils.setWxRequestToRequest(request, this);
     }
 
     public HttpServletRequest getRawRequest() {

@@ -90,7 +90,7 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
     public Object invoke(MethodInvocation inv) throws Throwable {
         if (ReflectionUtils.isObjectMethod(inv.getMethod())) {
             if ("toString".equals(inv.getMethod().getName())) {
-                return methodCache.toString();
+                return clazz.getName();
             }
             return ReflectionUtils.invokeMethod(inv.getMethod(), inv.getThis(), inv.getArguments());
         }

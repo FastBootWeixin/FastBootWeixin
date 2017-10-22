@@ -16,7 +16,6 @@
 
 package com.mxixm.fastboot.weixin.util;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.core.io.Resource;
 
 import java.io.File;

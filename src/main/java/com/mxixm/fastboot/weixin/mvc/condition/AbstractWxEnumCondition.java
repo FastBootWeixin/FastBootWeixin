@@ -61,7 +61,7 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
 
     @Override
     public AbstractWxEnumCondition getMatchingCondition(HttpServletRequest request) {
-        return matchEnum(WxWebUtils.getWxRequestBodyFromRequestAttribute(request));
+        return matchEnum(WxWebUtils.getWxRequestBodyFromRequest(request));
     }
 
     protected abstract AbstractWxEnumCondition matchEnum(WxRequest.Body wxRequestBody);
