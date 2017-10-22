@@ -153,18 +153,27 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             mainButtons.add(button);
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof WxMenu)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof WxMenu)) {
+                return false;
+            }
             final WxMenu other = (WxMenu) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$mainButtons = this.mainButtons;
             final Object other$mainButtons = other.mainButtons;
-            if (this$mainButtons == null ? other$mainButtons != null : !this$mainButtons.equals(other$mainButtons))
+            if (this$mainButtons == null ? other$mainButtons != null : !this$mainButtons.equals(other$mainButtons)) {
                 return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -177,6 +186,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             return other instanceof WxMenu;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.menu.WxMenuManager.WxMenu(mainButtons=" + this.mainButtons + ")";
         }
@@ -190,6 +200,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         @JsonProperty("conditionalmenu")
         public List<WxMenu> conditionalWxMenu;
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.menu.WxMenuManager.WxMenus(wxMenu=" + this.wxMenu + ", conditionalWxMenu=" + this.conditionalWxMenu + ")";
         }

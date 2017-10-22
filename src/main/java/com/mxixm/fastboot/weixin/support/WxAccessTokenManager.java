@@ -22,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Instant;
+import java.util.concurrent.*;
 
 /**
  * FastBootWeixin WxAccessTokenManager
@@ -36,6 +37,11 @@ public class WxAccessTokenManager implements InitializingBean {
     private WxTokenStore wxTokenStore;
 
     private WxTokenServer wxTokenServer;
+
+    /**
+     * 守护线程timer
+     */
+    private static ExecutorService executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1), Executors.defaultThreadFactory());
 
     public WxAccessTokenManager(WxTokenServer wxTokenServer, WxTokenStore wxTokenStore) {
         this.wxTokenServer = wxTokenServer;
@@ -76,7 +82,7 @@ public class WxAccessTokenManager implements InitializingBean {
         long expireTime = wxTokenStore.getExpireTime();
         // 如果当前仍在有效期，但是在刷新期内，异步刷新，并返回当前的值
         if (now <= expireTime && expireTime <= now - tokenRedundance) {
-            new Thread(() -> this.refrestToken()).start();
+            executor.submit(() -> this.refrestToken());
             return this.wxTokenStore.getToken();
         } else if (expireTime < now) {
             return this.refrestToken();

@@ -327,6 +327,7 @@ public class WxRequestBody {
             return this;
         }
 
+        @Override
         public WxMessage.Type getMessageType() {
             return this.messageType;
         }

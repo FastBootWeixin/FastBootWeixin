@@ -170,45 +170,72 @@ public class WxProperties implements InitializingBean {
         this.server = server;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof WxProperties)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof WxProperties)) {
+            return false;
+        }
         final WxProperties other = (WxProperties) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
         final Object this$token = this.getToken();
         final Object other$token = other.getToken();
-        if (this$token == null ? other$token != null : !this$token.equals(other$token)) return false;
+        if (this$token == null ? other$token != null : !this$token.equals(other$token)) {
+            return false;
+        }
         final Object this$appid = this.getAppid();
         final Object other$appid = other.getAppid();
-        if (this$appid == null ? other$appid != null : !this$appid.equals(other$appid)) return false;
+        if (this$appid == null ? other$appid != null : !this$appid.equals(other$appid)) {
+            return false;
+        }
         final Object this$appsecret = this.getAppsecret();
         final Object other$appsecret = other.getAppsecret();
-        if (this$appsecret == null ? other$appsecret != null : !this$appsecret.equals(other$appsecret)) return false;
+        if (this$appsecret == null ? other$appsecret != null : !this$appsecret.equals(other$appsecret)) {
+            return false;
+        }
         final Object this$callbackUrl = this.getCallbackUrl();
         final Object other$callbackUrl = other.getCallbackUrl();
-        if (this$callbackUrl == null ? other$callbackUrl != null : !this$callbackUrl.equals(other$callbackUrl))
+        if (this$callbackUrl == null ? other$callbackUrl != null : !this$callbackUrl.equals(other$callbackUrl)) {
             return false;
+        }
         final Object this$invoker = this.getInvoker();
         final Object other$invoker = other.getInvoker();
-        if (this$invoker == null ? other$invoker != null : !this$invoker.equals(other$invoker)) return false;
+        if (this$invoker == null ? other$invoker != null : !this$invoker.equals(other$invoker)) {
+            return false;
+        }
         final Object this$system = this.getSystem();
         final Object other$system = other.getSystem();
-        if (this$system == null ? other$system != null : !this$system.equals(other$system)) return false;
+        if (this$system == null ? other$system != null : !this$system.equals(other$system)) {
+            return false;
+        }
         final Object this$url = this.getUrl();
         final Object other$url = other.getUrl();
-        if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+        if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
+            return false;
+        }
         final Object this$message = this.getMessage();
         final Object other$message = other.getMessage();
-        if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
+        if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
+            return false;
+        }
         final Object this$mvc = this.getMvc();
         final Object other$mvc = other.getMvc();
-        if (this$mvc == null ? other$mvc != null : !this$mvc.equals(other$mvc)) return false;
+        if (this$mvc == null ? other$mvc != null : !this$mvc.equals(other$mvc)) {
+            return false;
+        }
         final Object this$server = this.getServer();
         final Object other$server = other.getServer();
-        if (this$server == null ? other$server != null : !this$server.equals(other$server)) return false;
+        if (this$server == null ? other$server != null : !this$server.equals(other$server)) {
+            return false;
+        }
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -239,6 +266,7 @@ public class WxProperties implements InitializingBean {
         return other instanceof WxProperties;
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.config.WxProperties(token=" + this.getToken() + ", appid=" + this.getAppid() + ", appsecret=" + this.getAppsecret() + ", callbackUrl=" + this.getCallbackUrl() + ", invoker=" + this.getInvoker() + ", system=" + this.getSystem() + ", url=" + this.getUrl() + ", message=" + this.getMessage() + ", mvc=" + this.getMvc() + ", server=" + this.getServer() + ")";
     }

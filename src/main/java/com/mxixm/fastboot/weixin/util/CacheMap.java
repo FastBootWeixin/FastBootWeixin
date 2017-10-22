@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.util;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 /**
  * FastBootWeixin CacheMap
@@ -30,27 +30,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheMap<K, V> extends AbstractMap<K, V> {
 
-    // 12个小时
+    /**
+     * 12个小时
+     */
     private static final long DEFAULT_TIMEOUT = 24 * 60 * 60 * 1000;
 
     private static final Map<String, CacheMap> cacheNameMap = new ConcurrentHashMap<>();
 
-    // 十分钟扫一次缓存
+    /**
+     * 十分钟扫一次缓存
+     */
     private static final long DEFAULT_CLEAR_PERIOD = 10 * 60 * 1000;
 
-    private static TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
-            cacheNameMap.values().forEach(v -> clearTimeoutCache(v));
-        }
-    };
-
-    // 守护线程timer
-    private static Timer timer = new Timer(true);
+    /**
+     * 守护线程timer
+     */
+    private static ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(1, Executors.defaultThreadFactory());
 
     static {
         // 清理线程可优化为多个
-        timer.schedule(timerTask, DEFAULT_CLEAR_PERIOD, DEFAULT_CLEAR_PERIOD);
+        executor.scheduleAtFixedRate(
+                () -> cacheNameMap.values().forEach(v -> clearTimeoutCache(v)), DEFAULT_CLEAR_PERIOD, DEFAULT_CLEAR_PERIOD, TimeUnit.MILLISECONDS);
     }
 
     public static <K, V> Builder<K, V> builder() {
@@ -67,6 +67,34 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
             this.key = key;
             this.value = value;
             this.time = System.currentTimeMillis();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof CacheEntry)) {
+                return false;
+            }
+
+            CacheEntry<?, ?> that = (CacheEntry<?, ?>) o;
+
+            if (time != that.time) {
+                return false;
+            }
+            if (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null) {
+                return false;
+            }
+            return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (time ^ (time >>> 32));
+            result = 31 * result + (getKey() != null ? getKey().hashCode() : 0);
+            result = 31 * result + (getValue() != null ? getValue().hashCode() : 0);
+            return result;
         }
 
         @Override
@@ -246,6 +274,7 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
             return new CacheMap<>(cacheName, cacheTimeout, refreshOnRead, maxSize);
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.util.CacheMap.CacheMapBuilder(cacheTimeout=" + this.cacheTimeout + ", entryMap=" + this.entryMap + ", cacheName=" + this.cacheName + ", refreshOnRead=" + this.refreshOnRead + ", maxSize=" + this.maxSize + ")";
         }

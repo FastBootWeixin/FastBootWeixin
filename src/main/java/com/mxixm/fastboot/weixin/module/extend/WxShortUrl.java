@@ -68,6 +68,7 @@ public class WxShortUrl {
             return new WxShortUrl(action, longUrl);
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.extend.WxShortUrl.WxShortUrlBuilder(action=" + this.action + ", longUrl=" + this.longUrl + ")";
         }

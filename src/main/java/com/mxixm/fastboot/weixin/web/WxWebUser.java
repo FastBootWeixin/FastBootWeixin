@@ -115,35 +115,52 @@ public class WxWebUser implements Serializable {
         this.createTime = createTime;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof WxWebUser)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof WxWebUser)) {
+            return false;
+        }
         final WxWebUser other = (WxWebUser) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
         final Object this$accessToken = this.getAccessToken();
         final Object other$accessToken = other.getAccessToken();
-        if (this$accessToken == null ? other$accessToken != null : !this$accessToken.equals(other$accessToken))
+        if (this$accessToken == null ? other$accessToken != null : !this$accessToken.equals(other$accessToken)) {
             return false;
+        }
         final Object this$expiresIn = this.getExpiresIn();
         final Object other$expiresIn = other.getExpiresIn();
-        if (this$expiresIn == null ? other$expiresIn != null : !this$expiresIn.equals(other$expiresIn)) return false;
+        if (this$expiresIn == null ? other$expiresIn != null : !this$expiresIn.equals(other$expiresIn)) {
+            return false;
+        }
         final Object this$refreshToken = this.getRefreshToken();
         final Object other$refreshToken = other.getRefreshToken();
-        if (this$refreshToken == null ? other$refreshToken != null : !this$refreshToken.equals(other$refreshToken))
+        if (this$refreshToken == null ? other$refreshToken != null : !this$refreshToken.equals(other$refreshToken)) {
             return false;
+        }
         final Object this$openId = this.getOpenId();
         final Object other$openId = other.getOpenId();
-        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) return false;
+        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) {
+            return false;
+        }
         final Object this$scope = this.getScope();
         final Object other$scope = other.getScope();
-        if (this$scope == null ? other$scope != null : !this$scope.equals(other$scope)) return false;
+        if (this$scope == null ? other$scope != null : !this$scope.equals(other$scope)) {
+            return false;
+        }
         final Object this$createTime = this.getCreateTime();
         final Object other$createTime = other.getCreateTime();
-        if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime))
+        if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime)) {
             return false;
+        }
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -166,6 +183,7 @@ public class WxWebUser implements Serializable {
         return other instanceof WxWebUser;
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.web.WxWebUser(accessToken=" + this.getAccessToken() + ", expiresIn=" + this.getExpiresIn() + ", refreshToken=" + this.getRefreshToken() + ", openId=" + this.getOpenId() + ", scope=" + this.getScope() + ", createTime=" + this.getCreateTime() + ")";
     }

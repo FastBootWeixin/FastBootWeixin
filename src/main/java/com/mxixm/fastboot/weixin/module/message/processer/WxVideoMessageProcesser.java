@@ -38,6 +38,7 @@ public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxM
         super(wxMediaManager);
     }
 
+    @Override
     protected WxMessageBody.Video processBody(WxRequest wxRequest, WxMessageBody.Video body) {
         super.processBody(wxRequest, body);
         processVideoBody(wxRequest, body);

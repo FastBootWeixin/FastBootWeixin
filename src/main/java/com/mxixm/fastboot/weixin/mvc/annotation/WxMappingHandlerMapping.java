@@ -121,6 +121,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 && WX_POST_CONSUMES_CONDITION.getMatchingCondition(request) != null;
     }
 
+    @Override
     public Map<WxMappingInfo, HandlerMethod> getHandlerMethods() {
         this.mappingRegistry.acquireReadLock();
         try {
@@ -152,6 +153,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * 父类中只有getHandlerInternal方法有使用
      */
+    @Override
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
         this.mappingRegistry.acquireReadLock();
         try {
@@ -207,10 +209,12 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return mappingRegistry.getHandlerMessageByMessageType(wxRequestBody.getMessageType());
     }
 
+    @Override
     protected boolean isHandler(Class<?> beanType) {
         return AnnotatedElementUtils.hasAnnotation(beanType, WxController.class);
     }
 
+    @Override
     protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
         this.mappingRegistry.register(mapping, handler, method);
     }

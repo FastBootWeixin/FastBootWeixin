@@ -96,7 +96,9 @@ public class WxWebUtils {
         StringBuilder sb = new StringBuilder();
         while (true) {
             int n = rand.nextInt(27);
-            if (n == 0) break;
+            if (n == 0) {
+                break;
+            }
             sb.append((char) ('`' + n));
         }
         return sb.toString();

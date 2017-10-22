@@ -69,7 +69,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
 
     private String defaultDbPath = "weixin/media/db/store.db";
 
-    private Long tempExpired = 3 * 24 * 60 * 60 * 1000l;
+    private Long tempExpired = 3 * 24 * 60 * 60 * 1000L;
 
     /**
      * 整个查询的封装
@@ -164,7 +164,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
             return new FileSystemResource(file);
         }
         file.createNewFile();
-        file.setLastModified(new Date().getTime());
+        file.setLastModified(System.currentTimeMillis());
         FileCopyUtils.copy(mediaEntity.getResource().getInputStream(), new FileOutputStream(file));
         mediaEntity.setResourcePath(file.getAbsolutePath());
         store(mediaEntity);
@@ -349,6 +349,7 @@ public class MapDbWxMediaStore implements InitializingBean, WxMediaStore {
                 return new StoreEntity(resourcePath, resourceUrl, mediaId, mediaUrl, createdTime, modifiedTime, mediaType, storeType);
             }
 
+            @Override
             public String toString() {
                 return "com.mxixm.fastboot.weixin.support.MapDbWxMediaStore.StoreEntity.Builder(resourcePath=" + this.resourcePath + ", mediaId=" + this.mediaId + ", mediaUrl=" + this.mediaUrl + ", createdTime=" + this.createdTime + ", modifiedTime=" + this.modifiedTime + ", mediaType=" + this.mediaType + ")";
             }

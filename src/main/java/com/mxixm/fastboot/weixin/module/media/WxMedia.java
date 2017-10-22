@@ -57,17 +57,27 @@ public class WxMedia {
         this.mediaId = mediaId;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof WxMedia)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof WxMedia)) {
+            return false;
+        }
         final WxMedia other = (WxMedia) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
         final Object this$mediaId = this.getMediaId();
         final Object other$mediaId = other.getMediaId();
-        if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+        if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+            return false;
+        }
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -80,6 +90,7 @@ public class WxMedia {
         return other instanceof WxMedia;
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.module.media.WxMedia(mediaId=" + this.getMediaId() + ")";
     }
@@ -169,24 +180,37 @@ public class WxMedia {
             this.createdAt = createdAt;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof TempMediaResult)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof TempMediaResult)) {
+                return false;
+            }
             final TempMediaResult other = (TempMediaResult) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$type = this.getType();
             final Object other$type = other.getType();
-            if (this$type == null ? other$type != null : !this$type.equals(other$type)) return false;
+            if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             final Object this$createdAt = this.getCreatedAt();
             final Object other$createdAt = other.getCreatedAt();
-            if (this$createdAt == null ? other$createdAt != null : !this$createdAt.equals(other$createdAt))
+            if (this$createdAt == null ? other$createdAt != null : !this$createdAt.equals(other$createdAt)) {
                 return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -203,6 +227,7 @@ public class WxMedia {
             return other instanceof TempMediaResult;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.TempMediaResult(type=" + this.getType() + ", mediaId=" + this.getMediaId() + ", createdAt=" + this.getCreatedAt() + ")";
         }
@@ -247,20 +272,32 @@ public class WxMedia {
             this.mediaId = mediaId;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof MediaResult)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof MediaResult)) {
+                return false;
+            }
             final MediaResult other = (MediaResult) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$url = this.getUrl();
             final Object other$url = other.getUrl();
-            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -275,6 +312,7 @@ public class WxMedia {
             return other instanceof MediaResult;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.MediaResult(url=" + this.getUrl() + ", mediaId=" + this.getMediaId() + ")";
         }
@@ -304,17 +342,27 @@ public class WxMedia {
             this.url = url;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof ImageResult)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof ImageResult)) {
+                return false;
+            }
             final ImageResult other = (ImageResult) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$url = this.getUrl();
             final Object other$url = other.getUrl();
-            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -327,6 +375,7 @@ public class WxMedia {
             return other instanceof ImageResult;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.ImageResult(url=" + this.getUrl() + ")";
         }
@@ -356,17 +405,27 @@ public class WxMedia {
             this.mediaId = mediaId;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof NewsResult)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof NewsResult)) {
+                return false;
+            }
             final NewsResult other = (NewsResult) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -379,6 +438,7 @@ public class WxMedia {
             return other instanceof NewsResult;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.NewsResult(mediaId=" + this.getMediaId() + ")";
         }
@@ -431,24 +491,37 @@ public class WxMedia {
             this.downUrl = downUrl;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Video)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Video)) {
+                return false;
+            }
             final Video other = (Video) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$title = this.getTitle();
             final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
+                return false;
+            }
             final Object this$introduction = this.getIntroduction();
             final Object other$introduction = other.getIntroduction();
-            if (this$introduction == null ? other$introduction != null : !this$introduction.equals(other$introduction))
+            if (this$introduction == null ? other$introduction != null : !this$introduction.equals(other$introduction)) {
                 return false;
+            }
             final Object this$downUrl = this.getDownUrl();
             final Object other$downUrl = other.getDownUrl();
-            if (this$downUrl == null ? other$downUrl != null : !this$downUrl.equals(other$downUrl)) return false;
+            if (this$downUrl == null ? other$downUrl != null : !this$downUrl.equals(other$downUrl)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -465,6 +538,7 @@ public class WxMedia {
             return other instanceof Video;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.Video(title=" + this.getTitle() + ", introduction=" + this.getIntroduction() + ", downUrl=" + this.getDownUrl() + ")";
         }
@@ -490,6 +564,7 @@ public class WxMedia {
                 return new Video(title, introduction);
             }
 
+            @Override
             public String toString() {
                 return "com.example.myproject.module.media.WxMedia.Video.Builder(title=" + this.title + ", introduction=" + this.introduction + ")";
             }
@@ -583,6 +658,7 @@ public class WxMedia {
                 return new News(items);
             }
 
+            @Override
             public String toString() {
                 return "com.example.myproject.module.media.WxMedia.News.Builder(articles=" + this.articles + ")";
             }
@@ -646,23 +722,37 @@ public class WxMedia {
             this.article = article;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof New)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof New)) {
+                return false;
+            }
             final New other = (New) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             final Object this$index = this.getIndex();
             final Object other$index = other.getIndex();
-            if (this$index == null ? other$index != null : !this$index.equals(other$index)) return false;
+            if (this$index == null ? other$index != null : !this$index.equals(other$index)) {
+                return false;
+            }
             final Object this$article = this.getArticle();
             final Object other$article = other.getArticle();
-            if (this$article == null ? other$article != null : !this$article.equals(other$article)) return false;
+            if (this$article == null ? other$article != null : !this$article.equals(other$article)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -679,6 +769,7 @@ public class WxMedia {
             return other instanceof New;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.New(mediaId=" + this.getMediaId() + ", index=" + this.getIndex() + ", article=" + this.getArticle() + ")";
         }
@@ -710,6 +801,7 @@ public class WxMedia {
                 return new New(mediaId, index, article);
             }
 
+            @Override
             public String toString() {
                 return "com.example.myproject.module.media.WxMedia.New.Builder(mediaId=" + this.mediaId + ", index=" + this.index + ", article=" + this.article + ")";
             }
@@ -851,38 +943,60 @@ public class WxMedia {
             this.url = url;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Article)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Article)) {
+                return false;
+            }
             final Article other = (Article) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$title = this.getTitle();
             final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
+                return false;
+            }
             final Object this$thumbMediaId = this.getThumbMediaId();
             final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
                 return false;
-            if (this.isShowCoverPic() != other.isShowCoverPic()) return false;
+            }
+            if (this.isShowCoverPic() != other.isShowCoverPic()) {
+                return false;
+            }
             final Object this$content = this.getContent();
             final Object other$content = other.getContent();
-            if (this$content == null ? other$content != null : !this$content.equals(other$content)) return false;
+            if (this$content == null ? other$content != null : !this$content.equals(other$content)) {
+                return false;
+            }
             final Object this$contentSourceUrl = this.getContentSourceUrl();
             final Object other$contentSourceUrl = other.getContentSourceUrl();
-            if (this$contentSourceUrl == null ? other$contentSourceUrl != null : !this$contentSourceUrl.equals(other$contentSourceUrl))
+            if (this$contentSourceUrl == null ? other$contentSourceUrl != null : !this$contentSourceUrl.equals(other$contentSourceUrl)) {
                 return false;
+            }
             final Object this$author = this.getAuthor();
             final Object other$author = other.getAuthor();
-            if (this$author == null ? other$author != null : !this$author.equals(other$author)) return false;
+            if (this$author == null ? other$author != null : !this$author.equals(other$author)) {
+                return false;
+            }
             final Object this$digest = this.getDigest();
             final Object other$digest = other.getDigest();
-            if (this$digest == null ? other$digest != null : !this$digest.equals(other$digest)) return false;
+            if (this$digest == null ? other$digest != null : !this$digest.equals(other$digest)) {
+                return false;
+            }
             final Object this$url = this.getUrl();
             final Object other$url = other.getUrl();
-            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -908,6 +1022,7 @@ public class WxMedia {
             return other instanceof Article;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.WxMedia.Article(title=" + this.getTitle() + ", thumbMediaId=" + this.getThumbMediaId() + ", showCoverPic=" + this.isShowCoverPic() + ", content=" + this.getContent() + ", contentSourceUrl=" + this.getContentSourceUrl() + ", author=" + this.getAuthor() + ", digest=" + this.getDigest() + ", url=" + this.getUrl() + ")";
         }
@@ -969,6 +1084,7 @@ public class WxMedia {
                 return new Article(title, thumbMediaId, showCoverPic, content, contentSourceUrl, author, digest);
             }
 
+            @Override
             public String toString() {
                 return "com.example.myproject.module.media.WxMedia.Article.Builder(title=" + this.title + ", thumbMediaId=" + this.thumbMediaId + ", author=" + this.author + ", digest=" + this.digest + ", showCoverPic=" + this.showCoverPic + ", content=" + this.content + ", contentSourceUrl=" + this.contentSourceUrl + ")";
             }

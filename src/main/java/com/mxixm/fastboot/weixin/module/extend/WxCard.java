@@ -112,10 +112,10 @@ public class WxCard {
                     return groupOn;
                 case MEMBER_CARD:
                     return memberCard;
+                default:
+                    return null;
             }
-            return null;
         }
-
         /**
          * 卡券类型。
          */
@@ -1187,6 +1187,7 @@ public class WxCard {
                 return new WhiteList(openIds, usernames);
             }
 
+            @Override
             public String toString() {
                 return "com.mxixm.fastboot.weixin.module.card.WxCard.WhiteList.Builder(openIds=" + this.openIds + ", usernames=" + this.usernames + ")";
             }

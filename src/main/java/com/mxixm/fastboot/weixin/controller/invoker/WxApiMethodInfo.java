@@ -182,7 +182,7 @@ public class WxApiMethodInfo {
         if (paramCount != argCount) {
             throw new IllegalArgumentException("方法参数量为" + paramCount + " 与真实参数量不匹配，真实参数量为" + argCount);
         }
-        final Map<String, Object> uriVars = new HashMap<>();
+        final Map<String, Object> uriVars = new HashMap<>(8);
         for (int i = 0; i < paramCount; i++) {
             MethodParameter param = new SynthesizingMethodParameter(method, i);
             param.initParameterNameDiscovery(parameterNameDiscoverer);

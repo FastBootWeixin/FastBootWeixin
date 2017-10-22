@@ -678,131 +678,187 @@ public class WxRequest {
             this.msgId = msgId;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Body)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Body)) {
+                return false;
+            }
             final Body other = (Body) o;
-            if (!other.canEqual((Object) this)) return false;
+            if (!other.canEqual((Object) this)) {
+                return false;
+            }
             final Object this$toUserName = this.getToUserName();
             final Object other$toUserName = other.getToUserName();
-            if (this$toUserName == null ? other$toUserName != null : !this$toUserName.equals(other$toUserName))
+            if (this$toUserName == null ? other$toUserName != null : !this$toUserName.equals(other$toUserName)) {
                 return false;
+            }
             final Object this$fromUserName = this.getFromUserName();
             final Object other$fromUserName = other.getFromUserName();
-            if (this$fromUserName == null ? other$fromUserName != null : !this$fromUserName.equals(other$fromUserName))
+            if (this$fromUserName == null ? other$fromUserName != null : !this$fromUserName.equals(other$fromUserName)) {
                 return false;
+            }
             final Object this$createTime = this.getCreateTime();
             final Object other$createTime = other.getCreateTime();
-            if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime))
+            if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime)) {
                 return false;
+            }
             final Object this$messageType = this.getMessageType();
             final Object other$messageType = other.getMessageType();
-            if (this$messageType == null ? other$messageType != null : !this$messageType.equals(other$messageType))
+            if (this$messageType == null ? other$messageType != null : !this$messageType.equals(other$messageType)) {
                 return false;
+            }
             final Object this$category = this.getCategory();
             final Object other$category = other.getCategory();
-            if (this$category == null ? other$category != null : !this$category.equals(other$category)) return false;
+            if (this$category == null ? other$category != null : !this$category.equals(other$category)) {
+                return false;
+            }
             final Object this$eventType = this.getEventType();
             final Object other$eventType = other.getEventType();
-            if (this$eventType == null ? other$eventType != null : !this$eventType.equals(other$eventType))
+            if (this$eventType == null ? other$eventType != null : !this$eventType.equals(other$eventType)) {
                 return false;
+            }
             final Object this$buttonType = this.getButtonType();
             final Object other$buttonType = other.getButtonType();
-            if (this$buttonType == null ? other$buttonType != null : !this$buttonType.equals(other$buttonType))
+            if (this$buttonType == null ? other$buttonType != null : !this$buttonType.equals(other$buttonType)) {
                 return false;
+            }
             final Object this$eventKey = this.getEventKey();
             final Object other$eventKey = other.getEventKey();
-            if (this$eventKey == null ? other$eventKey != null : !this$eventKey.equals(other$eventKey)) return false;
+            if (this$eventKey == null ? other$eventKey != null : !this$eventKey.equals(other$eventKey)) {
+                return false;
+            }
             final Object this$menuId = this.getMenuId();
             final Object other$menuId = other.getMenuId();
-            if (this$menuId == null ? other$menuId != null : !this$menuId.equals(other$menuId)) return false;
+            if (this$menuId == null ? other$menuId != null : !this$menuId.equals(other$menuId)) {
+                return false;
+            }
             final Object this$scanCodeInfo = this.getScanCodeInfo();
             final Object other$scanCodeInfo = other.getScanCodeInfo();
-            if (this$scanCodeInfo == null ? other$scanCodeInfo != null : !this$scanCodeInfo.equals(other$scanCodeInfo))
+            if (this$scanCodeInfo == null ? other$scanCodeInfo != null : !this$scanCodeInfo.equals(other$scanCodeInfo)) {
                 return false;
+            }
             final Object this$sendPicsInfo = this.getSendPicsInfo();
             final Object other$sendPicsInfo = other.getSendPicsInfo();
-            if (this$sendPicsInfo == null ? other$sendPicsInfo != null : !this$sendPicsInfo.equals(other$sendPicsInfo))
+            if (this$sendPicsInfo == null ? other$sendPicsInfo != null : !this$sendPicsInfo.equals(other$sendPicsInfo)) {
                 return false;
+            }
             final Object this$sendLocationInfo = this.getSendLocationInfo();
             final Object other$sendLocationInfo = other.getSendLocationInfo();
-            if (this$sendLocationInfo == null ? other$sendLocationInfo != null : !this$sendLocationInfo.equals(other$sendLocationInfo))
+            if (this$sendLocationInfo == null ? other$sendLocationInfo != null : !this$sendLocationInfo.equals(other$sendLocationInfo)) {
                 return false;
+            }
             final Object this$content = this.getContent();
             final Object other$content = other.getContent();
-            if (this$content == null ? other$content != null : !this$content.equals(other$content)) return false;
+            if (this$content == null ? other$content != null : !this$content.equals(other$content)) {
+                return false;
+            }
             final Object this$picUrl = this.getPicUrl();
             final Object other$picUrl = other.getPicUrl();
-            if (this$picUrl == null ? other$picUrl != null : !this$picUrl.equals(other$picUrl)) return false;
+            if (this$picUrl == null ? other$picUrl != null : !this$picUrl.equals(other$picUrl)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             final Object this$format = this.getFormat();
             final Object other$format = other.getFormat();
-            if (this$format == null ? other$format != null : !this$format.equals(other$format)) return false;
+            if (this$format == null ? other$format != null : !this$format.equals(other$format)) {
+                return false;
+            }
             final Object this$recognition = this.getRecognition();
             final Object other$recognition = other.getRecognition();
-            if (this$recognition == null ? other$recognition != null : !this$recognition.equals(other$recognition))
+            if (this$recognition == null ? other$recognition != null : !this$recognition.equals(other$recognition)) {
                 return false;
+            }
             final Object this$thumbMediaId = this.getThumbMediaId();
             final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
                 return false;
+            }
             final Object this$locationX = this.getLocationX();
             final Object other$locationX = other.getLocationX();
-            if (this$locationX == null ? other$locationX != null : !this$locationX.equals(other$locationX))
+            if (this$locationX == null ? other$locationX != null : !this$locationX.equals(other$locationX)) {
                 return false;
+            }
             final Object this$locationY = this.getLocationY();
             final Object other$locationY = other.getLocationY();
-            if (this$locationY == null ? other$locationY != null : !this$locationY.equals(other$locationY))
+            if (this$locationY == null ? other$locationY != null : !this$locationY.equals(other$locationY)) {
                 return false;
+            }
             final Object this$scale = this.getScale();
             final Object other$scale = other.getScale();
-            if (this$scale == null ? other$scale != null : !this$scale.equals(other$scale)) return false;
+            if (this$scale == null ? other$scale != null : !this$scale.equals(other$scale)) {
+                return false;
+            }
             final Object this$label = this.getLabel();
             final Object other$label = other.getLabel();
-            if (this$label == null ? other$label != null : !this$label.equals(other$label)) return false;
+            if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
+                return false;
+            }
             final Object this$title = this.getTitle();
             final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
+                return false;
+            }
             final Object this$description = this.getDescription();
             final Object other$description = other.getDescription();
-            if (this$description == null ? other$description != null : !this$description.equals(other$description))
+            if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
                 return false;
+            }
             final Object this$url = this.getUrl();
             final Object other$url = other.getUrl();
-            if (this$url == null ? other$url != null : !this$url.equals(other$url)) return false;
+            if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
+                return false;
+            }
             final Object this$ticket = this.getTicket();
             final Object other$ticket = other.getTicket();
-            if (this$ticket == null ? other$ticket != null : !this$ticket.equals(other$ticket)) return false;
+            if (this$ticket == null ? other$ticket != null : !this$ticket.equals(other$ticket)) {
+                return false;
+            }
             final Object this$latitude = this.getLatitude();
             final Object other$latitude = other.getLatitude();
-            if (this$latitude == null ? other$latitude != null : !this$latitude.equals(other$latitude)) return false;
+            if (this$latitude == null ? other$latitude != null : !this$latitude.equals(other$latitude)) {
+                return false;
+            }
             final Object this$longitude = this.getLongitude();
             final Object other$longitude = other.getLongitude();
-            if (this$longitude == null ? other$longitude != null : !this$longitude.equals(other$longitude))
+            if (this$longitude == null ? other$longitude != null : !this$longitude.equals(other$longitude)) {
                 return false;
+            }
             final Object this$precision = this.getPrecision();
             final Object other$precision = other.getPrecision();
-            if (this$precision == null ? other$precision != null : !this$precision.equals(other$precision))
+            if (this$precision == null ? other$precision != null : !this$precision.equals(other$precision)) {
                 return false;
+            }
             final Object this$expiredTime = this.getExpiredTime();
             final Object other$expiredTime = other.getExpiredTime();
-            if (this$expiredTime == null ? other$expiredTime != null : !this$expiredTime.equals(other$expiredTime))
+            if (this$expiredTime == null ? other$expiredTime != null : !this$expiredTime.equals(other$expiredTime)) {
                 return false;
+            }
             final Object this$failTime = this.getFailTime();
             final Object other$failTime = other.getFailTime();
-            if (this$failTime == null ? other$failTime != null : !this$failTime.equals(other$failTime)) return false;
+            if (this$failTime == null ? other$failTime != null : !this$failTime.equals(other$failTime)) {
+                return false;
+            }
             final Object this$failReason = this.getFailReason();
             final Object other$failReason = other.getFailReason();
-            if (this$failReason == null ? other$failReason != null : !this$failReason.equals(other$failReason))
+            if (this$failReason == null ? other$failReason != null : !this$failReason.equals(other$failReason)) {
                 return false;
+            }
             final Object this$msgId = this.getMsgId();
             final Object other$msgId = other.getMsgId();
-            if (this$msgId == null ? other$msgId != null : !this$msgId.equals(other$msgId)) return false;
+            if (this$msgId == null ? other$msgId != null : !this$msgId.equals(other$msgId)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -879,6 +935,7 @@ public class WxRequest {
             return other instanceof Body;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody(toUser=" + this.getToUserName() + ", fromUser=" + this.getFromUserName() + ", createTime=" + this.getCreateTime() + ", messageType=" + this.getMessageType() + ", category=" + this.getCategory() + ", eventType=" + this.getEventType() + ", buttonType=" + this.getButtonType() + ", eventKey=" + this.getEventKey() + ", menuId=" + this.getMenuId() + ", scanCodeInfo=" + this.getScanCodeInfo() + ", sendPicsInfo=" + this.getSendPicsInfo() + ", sendLocationInfo=" + this.getSendLocationInfo() + ", content=" + this.getContent() + ", picUrl=" + this.getPicUrl() + ", mediaId=" + this.getMediaId() + ", format=" + this.getFormat() + ", recognition=" + this.getRecognition() + ", thumbMediaId=" + this.getThumbMediaId() + ", locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", url=" + this.getUrl() + ", ticket=" + this.getTicket() + ", latitude=" + this.getLatitude() + ", longitude=" + this.getLongitude() + ", precision=" + this.getPrecision() + ", expiredTime=" + this.getExpiredTime() + ", failTime=" + this.getFailTime() + ", failReason=" + this.getFailReason() + ", msgId=" + this.getMsgId() + ")";
         }
@@ -921,22 +978,32 @@ public class WxRequest {
                 this.scanResult = scanResult;
             }
 
+            @Override
             public boolean equals(Object o) {
-                if (o == this) return true;
-                if (!(o instanceof ScanCodeInfo)) return false;
+                if (o == this) {
+                    return true;
+                }
+                if (!(o instanceof ScanCodeInfo)) {
+                    return false;
+                }
                 final ScanCodeInfo other = (ScanCodeInfo) o;
-                if (!other.canEqual((Object) this)) return false;
+                if (!other.canEqual((Object) this)) {
+                    return false;
+                }
                 final Object this$scanType = this.getScanType();
                 final Object other$scanType = other.getScanType();
-                if (this$scanType == null ? other$scanType != null : !this$scanType.equals(other$scanType))
+                if (this$scanType == null ? other$scanType != null : !this$scanType.equals(other$scanType)) {
                     return false;
+                }
                 final Object this$scanResult = this.getScanResult();
                 final Object other$scanResult = other.getScanResult();
-                if (this$scanResult == null ? other$scanResult != null : !this$scanResult.equals(other$scanResult))
+                if (this$scanResult == null ? other$scanResult != null : !this$scanResult.equals(other$scanResult)) {
                     return false;
+                }
                 return true;
             }
 
+            @Override
             public int hashCode() {
                 final int PRIME = 59;
                 int result = 1;
@@ -951,6 +1018,7 @@ public class WxRequest {
                 return other instanceof ScanCodeInfo;
             }
 
+            @Override
             public String toString() {
                 return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.ScanCodeInfo(scanType=" + this.getScanType() + ", scanResult=" + this.getScanResult() + ")";
             }
@@ -995,20 +1063,32 @@ public class WxRequest {
                 this.picList = picList;
             }
 
+            @Override
             public boolean equals(Object o) {
-                if (o == this) return true;
-                if (!(o instanceof SendPicsInfo)) return false;
+                if (o == this) {
+                    return true;
+                }
+                if (!(o instanceof SendPicsInfo)) {
+                    return false;
+                }
                 final SendPicsInfo other = (SendPicsInfo) o;
-                if (!other.canEqual((Object) this)) return false;
+                if (!other.canEqual((Object) this)) {
+                    return false;
+                }
                 final Object this$count = this.getCount();
                 final Object other$count = other.getCount();
-                if (this$count == null ? other$count != null : !this$count.equals(other$count)) return false;
+                if (this$count == null ? other$count != null : !this$count.equals(other$count)) {
+                    return false;
+                }
                 final Object this$picList = this.getPicList();
                 final Object other$picList = other.getPicList();
-                if (this$picList == null ? other$picList != null : !this$picList.equals(other$picList)) return false;
+                if (this$picList == null ? other$picList != null : !this$picList.equals(other$picList)) {
+                    return false;
+                }
                 return true;
             }
 
+            @Override
             public int hashCode() {
                 final int PRIME = 59;
                 int result = 1;
@@ -1023,6 +1103,7 @@ public class WxRequest {
                 return other instanceof SendPicsInfo;
             }
 
+            @Override
             public String toString() {
                 return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendPicsInfo(count=" + this.getCount() + ", picList=" + this.getPicList() + ")";
             }
@@ -1047,18 +1128,27 @@ public class WxRequest {
                     this.picMd5Sum = picMd5Sum;
                 }
 
+                @Override
                 public boolean equals(Object o) {
-                    if (o == this) return true;
-                    if (!(o instanceof Item)) return false;
+                    if (o == this) {
+                        return true;
+                    }
+                    if (!(o instanceof Item)) {
+                        return false;
+                    }
                     final Item other = (Item) o;
-                    if (!other.canEqual((Object) this)) return false;
+                    if (!other.canEqual((Object) this)) {
+                        return false;
+                    }
                     final Object this$picMd5Sum = this.getPicMd5Sum();
                     final Object other$picMd5Sum = other.getPicMd5Sum();
-                    if (this$picMd5Sum == null ? other$picMd5Sum != null : !this$picMd5Sum.equals(other$picMd5Sum))
+                    if (this$picMd5Sum == null ? other$picMd5Sum != null : !this$picMd5Sum.equals(other$picMd5Sum)) {
                         return false;
+                    }
                     return true;
                 }
 
+                @Override
                 public int hashCode() {
                     final int PRIME = 59;
                     int result = 1;
@@ -1071,6 +1161,7 @@ public class WxRequest {
                     return other instanceof Item;
                 }
 
+                @Override
                 public String toString() {
                     return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendPicsInfo.Item(picMd5Sum=" + this.getPicMd5Sum() + ")";
                 }
@@ -1158,31 +1249,47 @@ public class WxRequest {
                 this.poiname = poiname;
             }
 
+            @Override
             public boolean equals(Object o) {
-                if (o == this) return true;
-                if (!(o instanceof SendLocationInfo)) return false;
+                if (o == this) {
+                    return true;
+                }
+                if (!(o instanceof SendLocationInfo)) {
+                    return false;
+                }
                 final SendLocationInfo other = (SendLocationInfo) o;
-                if (!other.canEqual((Object) this)) return false;
+                if (!other.canEqual((Object) this)) {
+                    return false;
+                }
                 final Object this$locationX = this.getLocationX();
                 final Object other$locationX = other.getLocationX();
-                if (this$locationX == null ? other$locationX != null : !this$locationX.equals(other$locationX))
+                if (this$locationX == null ? other$locationX != null : !this$locationX.equals(other$locationX)) {
                     return false;
+                }
                 final Object this$locationY = this.getLocationY();
                 final Object other$locationY = other.getLocationY();
-                if (this$locationY == null ? other$locationY != null : !this$locationY.equals(other$locationY))
+                if (this$locationY == null ? other$locationY != null : !this$locationY.equals(other$locationY)) {
                     return false;
+                }
                 final Object this$scale = this.getScale();
                 final Object other$scale = other.getScale();
-                if (this$scale == null ? other$scale != null : !this$scale.equals(other$scale)) return false;
+                if (this$scale == null ? other$scale != null : !this$scale.equals(other$scale)) {
+                    return false;
+                }
                 final Object this$label = this.getLabel();
                 final Object other$label = other.getLabel();
-                if (this$label == null ? other$label != null : !this$label.equals(other$label)) return false;
+                if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
+                    return false;
+                }
                 final Object this$poiname = this.getPoiname();
                 final Object other$poiname = other.getPoiname();
-                if (this$poiname == null ? other$poiname != null : !this$poiname.equals(other$poiname)) return false;
+                if (this$poiname == null ? other$poiname != null : !this$poiname.equals(other$poiname)) {
+                    return false;
+                }
                 return true;
             }
 
+            @Override
             public int hashCode() {
                 final int PRIME = 59;
                 int result = 1;
@@ -1203,6 +1310,7 @@ public class WxRequest {
                 return other instanceof SendLocationInfo;
             }
 
+            @Override
             public String toString() {
                 return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody.SendLocationInfo(locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", poiname=" + this.getPoiname() + ")";
             }

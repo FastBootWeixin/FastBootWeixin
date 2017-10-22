@@ -27,6 +27,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  */
 public class DefaultWxSessionIdGenerator implements WxSessionIdGenerator {
 
+    @Override
     public String generate(WxRequest wxRequest) {
         return wxRequest.getBody().getFromUserName();
     }

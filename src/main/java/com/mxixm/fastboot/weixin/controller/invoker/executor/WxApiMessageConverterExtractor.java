@@ -60,6 +60,7 @@ public class WxApiMessageConverterExtractor<T> implements WxResponseExtractor<T>
         this.messageConverters = messageConverters;
     }
 
+    @Override
     public T extractData(ResponseEntity<HttpInputMessage> responseEntity) throws IOException {
         MediaType contentType = getContentType(responseEntity);
         for (HttpMessageConverter<?> messageConverter : this.messageConverters) {

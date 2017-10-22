@@ -233,6 +233,7 @@ public class MediaQuery {
             return new MediaQuery(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, storeType);
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.MediaQuery.MediaQueryBuilder(key=" + this.key + ", resourcePath=" + this.resourcePath + ", resourceUrl=" + this.resourceUrl + ", modifiedTime=" + this.modifiedTime + ", mediaId=" + this.mediaId + ", mediaUrl=" + this.mediaUrl + ", type=" + this.type + ", createdTime=" + this.createdTime + ", isTemp=" + this.storeType + ")";
         }

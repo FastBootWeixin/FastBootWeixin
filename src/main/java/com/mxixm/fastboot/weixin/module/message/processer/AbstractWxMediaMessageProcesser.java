@@ -40,6 +40,7 @@ public abstract class AbstractWxMediaMessageProcesser<B extends WxMessageBody.Me
         this.wxMediaManager = wxMediaManager;
     }
 
+    @Override
     protected B processBody(WxRequest wxRequest, B body) {
         if (body.getMediaId() == null) {
             // 优先使用path

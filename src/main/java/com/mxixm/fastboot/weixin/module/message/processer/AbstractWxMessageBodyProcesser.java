@@ -47,6 +47,7 @@ public abstract class AbstractWxMessageBodyProcesser<B extends WxMessageBody> im
 
     protected abstract B processBody(WxRequest wxRequest, B body);
 
+    @Override
     public boolean supports(WxRequest wxRequest, WxMessage<B> wxMessage) {
         Type type = this.getClass().getGenericSuperclass();
         if (!(type instanceof ParameterizedType)) {

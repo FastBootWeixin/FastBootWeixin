@@ -124,8 +124,12 @@ public class WxButtonItem {
     }
 
     public boolean equalsBak(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof WxButtonItem)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof WxButtonItem)) {
+            return false;
+        }
 
         WxButtonItem that = (WxButtonItem) o;
 
@@ -142,19 +146,30 @@ public class WxButtonItem {
             return false;
         }
         // 非父菜单，全部比较，要把每个类型的比较摘出来，不想摘了
-        if (getType() != that.getType()) return false;
-        if (!getName().equals(that.getName())) return false;
-        // VIEW会自动抹掉key，所以不是VIEW的时候才判断key
-        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null))
+        if (getType() != that.getType()) {
             return false;
-        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) return false;
+        }
+        if (!getName().equals(that.getName())) {
+            return false;
+        }
+        // VIEW会自动抹掉key，所以不是VIEW的时候才判断key
+        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null)) {
+            return false;
+        }
+        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) {
+            return false;
+        }
         return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof WxButtonItem)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof WxButtonItem)) {
+            return false;
+        }
 
         WxButtonItem that = (WxButtonItem) o;
 
@@ -171,12 +186,20 @@ public class WxButtonItem {
             return false;
         }
         // 非父菜单，全部比较，要把每个类型的比较摘出来，不想摘了
-        if (getType() != that.getType()) return false;
-        if (!getName().equals(that.getName())) return false;
+        if (getType() != that.getType()) {
+            return false;
+        }
+        if (!getName().equals(that.getName())) {
+            return false;
+        }
         // VIEW会自动抹掉key，只有两个key都非null的时候才做下一步判断
-        if (getKey() != null && that.getKey() != null && !getKey().equals(that.getKey())) return false;
+        if (getKey() != null && that.getKey() != null && !getKey().equals(that.getKey())) {
+            return false;
+        }
         // 同上
-        if (getUrl() != null && that.getUrl() != null && !getUrl().equals(that.getUrl())) return false;
+        if (getUrl() != null && that.getUrl() != null && !getUrl().equals(that.getUrl())) {
+            return false;
+        }
         return getMediaId() == null || that.getMediaId() == null || getMediaId().equals(that.getMediaId());
     }
 
@@ -198,6 +221,7 @@ public class WxButtonItem {
         return new Builder();
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.module.menu.WxButtonItem(subButtons=" + this.getSubButtons() + ", group=" + this.getGroup() + ", type=" + this.getType() + ", name=" + this.getName() + ", main=" + this.isMain() + ", order=" + this.getOrder() + ", key=" + this.getKey() + ", url=" + this.getUrl() + ", mediaId=" + this.getMediaId() + ")";
     }

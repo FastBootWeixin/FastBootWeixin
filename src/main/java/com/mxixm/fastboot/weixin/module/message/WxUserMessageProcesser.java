@@ -29,6 +29,7 @@ import java.util.Date;
  */
 public class WxUserMessageProcesser implements WxMessageProcesser<WxUserMessage> {
 
+    @Override
     public WxUserMessage process(WxRequest wxRequest, WxUserMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {

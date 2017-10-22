@@ -55,6 +55,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
      *
      * @return dummy
      */
+    @Override
     public String getToken() {
         return token;
     }
@@ -65,6 +66,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
      * @param token
      * @param expireTime
      */
+    @Override
     public void setToken(String token, long expireTime) {
         this.token = token;
         this.expireTime = expireTime;
@@ -75,6 +77,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
      *
      * @return dummy
      */
+    @Override
     public long getExpireTime() {
         return expireTime;
     }
@@ -84,6 +87,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
      *
      * @return dummy
      */
+    @Override
     public boolean lock() {
         this.lock.lock();
         long now = Instant.now().toEpochMilli();
@@ -98,6 +102,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
     /**
      * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
      */
+    @Override
     public void unlock() {
         this.lock.unlock();
     }

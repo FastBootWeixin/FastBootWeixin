@@ -28,6 +28,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  */
 public class WxGroupMessageProcesser implements WxMessageProcesser<WxGroupMessage> {
 
+    @Override
     public WxGroupMessage process(WxRequest wxRequest, WxGroupMessage wxMessage) {
         return processInternal(wxMessage);
     }

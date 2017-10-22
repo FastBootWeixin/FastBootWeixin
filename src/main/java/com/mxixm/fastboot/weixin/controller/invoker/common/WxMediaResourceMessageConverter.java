@@ -93,6 +93,7 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
         return super.getDefaultContentType(resource);
     }
 
+    @Override
     protected void addDefaultHeaders(HttpHeaders headers, Resource t, MediaType contentType) throws IOException {
         // 忽略被选择出来的类型，因为如果有选择出来的类型，会影响getDefaultContentType的获取
         super.addDefaultHeaders(headers, t, null);

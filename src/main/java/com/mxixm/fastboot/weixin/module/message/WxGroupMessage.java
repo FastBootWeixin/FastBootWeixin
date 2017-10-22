@@ -160,6 +160,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
             return body;
         }
 
+        @Override
         public void setBody(WxMessageBody.Voice body) {
             this.body = body;
         }

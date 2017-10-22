@@ -247,62 +247,97 @@ public class WxUser {
         this.tagIdList = tagIdList;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof WxUser)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof WxUser)) {
+            return false;
+        }
         final WxUser other = (WxUser) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
         final Object this$subscribe = this.getSubscribe();
         final Object other$subscribe = other.getSubscribe();
-        if (this$subscribe == null ? other$subscribe != null : !this$subscribe.equals(other$subscribe)) return false;
+        if (this$subscribe == null ? other$subscribe != null : !this$subscribe.equals(other$subscribe)) {
+            return false;
+        }
         final Object this$openId = this.getOpenId();
         final Object other$openId = other.getOpenId();
-        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) return false;
+        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) {
+            return false;
+        }
         final Object this$nickName = this.getNickName();
         final Object other$nickName = other.getNickName();
-        if (this$nickName == null ? other$nickName != null : !this$nickName.equals(other$nickName)) return false;
+        if (this$nickName == null ? other$nickName != null : !this$nickName.equals(other$nickName)) {
+            return false;
+        }
         final Object this$sex = this.getSex();
         final Object other$sex = other.getSex();
-        if (this$sex == null ? other$sex != null : !this$sex.equals(other$sex)) return false;
+        if (this$sex == null ? other$sex != null : !this$sex.equals(other$sex)) {
+            return false;
+        }
         final Object this$city = this.getCity();
         final Object other$city = other.getCity();
-        if (this$city == null ? other$city != null : !this$city.equals(other$city)) return false;
+        if (this$city == null ? other$city != null : !this$city.equals(other$city)) {
+            return false;
+        }
         final Object this$country = this.getCountry();
         final Object other$country = other.getCountry();
-        if (this$country == null ? other$country != null : !this$country.equals(other$country)) return false;
+        if (this$country == null ? other$country != null : !this$country.equals(other$country)) {
+            return false;
+        }
         final Object this$province = this.getProvince();
         final Object other$province = other.getProvince();
-        if (this$province == null ? other$province != null : !this$province.equals(other$province)) return false;
+        if (this$province == null ? other$province != null : !this$province.equals(other$province)) {
+            return false;
+        }
         final Object this$language = this.getLanguage();
         final Object other$language = other.getLanguage();
-        if (this$language == null ? other$language != null : !this$language.equals(other$language)) return false;
+        if (this$language == null ? other$language != null : !this$language.equals(other$language)) {
+            return false;
+        }
         final Object this$headImgUrl = this.getHeadImgUrl();
         final Object other$headImgUrl = other.getHeadImgUrl();
-        if (this$headImgUrl == null ? other$headImgUrl != null : !this$headImgUrl.equals(other$headImgUrl))
+        if (this$headImgUrl == null ? other$headImgUrl != null : !this$headImgUrl.equals(other$headImgUrl)) {
             return false;
+        }
         final Object this$subscribeTime = this.getSubscribeTime();
         final Object other$subscribeTime = other.getSubscribeTime();
-        if (this$subscribeTime == null ? other$subscribeTime != null : !this$subscribeTime.equals(other$subscribeTime))
+        if (this$subscribeTime == null ? other$subscribeTime != null : !this$subscribeTime.equals(other$subscribeTime)) {
             return false;
+        }
         final Object this$unionId = this.getUnionId();
         final Object other$unionId = other.getUnionId();
-        if (this$unionId == null ? other$unionId != null : !this$unionId.equals(other$unionId)) return false;
+        if (this$unionId == null ? other$unionId != null : !this$unionId.equals(other$unionId)) {
+            return false;
+        }
         final Object this$remark = this.getRemark();
         final Object other$remark = other.getRemark();
-        if (this$remark == null ? other$remark != null : !this$remark.equals(other$remark)) return false;
+        if (this$remark == null ? other$remark != null : !this$remark.equals(other$remark)) {
+            return false;
+        }
         final Object this$groupId = this.getGroupId();
         final Object other$groupId = other.getGroupId();
-        if (this$groupId == null ? other$groupId != null : !this$groupId.equals(other$groupId)) return false;
+        if (this$groupId == null ? other$groupId != null : !this$groupId.equals(other$groupId)) {
+            return false;
+        }
         final Object this$privileges = this.getPrivileges();
         final Object other$privileges = other.getPrivileges();
-        if (this$privileges == null ? other$privileges != null : !this$privileges.equals(other$privileges))
+        if (this$privileges == null ? other$privileges != null : !this$privileges.equals(other$privileges)) {
             return false;
+        }
         final Object this$tagIdList = this.getTagIdList();
         final Object other$tagIdList = other.getTagIdList();
-        if (this$tagIdList == null ? other$tagIdList != null : !this$tagIdList.equals(other$tagIdList)) return false;
+        if (this$tagIdList == null ? other$tagIdList != null : !this$tagIdList.equals(other$tagIdList)) {
+            return false;
+        }
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -343,6 +378,7 @@ public class WxUser {
         return other instanceof WxUser;
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.module.user.WxUser(subscribe=" + this.getSubscribe() + ", openId=" + this.getOpenId() + ", nickName=" + this.getNickName() + ", sex=" + this.getSex() + ", city=" + this.getCity() + ", country=" + this.getCountry() + ", province=" + this.getProvince() + ", language=" + this.getLanguage() + ", headImgUrl=" + this.getHeadImgUrl() + ", subscribeTime=" + this.getSubscribeTime() + ", unionId=" + this.getUnionId() + ", remark=" + this.getRemark() + ", groupId=" + this.getGroupId() + ", privileges=" + this.getPrivileges() + ", tagIdList=" + this.getTagIdList() + ")";
     }

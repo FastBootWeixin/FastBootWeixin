@@ -52,19 +52,30 @@ public class WxAccessToken {
         this.expiresIn = expiresIn;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof WxAccessToken)) return false;
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof WxAccessToken)) {
+            return false;
+        }
         final WxAccessToken other = (WxAccessToken) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
         final Object this$accessToken = this.getAccessToken();
         final Object other$accessToken = other.getAccessToken();
-        if (this$accessToken == null ? other$accessToken != null : !this$accessToken.equals(other$accessToken))
+        if (this$accessToken == null ? other$accessToken != null : !this$accessToken.equals(other$accessToken)) {
             return false;
-        if (this.getExpiresIn() != other.getExpiresIn()) return false;
+        }
+        if (this.getExpiresIn() != other.getExpiresIn()) {
+            return false;
+        }
         return true;
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;
@@ -78,6 +89,7 @@ public class WxAccessToken {
         return other instanceof WxAccessToken;
     }
 
+    @Override
     public String toString() {
         return "com.mxixm.fastboot.weixin.module.token.WxAccessToken(accessToken=" + this.getAccessToken() + ", expiresIn=" + this.getExpiresIn() + ")";
     }

@@ -49,7 +49,7 @@ public class WxJsonAdapters {
 
         @Override
         public Date convert(Integer value) {
-            return new Date(value * 1000l);
+            return new Date(value * 1000L);
         }
 
         /**

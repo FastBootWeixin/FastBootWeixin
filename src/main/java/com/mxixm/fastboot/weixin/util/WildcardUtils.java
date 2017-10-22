@@ -96,7 +96,7 @@ public class WildcardUtils {
             // loop whilst tokens and text left to process
             while (wcsIdx < wcs.length) {
 
-                if (wcs[wcsIdx].equals("?")) {
+                if ("?".equals(wcs[wcsIdx])) {
                     // ? so move to next text char
                     textIdx++;
                     if (textIdx > content.length()) {
@@ -104,7 +104,7 @@ public class WildcardUtils {
                     }
                     anyChars = false;
 
-                } else if (wcs[wcsIdx].equals("*")) {
+                } else if ("*".equals(wcs[wcsIdx])) {
                     // set any chars status
                     anyChars = true;
                     if (wcsIdx == wcs.length - 1) {
@@ -178,7 +178,7 @@ public class WildcardUtils {
                 if (array[i] == '?') {
                     list.add("?");
                 } else if (list.isEmpty() ||
-                        i > 0 && list.get(list.size() - 1).equals("*") == false) {
+                        i > 0 && "*".equals(list.get(list.size() - 1)) == false) {
                     list.add("*");
                 }
             } else {

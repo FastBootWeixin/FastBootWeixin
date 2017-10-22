@@ -195,6 +195,7 @@ public class WxQrCode {
             return new WxQrCode(expireSeconds, action, actionInfo);
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.extend.WxQrCode.WxQrCodeBuilder(expireSeconds=" + this.expireSeconds + ", action=" + this.action + ", actionInfo=" + this.actionInfo + ")";
         }

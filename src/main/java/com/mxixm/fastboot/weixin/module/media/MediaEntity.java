@@ -64,10 +64,12 @@ public class MediaEntity extends MediaQuery {
             return this;
         }
 
+        @Override
         public MediaEntity build() {
             return new MediaEntity(key, resourcePath, resourceUrl, modifiedTime, mediaId, mediaUrl, type, createdTime, storeType, resource);
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.media.MediaEntity.MediaEntityBuilder(resource=" + this.resource + ")";
         }

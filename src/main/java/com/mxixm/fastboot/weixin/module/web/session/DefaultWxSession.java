@@ -199,7 +199,9 @@ public class DefaultWxSession implements WxSession, Serializable {
 
     @Override
     public Object getAttribute(String name) {
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return attributes.get(name);
     }
 

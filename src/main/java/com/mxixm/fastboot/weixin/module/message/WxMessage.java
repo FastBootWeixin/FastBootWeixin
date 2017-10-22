@@ -280,6 +280,7 @@ public class WxMessage<T extends WxMessageBody> {
             return new WxGroupMessage.GroupMessageBuilder(this).toUsers(userList);
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Builder(messageType=" + this.messageType + ")";
         }
@@ -300,6 +301,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Text.Builder(body=" + this.body + ")";
         }
@@ -432,6 +434,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
         }
@@ -503,6 +506,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
         }
@@ -595,6 +599,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.items.toString() + ")";
         }
@@ -646,6 +651,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }
@@ -677,6 +683,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }
@@ -709,6 +716,7 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        @Override
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }

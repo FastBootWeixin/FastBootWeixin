@@ -103,24 +103,37 @@ public class WxMessageBody {
             this.mediaUrl = mediaUrl;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Media)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Media)) {
+                return false;
+            }
             final Media other = (Media) o;
-            if (!other.canEqual(this)) return false;
+            if (!other.canEqual(this)) {
+                return false;
+            }
             final Object this$mediaId = this.getMediaId();
             final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) return false;
+            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
+                return false;
+            }
             final Object this$mediaPath = this.getMediaPath();
             final Object other$mediaPath = other.getMediaPath();
-            if (this$mediaPath == null ? other$mediaPath != null : !this$mediaPath.equals(other$mediaPath))
+            if (this$mediaPath == null ? other$mediaPath != null : !this$mediaPath.equals(other$mediaPath)) {
                 return false;
+            }
             final Object this$mediaUrl = this.getMediaUrl();
             final Object other$mediaUrl = other.getMediaUrl();
-            if (this$mediaUrl == null ? other$mediaUrl != null : !this$mediaUrl.equals(other$mediaUrl)) return false;
+            if (this$mediaUrl == null ? other$mediaUrl != null : !this$mediaUrl.equals(other$mediaUrl)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -137,6 +150,7 @@ public class WxMessageBody {
             return other instanceof Media;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Media(mediaId=" + this.getMediaId() + ", mediaPath=" + this.getMediaPath() + ", mediaUrl=" + this.getMediaUrl() + ")";
         }
@@ -152,23 +166,33 @@ public class WxMessageBody {
             super(mediaId, mediaPath, mediaUrl);
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Image)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Image)) {
+                return false;
+            }
             final Image other = (Image) o;
-            if (!other.canEqual(this)) return false;
+            if (!other.canEqual(this)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             int result = 1;
             return result;
         }
 
+        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Image;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Image.WxMessageBody()";
         }
@@ -184,23 +208,33 @@ public class WxMessageBody {
         public Voice() {
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Voice)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Voice)) {
+                return false;
+            }
             final Voice other = (Voice) o;
-            if (!other.canEqual(this)) return false;
+            if (!other.canEqual(this)) {
+                return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             int result = 1;
             return result;
         }
 
+        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Voice;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Voice.WxMessageBody()";
         }
@@ -279,33 +313,47 @@ public class WxMessageBody {
             this.thumbMediaUrl = thumbMediaUrl;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Video)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Video)) {
+                return false;
+            }
             final Video other = (Video) o;
-            if (!other.canEqual(this)) return false;
+            if (!other.canEqual(this)) {
+                return false;
+            }
             final Object this$thumbMediaId = this.getThumbMediaId();
             final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
                 return false;
+            }
             final Object this$title = this.getTitle();
             final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
+                return false;
+            }
             final Object this$description = this.getDescription();
             final Object other$description = other.getDescription();
-            if (this$description == null ? other$description != null : !this$description.equals(other$description))
+            if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
                 return false;
+            }
             final Object this$thumbMediaPath = this.getThumbMediaPath();
             final Object other$thumbMediaPath = other.getThumbMediaPath();
-            if (this$thumbMediaPath == null ? other$thumbMediaPath != null : !this$thumbMediaPath.equals(other$thumbMediaPath))
+            if (this$thumbMediaPath == null ? other$thumbMediaPath != null : !this$thumbMediaPath.equals(other$thumbMediaPath)) {
                 return false;
+            }
             final Object this$thumbMediaUrl = this.getThumbMediaUrl();
             final Object other$thumbMediaUrl = other.getThumbMediaUrl();
-            if (this$thumbMediaUrl == null ? other$thumbMediaUrl != null : !this$thumbMediaUrl.equals(other$thumbMediaUrl))
+            if (this$thumbMediaUrl == null ? other$thumbMediaUrl != null : !this$thumbMediaUrl.equals(other$thumbMediaUrl)) {
                 return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -322,10 +370,12 @@ public class WxMessageBody {
             return result;
         }
 
+        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Video;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Video.WxMessageBody(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", thumbMediaPath=" + this.getThumbMediaPath() + ", thumbMediaUrl=" + this.getThumbMediaUrl() + ")";
         }
@@ -374,10 +424,12 @@ public class WxMessageBody {
          *
          * @param thumbMediaId
          */
+        @Override
         public void setMediaId(String thumbMediaId) {
             this.thumbMediaId = thumbMediaId;
         }
 
+        @Override
         public String getMediaId() {
             return this.thumbMediaId;
         }
@@ -422,33 +474,47 @@ public class WxMessageBody {
             this.hqMusicUrl = hqMusicUrl;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof Music)) return false;
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof Music)) {
+                return false;
+            }
             final Music other = (Music) o;
-            if (!other.canEqual(this)) return false;
+            if (!other.canEqual(this)) {
+                return false;
+            }
             final Object this$thumbMediaId = this.getThumbMediaId();
             final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId))
+            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
                 return false;
+            }
             final Object this$title = this.getTitle();
             final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) return false;
+            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
+                return false;
+            }
             final Object this$description = this.getDescription();
             final Object other$description = other.getDescription();
-            if (this$description == null ? other$description != null : !this$description.equals(other$description))
+            if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
                 return false;
+            }
             final Object this$musicUrl = this.getMusicUrl();
             final Object other$musicUrl = other.getMusicUrl();
-            if (this$musicUrl == null ? other$musicUrl != null : !this$musicUrl.equals(other$musicUrl))
+            if (this$musicUrl == null ? other$musicUrl != null : !this$musicUrl.equals(other$musicUrl)) {
                 return false;
+            }
             final Object this$hqMusicUrl = this.getHqMusicUrl();
             final Object other$hqMusicUrl = other.getHqMusicUrl();
-            if (this$hqMusicUrl == null ? other$hqMusicUrl != null : !this$hqMusicUrl.equals(other$hqMusicUrl))
+            if (this$hqMusicUrl == null ? other$hqMusicUrl != null : !this$hqMusicUrl.equals(other$hqMusicUrl)) {
                 return false;
+            }
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int PRIME = 59;
             int result = 1;
@@ -465,10 +531,12 @@ public class WxMessageBody {
             return result;
         }
 
+        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Music;
         }
 
+        @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Music.WxMessageBody(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", musicUrl=" + this.getMusicUrl() + ", hqMusicUrl=" + this.getHqMusicUrl() + ")";
         }
@@ -580,6 +648,7 @@ public class WxMessageBody {
                     return new Item(title, description, picUrl, url);
                 }
 
+                @Override
                 public String toString() {
                     return "com.example.myproject.module.message.WxMessage.News.Item.ItemBuilder(title=" + this.title + ", description=" + this.description + ", picUrl=" + this.picUrl + ", host=" + this.url + ")";
                 }
@@ -658,50 +727,62 @@ public class WxMessageBody {
 
         private Map<String, TemplateData> templateDateMap = new HashMap<>();
 
+        @Override
         public int size() {
             return templateDateMap.size();
         }
 
+        @Override
         public TemplateData get(Object key) {
             return templateDateMap.get(key);
         }
 
+        @Override
         public Set<Map.Entry<String, TemplateData>> entrySet() {
             return templateDateMap.entrySet();
         }
 
+        @Override
         public void putAll(Map<? extends String, ? extends TemplateData> m) {
             templateDateMap.putAll(m);
         }
 
+        @Override
         public boolean containsKey(Object key) {
             return templateDateMap.containsKey(key);
         }
 
+        @Override
         public TemplateData put(String key, TemplateData value) {
             return templateDateMap.put(key, value);
         }
 
+        @Override
         public void clear() {
             templateDateMap.clear();
         }
 
+        @Override
         public TemplateData remove(Object key) {
             return templateDateMap.remove(key);
         }
 
+        @Override
         public boolean containsValue(Object value) {
             return templateDateMap.containsValue(value);
         }
 
+        @Override
         public Set<String> keySet() {
             return templateDateMap.keySet();
         }
 
+        @Override
         public boolean isEmpty() {
             return templateDateMap.isEmpty();
         }
 
+        @Override
         public Collection<TemplateData> values() {
             return templateDateMap.values();
         }

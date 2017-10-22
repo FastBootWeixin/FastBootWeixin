@@ -27,6 +27,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
  */
 public class WxTemplateMessageProcesser implements WxMessageProcesser<WxTemplateMessage> {
 
+    @Override
     public WxTemplateMessage process(WxRequest wxRequest, WxTemplateMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
