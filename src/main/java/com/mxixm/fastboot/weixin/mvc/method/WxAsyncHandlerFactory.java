@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class WxAsyncHandlerFactory {
 
-    public final Map<String, Object> cache = new HashMap<>();
+    private final Map<String, Object> cache = new HashMap<>();
 
     private final WxAsyncMethodInterceptor wxAsyncMethodInterceptor;
 

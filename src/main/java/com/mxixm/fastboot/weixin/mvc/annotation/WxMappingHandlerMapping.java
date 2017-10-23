@@ -32,6 +32,7 @@ import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.*;
 import org.springframework.web.method.HandlerMethod;
@@ -103,6 +104,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         // 只接受根目录的请求
         if (!path.equals(lookupPath)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("path not match with wxHandlerMapping, path is" + lookupPath);
+            }
             return null;
         }
         if (isWxVerifyRequest(request)) {
@@ -114,15 +118,19 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return null;
     }
 
-    // 判断是否是微信verify请求
+    /**
+     * 判断是否是微信verify请求
+     */
     private boolean isWxVerifyRequest(HttpServletRequest request) {
-        return "GET".equals(request.getMethod())
+        return HttpMethod.GET.matches(request.getMethod())
                 && WX_VERIFY_PARAMS_CONDITION.getMatchingCondition(request) != null;
     }
 
-    // 判断是否是微信POST请求
+    /**
+     * 判断是否是微信POST请求
+     */
     private boolean isWxPostRequest(HttpServletRequest request) {
-        return "POST".equals(request.getMethod())
+        return HttpMethod.POST.matches(request.getMethod())
                 && WX_POST_PARAMS_CONDITION.getMatchingCondition(request) != null
                 && WX_POST_CONSUMES_CONDITION.getMatchingCondition(request) != null;
     }
@@ -180,6 +188,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                     break;
             }
             handleMatch(handlerMethod, request);
+            if (logger.isDebugEnabled() && handlerMethod != null) {
+                logger.debug("find match wx handler, handler is " + handlerMethod);
+            }
             return handlerMethod;
         } finally {
             this.mappingRegistry.releaseReadLock();
@@ -358,17 +369,17 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
 
         public List<HandlerMethod> getHandlersByContent(String content) {
-            List<String> matchs = this.wildcardLookup.keySet().stream().filter(w -> WildcardUtils.wildcardMatch(content, w))
+            List<String> matches = this.wildcardLookup.keySet().stream().filter(w -> WildcardUtils.wildcardMatch(content, w))
                     .sorted(Comparator.comparing(String::length).reversed()).collect(Collectors.toList());
-            if (matchs.isEmpty()) {
+            if (matches.isEmpty()) {
                 return Collections.emptyList();
             }
-            if (matchs.size() > 1) {
-                if (matchs.get(0).length() == matchs.get(1).length()) {
+            if (matches.size() > 1) {
+                if (matches.get(0).length() == matches.get(1).length()) {
                     logger.error("有两个重复的通配符！以后加入通配符权重！！");
                 }
             }
-            String selectedMatch = matchs.get(0);
+            String selectedMatch = matches.get(0);
             final List<HandlerMethod> handlerMethods = this.wildcardLookup.get(selectedMatch).stream().map(w -> mappingLookup.get(w)).collect(Collectors.toList());
             if (handlerMethods.size() > 1) {
                 logger.error("有一个通配符有两个匹配的方法！");
