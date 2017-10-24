@@ -33,6 +33,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
@@ -89,8 +90,8 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
     public String beforeBodyWrite(String body, MethodParameter returnType,
                                   MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
-        if (!(request instanceof ServletServerHttpRequest) || body == null) {
-            return body;
+        if (!(request instanceof ServletServerHttpRequest) || StringUtils.isEmpty(body)) {
+            return null;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
