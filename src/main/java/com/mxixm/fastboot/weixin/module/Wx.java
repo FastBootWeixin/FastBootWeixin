@@ -16,6 +16,10 @@
 
 package com.mxixm.fastboot.weixin.module;
 
+import com.mxixm.fastboot.weixin.util.WxUrlUtils;
+
+import java.net.URI;
+
 /**
  * FastBootWeixin Wx 微信常量类
  *
@@ -72,14 +76,23 @@ public class Wx {
 
         private String wxAppSecret;
 
-        private String callbackUrl;
+        private String callbackDomain;
 
-        public String getCallbackUrl() {
-            return callbackUrl;
+        public String getCallbackDomain() {
+            return callbackDomain;
         }
 
-        public void setCallbackUrl(String callbackUrl) {
-            this.callbackUrl = callbackUrl;
+        public void setCallbackDomain(String callbackDomain) {
+            if (callbackDomain == null) {
+                return;
+            }
+            callbackDomain = callbackDomain.toLowerCase();
+            if (callbackDomain.startsWith(WxUrlUtils.HTTP_PROTOCOL) || callbackDomain.startsWith(WxUrlUtils.HTTPS_PROTOCOL)) {
+                callbackDomain = URI.create(callbackDomain).getHost();
+            } else if (callbackDomain.startsWith(WxUrlUtils.BASE_PATH)) {
+                callbackDomain = callbackDomain.substring(1);
+            }
+            this.callbackDomain = callbackDomain;
         }
 
         public String getWxToken() {

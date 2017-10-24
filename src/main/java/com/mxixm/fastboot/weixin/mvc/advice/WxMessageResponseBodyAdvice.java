@@ -73,7 +73,7 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
     public WxMessage beforeBodyWrite(WxMessage body, MethodParameter returnType,
                                      MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                      ServerHttpRequest request, ServerHttpResponse response) {
-        if (!(request instanceof ServletServerHttpRequest)) {
+        if (!(request instanceof ServletServerHttpRequest) || body == null) {
             return body;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();

@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.util;
 
+import com.mxixm.fastboot.weixin.module.Wx;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
@@ -29,17 +30,35 @@ import java.net.URI;
  */
 public abstract class WxUrlUtils {
 
+    public static String HTTP_PROTOCOL = "http://";
+
+    public static String HTTPS_PROTOCOL = "https://";
+
+    public static String BASE_PATH = "/";
+
     public static String mediaUrl(String requestUrl, String url) {
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        url = url.toLowerCase();
+        if (url.startsWith(HTTP_PROTOCOL) || url.startsWith(HTTPS_PROTOCOL)) {
             return url;
         }
-        if (url.startsWith("/") && !StringUtils.isEmpty(requestUrl)) {
+        if (url.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
             URI uri = URI.create(requestUrl);
             String hostUrl = uri.getScheme() + "://" + uri.getHost();
             return hostUrl + url;
         } else {
-            return "http://" + url;
+            return HTTP_PROTOCOL + url;
         }
+    }
+
+    /**
+     * 判断是否是回调地址
+     *
+     * @return dummy
+     */
+    public static boolean isCallbackUrl(String url) {
+        String urlHost = URI.create(url).getHost();
+        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
+        return urlHost.equals(callbackDomain);
     }
 
 }

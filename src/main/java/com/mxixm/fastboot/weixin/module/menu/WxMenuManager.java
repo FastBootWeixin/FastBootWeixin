@@ -88,7 +88,6 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         return buttonItem;
     }
 
-    //有空了改成lambda表达式，先用老循环
     public WxMenu getMenu() {
         if (wxMenu == null) {
             wxMenu = new WxMenu();
@@ -99,13 +98,6 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                                 .forEach(b -> m.getValue().addSubButton(b));
                         wxMenu.add(m.getValue());
                     });
-//            try {
-//                menuJsonCache = objectMapper.writeValueAsString(wxMenu);
-//            } catch (JsonProcessingException e) {
-//                logger.error(e.getMessage(), e);
-//                // done: 2017/7/25 加入自己的异常体系
-//                throw new WxAppException("JSON处理异常", e);
-//            }
         }
         return wxMenu;
     }
@@ -125,7 +117,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             }
         }
         WxMenu newWxMenu = this.getMenu();
-//            WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
+        // WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
         if (oldWxMenu == null || isMenuChanged(oldWxMenu)) {
             String result = wxApiInvokeSpi.createMenu(newWxMenu);
             logger.info("==============================================================");
@@ -162,7 +154,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                 return false;
             }
             final WxMenu other = (WxMenu) o;
-            if (!other.canEqual((Object) this)) {
+            if (!other.canEqual(this)) {
                 return false;
             }
             final Object this$mainButtons = this.mainButtons;
@@ -234,7 +226,6 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                 }
             }
         }
-
     }
 
 }

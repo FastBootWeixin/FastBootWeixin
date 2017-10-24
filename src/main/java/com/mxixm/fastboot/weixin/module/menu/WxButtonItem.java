@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -121,45 +122,6 @@ public class WxButtonItem {
         this.key = key;
         this.url = url;
         this.mediaId = mediaId;
-    }
-
-    public boolean equalsBak(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof WxButtonItem)) {
-            return false;
-        }
-
-        WxButtonItem that = (WxButtonItem) o;
-
-        // 子菜单数量不同，直接不相等
-        if (this.getSubButtons().size() != that.getSubButtons().size()) {
-            return false;
-        }
-
-        // 父菜单只比较name和子
-        if (this.getSubButtons().size() > 0 && that.getSubButtons().size() > 0) {
-            if (this.getSubButtons().equals(that.getSubButtons())) {
-                return getName().equals(that.getName());
-            }
-            return false;
-        }
-        // 非父菜单，全部比较，要把每个类型的比较摘出来，不想摘了
-        if (getType() != that.getType()) {
-            return false;
-        }
-        if (!getName().equals(that.getName())) {
-            return false;
-        }
-        // VIEW会自动抹掉key，所以不是VIEW的时候才判断key
-        if (getType() != WxButton.Type.VIEW && (getKey() != null ? !getKey().equals(that.getKey()) : that.getKey() != null)) {
-            return false;
-        }
-        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) {
-            return false;
-        }
-        return getMediaId() != null ? getMediaId().equals(that.getMediaId()) : that.getMediaId() == null;
     }
 
     @Override
@@ -272,7 +234,7 @@ public class WxButtonItem {
         }
 
         public Builder setUrl(String url) {
-            this.url = StringUtils.isEmpty(url) ? null : url;
+            this.url = StringUtils.isEmpty(url) ? null : WxRedirectUtils.redirect(url);
             return this;
         }
 
@@ -287,7 +249,8 @@ public class WxButtonItem {
             Assert.isTrue(!main || name.getBytes(StandardCharsets.UTF_8).length <= 16, "一级菜单名过长");
             // 判断二级菜单长度，是main或者不是main且长度小于等于60
             Assert.isTrue(main || name.getBytes().length <= 60, "二级菜单名过长");
-            Assert.isTrue(key == null || key.getBytes().length <= 128, "key不能过长");
+            // 当url不为空的时候，key是url，忽略assert
+            Assert.isTrue(url != null || key == null || key.getBytes().length <= 128, "key不能过长");
             Assert.notNull(type, "菜单必须有类型");
             Assert.notNull(group, "菜单必须有分组");
             Assert.isTrue(this.type != WxButton.Type.CLICK || !StringUtils.isEmpty(this.key),
@@ -296,7 +259,7 @@ public class WxButtonItem {
                     "view类型必须有url");
             Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || !StringUtils.isEmpty(this.mediaId),
                     "media_id类型和view_limited类型必须有mediaId");
-            return new WxButtonItem(group, type, main, order, name, key, url, mediaId);
+            return new WxButtonItem(group, type, main, order, name, url != null ? url : key, url, mediaId);
         }
 
     }

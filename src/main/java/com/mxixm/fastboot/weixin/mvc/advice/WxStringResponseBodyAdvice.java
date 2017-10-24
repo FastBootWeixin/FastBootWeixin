@@ -89,7 +89,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
     public String beforeBodyWrite(String body, MethodParameter returnType,
                                   MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
-        if (!(request instanceof ServletServerHttpRequest)) {
+        if (!(request instanceof ServletServerHttpRequest) || body == null) {
             return body;
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();

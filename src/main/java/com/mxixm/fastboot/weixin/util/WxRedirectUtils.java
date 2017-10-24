@@ -103,7 +103,7 @@ public class WxRedirectUtils {
         }
 
         String redirectUri = WxUrlUtils.mediaUrl(baseUrl, url);
-        if (!isRedirect || !isCallback(baseUrl, url)) {
+        if (!isRedirect || !WxUrlUtils.isCallbackUrl(redirectUri)) {
             return redirectUri;
         }
         try {
@@ -117,26 +117,6 @@ public class WxRedirectUtils {
                 .queryParam("scope", isBase ? "snsapi_base" : "snsapi_userinfo")
                 .queryParam("state", state).build().toUriString() + "#wechat_redirect";
         return finalRedirectUri;
-    }
-
-    /**
-     * 判断是否是回调地址
-     *
-     * @return dummy
-     */
-    private static boolean isCallback(String baseUrl, String url) {
-        String callbackUrlHost;
-        String urlHost = URI.create(url).getHost();
-        String callbackUrl = Wx.Environment.instance().getCallbackUrl();
-        if (!StringUtils.isEmpty(callbackUrl)) {
-            callbackUrlHost = URI.create(callbackUrl).getHost();
-        } else if (!StringUtils.isEmpty(baseUrl)) {
-            callbackUrlHost = URI.create(baseUrl).getHost();
-        } else {
-            // 不满足条件，强行返回true
-            return true;
-        }
-        return callbackUrlHost.equals(urlHost);
     }
 
 }

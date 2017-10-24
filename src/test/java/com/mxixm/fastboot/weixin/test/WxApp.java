@@ -33,8 +33,8 @@ import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class WxApp {
     @WxButton(type = WxButton.Type.VIEW,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.SECOND,
-            url = "http://baidu.com",
+            url = "http://bk4ezt.natappfree.cc/wx/test",
             name = "点击链接")
     @WxAsyncMessage
     public WxMessage link(WxRequest wxRequest) {
@@ -270,6 +270,12 @@ public class WxApp {
     @RequestMapping("mediaUpload")
     public String mediaUpload() {
         return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
+    }
+
+    @RequestMapping("wx/test")
+    @ResponseBody
+    public String testWeb() {
+        return "<b>test html</b>";
     }
 
 }

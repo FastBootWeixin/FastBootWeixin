@@ -51,8 +51,11 @@ public class WxProperties implements InitializingBean {
 
     /**
      * 用户在网页授权页同意授权给公众号后，微信会将授权数据传给一个回调页面，回调页面需在此域名下，以确保安全可靠
+     * 在微信公众号请求用户网页授权之前，开发者需要先到公众平台官网中的
+     * “开发 - 接口权限 - 网页服务 - 网页帐号 - 网页授权获取用户基本信息”的配置选项中，修改授权回调域名。
+     * 请注意，这里填写的是域名（是一个字符串），而不是URL，因此请勿加 http:// 等协议头
      */
-    private String callbackUrl;
+    private String callbackDomain;
 
     private Invoker invoker = new Invoker();
 
@@ -79,7 +82,7 @@ public class WxProperties implements InitializingBean {
         Wx.Environment.instance().setWxAppId(this.appid);
         Wx.Environment.instance().setWxAppSecret(this.appsecret);
         Wx.Environment.instance().setWxToken(this.token);
-        Wx.Environment.instance().setCallbackUrl(this.callbackUrl);
+        Wx.Environment.instance().setCallbackDomain(this.callbackDomain);
     }
 
     public String getPath() {
@@ -102,8 +105,8 @@ public class WxProperties implements InitializingBean {
         return this.appsecret;
     }
 
-    public String getCallbackUrl() {
-        return this.callbackUrl;
+    public String getCallbackDomain() {
+        return this.callbackDomain;
     }
 
     public Invoker getInvoker() {
@@ -142,8 +145,8 @@ public class WxProperties implements InitializingBean {
         this.appsecret = appsecret;
     }
 
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
+    public void setCallbackDomain(String callbackDomain) {
+        this.callbackDomain = callbackDomain;
     }
 
     public void setInvoker(Invoker invoker) {
@@ -197,8 +200,8 @@ public class WxProperties implements InitializingBean {
         if (this$appsecret == null ? other$appsecret != null : !this$appsecret.equals(other$appsecret)) {
             return false;
         }
-        final Object this$callbackUrl = this.getCallbackUrl();
-        final Object other$callbackUrl = other.getCallbackUrl();
+        final Object this$callbackUrl = this.getCallbackDomain();
+        final Object other$callbackUrl = other.getCallbackDomain();
         if (this$callbackUrl == null ? other$callbackUrl != null : !this$callbackUrl.equals(other$callbackUrl)) {
             return false;
         }
@@ -245,7 +248,7 @@ public class WxProperties implements InitializingBean {
         result = result * PRIME + ($appid == null ? 43 : $appid.hashCode());
         final Object $appsecret = this.getAppsecret();
         result = result * PRIME + ($appsecret == null ? 43 : $appsecret.hashCode());
-        final Object $callbackUrl = this.getCallbackUrl();
+        final Object $callbackUrl = this.getCallbackDomain();
         result = result * PRIME + ($callbackUrl == null ? 43 : $callbackUrl.hashCode());
         final Object $invoker = this.getInvoker();
         result = result * PRIME + ($invoker == null ? 43 : $invoker.hashCode());
@@ -268,7 +271,7 @@ public class WxProperties implements InitializingBean {
 
     @Override
     public String toString() {
-        return "com.mxixm.fastboot.weixin.config.WxProperties(token=" + this.getToken() + ", appid=" + this.getAppid() + ", appsecret=" + this.getAppsecret() + ", callbackUrl=" + this.getCallbackUrl() + ", invoker=" + this.getInvoker() + ", system=" + this.getSystem() + ", url=" + this.getUrl() + ", message=" + this.getMessage() + ", mvc=" + this.getMvc() + ", server=" + this.getServer() + ")";
+        return "com.mxixm.fastboot.weixin.config.WxProperties(token=" + this.getToken() + ", appid=" + this.getAppid() + ", appsecret=" + this.getAppsecret() + ", callbackDomain=" + this.getCallbackDomain() + ", invoker=" + this.getInvoker() + ", system=" + this.getSystem() + ", url=" + this.getUrl() + ", message=" + this.getMessage() + ", mvc=" + this.getMvc() + ", server=" + this.getServer() + ")";
     }
 
     public static class Invoker {

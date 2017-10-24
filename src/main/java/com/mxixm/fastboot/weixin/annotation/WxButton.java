@@ -34,7 +34,9 @@ import java.lang.annotation.*;
 @WxMapping
 public @interface WxButton {
 
-    // 按钮属于哪一组
+    /**
+     * 按钮属于哪一组
+     */
     Group group();
 
     /**
@@ -44,13 +46,19 @@ public @interface WxButton {
      */
     String name();
 
-    // 菜单类型
+    /**
+     * 菜单类型
+     */
     Type type() default Type.CLICK;
 
-    // 是否是主菜单(下面的菜单)
+    /**
+     * 是否是主菜单(下面的菜单)
+     */
     boolean main() default false;
 
-    // 顺序
+    /**
+     * 顺序
+     */
     Order order() default Order.FIRST;
 
     /**
@@ -64,17 +72,23 @@ public @interface WxButton {
 
     String mediaId() default "";
 
-    // 哪个按钮组
+    /**
+     * 哪个按钮组
+     */
     enum Group {
         LEFT, MIDDLE, RIGHT
     }
 
-    // 顺序，最多五个
+    /**
+     * 顺序，最多五个
+     */
     enum Order {
         FIRST, SECOND, THIRD, FORTH, FIFTH
     }
 
-    // 类型
+    /**
+     * 类型
+     */
     enum Type {
 
         /**

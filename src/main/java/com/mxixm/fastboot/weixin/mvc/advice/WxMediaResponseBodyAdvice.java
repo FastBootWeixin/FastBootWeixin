@@ -65,7 +65,7 @@ public class WxMediaResponseBodyAdvice implements ResponseBodyAdvice<WxMediaReso
     public WxMediaResource beforeBodyWrite(WxMediaResource body, MethodParameter returnType,
                                            MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                            ServerHttpRequest request, ServerHttpResponse response) {
-        if (!body.isUrlMedia()) {
+        if (body == null || !body.isUrlMedia()) {
             return body;
         }
         try {
