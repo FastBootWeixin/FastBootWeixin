@@ -319,9 +319,11 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 12. 微信Web认证拦截器与URL自动转换
 
-提供微信OAUTH2认证拦截，通过配置wx.mvc.interceptor.includePatterns和wx.mvc.interceptor.excludePatterns来配置拦截的目标地址，你可以提供一个WxOAuth2Callback接口的实现类作为Bean，在WxOAuth2Interceptor中会自动注入这个bean，并在微信Web认证通过后调用after(WxOAuth2Context context)方法把相关的context传递给该Bean的方法，你可以在该方法中获取到context了的WxWebUser，并通过WxUserManager把WxWebUser转换为WxUser。关系详细信息请参考：[微信网页授权](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)。
+提供微信OAUTH2认证拦截，通过配置wx.callback-domain填写OAUTH2授权回调页面域名，通过配置wx.mvc.interceptor.includePatterns和wx.mvc.interceptor.excludePatterns来配置拦截的目标地址，你可以提供一个WxOAuth2Callback接口的实现类作为Bean，在WxOAuth2Interceptor中会自动注入这个bean，并在微信Web认证通过后调用after(WxOAuth2Context context)方法把相关的context传递给该Bean的方法，你可以在该方法中获取到context了的WxWebUser，并通过WxUserManager把WxWebUser转换为WxUser。关系详细信息请参考：[微信网页授权](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)。
 
-附加功能：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
+附加功能1: view类型的WxButton，自动判断其中url是否属于授权回调域名下地址，根据需要自动处理为包含OAuth2的url。可结合默认的拦截器实现菜单url获取点击用户信息的功能。
+
+附加功能2：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
 
 ### 六、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)

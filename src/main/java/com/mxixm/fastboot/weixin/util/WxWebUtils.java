@@ -41,7 +41,6 @@ public class WxWebUtils {
 
     public static final String X_WX_REQUEST_URL = "X-Wx-Request-Url";
 
-
     public static final String WX_SESSION_USER = "WX_SESSION_USER";
 
     public static void setWxRequestToRequest(HttpServletRequest request, WxRequest wxRequest) {
