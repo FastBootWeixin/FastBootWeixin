@@ -317,6 +317,8 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 使用本框架，不会对SpringMvc自己原生的Mapping产生任何影响，也不会占用任何独有的Mapping关系(除了认证请求)。在此框架存在的情况下，你可以使用任何SpringMvc的原生功能，包括根目录的请求，也不会被微信服务器独自占用。
 
+若想使用单独的地址作为微信的api调用地址，请配置wx.path为路径信息，该路径与微信公众号后台管理里的接口配置信息里url的路径需要一致。
+
 #### 12. 微信Web认证拦截器与URL自动转换
 
 提供微信OAUTH2认证拦截，通过配置wx.callback-domain填写OAUTH2授权回调页面域名，通过配置wx.mvc.interceptor.includePatterns和wx.mvc.interceptor.excludePatterns来配置拦截的目标地址，你可以提供一个WxOAuth2Callback接口的实现类作为Bean，在WxOAuth2Interceptor中会自动注入这个bean，并在微信Web认证通过后调用after(WxOAuth2Context context)方法把相关的context传递给该Bean的方法，你可以在该方法中获取到context了的WxWebUser，并通过WxUserManager把WxWebUser转换为WxUser。关系详细信息请参考：[微信网页授权](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)。
