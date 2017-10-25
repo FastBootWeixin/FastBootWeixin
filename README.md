@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.2.1.alpha-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.2.1.alpha%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.2.1.beta-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.2.1.beta%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
@@ -30,7 +30,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.2.1.alpha</version>
+        <version>0.2.1.beta</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -377,3 +377,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 1. 重构WxAsyncMessage，之前是错误实现，因为只实现了发送是Async的，方法调用不是Async的。现在重构为方法的调用都是Async的，这才是真正的WxAsyncMessage
 2. 增加微信模板消息功能
 3. 修复其他一些bug
+
+#### 0.2.1.beta
+1. 增加部分说明，修复部分bug
+2. 增加菜单url自动重写为微信web认证url
