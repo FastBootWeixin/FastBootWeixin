@@ -68,6 +68,7 @@ import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxController;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxEventMapping;
@@ -154,10 +155,10 @@ public class WxApp {
     public WxMessage message(WxSession wxSession, String content) {
         wxSession.setAttribute("last", content);
         return WxMessage.News.builder()
-                .addItem(WxMessage.News.Item.builder().title(content).description("随便一点")
+                .addItem(WxMessageBody.News.Item.builder().title(content).description("随便一点")
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
                         .url("http://baidu.com").build())
-                .addItem(WxMessage.News.Item.builder().title("第二条").description("随便二点")
+                .addItem(WxMessageBody.News.Item.builder().title("第二条").description("随便二点")
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
                         .url("http://baidu.com").build())
                 .build();
