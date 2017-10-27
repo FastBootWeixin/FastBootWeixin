@@ -51,14 +51,18 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
 
     private ClassLoader beanClassLoader;
 
-    // 被代理的接口
+    /**
+     * 被代理的接口
+     */
     private Class<T> clazz;
 
     private T proxy;
 
     private final WxApiExecutor wxApiExecutor;
 
-    // 理论上构造方法上不能做这么多事的，以后再优化
+    /**
+     * 理论上构造方法上不能做这么多事的，以后再优化
+     */
     public WxInvokerProxyFactory(Class<T> clazz, WxProperties wxProperties, WxApiExecutor wxApiExecutor) {
         this.clazz = clazz;
         this.wxApiExecutor = wxApiExecutor;
