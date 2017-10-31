@@ -97,7 +97,7 @@ public class WxApp {
     @WxButton(type = WxButton.Type.VIEW,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.SECOND,
-            url = "http://bk4ezt.natappfree.cc/wx/test",
+            url = "http://vxyufx.natappfree.cc/wx/test",
             name = "点击链接")
     @WxAsyncMessage
     public WxMessage link(WxRequest wxRequest) {

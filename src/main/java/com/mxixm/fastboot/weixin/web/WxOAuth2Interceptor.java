@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.web;
 
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import org.apache.commons.logging.Log;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 
 /**
  * FastBootWeixin WxOAuth2Interceptor
@@ -78,10 +80,27 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        String redirectUrl = request.getRequestURL() + (StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString());
+        String requestUrl = getRequestUrl(request);
+        logger.info("WxOAuth2Interceptor request url is : " + requestUrl);
         // 如果重定向到授权，则肯定可以获得信息，但是如果重定向到基本，则无法获得信息，所以默认重定向到授权
-        response.sendRedirect(WxRedirectUtils.redirect(redirectUrl, false));
+        String redirectUrl = WxRedirectUtils.redirect(requestUrl, false);
+        logger.info("WxOAuth2Interceptor redirect to auth url : " + redirectUrl);
+        response.sendRedirect(redirectUrl);
         return false;
+    }
+
+    private String getRequestUrl(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.isEmpty(Wx.Environment.instance().getCallbackDomain())) {
+            sb.append(request.getRequestURL().toString());
+        } else {
+            URI uri = URI.create(request.getRequestURL().toString());
+            sb.append(uri.getScheme() + "://");
+            sb.append(Wx.Environment.instance().getCallbackDomain());
+            sb.append(uri.getPath());
+        }
+        sb.append((StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString()));
+        return sb.toString();
     }
 
     @Override

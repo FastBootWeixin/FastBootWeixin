@@ -259,7 +259,7 @@ public class WxButtonItem {
                     "view类型必须有url");
             Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || !StringUtils.isEmpty(this.mediaId),
                     "media_id类型和view_limited类型必须有mediaId");
-            return new WxButtonItem(group, type, main, order, name, url != null ? url : key, url, mediaId);
+            return new WxButtonItem(group, type, main, order, name, (type == WxButton.Type.VIEW && url != null) ? url : key, url, mediaId);
         }
 
     }
