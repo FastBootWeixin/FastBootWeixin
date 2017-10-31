@@ -23,6 +23,7 @@ import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.HandlerMethod;
 
 import java.lang.reflect.Field;
@@ -45,8 +46,22 @@ public class WxAsyncMethodInterceptor implements MethodInterceptor {
         this.wxAsyncMessageTemplate = wxAsyncMessageTemplate;
     }
 
+    /**
+     * 关于这个方法，还发现了一个很神奇的现象。。。
+     * 当我调试时，偶尔会发现微信会收到消息，消息内容是被代理的对象的toString()，这就奇怪了，从哪里来的呢？
+     * 而且不调试时没这个问题。。。仔细分析发现，应该就是和调试时调试器会调用对象的toString方法导致的
+     * 因为调用了代理对象的toString，进入这个拦截器，只要进入这个拦截器，最终就会调用send。因为toString()最终返回string，故会发出那个消息。。。
+     * 又一次被调试时toString坑了。添加方法过滤解决此问题。
+     *
+     * @param invocation
+     * @return
+     * @throws Throwable
+     */
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
+        if (ReflectionUtils.isObjectMethod(invocation.getMethod())) {
+            return ReflectionUtils.invokeMethod(invocation.getMethod(), invocation.getThis(), invocation.getArguments());
+        }
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
         wxAsyncMessageTemplate.send(wxRequest, () -> {
             try {
