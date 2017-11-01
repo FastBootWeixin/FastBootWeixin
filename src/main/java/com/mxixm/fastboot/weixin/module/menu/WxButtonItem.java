@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
+import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -234,7 +235,8 @@ public class WxButtonItem {
         }
 
         public Builder setUrl(String url) {
-            this.url = StringUtils.isEmpty(url) ? null : WxRedirectUtils.redirect(url);
+            // 如果是callbackUrl，则重定向，否则不重定向
+            this.url = StringUtils.isEmpty(url) ? null : WxUrlUtils.isCallbackUrl(url) ? WxRedirectUtils.redirect(url) : url;
             return this;
         }
 

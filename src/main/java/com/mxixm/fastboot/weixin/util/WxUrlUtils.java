@@ -53,12 +53,26 @@ public abstract class WxUrlUtils {
     /**
      * 判断是否是回调地址
      *
+     * @param url 判断的url
+     * @param defaultTrue 默认情况下是true
+     * @return dummy
+     */
+    public static boolean isCallbackUrl(String url, boolean defaultTrue) {
+        String urlHost = URI.create(url).getHost();
+        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
+        if (defaultTrue && StringUtils.isEmpty(callbackDomain)) {
+            return true;
+        }
+        return urlHost.equals(callbackDomain);
+    }
+
+    /**
+     * 判断是否是回调地址
+     *
      * @return dummy
      */
     public static boolean isCallbackUrl(String url) {
-        String urlHost = URI.create(url).getHost();
-        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
-        return urlHost.equals(callbackDomain);
+        return isCallbackUrl(url, false);
     }
 
 }

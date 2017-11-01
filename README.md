@@ -30,7 +30,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.2.1.beta</version>
+        <version>0.2.1.rc</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->

@@ -103,7 +103,7 @@ public class WxRedirectUtils {
         }
 
         String redirectUri = WxUrlUtils.mediaUrl(baseUrl, url);
-        if (!isRedirect || !WxUrlUtils.isCallbackUrl(redirectUri)) {
+        if (!isRedirect || !WxUrlUtils.isCallbackUrl(redirectUri, true)) {
             return redirectUri;
         }
         try {
