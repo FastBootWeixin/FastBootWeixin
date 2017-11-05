@@ -64,7 +64,7 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
-public class WxServerConfiguration {
+public class WxInvokerConfiguration {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -72,7 +72,7 @@ public class WxServerConfiguration {
 
     private final ObjectProvider<HttpMessageConverters> messageConverters;
 
-    public WxServerConfiguration(
+    public WxInvokerConfiguration(
             WxProperties wxProperties,
             ObjectProvider<HttpMessageConverters> messageConverters) {
         this.wxProperties = wxProperties;
