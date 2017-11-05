@@ -60,7 +60,7 @@ public class WxApiExecutor {
 
     private static final String WX_ACCESS_TOKEN_PARAM_NAME = "access_token";
 
-    private final WxApiInvoker wxApiInvoker;
+    private final WxApiTemplate wxApiTemplate;
 
     private final WxAccessTokenManager wxAccessTokenManager;
 
@@ -70,9 +70,9 @@ public class WxApiExecutor {
 
 //    private final ConversionService conversionService;
 
-    public WxApiExecutor(WxApiInvoker wxApiInvoker, WxAccessTokenManager wxAccessTokenManager) {
-        this.wxApiInvoker = wxApiInvoker;
-        this.wxApiResponseExtractor = new WxApiResponseExtractor(this.wxApiInvoker.getMessageConverters());
+    public WxApiExecutor(WxApiTemplate wxApiTemplate, WxAccessTokenManager wxAccessTokenManager) {
+        this.wxApiTemplate = wxApiTemplate;
+        this.wxApiResponseExtractor = new WxApiResponseExtractor(this.wxApiTemplate.getMessageConverters());
         this.wxAccessTokenManager = wxAccessTokenManager;
 //        this.conversionService = conversionService;
     }
@@ -81,7 +81,7 @@ public class WxApiExecutor {
         RequestEntity requestEntity = buildHttpRequestEntity(wxApiMethodInfo, args);
         // 后续这里可以区分情况，只有对于stream类型才使用extract，因为如果先执行转为HttpInputMessage
         // 其实是转为了byte放在了内存中，相当于多转了一层，大文件还是会多耗费点内存的，但是这里为了用更多的技术，就这样玩了。
-        ResponseEntity<HttpInputMessage> responseEntity = wxApiInvoker.exchange(requestEntity, HttpInputMessage.class);
+        ResponseEntity<HttpInputMessage> responseEntity = wxApiTemplate.exchange(requestEntity, HttpInputMessage.class);
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             throw new WxApiResponseException(responseEntity);
         }

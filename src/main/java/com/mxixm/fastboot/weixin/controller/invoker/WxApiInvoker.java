@@ -33,7 +33,7 @@ import com.mxixm.fastboot.weixin.module.user.WxUser;
 import org.springframework.core.io.Resource;
 
 /**
- * FastBootWeixin WxServerInvoker
+ * FastBootWeixin WxApiInvoker
  * 注意拦截调用异常，如果是token过期，重新获取token并重试
  * 改个名儿，叫SPI高端一点
  *
@@ -41,7 +41,7 @@ import org.springframework.core.io.Resource;
  * @date 2017/7/23 17:14
  * @since 0.1.2
  */
-public interface WxServerInvoker {
+public interface WxApiInvoker {
 
     String getCallbackIp();
 

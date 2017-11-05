@@ -28,7 +28,7 @@ public class ParameterNameTest {
      */
     public static void main(String[] args) throws NoSuchMethodException {
 //        Paranamer paranamer = new CachingParanamer();
-//        Method method = WxServerInvoker.class.getMethod("storeFileToTempMedia", File.class);
+//        Method method = WxApiInvoker.class.getMethod("storeFileToTempMedia", File.class);
 //        String[] s = paranamer.lookupParameterNames(method);
 //        System.out.println(s);
     }

@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.config.token;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
+import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
@@ -56,8 +56,8 @@ public class WxTokenConfiguration {
     }
 
     @Bean
-    public WxTokenServer wxTokenServer(WxApiInvoker wxApiInvoker) {
-        return new WxTokenServer(wxApiInvoker, wxProperties);
+    public WxTokenServer wxTokenServer(WxApiTemplate wxApiTemplate) {
+        return new WxTokenServer(wxApiTemplate, wxProperties);
     }
 
     @Bean

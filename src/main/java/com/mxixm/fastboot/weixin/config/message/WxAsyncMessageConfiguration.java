@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.config.message;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
+import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvoker;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
@@ -49,13 +49,13 @@ public class WxAsyncMessageConfiguration {
 
     private final WxMediaManager wxMediaManager;
 
-    private final WxServerInvoker wxServerInvoker;
+    private final WxApiInvoker wxApiInvoker;
 
     public WxAsyncMessageConfiguration(
-            WxProperties wxProperties, WxMediaManager wxMediaManager, @Lazy WxServerInvoker wxServerInvoker) {
+            WxProperties wxProperties, WxMediaManager wxMediaManager, @Lazy WxApiInvoker wxApiInvoker) {
         this.wxProperties = wxProperties;
         this.wxMediaManager = wxMediaManager;
-        this.wxServerInvoker = wxServerInvoker;
+        this.wxApiInvoker = wxApiInvoker;
     }
 
     @Bean
@@ -66,7 +66,7 @@ public class WxAsyncMessageConfiguration {
 
     @Bean
     public WxMessageTemplate wxMessageTemplate() {
-        return new WxMessageTemplate(wxServerInvoker, wxMessageProcesser());
+        return new WxMessageTemplate(wxApiInvoker, wxMessageProcesser());
     }
 
     @Bean

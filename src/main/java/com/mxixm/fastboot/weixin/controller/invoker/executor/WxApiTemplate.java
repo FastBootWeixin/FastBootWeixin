@@ -30,18 +30,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * FastBootWeixin WxApiInvoker
+ * FastBootWeixin WxApiTemplate
  * RestTemplate的包装类
  *
  * @author Guangshan
  * @date 2017/8/13 10:58
  * @since 0.1.2
  */
-public class WxApiInvoker {
+public class WxApiTemplate {
 
     private RestTemplate restTemplate;
 
-    public WxApiInvoker(RestTemplate restTemplate) {
+    public WxApiTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

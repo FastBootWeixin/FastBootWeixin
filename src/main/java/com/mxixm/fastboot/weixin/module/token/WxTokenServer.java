@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
+import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
@@ -42,14 +42,14 @@ public class WxTokenServer {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    private WxApiInvoker wxApiInvoker;
+    private WxApiTemplate wxApiTemplate;
 
     private WxProperties wxProperties;
 
     private final ObjectMapper jsonConverter = new ObjectMapper();
 
-    public WxTokenServer(WxApiInvoker wxApiInvoker, WxProperties wxProperties) {
-        this.wxApiInvoker = wxApiInvoker;
+    public WxTokenServer(WxApiTemplate wxApiTemplate, WxProperties wxProperties) {
+        this.wxApiTemplate = wxApiTemplate;
         this.wxProperties = wxProperties;
     }
 
@@ -59,7 +59,7 @@ public class WxTokenServer {
                 .queryParam("grant_type", "client_credential")
                 .queryParam("appid", wxProperties.getAppid())
                 .queryParam("secret", wxProperties.getAppsecret());
-        String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
+        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             throw new WxAccessTokenException(result);
         } else {
@@ -93,7 +93,7 @@ public class WxTokenServer {
     }
 
     private WxWebUser getWxWebUserByBuilder(UriComponentsBuilder builder) {
-        String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
+        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             throw new WxAccessTokenException(result);
         } else {
@@ -112,7 +112,7 @@ public class WxTokenServer {
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
-        String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
+        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             throw new WxAccessTokenException(result);
         } else {
@@ -130,7 +130,7 @@ public class WxTokenServer {
                 .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId());
-        String result = wxApiInvoker.getForObject(builder.toUriString(), String.class);
+        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
         if (WxAccessTokenException.hasException(result)) {
             return false;
         } else {
