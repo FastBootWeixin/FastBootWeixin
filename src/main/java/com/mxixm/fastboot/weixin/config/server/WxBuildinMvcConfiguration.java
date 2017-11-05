@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.config.server;
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
 import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxMediaResourceMessageConverter;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
@@ -77,15 +77,15 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private final WxMessageProcesser wxMessageProcesser;
 
-    private final WxApiInvokeSpi wxApiInvokeSpi;
+    private final WxServerInvoker wxServerInvoker;
 
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
+    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxServerInvoker wxServerInvoker) {
         this.wxProperties = wxProperties;
         this.beanFactory = beanFactory;
         this.wxMessageProcesser = wxMessageProcesser;
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+        this.wxServerInvoker = wxServerInvoker;
     }
 
     @Bean
@@ -102,7 +102,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     @Bean
     public WxMenuManager wxMenuManager() {
-        return new WxMenuManager(wxApiInvokeSpi, menuAutoCreate);
+        return new WxMenuManager(wxServerInvoker, menuAutoCreate);
     }
 
     @Bean
@@ -210,7 +210,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
         /**
          * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
-         * WxApiExecutor -> WxApiInvokeSpi -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
+         * WxApiExecutor -> WxServerInvoker -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
          * 于是产生了循环依赖
          * 临时处理先把ConversionService的依赖去掉，后期考虑优化依赖关系
          *

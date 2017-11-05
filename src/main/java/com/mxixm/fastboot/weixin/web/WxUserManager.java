@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.web;
 
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.util.CacheMap;
@@ -49,11 +49,11 @@ public class WxUserManager {
 
     private WxTokenServer wxTokenServer;
 
-    private WxApiInvokeSpi wxApiInvokeSpi;
+    private WxServerInvoker wxServerInvoker;
 
-    public WxUserManager(WxTokenServer wxTokenServer, WxApiInvokeSpi wxApiInvokeSpi) {
+    public WxUserManager(WxTokenServer wxTokenServer, WxServerInvoker wxServerInvoker) {
         this.wxTokenServer = wxTokenServer;
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+        this.wxServerInvoker = wxServerInvoker;
     }
 
     public WxWebUser getWxWebUser(String code) {
@@ -68,7 +68,7 @@ public class WxUserManager {
     public WxUser getWxUser(String openId) {
         WxUser wxUser = openIdUserCache.get(openId);
         if (wxUser == null) {
-            wxUser = wxApiInvokeSpi.getUserInfo(openId);
+            wxUser = wxServerInvoker.getUserInfo(openId);
             openIdUserCache.put(openId, wxUser);
         }
         return wxUser;

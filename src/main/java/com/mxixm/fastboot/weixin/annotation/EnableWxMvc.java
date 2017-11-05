@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.config.invoker.WxInvokerConfiguration;
+import com.mxixm.fastboot.weixin.config.invoker.WxServerConfiguration;
 import com.mxixm.fastboot.weixin.config.media.WxMediaConfiguration;
 import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageConfiguration;
 import com.mxixm.fastboot.weixin.config.server.WxBuildinMvcConfiguration;
@@ -43,7 +43,7 @@ import java.lang.annotation.*;
 @Inherited
 @PropertySource("classpath:/wx.properties")
 @EnableConfigurationProperties(WxProperties.class)
-@Import({WxInvokerConfiguration.class,
+@Import({WxServerConfiguration.class,
         WxAsyncMessageConfiguration.class,
         WxBuildinMvcConfiguration.class,
         WxTokenConfiguration.class,

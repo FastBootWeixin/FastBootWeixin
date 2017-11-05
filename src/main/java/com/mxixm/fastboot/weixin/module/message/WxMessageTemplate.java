@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,22 +38,22 @@ public class WxMessageTemplate {
     /**
      * 暂时不想加入客服系统，要加入的话可以写个EnableWxCustomer
      */
-    private WxApiInvokeSpi wxApiInvokeSpi;
+    private WxServerInvoker wxServerInvoker;
 
     private WxMessageProcesser wxMessageProcesser;
 
-    public WxMessageTemplate(WxApiInvokeSpi wxApiInvokeSpi, WxMessageProcesser wxMessageProcesser) {
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+    public WxMessageTemplate(WxServerInvoker wxServerInvoker, WxMessageProcesser wxMessageProcesser) {
+        this.wxServerInvoker = wxServerInvoker;
         this.wxMessageProcesser = wxMessageProcesser;
     }
 
     public void sendMessage(WxMessage wxMessage) {
         if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvokeSpi.sendUserMessage((WxUserMessage) wxMessage);
+            this.wxServerInvoker.sendUserMessage((WxUserMessage) wxMessage);
         } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvokeSpi.sendGroupMessage((WxGroupMessage) wxMessage);
+            this.wxServerInvoker.sendGroupMessage((WxGroupMessage) wxMessage);
         } else if (WxTemplateMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvokeSpi.sendTemplateMessage((WxTemplateMessage) wxMessage);
+            this.wxServerInvoker.sendTemplateMessage((WxTemplateMessage) wxMessage);
         } else {
             logger.error("不能处理的消息类型" + wxMessage);
         }

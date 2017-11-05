@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.config.media;
 
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.module.media.WxMediaStore;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
@@ -42,11 +42,11 @@ public class WxMediaConfiguration {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-//	private final WxApiInvokeSpi wxApiInvokeSpi;
+//	private final WxServerInvoker wxApiInvokeSpi;
 //
 //	private final WxApiInvoker wxApiInvoker;
 //
-//	public WxMediaConfiguration(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker) {
+//	public WxMediaConfiguration(WxServerInvoker wxApiInvokeSpi, WxApiInvoker wxApiInvoker) {
 //		this.wxApiInvokeSpi = wxApiInvokeSpi;
 //		this.wxApiInvoker = wxApiInvoker;
 //	}
@@ -58,8 +58,8 @@ public class WxMediaConfiguration {
     }
 
     @Bean
-    public WxMediaManager wxMediaManager(@Lazy WxApiInvokeSpi wxApiInvokeSpi, @Lazy WxApiInvoker wxApiInvoker) {
-        return new WxMediaManager(wxApiInvokeSpi, wxApiInvoker, wxMediaStore());
+    public WxMediaManager wxMediaManager(@Lazy WxServerInvoker wxServerInvoker, @Lazy WxApiInvoker wxApiInvoker) {
+        return new WxMediaManager(wxServerInvoker, wxApiInvoker, wxMediaStore());
     }
 
 }

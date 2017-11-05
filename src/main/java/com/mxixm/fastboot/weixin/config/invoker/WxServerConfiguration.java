@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.config.invoker;
 
 import com.mxixm.fastboot.weixin.common.WxBeans;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.controller.invoker.WxInvokerProxyFactory;
 import com.mxixm.fastboot.weixin.controller.invoker.common.WxHttpInputMessageConverter;
 import com.mxixm.fastboot.weixin.controller.invoker.component.WxApiHttpRequestFactory;
@@ -64,7 +64,7 @@ import java.util.List;
  */
 @Configuration
 @ConditionalOnClass(RestTemplate.class)
-public class WxInvokerConfiguration {
+public class WxServerConfiguration {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -72,7 +72,7 @@ public class WxInvokerConfiguration {
 
     private final ObjectProvider<HttpMessageConverters> messageConverters;
 
-    public WxInvokerConfiguration(
+    public WxServerConfiguration(
             WxProperties wxProperties,
             ObjectProvider<HttpMessageConverters> messageConverters) {
         this.wxProperties = wxProperties;
@@ -115,7 +115,7 @@ public class WxInvokerConfiguration {
 	↑     ↓
 	|  wxButtonArgumentResolver defined in class path resource [com/example/myproject/config/server/WxBuildinMvcConfiguration.class]
 	↑     ↓
-	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxApiInvokeSpi com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
+	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxServerInvoker com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
 	└─────┘
 	 */
 
@@ -132,8 +132,8 @@ public class WxInvokerConfiguration {
     }
 
     @Bean
-    public WxInvokerProxyFactory<WxApiInvokeSpi> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
-        return new WxInvokerProxyFactory(WxApiInvokeSpi.class, wxProperties, wxApiExecutor);
+    public WxInvokerProxyFactory<WxServerInvoker> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
+        return new WxInvokerProxyFactory(WxServerInvoker.class, wxProperties, wxApiExecutor);
     }
 
 
@@ -144,8 +144,8 @@ public class WxInvokerConfiguration {
     }
 
     @Bean
-    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiInvokeSpi wxApiInvokeSpi) {
-        return new WxUserManager(wxTokenServer, wxApiInvokeSpi);
+    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxServerInvoker wxServerInvoker) {
+        return new WxUserManager(wxTokenServer, wxServerInvoker);
     }
 
     /**

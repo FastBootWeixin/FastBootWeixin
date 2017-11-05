@@ -43,7 +43,7 @@ import java.util.Map;
 public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterceptor, BeanClassLoaderAware, FactoryBean<T> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
-    // private WxApiInvokeSpi wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxApiInvokeSpi.class);
+    // private WxServerInvoker wxInvokerTemplateMock = MvcUriComponentsBuilder.on(WxServerInvoker.class);
 
     private final WxApiTypeInfo wxApiTypeInfo;
 
@@ -113,7 +113,7 @@ public class WxInvokerProxyFactory<T> implements InitializingBean, MethodInterce
 
     @Override
     public Class<?> getObjectType() {
-        return WxApiInvokeSpi.class;
+        return WxServerInvoker.class;
     }
 
     @Override

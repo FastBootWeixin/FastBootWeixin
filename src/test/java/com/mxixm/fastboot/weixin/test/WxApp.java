@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 public class WxApp {
 
     @Autowired
-    WxApiInvokeSpi wxApiInvokeSpi;
+    WxServerInvoker wxServerInvoker;
 
     @Autowired
     WxMediaManager wxMediaManager;
@@ -244,7 +244,7 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
     public List<WxMessage> cardMessage(String content) {
         Integer tagId = Integer.parseInt(content.substring("卡券".length()));
-        WxTagUser.UserList userList = wxApiInvokeSpi.listUserByTag(WxTagUser.listUser(tagId));
+        WxTagUser.UserList userList = wxServerInvoker.listUserByTag(WxTagUser.listUser(tagId));
         return userList.getOpenIdList().stream().flatMap(u -> {
             List<WxMessage> l = new ArrayList();
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
@@ -255,15 +255,15 @@ public class WxApp {
 
     @RequestMapping("cards")
     public List<WxCard> cards() {
-        return wxApiInvokeSpi.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
+        return wxServerInvoker.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
                 .getCardIdList().stream().map(id -> {
-            return wxApiInvokeSpi.cardInfo(WxCard.CardSelector.info(id));
+            return wxServerInvoker.cardInfo(WxCard.CardSelector.info(id));
         }).collect(Collectors.toList());
     }
 
     @RequestMapping("card")
     public WxCard card() {
-        return wxApiInvokeSpi.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
+        return wxServerInvoker.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
     }
 
 

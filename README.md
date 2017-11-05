@@ -30,7 +30,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.2.1.rc</version>
+        <version>0.3.0</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -382,3 +382,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 #### 0.2.1.beta
 1. 增加部分说明，修复部分bug
 2. 增加菜单url自动重写为微信web认证url
+
+#### 0.3.0
+1. 优化部分包名，去掉后缀

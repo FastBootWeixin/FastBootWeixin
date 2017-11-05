@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.test.old.media;
 
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiInvoker;
 import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
@@ -36,14 +36,14 @@ import java.io.IOException;
  */
 public class WxMediaManager {
 
-    private WxApiInvokeSpi wxApiInvokeSpi;
+    private WxServerInvoker wxServerInvoker;
 
     private WxMediaStore wxMediaStore;
 
     private WxApiInvoker wxApiInvoker;
 
-    public WxMediaManager(WxApiInvokeSpi wxApiInvokeSpi, WxApiInvoker wxApiInvoker, WxMediaStore wxMediaStore) {
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+    public WxMediaManager(WxServerInvoker wxServerInvoker, WxApiInvoker wxApiInvoker, WxMediaStore wxMediaStore) {
+        this.wxServerInvoker = wxServerInvoker;
         this.wxApiInvoker = wxApiInvoker;
         this.wxMediaStore = wxMediaStore;
     }
@@ -53,7 +53,7 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, new FileSystemResource(media));
+        WxMedia.TempMediaResult result = wxServerInvoker.uploadTempMedia(type, new FileSystemResource(media));
         wxMediaStore.storeFileToTempMedia(type, media, result);
         return result.getMediaId();
     }
@@ -64,7 +64,7 @@ public class WxMediaManager {
             return mediaId;
         }
         Resource resource = wxApiInvoker.getForObject(url, Resource.class);
-        WxMedia.TempMediaResult result = wxApiInvokeSpi.uploadTempMedia(type, resource);
+        WxMedia.TempMediaResult result = wxServerInvoker.uploadTempMedia(type, resource);
         wxMediaStore.storeUrlToTempMedia(type, url, result);
         return result.getMediaId();
     }
@@ -74,7 +74,7 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(type, new FileSystemResource(media), null);
+        WxMedia.MediaResult result = wxServerInvoker.uploadMedia(type, new FileSystemResource(media), null);
         wxMediaStore.storeFileToMedia(type, media, result);
         return result.getMediaId();
     }
@@ -91,13 +91,13 @@ public class WxMediaManager {
         if (mediaId != null) {
             return mediaId;
         }
-        WxMedia.MediaResult result = wxApiInvokeSpi.uploadMedia(WxMedia.Type.VIDEO, new FileSystemResource(video), description);
+        WxMedia.MediaResult result = wxServerInvoker.uploadMedia(WxMedia.Type.VIDEO, new FileSystemResource(video), description);
         wxMediaStore.storeFileToMedia(WxMedia.Type.VIDEO, video, result);
         return result.getMediaId();
     }
 
     public WxMedia.Video getVideoMedia(String mediaId) {
-        return wxApiInvokeSpi.getVideoMedia(WxMedia.of(mediaId));
+        return wxServerInvoker.getVideoMedia(WxMedia.of(mediaId));
     }
 
     public Resource getTempMedia(String mediaId) {
@@ -105,7 +105,7 @@ public class WxMediaManager {
         if (tempMediaFile != null) {
             return new WxMediaResource(tempMediaFile);
         }
-        WxMediaResource wxMediaResource = wxApiInvokeSpi.getTempMedia(mediaId);
+        WxMediaResource wxMediaResource = wxServerInvoker.getTempMedia(mediaId);
         try {
             wxMediaStore.storeTempMediaToFile(mediaId, wxMediaResource);
         } catch (IOException e) {
@@ -119,7 +119,7 @@ public class WxMediaManager {
         if (mediaFile != null) {
             return new WxMediaResource(mediaFile);
         }
-        WxMediaResource wxMediaResource = wxApiInvokeSpi.getMedia(WxMedia.of(mediaId));
+        WxMediaResource wxMediaResource = wxServerInvoker.getMedia(WxMedia.of(mediaId));
         try {
             wxMediaStore.storeMediaToFile(mediaId, wxMediaResource);
         } catch (IOException e) {
@@ -133,7 +133,7 @@ public class WxMediaManager {
         if (url != null) {
             return url;
         }
-        WxMedia.ImageResult imageResult = wxApiInvokeSpi.uploadImg(new FileSystemResource(file));
+        WxMedia.ImageResult imageResult = wxServerInvoker.uploadImg(new FileSystemResource(file));
         wxMediaStore.storeFileToUrl(file, imageResult);
         return imageResult.getUrl();
     }
@@ -154,7 +154,7 @@ public class WxMediaManager {
             return url;
         }
         Resource resource = wxApiInvoker.getForObject(imgUrl, Resource.class);
-        WxMedia.ImageResult result = wxApiInvokeSpi.uploadImg(resource);
+        WxMedia.ImageResult result = wxServerInvoker.uploadImg(resource);
         wxMediaStore.storeUrlToUrl(imgUrl, result);
         return result.getUrl();
     }
@@ -170,7 +170,7 @@ public class WxMediaManager {
      * @return dummy
      */
     public WxMedia.NewsResult storeNews(WxMedia.News news) {
-        return wxApiInvokeSpi.addNews(news);
+        return wxServerInvoker.addNews(news);
     }
 
     /**
@@ -179,7 +179,7 @@ public class WxMediaManager {
      * @param news
      */
     public void updateNews(WxMedia.New news) {
-        wxApiInvokeSpi.updateNews(news);
+        wxServerInvoker.updateNews(news);
     }
 
     /**
@@ -189,15 +189,15 @@ public class WxMediaManager {
      * @return dummy
      */
     public WxMedia.News getNews(String mediaId) {
-        return wxApiInvokeSpi.getNewsMedia(WxMedia.of(mediaId));
+        return wxServerInvoker.getNewsMedia(WxMedia.of(mediaId));
     }
 
     public void delMedia(String mediaId) {
-        wxApiInvokeSpi.delMedia(WxMedia.of(mediaId));
+        wxServerInvoker.delMedia(WxMedia.of(mediaId));
     }
 
     public WxMedia.Count getMediaCount() {
-        return wxApiInvokeSpi.getMediaCount();
+        return wxServerInvoker.getMediaCount();
     }
 
 }

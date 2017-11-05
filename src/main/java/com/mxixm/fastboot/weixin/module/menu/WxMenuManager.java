@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.menu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvokeSpi;
+import com.mxixm.fastboot.weixin.controller.invoker.WxServerInvoker;
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +43,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    private WxApiInvokeSpi wxApiInvokeSpi;
+    private WxServerInvoker wxServerInvoker;
 
     private Map<WxButton.Group, WxButtonItem> mainButtonLookup = new HashMap<>();
 
@@ -59,8 +59,8 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private boolean autoCreate;
 
-    public WxMenuManager(WxApiInvokeSpi wxApiInvokeSpi, boolean autoCreate) {
-        this.wxApiInvokeSpi = wxApiInvokeSpi;
+    public WxMenuManager(WxServerInvoker wxServerInvoker, boolean autoCreate) {
+        this.wxServerInvoker = wxServerInvoker;
         this.autoCreate = autoCreate;
     }
 
@@ -109,7 +109,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         }
         WxMenus oldWxMenu = null;
         try {
-            oldWxMenu = wxApiInvokeSpi.getMenu();
+            oldWxMenu = wxServerInvoker.getMenu();
         } catch (WxApiResultException e) {
             // 如果不是菜单不存在，则继续抛出，否则执行创建菜单操作
             if (e.getResultCode() != WxApiResultException.WxApiResultCode.NOT_FOUND_MENU_DATA) {
@@ -119,7 +119,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
         WxMenu newWxMenu = this.getMenu();
         // WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
         if (oldWxMenu == null || isMenuChanged(oldWxMenu)) {
-            String result = wxApiInvokeSpi.createMenu(newWxMenu);
+            String result = wxServerInvoker.createMenu(newWxMenu);
             logger.info("==============================================================");
             logger.info("            执行创建菜单操作       ");
             logger.info("            操作结果：" + result);
