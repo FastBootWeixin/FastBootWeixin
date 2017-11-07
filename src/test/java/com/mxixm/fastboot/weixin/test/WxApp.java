@@ -17,7 +17,8 @@
 package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvoker;
+import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
@@ -30,6 +31,7 @@ import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
+import com.mxixm.fastboot.weixin.service.WxExtendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
@@ -52,13 +54,16 @@ import java.util.stream.Collectors;
 public class WxApp {
 
     @Autowired
-    WxApiInvoker wxApiInvoker;
+    WxApiService wxApiService;
 
     @Autowired
     WxMediaManager wxMediaManager;
 
     @Autowired
     WxMessageTemplate wxMessageTemplate;
+
+    @Autowired
+    WxExtendService wxExtendService;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -244,7 +249,7 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
     public List<WxMessage> cardMessage(String content) {
         Integer tagId = Integer.parseInt(content.substring("卡券".length()));
-        WxTagUser.UserList userList = wxApiInvoker.listUserByTag(WxTagUser.listUser(tagId));
+        WxTagUser.UserList userList = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
         return userList.getOpenIdList().stream().flatMap(u -> {
             List<WxMessage> l = new ArrayList();
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
@@ -255,15 +260,15 @@ public class WxApp {
 
     @RequestMapping("cards")
     public List<WxCard> cards() {
-        return wxApiInvoker.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
+        return wxApiService.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
                 .getCardIdList().stream().map(id -> {
-            return wxApiInvoker.cardInfo(WxCard.CardSelector.info(id));
+            return wxApiService.cardInfo(WxCard.CardSelector.info(id));
         }).collect(Collectors.toList());
     }
 
     @RequestMapping("card")
     public WxCard card() {
-        return wxApiInvoker.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
+        return wxApiService.cardInfo(WxCard.CardSelector.info("pKS9_xMBmNqlcWD-uAkD1pOy09Qw"));
     }
 
 
@@ -276,6 +281,12 @@ public class WxApp {
     @ResponseBody
     public String testWeb() {
         return "<b>test html</b>";
+    }
+
+    @RequestMapping("qrcode")
+    @ResponseBody
+    public WxQrCode.Result qrcode() {
+        return wxExtendService.createQrCode(WxQrCode.builder().temporary(1).build());
     }
 
 }

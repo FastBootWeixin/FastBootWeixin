@@ -18,13 +18,14 @@ package com.mxixm.fastboot.weixin.config.invoker;
 
 import com.mxixm.fastboot.weixin.common.WxBeans;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvoker;
-import com.mxixm.fastboot.weixin.controller.invoker.WxInvokerProxyFactory;
-import com.mxixm.fastboot.weixin.controller.invoker.common.WxHttpInputMessageConverter;
-import com.mxixm.fastboot.weixin.controller.invoker.component.WxApiHttpRequestFactory;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiExecutor;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiTemplate;
-import com.mxixm.fastboot.weixin.controller.invoker.handler.WxResponseErrorHandler;
+import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.service.WxExtendService;
+import com.mxixm.fastboot.weixin.service.invoker.WxInvokerProxyFactoryBean;
+import com.mxixm.fastboot.weixin.service.invoker.common.WxHttpInputMessageConverter;
+import com.mxixm.fastboot.weixin.service.invoker.component.WxApiHttpRequestFactory;
+import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiExecutor;
+import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
+import com.mxixm.fastboot.weixin.service.invoker.handler.WxResponseErrorHandler;
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.support.DefaultWxUserProvider;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
@@ -89,8 +90,8 @@ public class WxInvokerConfiguration {
      *
      * @return dummy
      */
-    @Bean(name = WxBeans.WX_API_INVOKER_NAME)
-    public WxApiTemplate wxApiInvoker() {
+    @Bean(name = WxBeans.WX_API_TEMPLATE_NAME)
+    public WxApiTemplate wxApiTemplate() {
         RestTemplateBuilder builder = new RestTemplateBuilder();
         builder = builder.requestFactory(new WxApiHttpRequestFactory(wxProperties))
                 .errorHandler(new WxResponseErrorHandler());
@@ -115,7 +116,7 @@ public class WxInvokerConfiguration {
 	↑     ↓
 	|  wxButtonArgumentResolver defined in class path resource [com/example/myproject/config/server/WxBuildinMvcConfiguration.class]
 	↑     ↓
-	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxApiInvoker com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
+	|  defaultWxUserProvider (field private com.example.myproject.controller.invoker.WxApiService com.example.myproject.support.DefaultWxUserProvider.wxApiInvokeSpi)
 	└─────┘
 	 */
 
@@ -128,14 +129,18 @@ public class WxInvokerConfiguration {
      */
     @Bean
     public WxApiExecutor wxApiExecutor(WxAccessTokenManager wxAccessTokenManager) {
-        return new WxApiExecutor(wxApiInvoker(), wxAccessTokenManager);
+        return new WxApiExecutor(wxApiTemplate(), wxAccessTokenManager);
     }
 
     @Bean
-    public WxInvokerProxyFactory<WxApiInvoker> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
-        return new WxInvokerProxyFactory(WxApiInvoker.class, wxProperties, wxApiExecutor);
+    public WxInvokerProxyFactoryBean<WxApiService> wxInvokerProxyFactory(WxApiExecutor wxApiExecutor) {
+        return new WxInvokerProxyFactoryBean(WxApiService.class, wxProperties, wxApiExecutor);
     }
 
+    @Bean
+    public WxExtendService wxExtendService(@Lazy WxApiService wxApiService) {
+        return new WxExtendService(wxApiService);
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -144,8 +149,8 @@ public class WxInvokerConfiguration {
     }
 
     @Bean
-    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiInvoker wxApiInvoker) {
-        return new WxUserManager(wxTokenServer, wxApiInvoker);
+    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiService wxApiService) {
+        return new WxUserManager(wxTokenServer, wxApiService);
     }
 
     /**

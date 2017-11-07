@@ -31,7 +31,7 @@ import com.mxixm.fastboot.weixin.web.WxUserManager;
  */
 public class WxBeans {
 
-    public static final String WX_API_INVOKER_NAME = "WxApiTemplate";
+    public static final String WX_API_TEMPLATE_NAME = "WxApiTemplate";
 
     public static WxUserManager wxUserManager() {
         return WxContextUtils.getBean(WxUserManager.class);

@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvoker;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,22 +38,22 @@ public class WxMessageTemplate {
     /**
      * 暂时不想加入客服系统，要加入的话可以写个EnableWxCustomer
      */
-    private WxApiInvoker wxApiInvoker;
+    private WxApiService wxApiService;
 
     private WxMessageProcesser wxMessageProcesser;
 
-    public WxMessageTemplate(WxApiInvoker wxApiInvoker, WxMessageProcesser wxMessageProcesser) {
-        this.wxApiInvoker = wxApiInvoker;
+    public WxMessageTemplate(WxApiService wxApiService, WxMessageProcesser wxMessageProcesser) {
+        this.wxApiService = wxApiService;
         this.wxMessageProcesser = wxMessageProcesser;
     }
 
     public void sendMessage(WxMessage wxMessage) {
         if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvoker.sendUserMessage((WxUserMessage) wxMessage);
+            this.wxApiService.sendUserMessage((WxUserMessage) wxMessage);
         } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvoker.sendGroupMessage((WxGroupMessage) wxMessage);
+            this.wxApiService.sendGroupMessage((WxGroupMessage) wxMessage);
         } else if (WxTemplateMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiInvoker.sendTemplateMessage((WxTemplateMessage) wxMessage);
+            this.wxApiService.sendTemplateMessage((WxTemplateMessage) wxMessage);
         } else {
             logger.error("不能处理的消息类型" + wxMessage);
         }

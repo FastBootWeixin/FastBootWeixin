@@ -18,9 +18,9 @@ package com.mxixm.fastboot.weixin.config.server;
 
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
-import com.mxixm.fastboot.weixin.controller.invoker.WxApiInvoker;
-import com.mxixm.fastboot.weixin.controller.invoker.common.WxMediaResourceMessageConverter;
+import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
+import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.service.invoker.common.WxMediaResourceMessageConverter;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
@@ -77,20 +77,20 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private final WxMessageProcesser wxMessageProcesser;
 
-    private final WxApiInvoker wxApiInvoker;
+    private final WxApiService wxApiService;
 
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiInvoker wxApiInvoker) {
+    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiService wxApiService) {
         this.wxProperties = wxProperties;
         this.beanFactory = beanFactory;
         this.wxMessageProcesser = wxMessageProcesser;
-        this.wxApiInvoker = wxApiInvoker;
+        this.wxApiService = wxApiService;
     }
 
     @Bean
-    public WxBuildinVerify wxBuildinVerify() {
-        return new WxBuildinVerify(wxProperties.getToken());
+    public WxBuildinVerifyService wxBuildinVerify() {
+        return new WxBuildinVerifyService(wxProperties.getToken());
     }
 
     @Bean
@@ -102,7 +102,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     @Bean
     public WxMenuManager wxMenuManager() {
-        return new WxMenuManager(wxApiInvoker, menuAutoCreate);
+        return new WxMenuManager(wxApiService, menuAutoCreate);
     }
 
     @Bean
@@ -210,7 +210,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
         /**
          * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
-         * WxApiExecutor -> WxApiInvoker -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
+         * WxApiExecutor -> WxApiService -> WxUserProvider -> WxMvcConfigurer -> ConversionService -> WxAPIExecutor
          * 于是产生了循环依赖
          * 临时处理先把ConversionService的依赖去掉，后期考虑优化依赖关系
          *

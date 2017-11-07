@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.controller.WxBuildinVerify;
+import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
@@ -32,6 +32,7 @@ import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.*;
@@ -46,6 +47,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -68,9 +70,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
-    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxBuildinVerify.class, "verify", (Class<?>[]) null);
+    private static final Method WX_VERIFY_METHOD = ClassUtils.getMethod(WxBuildinVerifyService.class, "verify", (Class<?>[]) null);
 
     private final HandlerMethod wxVerifyMethodHandler;
+
+    private final HandlerMethod defaultHandlerMethod;
+
+    private static final Method SUPPLIER_METHOD = ClassUtils.getMethod(Supplier.class, "get");
 
     /**
      * mappingRegistry同父类完全不同，故自己创建一个
@@ -89,13 +95,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final WxAsyncHandlerFactory wxAsyncHandlerFactory;
 
-    public WxMappingHandlerMapping(String path, WxBuildinVerify wxBuildinVerify, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
+    public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
         super();
         this.path = (path.startsWith("/") ? "" : "/") + path;
-        this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerify, WX_VERIFY_METHOD);
+        this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerifyService, WX_VERIFY_METHOD);
         this.wxMenuManager = wxMenuManager;
         this.wxSessionManager = wxSessionManager;
         this.wxAsyncHandlerFactory = new WxAsyncHandlerFactory(wxAsyncMessageTemplate);
+        this.defaultHandlerMethod = new HandlerMethod((Supplier)(() -> HttpEntity.EMPTY), SUPPLIER_METHOD);
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
     }
 
@@ -113,7 +120,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return wxVerifyMethodHandler;
         }
         if (isWxPostRequest(request)) {
-            return lookupHandlerMethod(lookupPath, request);
+            final HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
+            return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
         return null;
     }

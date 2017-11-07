@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class WxQrCode {
 
+    public final static String QR_SCENE_SUFFIX = "qrscene_";
+
     WxQrCode(int expireSeconds, Action action, ActionInfo actionInfo) {
         this.expireSeconds = expireSeconds;
         this.action = action;
@@ -116,7 +118,7 @@ public class WxQrCode {
          * @param expireSeconds
          * @return Builder
          */
-        public Builder Temporary(int expireSeconds, Integer sceneId) {
+        public Builder temporary(int expireSeconds, Integer sceneId) {
             this.expireSeconds = expireSeconds;
             this.action = Action.QR_SCENE;
             this.actionInfo.scene = new ActionInfo.Scene();
@@ -129,7 +131,7 @@ public class WxQrCode {
          * @param expireSeconds
          * @return Builder
          */
-        public Builder Temporary(int expireSeconds, String sceneStr) {
+        public Builder temporary(int expireSeconds, String sceneStr) {
             this.expireSeconds = expireSeconds;
             this.action = Action.QR_STR_SCENE;
             this.actionInfo.scene = new ActionInfo.Scene();
@@ -142,8 +144,8 @@ public class WxQrCode {
          * 默认最长时间
          * @return Builder
          */
-        public Builder Temporary(Integer sceneId) {
-            return Temporary(30 * 24 * 60 * 60, sceneId);
+        public Builder temporary(Integer sceneId) {
+            return temporary(30 * 24 * 60 * 60, sceneId);
         }
 
         /**
@@ -151,8 +153,8 @@ public class WxQrCode {
          * 默认最长时间
          * @return Builder
          */
-        public Builder Temporary(String sceneStr) {
-            return Temporary(30 * 24 * 60 * 60, sceneStr);
+        public Builder temporary(String sceneStr) {
+            return temporary(30 * 24 * 60 * 60, sceneStr);
         }
 
         /**
@@ -160,7 +162,7 @@ public class WxQrCode {
          * @param sceneId
          * @return Builder
          */
-        public Builder Permanent(Integer sceneId) {
+        public Builder permanent(Integer sceneId) {
             this.action = Action.QR_LIMIT_SCENE;
             this.actionInfo.scene = new ActionInfo.Scene();
             this.actionInfo.scene.sceneId = sceneId;
@@ -172,7 +174,7 @@ public class WxQrCode {
          * @param sceneStr
          * @return Builder
          */
-        public Builder Permanent(String sceneStr) {
+        public Builder permanent(String sceneStr) {
             this.action = Action.QR_LIMIT_STR_SCENE;
             this.actionInfo.scene = new ActionInfo.Scene();
             this.actionInfo.scene.sceneStr = sceneStr;
@@ -184,7 +186,7 @@ public class WxQrCode {
          * @param cardId
          * @return Builder
          */
-        public Builder Card(String cardId) {
+        public Builder card(String cardId) {
             this.action = Action.QR_CARD;
             this.actionInfo.card = new ActionInfo.Card();
             this.actionInfo.card.cardId = cardId;
@@ -221,9 +223,23 @@ public class WxQrCode {
 
         /**
          * 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片
+         * 这个字段不知道是干哈的，网上也没查到
          */
         @JsonProperty("url")
         private String url;
+
+        /**
+         * 展示二维码用的图片
+         */
+        private String showUrl;
+
+        public String getShowUrl() {
+            return showUrl;
+        }
+
+        public void setShowUrl(String showUrl) {
+            this.showUrl = showUrl;
+        }
 
         public String getTicket() {
             return ticket;

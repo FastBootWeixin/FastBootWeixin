@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.token;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiTemplate;
+import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.user.WxUser;

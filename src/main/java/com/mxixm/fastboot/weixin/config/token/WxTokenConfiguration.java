@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.config.token;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.controller.invoker.executor.WxApiTemplate;
+import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
 import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;

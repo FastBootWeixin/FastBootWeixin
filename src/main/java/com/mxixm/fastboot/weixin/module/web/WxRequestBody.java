@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.module.web;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import org.springframework.beans.BeanUtils;
 
@@ -595,7 +596,11 @@ public class WxRequestBody {
         @Override
         public Subscribe of(WxRequest.Body body) {
             super.of(body);
-            this.eventKey = body.getEventKey();
+            if (body.getEventKey() != null && body.getEventKey().startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
+                this.eventKey = body.getEventKey().substring(WxQrCode.QR_SCENE_SUFFIX.length());
+            } else {
+                this.eventKey = body.getEventKey();
+            }
             this.ticket = body.getTicket();
             return this;
         }
@@ -673,7 +678,11 @@ public class WxRequestBody {
         @Override
         public Scan of(WxRequest.Body body) {
             super.of(body);
-            this.eventKey = body.getEventKey();
+            if (body.getEventKey() != null && body.getEventKey().startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
+                this.eventKey = body.getEventKey().substring(WxQrCode.QR_SCENE_SUFFIX.length());
+            } else {
+                this.eventKey = body.getEventKey();
+            }
             this.ticket = body.getTicket();
             return this;
         }
