@@ -23,6 +23,7 @@ import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.http.HttpEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.HandlerMethod;
 
@@ -70,7 +71,7 @@ public class WxAsyncMethodInterceptor implements MethodInterceptor {
                 throw new WxApiException(e.getMessage(), e);
             }
         });
-        return null;
+        return HttpEntity.EMPTY;
     }
 
 }

@@ -593,16 +593,21 @@ public class WxRequestBody {
          */
         private String ticket;
 
+        /**
+        */
+        private String scene;
+
         @Override
         public Subscribe of(WxRequest.Body body) {
             super.of(body);
-            if (body.getEventKey() != null && body.getEventKey().startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
-                this.eventKey = body.getEventKey().substring(WxQrCode.QR_SCENE_SUFFIX.length());
-            } else {
-                this.eventKey = body.getEventKey();
-            }
+            this.eventKey = body.getEventKey();
+            this.scene = body.getScene();
             this.ticket = body.getTicket();
             return this;
+        }
+
+        public String getScene() {
+            return scene;
         }
 
         public String getEventKey() {
@@ -675,15 +680,17 @@ public class WxRequestBody {
          */
         private String ticket;
 
+        /**
+         * 二维码场景
+         */
+        private String scene;
+
         @Override
         public Scan of(WxRequest.Body body) {
             super.of(body);
-            if (body.getEventKey() != null && body.getEventKey().startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
-                this.eventKey = body.getEventKey().substring(WxQrCode.QR_SCENE_SUFFIX.length());
-            } else {
-                this.eventKey = body.getEventKey();
-            }
+            this.eventKey = body.getEventKey();
             this.ticket = body.getTicket();
+            this.scene = body.getScene();
             return this;
         }
 

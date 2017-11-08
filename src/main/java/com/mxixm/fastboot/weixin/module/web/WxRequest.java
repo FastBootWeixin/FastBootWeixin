@@ -20,6 +20,7 @@ import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
@@ -237,6 +238,21 @@ public class WxRequest {
          */
         @XmlElement(name = "EventKey")
         private String eventKey;
+
+        /**
+         * 二维码场景值
+         */
+        private String scene;
+        /**
+         * 获取扫描二维码的场景值
+         * @return
+         */
+        public String getScene() {
+            if (scene == null && eventKey != null && eventKey.startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
+                scene = eventKey.substring(WxQrCode.QR_SCENE_SUFFIX.length());
+            }
+            return scene;
+        }
 
         /**
          * event类型为VIEW时才有
