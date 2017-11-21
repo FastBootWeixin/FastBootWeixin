@@ -701,6 +701,10 @@ public class WxRequestBody {
         public String getTicket() {
             return this.ticket;
         }
+
+        public String getScene() {
+            return this.scene;
+        }
     }
 
     /**

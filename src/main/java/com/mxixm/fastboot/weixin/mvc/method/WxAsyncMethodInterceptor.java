@@ -71,7 +71,7 @@ public class WxAsyncMethodInterceptor implements MethodInterceptor {
                 throw new WxApiException(e.getMessage(), e);
             }
         });
-        return HttpEntity.EMPTY;
+        return null;
     }
 
 }
