@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxGroupVoiceMessageProcesser
+ * FastBootWeixin WxTemplateMessageProcessor
  *
  * @author Guangshan
- * @date 2017/8/20 22:53
- * @since 0.1.2
+ * @date 2017-10-13 11:17:00
+ * @since 0.2.1
  */
-public class WxVoiceMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Voice> {
-
-    public WxVoiceMessageProcesser(WxMediaManager wxMediaManager) {
-        super(wxMediaManager);
-    }
+public class WxTemplateMessageProcessor implements WxMessageProcessor<WxTemplateMessage> {
 
     @Override
-    protected WxMessageBody.Voice processBody(WxRequest wxRequest, WxMessageBody.Voice body) {
-        super.processBody(wxRequest, body);
-        return body;
+    public WxTemplateMessage process(WxRequest wxRequest, WxTemplateMessage wxMessage) {
+        // 这个重复逻辑可以使用processInternal处理
+        if (wxMessage == null) {
+            return wxMessage;
+        }
+        if (wxMessage.getToUser() == null) {
+            wxMessage.setToUser(wxRequest.getBody().getFromUserName());
+        }
+        return wxMessage;
     }
 
 }

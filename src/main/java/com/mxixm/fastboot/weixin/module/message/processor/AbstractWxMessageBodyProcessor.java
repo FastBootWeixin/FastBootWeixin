@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * FastBootWeixin AbstractWxGroupMediaMessageProcesser
+ * FastBootWeixin AbstractWxGroupMediaMessageProcessor
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public abstract class AbstractWxMessageBodyProcesser<B extends WxMessageBody> implements WxMessageProcesser<WxMessage<B>> {
+public abstract class AbstractWxMessageBodyProcessor<B extends WxMessageBody> implements WxMessageProcessor<WxMessage<B>> {
 
     @Override
     public WxMessage<B> process(WxRequest wxRequest, WxMessage<B> wxMessage) {

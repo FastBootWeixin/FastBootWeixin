@@ -19,14 +19,14 @@ package com.mxixm.fastboot.weixin.module.message;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxCommonMessageProcesser
+ * FastBootWeixin WxCommonMessageProcessor
  * 暂时没有用
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxGroupMessageProcesser implements WxMessageProcesser<WxGroupMessage> {
+public class WxGroupMessageProcessor implements WxMessageProcessor<WxGroupMessage> {
 
     @Override
     public WxGroupMessage process(WxRequest wxRequest, WxGroupMessage wxMessage) {

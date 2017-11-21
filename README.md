@@ -279,9 +279,9 @@ WxMessage.News.builder()，在WxMessage类中，有不同的静态内部类，�
 
 #### 5. Spring风格的消息发送
 
-本框架提供WxMessageTemplate发送消息，同时在template中提供了WxMessageProcesser支持，作用是在消息发送前对消息做处理。
+本框架提供WxMessageTemplate发送消息，同时在template中提供了WxMessageProcessor支持，作用是在消息发送前对消息做处理。
 
-如同步返回消息时，需要写入fromUserName字段，而该字段是消息发送时的toUserName字段，没有必要让框架的使用者去处理这个字段，在WxCommonMessageProcesser处理器中就对该字段进行了处理，有兴趣的可以参考源码。
+如同步返回消息时，需要写入fromUserName字段，而该字段是消息发送时的toUserName字段，没有必要让框架的使用者去处理这个字段，在WxCommonMessageProcessor处理器中就对该字段进行了处理，有兴趣的可以参考源码。
 
 同时还支持以下转换：对于media类型的消息，可以直接使用mediaUrl或者mediaPath写入素材路径，消息转换器通过WxMediaManager自动管理素材获得必要的素材id。(关于WxMediaManager下面写)
 

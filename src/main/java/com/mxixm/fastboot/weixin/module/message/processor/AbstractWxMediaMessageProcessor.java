@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
@@ -23,41 +23,36 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.core.io.FileSystemResource;
 
-import java.io.File;
-
 /**
- * FastBootWeixin WxGroupVideoMessageProcesser
+ * FastBootWeixin AbstractWxGroupMediaMessageProcessor
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxVideoMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Video> {
+public abstract class AbstractWxMediaMessageProcessor<B extends WxMessageBody.Media> extends AbstractWxMessageBodyProcessor<B> {
 
-    public WxVideoMessageProcesser(WxMediaManager wxMediaManager) {
-        super(wxMediaManager);
+    protected WxMediaManager wxMediaManager;
+
+    public AbstractWxMediaMessageProcessor(WxMediaManager wxMediaManager) {
+        this.wxMediaManager = wxMediaManager;
     }
 
     @Override
-    protected WxMessageBody.Video processBody(WxRequest wxRequest, WxMessageBody.Video body) {
-        super.processBody(wxRequest, body);
-        processVideoBody(wxRequest, body);
-        return body;
-    }
-
-    protected WxMessageBody.Video processVideoBody(WxRequest wxRequest, WxMessageBody.Video body) {
-        if (body.getThumbMediaId() == null) {
+    protected B processBody(WxRequest wxRequest, B body) {
+        if (body.getMediaId() == null) {
             // 优先使用path
-            if (body.getThumbMediaPath() != null) {
-                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
+            if (body.getMediaPath() != null) {
+                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getMediaPath()));
                 body.setMediaId(mediaId);
-            } else if (body.getThumbMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), body.getThumbMediaUrl());
+            } else if (body.getMediaUrl() != null) {
+                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), body.getMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setMediaId(mediaId);
             }
         }
         return body;
     }
+
 
 }

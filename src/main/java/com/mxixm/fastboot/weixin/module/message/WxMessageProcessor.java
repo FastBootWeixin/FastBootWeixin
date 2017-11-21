@@ -23,13 +23,13 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 /**
- * FastBootWeixin WxMessageProcesser
+ * FastBootWeixin WxMessageProcessor
  *
  * @author Guangshan
  * @date 2017/8/20 22:24
  * @since 0.1.2
  */
-public interface WxMessageProcesser<T extends WxMessage> {
+public interface WxMessageProcessor<T extends WxMessage> {
 
     T process(WxRequest wxRequest, T wxMessage);
 
@@ -37,7 +37,7 @@ public interface WxMessageProcesser<T extends WxMessage> {
         Type[] types = this.getClass().getGenericInterfaces();
         Class userClass = Arrays.stream(types).filter(t -> t instanceof ParameterizedType)
                 .map(ParameterizedType.class::cast)
-                .filter(t -> t.getRawType().equals(WxMessageProcesser.class))
+                .filter(t -> t.getRawType().equals(WxMessageProcessor.class))
                 .findFirst().map(t -> (Class) t.getActualTypeArguments()[0])
                 .orElse(null);
         if (userClass == null) {

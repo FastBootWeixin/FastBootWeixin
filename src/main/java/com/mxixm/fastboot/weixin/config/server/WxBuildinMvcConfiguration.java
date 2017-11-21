@@ -18,11 +18,11 @@ package com.mxixm.fastboot.weixin.config.server;
 
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.invoker.common.WxMediaResourceMessageConverter;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
@@ -75,16 +75,16 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private final BeanFactory beanFactory;
 
-    private final WxMessageProcesser wxMessageProcesser;
+    private final WxMessageProcessor wxMessageProcessor;
 
     private final WxApiService wxApiService;
 
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcesser wxMessageProcesser, @Lazy WxApiService wxApiService) {
+    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcessor wxMessageProcessor, @Lazy WxApiService wxApiService) {
         this.wxProperties = wxProperties;
         this.beanFactory = beanFactory;
-        this.wxMessageProcesser = wxMessageProcesser;
+        this.wxMessageProcessor = wxMessageProcessor;
         this.wxApiService = wxApiService;
     }
 
@@ -122,12 +122,12 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     @Bean
     public WxMessageResponseBodyAdvice wxMessageResponseBodyAdvice() {
-        return new WxMessageResponseBodyAdvice(wxMessageProcesser);
+        return new WxMessageResponseBodyAdvice(wxMessageProcessor);
     }
 
     @Bean
     public WxStringResponseBodyAdvice wxStringResponseBodyAdvice() {
-        return new WxStringResponseBodyAdvice(wxMessageProcesser);
+        return new WxStringResponseBodyAdvice(wxMessageProcessor);
     }
 
     @Bean

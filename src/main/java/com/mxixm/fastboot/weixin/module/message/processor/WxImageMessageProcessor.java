@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message;
+package com.mxixm.fastboot.weixin.module.message.processor;
 
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxTemplateMessageProcesser
+ * FastBootWeixin WxGroupImageMessageProcessor
  *
  * @author Guangshan
- * @date 2017-10-13 11:17:00
- * @since 0.2.1
+ * @date 2017/8/20 22:53
+ * @since 0.1.2
  */
-public class WxTemplateMessageProcesser implements WxMessageProcesser<WxTemplateMessage> {
+public class WxImageMessageProcessor extends AbstractWxMediaMessageProcessor<WxMessageBody.Image> {
 
+    public WxImageMessageProcessor(WxMediaManager wxMediaManager) {
+        super(wxMediaManager);
+    }
+
+    /**
+     * 其实这个可以不写
+     * @param wxRequest
+     * @param body
+     * @return Image
+     */
     @Override
-    public WxTemplateMessage process(WxRequest wxRequest, WxTemplateMessage wxMessage) {
-        // 这个重复逻辑可以使用processInternal处理
-        if (wxMessage == null) {
-            return wxMessage;
-        }
-        if (wxMessage.getToUser() == null) {
-            wxMessage.setToUser(wxRequest.getBody().getFromUserName());
-        }
-        return wxMessage;
+    protected WxMessageBody.Image processBody(WxRequest wxRequest, WxMessageBody.Image body) {
+        super.processBody(wxRequest, body);
+        return body;
     }
 
 }

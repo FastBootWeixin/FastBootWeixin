@@ -40,11 +40,11 @@ public class WxMessageTemplate {
      */
     private WxApiService wxApiService;
 
-    private WxMessageProcesser wxMessageProcesser;
+    private WxMessageProcessor wxMessageProcessor;
 
-    public WxMessageTemplate(WxApiService wxApiService, WxMessageProcesser wxMessageProcesser) {
+    public WxMessageTemplate(WxApiService wxApiService, WxMessageProcessor wxMessageProcessor) {
         this.wxApiService = wxApiService;
-        this.wxMessageProcesser = wxMessageProcesser;
+        this.wxMessageProcessor = wxMessageProcessor;
     }
 
     public void sendMessage(WxMessage wxMessage) {
@@ -60,7 +60,7 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
-        this.sendMessage(wxMessageProcesser.process(wxRequest, wxMessage));
+        this.sendMessage(wxMessageProcessor.process(wxRequest, wxMessage));
     }
 
     public void sendUserMessage(WxRequest wxRequest, WxMessage wxMessage) {

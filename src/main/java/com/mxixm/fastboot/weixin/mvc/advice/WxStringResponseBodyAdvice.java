@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.mvc.advice;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
@@ -61,10 +61,10 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
 
     private Marshaller xmlConverter;
 
-    private WxMessageProcesser wxMessageProcesser;
+    private WxMessageProcessor wxMessageProcessor;
 
-    public WxStringResponseBodyAdvice(WxMessageProcesser wxMessageProcesser) {
-        this.wxMessageProcesser = wxMessageProcesser;
+    public WxStringResponseBodyAdvice(WxMessageProcessor wxMessageProcessor) {
+        this.wxMessageProcessor = wxMessageProcessor;
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(WxUserMessage.Text.class);
             xmlConverter = jaxbContext.createMarshaller();
@@ -96,7 +96,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
         WxUserMessage text = WxMessage.Text.builder().content(body).build();
-        return parseXml(wxMessageProcesser.process(wxRequest, text));
+        return parseXml(wxMessageProcessor.process(wxRequest, text));
     }
 
     private String parseXml(WxMessage text) {

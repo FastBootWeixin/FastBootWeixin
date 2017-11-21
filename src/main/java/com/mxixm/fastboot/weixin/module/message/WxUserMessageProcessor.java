@@ -21,13 +21,13 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import java.util.Date;
 
 /**
- * FastBootWeixin WxCommonMessageProcesser
+ * FastBootWeixin WxCommonMessageProcessor
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxUserMessageProcesser implements WxMessageProcesser<WxUserMessage> {
+public class WxUserMessageProcessor implements WxMessageProcessor<WxUserMessage> {
 
     @Override
     public WxUserMessage process(WxRequest wxRequest, WxUserMessage wxMessage) {

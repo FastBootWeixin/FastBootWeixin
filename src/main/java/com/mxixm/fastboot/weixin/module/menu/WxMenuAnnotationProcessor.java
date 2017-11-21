@@ -25,7 +25,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * FastBootWeixin WxMenuAnnotationProcesser
+ * FastBootWeixin WxMenuAnnotationProcessor
  * 不需要了，用WxMappingHandlerMaping代替了
  *
  * @author Guangshan
@@ -33,7 +33,7 @@ import org.springframework.util.ReflectionUtils;
  * @since 0.1.2
  */
 @Deprecated
-public class WxMenuAnnotationProcesser implements BeanPostProcessor {
+public class WxMenuAnnotationProcessor implements BeanPostProcessor {
 
     @Autowired
     private WxMenuManager wxMenuManager;

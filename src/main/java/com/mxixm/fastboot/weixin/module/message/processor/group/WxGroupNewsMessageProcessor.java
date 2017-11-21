@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processor.group;
 
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.processor.AbstractWxMessageBodyProcessor;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
+import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 /**
- * FastBootWeixin WxGroupMusicMessageProcesser
+ * FastBootWeixin WxGroupNewsMessageProcessor
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
  * @since 0.1.2
  */
-public class WxMusicMessageProcesser extends AbstractWxMediaMessageProcesser<WxMessageBody.Music> {
-
-    public WxMusicMessageProcesser(WxMediaManager wxMediaManager) {
-        super(wxMediaManager);
-    }
+public class WxGroupNewsMessageProcessor extends AbstractWxMessageBodyProcessor<WxMessageBody.News> {
 
     @Override
-    protected WxMessageBody.Music processBody(WxRequest wxRequest, WxMessageBody.Music body) {
-        super.processBody(wxRequest, body);
+    protected WxMessageBody.News processBody(WxRequest wxRequest, WxMessageBody.News body) {
+        body.getArticles().stream().forEach(i -> {
+            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestURL().toString(), i.getPicUrl()));
+            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestURL().toString(), i.getUrl()));
+        });
         return body;
     }
 

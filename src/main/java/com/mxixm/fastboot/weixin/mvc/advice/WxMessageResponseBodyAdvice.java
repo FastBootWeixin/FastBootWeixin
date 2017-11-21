@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.mvc.advice;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
@@ -51,10 +51,10 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    private WxMessageProcesser wxMessageProcesser;
+    private WxMessageProcessor wxMessageProcessor;
 
-    public WxMessageResponseBodyAdvice(WxMessageProcesser wxMessageProcesser) {
-        this.wxMessageProcesser = wxMessageProcesser;
+    public WxMessageResponseBodyAdvice(WxMessageProcessor wxMessageProcessor) {
+        this.wxMessageProcessor = wxMessageProcessor;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage
         }
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
-        return wxMessageProcesser.process(wxRequest, body);
+        return wxMessageProcessor.process(wxRequest, body);
     }
 
 }

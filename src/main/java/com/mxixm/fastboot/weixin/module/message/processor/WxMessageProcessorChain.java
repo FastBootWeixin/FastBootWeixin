@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message.processer;
+package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,26 +29,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * FastBootWeixin WxMessageProcesseChain
+ * FastBootWeixin WxMessageProcessorChain
  *
  * @author Guangshan
  * @date 2017/08/20 23:39
  * @since 0.1.2
  */
-public class WxMessageProcesseChain implements WxMessageProcesser<WxMessage> {
+public class WxMessageProcessorChain implements WxMessageProcessor<WxMessage> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
-    private final List<WxMessageProcesser> wxMessageProcessers = new ArrayList<>();
+    private final List<WxMessageProcessor> wxMessageProcessors = new ArrayList<>();
 
-    public List<WxMessageProcesser> getProcessers() {
-        return Collections.unmodifiableList(this.wxMessageProcessers);
+    public List<WxMessageProcessor> getProcessors() {
+        return Collections.unmodifiableList(this.wxMessageProcessors);
     }
 
     @Override
     public WxMessage process(WxRequest wxRequest, WxMessage wxMessage) {
-        for (WxMessageProcesser processer : getSupportedProcessers(wxRequest, wxMessage)) {
-            wxMessage = processer.process(wxRequest, wxMessage);
+        for (WxMessageProcessor processor : getSupportedProcessors(wxRequest, wxMessage)) {
+            wxMessage = processor.process(wxRequest, wxMessage);
         }
         return wxMessage;
     }
@@ -58,19 +58,19 @@ public class WxMessageProcesseChain implements WxMessageProcesser<WxMessage> {
         return true;
     }
 
-    private List<WxMessageProcesser> getSupportedProcessers(WxRequest wxRequest, WxMessage wxMessage) {
-        return wxMessageProcessers.stream().filter(p -> p.supports(wxRequest, wxMessage)).collect(Collectors.toList());
+    private List<WxMessageProcessor> getSupportedProcessors(WxRequest wxRequest, WxMessage wxMessage) {
+        return wxMessageProcessors.stream().filter(p -> p.supports(wxRequest, wxMessage)).collect(Collectors.toList());
     }
 
-    public WxMessageProcesseChain addProcesser(WxMessageProcesser processer) {
-        this.wxMessageProcessers.add(processer);
+    public WxMessageProcessorChain addProcessor(WxMessageProcessor processor) {
+        this.wxMessageProcessors.add(processor);
         return this;
     }
 
-    public WxMessageProcesseChain addProcessers(List<? extends WxMessageProcesser> processers) {
-        if (processers != null) {
-            for (WxMessageProcesser processer : processers) {
-                this.wxMessageProcessers.add(processer);
+    public WxMessageProcessorChain addProcessors(List<? extends WxMessageProcessor> processors) {
+        if (processors != null) {
+            for (WxMessageProcessor processor : processors) {
+                this.wxMessageProcessors.add(processor);
             }
         }
         return this;

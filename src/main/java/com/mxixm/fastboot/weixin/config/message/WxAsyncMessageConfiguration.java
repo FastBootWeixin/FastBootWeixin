@@ -17,15 +17,14 @@
 package com.mxixm.fastboot.weixin.config.message;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.message.*;
+import com.mxixm.fastboot.weixin.module.message.processor.*;
+import com.mxixm.fastboot.weixin.module.message.processor.group.WxGroupNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
-import com.mxixm.fastboot.weixin.module.message.WxTemplateMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.processer.*;
-import com.mxixm.fastboot.weixin.module.message.processer.group.WxGroupNewsMessageProcesser;
-import com.mxixm.fastboot.weixin.module.message.processer.user.WxUserNewsMessageProcesser;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.processor.user.WxUserNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import org.springframework.context.annotation.Bean;
@@ -66,7 +65,7 @@ public class WxAsyncMessageConfiguration {
 
     @Bean
     public WxMessageTemplate wxMessageTemplate() {
-        return new WxMessageTemplate(wxApiService, wxMessageProcesser());
+        return new WxMessageTemplate(wxApiService, wxMessageProcessor());
     }
 
     @Bean
@@ -75,25 +74,25 @@ public class WxAsyncMessageConfiguration {
     }
 
     @Bean
-    public WxMessageProcesser wxMessageProcesser() {
-        WxMessageProcesseChain wxMessageProcesserChain = new WxMessageProcesseChain();
-        wxMessageProcesserChain.addProcessers(getDefaultProcessor(wxMediaManager));
-        return wxMessageProcesserChain;
+    public WxMessageProcessor wxMessageProcessor() {
+        WxMessageProcessorChain wxMessageProcessorChain = new WxMessageProcessorChain();
+        wxMessageProcessorChain.addProcessors(getDefaultProcessor(wxMediaManager));
+        return wxMessageProcessorChain;
     }
 
-    private List<WxMessageProcesser> getDefaultProcessor(WxMediaManager wxMediaManager) {
-        List<WxMessageProcesser> list = new ArrayList<>();
+    private List<WxMessageProcessor> getDefaultProcessor(WxMediaManager wxMediaManager) {
+        List<WxMessageProcessor> list = new ArrayList<>();
 
-        list.add(new WxUserMessageProcesser());
-        list.add(new WxTemplateMessageProcesser());
+        list.add(new WxUserMessageProcessor());
+        list.add(new WxTemplateMessageProcessor());
 
-        list.add(new WxImageMessageProcesser(wxMediaManager));
-        list.add(new WxVoiceMessageProcesser(wxMediaManager));
-        list.add(new WxMusicMessageProcesser(wxMediaManager));
-        list.add(new WxVideoMessageProcesser(wxMediaManager));
+        list.add(new WxImageMessageProcessor(wxMediaManager));
+        list.add(new WxVoiceMessageProcessor(wxMediaManager));
+        list.add(new WxMusicMessageProcessor(wxMediaManager));
+        list.add(new WxVideoMessageProcessor(wxMediaManager));
 
-        list.add(new WxUserNewsMessageProcesser());
-        list.add(new WxGroupNewsMessageProcesser());
+        list.add(new WxUserNewsMessageProcessor());
+        list.add(new WxGroupNewsMessageProcessor());
 
         return list;
     }
