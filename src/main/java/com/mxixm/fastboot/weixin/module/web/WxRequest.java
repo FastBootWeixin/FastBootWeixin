@@ -53,17 +53,23 @@ public class WxRequest {
 
     private static Jaxb2RootElementHttpMessageConverter xmlConverter = new Jaxb2RootElementHttpMessageConverter();
 
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
-    private Body body;
+    private final Body body;
 
-    private WxSessionManager wxSessionManager;
+    private final WxSessionManager wxSessionManager;
+
+    private final String requestUrl;
+
+    private final String requestUri;
 
     public WxRequest(HttpServletRequest request, WxSessionManager wxSessionManager) throws IOException {
         this.request = request;
         this.wxSessionManager = wxSessionManager;
         // ServletWebRequest
         body = (Body) xmlConverter.read(Body.class, new ServletServerHttpRequest(request));
+        requestUrl = request.getRequestURL().toString();
+        requestUri = request.getRequestURI();
         WxWebUtils.setWxRequestToRequest(request, this);
     }
 
@@ -75,12 +81,12 @@ public class WxRequest {
         return body;
     }
 
-    public String getRequestURI() {
-        return request.getRequestURI();
+    public String getRequestUri() {
+        return requestUri;
     }
 
-    public StringBuffer getRequestURL() {
-        return request.getRequestURL();
+    public String getRequestUrl() {
+        return this.requestUrl;
     }
 
     public WxSession getWxSession(boolean create) {

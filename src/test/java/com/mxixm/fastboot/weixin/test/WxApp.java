@@ -18,14 +18,12 @@ package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.module.message.*;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
-import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
@@ -131,12 +129,28 @@ public class WxApp {
      */
     @WxButton(type = WxButton.Type.CLICK,
             group = WxButton.Group.LEFT,
-            order = WxButton.Order.THIRD,
+            order = WxButton.Order.FORTH,
             name = "图片消息")
     public WxMessage imgae() {
         return WxMessage.imageBuilder()
                 .mediaUrl("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png")
                 .build();
+    }
+
+    @WxButton(type = WxButton.Type.CLICK,
+            group = WxButton.Group.LEFT,
+            order = WxButton.Order.FIFTH,
+            name = "资料")
+    @WxAsyncMessage
+    public WxUserMessage showQrCode(WxUser wxUser) {
+        WxQrCode wxQrCode = WxQrCode.builder().permanent(wxUser.getOpenId()).build();
+        WxQrCode.Result qrCode = wxExtendService.createQrCode(wxQrCode);
+        String showUrl = qrCode.getShowUrl();
+        WxUserMessage message = WxMessage.News.builder()
+                .addItem(WxMessageBody.News.Item.builder().title("二维码").description("您的专属二维码")
+                        .picUrl(showUrl)
+                        .url(showUrl).build()).build();
+        return message;
     }
 
     /**

@@ -37,11 +37,11 @@ public abstract class WxUrlUtils {
     public static String BASE_PATH = "/";
 
     public static String mediaUrl(String requestUrl, String url) {
-        url = url.toLowerCase();
-        if (url.startsWith(HTTP_PROTOCOL) || url.startsWith(HTTPS_PROTOCOL)) {
+        String lowerUrl = url.toLowerCase();
+        if (lowerUrl.startsWith(HTTP_PROTOCOL) || lowerUrl.startsWith(HTTPS_PROTOCOL)) {
             return url;
         }
-        if (url.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
+        if (lowerUrl.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
             URI uri = URI.create(requestUrl);
             String hostUrl = uri.getScheme() + "://" + uri.getHost();
             return hostUrl + url;

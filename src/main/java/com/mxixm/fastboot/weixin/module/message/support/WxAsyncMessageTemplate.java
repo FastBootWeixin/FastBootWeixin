@@ -20,14 +20,14 @@ import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Arrays;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * FastBootWeixin WxAsyncMessageReturnValueHandler
@@ -118,11 +118,11 @@ private static class WxAsyncMessageThreadFactory implements ThreadFactory {
 
 private static class LogUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    private static final Logger logger = Logger.getLogger("WxAsyncMessage");
+    private static final Log logger = LogFactory.getLog(WxAsyncMessageTemplate.class);
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        logger.log(Level.SEVERE, "线程：" + t.getName() + ",执行异常", e);
+        logger.error("线程：" + t.getName() + ",执行异常", e);
     }
 }
 
