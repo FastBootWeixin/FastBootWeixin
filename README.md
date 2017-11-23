@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.2-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.2%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.3.3-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.3%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
@@ -30,7 +30,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.2</version>
+        <version>0.3.3</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -395,3 +395,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 #### 0.3.2
 1. 修复图文消息的bug（Request异步使用时，getRequestURL等会错误）
 2. 修复url处理会处理为小写的bug
+
+#### 0.3.3
+1. 修复无后缀文件名上传素材时提示无效的媒体类型错误
+2. 修复未关注用户放缓存导致关注后取不到信息的bug

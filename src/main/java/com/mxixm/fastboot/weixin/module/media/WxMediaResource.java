@@ -38,6 +38,8 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -50,6 +52,58 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  * @since 0.1.2
  */
 public class WxMediaResource extends AbstractResource {
+
+    private static final Map<String, String> MEDIA_TYPE_FILE_EXT = new HashMap<>();
+
+    static {
+        MEDIA_TYPE_FILE_EXT.put("video/quicktime", "mov");
+        MEDIA_TYPE_FILE_EXT.put("application/xml", "xml");
+        MEDIA_TYPE_FILE_EXT.put("audio/mpeg", "mpa");
+        MEDIA_TYPE_FILE_EXT.put("video/quicktime", "qt");
+        MEDIA_TYPE_FILE_EXT.put("video/mpeg", "mpg");
+        MEDIA_TYPE_FILE_EXT.put("image/png", "png");
+        MEDIA_TYPE_FILE_EXT.put("audio/flac", "flac");
+        MEDIA_TYPE_FILE_EXT.put("audio/midi", "mid");
+        MEDIA_TYPE_FILE_EXT.put("video/x-ms-wmv", "wmv");
+        MEDIA_TYPE_FILE_EXT.put("image/x-jg", "art");
+        MEDIA_TYPE_FILE_EXT.put("application/rtf", "rtf");
+        MEDIA_TYPE_FILE_EXT.put("image/svg+xml", "svg");
+        MEDIA_TYPE_FILE_EXT.put("video/mpeg2", "mpv2");
+        MEDIA_TYPE_FILE_EXT.put("text/plain", "txt");
+        MEDIA_TYPE_FILE_EXT.put("audio/x-mpeg", "abs");
+        MEDIA_TYPE_FILE_EXT.put("video/x-ms-asf", "asf");
+        MEDIA_TYPE_FILE_EXT.put("text/richtext", "rtx");
+        MEDIA_TYPE_FILE_EXT.put("image/bmp", "bmp");
+        MEDIA_TYPE_FILE_EXT.put("image/pict", "pic");
+        MEDIA_TYPE_FILE_EXT.put("audio/ogg", "ogg");
+        MEDIA_TYPE_FILE_EXT.put("image/tiff", "tif");
+        MEDIA_TYPE_FILE_EXT.put("text/html", "html");
+        MEDIA_TYPE_FILE_EXT.put("video/ogg", "ogv");
+        MEDIA_TYPE_FILE_EXT.put("image/svg+xml", "svgz");
+        MEDIA_TYPE_FILE_EXT.put("application/ogg", "ogx");
+        MEDIA_TYPE_FILE_EXT.put("application/x-tar", "tar");
+        MEDIA_TYPE_FILE_EXT.put("application/x-wais-source", "ms");
+        MEDIA_TYPE_FILE_EXT.put("image/x-quicktime", "qti");
+        MEDIA_TYPE_FILE_EXT.put("text/x-setext", "etx");
+        MEDIA_TYPE_FILE_EXT.put("application/font-woff", "woff");
+        MEDIA_TYPE_FILE_EXT.put("video/mpeg", "mpeg");
+        MEDIA_TYPE_FILE_EXT.put("audio/ogg", "spx");
+        MEDIA_TYPE_FILE_EXT.put("image/tiff", "tiff");
+        MEDIA_TYPE_FILE_EXT.put("image/gif", "gif");
+        MEDIA_TYPE_FILE_EXT.put("image/x-rgb", "rgb");
+        MEDIA_TYPE_FILE_EXT.put("video/x-msvideo", "avi");
+        MEDIA_TYPE_FILE_EXT.put("application/xml-dtd", "dtd");
+        MEDIA_TYPE_FILE_EXT.put("application/json", "json");
+        MEDIA_TYPE_FILE_EXT.put("text/html", "htm");
+        MEDIA_TYPE_FILE_EXT.put("image/jpeg", "jpg");
+        MEDIA_TYPE_FILE_EXT.put("audio/x-wav", "wav");
+        MEDIA_TYPE_FILE_EXT.put("application/xhtml+xml", "xhtml");
+        MEDIA_TYPE_FILE_EXT.put("video/mp4", "mp4");
+        MEDIA_TYPE_FILE_EXT.put("audio/mpeg", "mp3");
+        MEDIA_TYPE_FILE_EXT.put("application/pdf", "pdf");
+    }
+
+    private static final String DEFAULT_EXT = "jpg";
 
     private static final String FILENAME_KEY = "filename=";
 
@@ -91,6 +145,8 @@ public class WxMediaResource extends AbstractResource {
             this.body = StreamUtils.copyToByteArray(httpInputMessage.getBody());
         }
         this.httpHeaders = httpInputMessage.getHeaders();
+        this.contentType = httpHeaders.getContentType();
+        this.contentLength = httpHeaders.getContentLength();
         // 判断是否是json
         if (!this.httpHeaders.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
             this.isUrlMedia = true;
@@ -107,8 +163,6 @@ public class WxMediaResource extends AbstractResource {
             this.description = this.httpHeaders.getFirst(HttpHeaders.CONTENT_DISPOSITION);
             this.filename = extractFilename(this.description);
         }
-        this.contentType = httpHeaders.getContentType();
-        this.contentLength = httpHeaders.getContentLength();
     }
 
     /**
@@ -207,7 +261,12 @@ public class WxMediaResource extends AbstractResource {
     private String extractFilenameFromURL(URL url) {
         String uri = url.toString();
         int index = uri.lastIndexOf('/') + 1;
-        return uri.substring(index);
+        String name = uri.substring(index);
+        if (name.contains("?")) {
+            name = name.substring(0, name.indexOf("?"));
+        }
+        String ext = MEDIA_TYPE_FILE_EXT.getOrDefault(this.contentType.toString(), DEFAULT_EXT);
+        return name.contains(".") ? name : name + ext;
     }
 
     @Override

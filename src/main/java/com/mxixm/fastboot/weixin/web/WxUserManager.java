@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.util.CacheMap;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * FastBootWeixin WxUserManager
@@ -69,7 +70,9 @@ public class WxUserManager {
         WxUser wxUser = openIdUserCache.get(openId);
         if (wxUser == null) {
             wxUser = wxApiService.getUserInfo(openId);
-            openIdUserCache.put(openId, wxUser);
+            if (!Objects.equals(0, wxUser.getSubscribe())) {
+                openIdUserCache.put(openId, wxUser);
+            }
         }
         return wxUser;
     }
