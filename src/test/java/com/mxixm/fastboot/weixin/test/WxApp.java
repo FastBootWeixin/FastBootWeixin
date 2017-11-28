@@ -85,8 +85,8 @@ public class WxApp {
         List<WxMessage> messages = new ArrayList<>();
         messages.add(WxMessage.textBuilder().content("消息规则").build());
         messages.add(WxMessage.imageBuilder()
-//                .mediaUrl(qrCode.getShowUrl())
-                .mediaPath("E:/showqrcode2.jpg")
+                .mediaUrl(qrCode.getShowUrl())
+//                .mediaPath("E:/showqrcode2.jpg")
                 .build());
         return messages;
     }
@@ -308,10 +308,12 @@ public class WxApp {
         return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
     }
 
-    @RequestMapping("wx/test")
+    @RequestMapping("send")
     @ResponseBody
-    public String testWeb() {
-        return "<b>test html</b>";
+    public String testWeb(String openId) {
+        WxUserMessage wxUserMessage = WxMessage.imageBuilder().mediaUrl("http://g.hiphotos.baidu.com/image/pic/item/7dd98d1001e939018ffc7c2d71ec54e736d19623.jpg").build();
+        wxMessageTemplate.sendMessage(openId, wxUserMessage);
+        return "";
     }
 
     @RequestMapping("qrcode")

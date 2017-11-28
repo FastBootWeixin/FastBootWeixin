@@ -109,6 +109,7 @@ public class WxTokenServer {
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
+                .queryParam("appid", wxProperties.getAppid())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");

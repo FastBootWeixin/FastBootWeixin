@@ -56,51 +56,15 @@ public class WxMediaResource extends AbstractResource {
     private static final Map<String, String> MEDIA_TYPE_FILE_EXT = new HashMap<>();
 
     static {
-        MEDIA_TYPE_FILE_EXT.put("video/quicktime", "mov");
-        MEDIA_TYPE_FILE_EXT.put("application/xml", "xml");
-        MEDIA_TYPE_FILE_EXT.put("audio/mpeg", "mpa");
-        MEDIA_TYPE_FILE_EXT.put("video/quicktime", "qt");
-        MEDIA_TYPE_FILE_EXT.put("video/mpeg", "mpg");
         MEDIA_TYPE_FILE_EXT.put("image/png", "png");
-        MEDIA_TYPE_FILE_EXT.put("audio/flac", "flac");
-        MEDIA_TYPE_FILE_EXT.put("audio/midi", "mid");
-        MEDIA_TYPE_FILE_EXT.put("video/x-ms-wmv", "wmv");
-        MEDIA_TYPE_FILE_EXT.put("image/x-jg", "art");
-        MEDIA_TYPE_FILE_EXT.put("application/rtf", "rtf");
-        MEDIA_TYPE_FILE_EXT.put("image/svg+xml", "svg");
-        MEDIA_TYPE_FILE_EXT.put("video/mpeg2", "mpv2");
-        MEDIA_TYPE_FILE_EXT.put("text/plain", "txt");
-        MEDIA_TYPE_FILE_EXT.put("audio/x-mpeg", "abs");
-        MEDIA_TYPE_FILE_EXT.put("video/x-ms-asf", "asf");
-        MEDIA_TYPE_FILE_EXT.put("text/richtext", "rtx");
-        MEDIA_TYPE_FILE_EXT.put("image/bmp", "bmp");
-        MEDIA_TYPE_FILE_EXT.put("image/pict", "pic");
-        MEDIA_TYPE_FILE_EXT.put("audio/ogg", "ogg");
-        MEDIA_TYPE_FILE_EXT.put("image/tiff", "tif");
-        MEDIA_TYPE_FILE_EXT.put("text/html", "html");
-        MEDIA_TYPE_FILE_EXT.put("video/ogg", "ogv");
-        MEDIA_TYPE_FILE_EXT.put("image/svg+xml", "svgz");
-        MEDIA_TYPE_FILE_EXT.put("application/ogg", "ogx");
-        MEDIA_TYPE_FILE_EXT.put("application/x-tar", "tar");
-        MEDIA_TYPE_FILE_EXT.put("application/x-wais-source", "ms");
-        MEDIA_TYPE_FILE_EXT.put("image/x-quicktime", "qti");
-        MEDIA_TYPE_FILE_EXT.put("text/x-setext", "etx");
-        MEDIA_TYPE_FILE_EXT.put("application/font-woff", "woff");
-        MEDIA_TYPE_FILE_EXT.put("video/mpeg", "mpeg");
-        MEDIA_TYPE_FILE_EXT.put("audio/ogg", "spx");
-        MEDIA_TYPE_FILE_EXT.put("image/tiff", "tiff");
-        MEDIA_TYPE_FILE_EXT.put("image/gif", "gif");
-        MEDIA_TYPE_FILE_EXT.put("image/x-rgb", "rgb");
-        MEDIA_TYPE_FILE_EXT.put("video/x-msvideo", "avi");
-        MEDIA_TYPE_FILE_EXT.put("application/xml-dtd", "dtd");
-        MEDIA_TYPE_FILE_EXT.put("application/json", "json");
-        MEDIA_TYPE_FILE_EXT.put("text/html", "htm");
         MEDIA_TYPE_FILE_EXT.put("image/jpeg", "jpg");
+        MEDIA_TYPE_FILE_EXT.put("image/gif", "gif");
+        MEDIA_TYPE_FILE_EXT.put("image/bmp", "bmp");
+        MEDIA_TYPE_FILE_EXT.put("audio/amr", "amr");
         MEDIA_TYPE_FILE_EXT.put("audio/x-wav", "wav");
-        MEDIA_TYPE_FILE_EXT.put("application/xhtml+xml", "xhtml");
-        MEDIA_TYPE_FILE_EXT.put("video/mp4", "mp4");
         MEDIA_TYPE_FILE_EXT.put("audio/mpeg", "mp3");
-        MEDIA_TYPE_FILE_EXT.put("application/pdf", "pdf");
+        MEDIA_TYPE_FILE_EXT.put("audio/x-ms-wma", "wma");
+        MEDIA_TYPE_FILE_EXT.put("video/mp4", "mp4");
     }
 
     private static final String DEFAULT_EXT = "jpg";
@@ -266,7 +230,7 @@ public class WxMediaResource extends AbstractResource {
             name = name.substring(0, name.indexOf("?"));
         }
         String ext = MEDIA_TYPE_FILE_EXT.getOrDefault(this.contentType.toString(), DEFAULT_EXT);
-        return name.contains(".") ? name : name + ext;
+        return name.contains(".") ? name : name + "." + ext;
     }
 
     @Override
