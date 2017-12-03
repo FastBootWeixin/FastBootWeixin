@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 
 /**
  * FastBootWeixin WxCommonMessageProcessor
@@ -29,7 +29,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 public class WxGroupMessageProcessor implements WxMessageProcessor<WxGroupMessage> {
 
     @Override
-    public WxGroupMessage process(WxRequest wxRequest, WxGroupMessage wxMessage) {
+    public WxGroupMessage process(WxMessageParameter wxMessageParameter, WxGroupMessage wxMessage) {
         return processInternal(wxMessage);
     }
 

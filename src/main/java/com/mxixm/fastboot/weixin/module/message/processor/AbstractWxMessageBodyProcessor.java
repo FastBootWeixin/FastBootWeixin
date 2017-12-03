@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,21 +35,21 @@ import java.lang.reflect.Type;
 public abstract class AbstractWxMessageBodyProcessor<B extends WxMessageBody> implements WxMessageProcessor<WxMessage<B>> {
 
     @Override
-    public WxMessage<B> process(WxRequest wxRequest, WxMessage<B> wxMessage) {
+    public WxMessage<B> process(WxMessageParameter wxMessageParameter, WxMessage<B> wxMessage) {
         if (wxMessage == null) {
             return wxMessage;
         }
-        B body = processBody(wxRequest, wxMessage.getBody());
+        B body = processBody(wxMessageParameter, wxMessage.getBody());
         if (wxMessage.getBody() != body) {
             // TODO: 2017/9/28 返回了不同实例，是否需要替换body？
         }
         return wxMessage;
     }
 
-    protected abstract B processBody(WxRequest wxRequest, B body);
+    protected abstract B processBody(WxMessageParameter wxMessageParameter, B body);
 
     @Override
-    public boolean supports(WxRequest wxRequest, WxMessage<B> wxMessage) {
+    public boolean supports(WxMessageParameter wxMessageParameter, WxMessage<B> wxMessage) {
         Type type = this.getClass().getGenericSuperclass();
         if (!(type instanceof ParameterizedType)) {
             return false;

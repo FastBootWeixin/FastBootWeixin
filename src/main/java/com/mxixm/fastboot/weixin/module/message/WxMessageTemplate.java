@@ -16,6 +16,8 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
@@ -60,7 +62,11 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
-        this.sendMessage(wxMessageProcessor.process(wxRequest, wxMessage));
+        this.sendMessage(new WxRequestMessageParameter(wxRequest), wxMessage);
+    }
+
+    public void sendMessage(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
+        this.sendMessage(wxMessageProcessor.process(wxMessageParameter, wxMessage));
     }
 
     public void sendUserMessage(WxRequest wxRequest, WxMessage wxMessage) {

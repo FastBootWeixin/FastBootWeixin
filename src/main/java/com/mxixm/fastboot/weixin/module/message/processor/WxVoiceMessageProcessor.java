@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
@@ -34,8 +35,8 @@ public class WxVoiceMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
     }
 
     @Override
-    protected WxMessageBody.Voice processBody(WxRequest wxRequest, WxMessageBody.Voice body) {
-        super.processBody(wxRequest, body);
+    protected WxMessageBody.Voice processBody(WxMessageParameter wxMessageParameter, WxMessageBody.Voice body) {
+        super.processBody(wxMessageParameter, body);
         return body;
     }
 

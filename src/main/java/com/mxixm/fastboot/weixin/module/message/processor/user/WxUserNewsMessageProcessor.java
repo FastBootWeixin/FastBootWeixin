@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.module.message.processor.user;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.processor.AbstractWxMessageBodyProcessor;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
@@ -32,10 +33,10 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 public class WxUserNewsMessageProcessor extends AbstractWxMessageBodyProcessor<WxMessageBody.News> {
 
     @Override
-    protected WxMessageBody.News processBody(WxRequest wxRequest, WxMessageBody.News body) {
+    protected WxMessageBody.News processBody(WxMessageParameter wxMessageParameter, WxMessageBody.News body) {
         body.getArticles().stream().forEach(i -> {
-            i.setPicUrl(WxUrlUtils.mediaUrl(wxRequest.getRequestUrl(), i.getPicUrl()));
-            i.setUrl(WxRedirectUtils.redirect(wxRequest.getRequestUrl(), i.getUrl()));
+            i.setPicUrl(WxUrlUtils.mediaUrl(wxMessageParameter.getRequestUrl(), i.getPicUrl()));
+            i.setUrl(WxRedirectUtils.redirect(wxMessageParameter.getRequestUrl(), i.getUrl()));
         });
         return body;
     }

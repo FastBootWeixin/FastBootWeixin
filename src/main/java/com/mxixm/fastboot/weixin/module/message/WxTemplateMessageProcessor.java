@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 
 /**
  * FastBootWeixin WxTemplateMessageProcessor
@@ -28,13 +28,13 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 public class WxTemplateMessageProcessor implements WxMessageProcessor<WxTemplateMessage> {
 
     @Override
-    public WxTemplateMessage process(WxRequest wxRequest, WxTemplateMessage wxMessage) {
+    public WxTemplateMessage process(WxMessageParameter wxMessageParameter, WxTemplateMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
             return wxMessage;
         }
         if (wxMessage.getToUser() == null) {
-            wxMessage.setToUser(wxRequest.getBody().getFromUserName());
+            wxMessage.setToUser(wxMessageParameter.getToUser());
         }
         return wxMessage;
     }

@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
@@ -96,7 +97,7 @@ public class WxStringResponseBodyAdvice implements ResponseBodyAdvice<String>, O
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(servletRequest);
         WxUserMessage text = WxMessage.Text.builder().content(body).build();
-        return parseXml(wxMessageProcessor.process(wxRequest, text));
+        return parseXml(wxMessageProcessor.process(new WxRequestMessageParameter(wxRequest), text));
     }
 
     private String parseXml(WxMessage text) {

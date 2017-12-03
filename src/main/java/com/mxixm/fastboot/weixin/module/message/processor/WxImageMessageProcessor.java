@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
@@ -35,13 +36,13 @@ public class WxImageMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
 
     /**
      * 其实这个可以不写
-     * @param wxRequest
+     * @param wxMessageParameter
      * @param body
      * @return Image
      */
     @Override
-    protected WxMessageBody.Image processBody(WxRequest wxRequest, WxMessageBody.Image body) {
-        super.processBody(wxRequest, body);
+    protected WxMessageBody.Image processBody(WxMessageParameter wxMessageParameter, WxMessageBody.Image body) {
+        super.processBody(wxMessageParameter, body);
         return body;
     }
 

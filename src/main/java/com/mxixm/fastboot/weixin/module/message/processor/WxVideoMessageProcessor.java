@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -37,20 +38,20 @@ public class WxVideoMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
     }
 
     @Override
-    protected WxMessageBody.Video processBody(WxRequest wxRequest, WxMessageBody.Video body) {
-        super.processBody(wxRequest, body);
-        processVideoBody(wxRequest, body);
+    protected WxMessageBody.Video processBody(WxMessageParameter WxMessageParameter, WxMessageBody.Video body) {
+        super.processBody(WxMessageParameter, body);
+        processVideoBody(WxMessageParameter, body);
         return body;
     }
 
-    protected WxMessageBody.Video processVideoBody(WxRequest wxRequest, WxMessageBody.Video body) {
+    protected WxMessageBody.Video processVideoBody(WxMessageParameter WxMessageParameter, WxMessageBody.Video body) {
         if (body.getThumbMediaId() == null) {
             // 优先使用path
             if (body.getThumbMediaPath() != null) {
                 String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getThumbMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(wxRequest.getRequestUrl(), body.getThumbMediaUrl());
+                String url = WxUrlUtils.mediaUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setMediaId(mediaId);
             }

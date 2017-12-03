@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,20 +47,20 @@ public class WxMessageProcessorChain implements WxMessageProcessor<WxMessage> {
     }
 
     @Override
-    public WxMessage process(WxRequest wxRequest, WxMessage wxMessage) {
-        for (WxMessageProcessor processor : getSupportedProcessors(wxRequest, wxMessage)) {
-            wxMessage = processor.process(wxRequest, wxMessage);
+    public WxMessage process(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
+        for (WxMessageProcessor processor : getSupportedProcessors(wxMessageParameter, wxMessage)) {
+            wxMessage = processor.process(wxMessageParameter, wxMessage);
         }
         return wxMessage;
     }
 
     @Override
-    public boolean supports(WxRequest wxRequest, WxMessage wxMessage) {
+    public boolean supports(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
         return true;
     }
 
-    private List<WxMessageProcessor> getSupportedProcessors(WxRequest wxRequest, WxMessage wxMessage) {
-        return wxMessageProcessors.stream().filter(p -> p.supports(wxRequest, wxMessage)).collect(Collectors.toList());
+    private List<WxMessageProcessor> getSupportedProcessors(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
+        return wxMessageProcessors.stream().filter(p -> p.supports(wxMessageParameter, wxMessage)).collect(Collectors.toList());
     }
 
     public WxMessageProcessorChain addProcessor(WxMessageProcessor processor) {

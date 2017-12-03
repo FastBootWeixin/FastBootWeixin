@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,9 +31,9 @@ import java.util.Arrays;
  */
 public interface WxMessageProcessor<T extends WxMessage> {
 
-    T process(WxRequest wxRequest, T wxMessage);
+    T process(WxMessageParameter wxMessageParameter, T wxMessage);
 
-    default boolean supports(WxRequest wxRequest, T wxMessage) {
+    default boolean supports(WxMessageParameter wxMessageParameter, T wxMessage) {
         Type[] types = this.getClass().getGenericInterfaces();
         Class userClass = Arrays.stream(types).filter(t -> t instanceof ParameterizedType)
                 .map(ParameterizedType.class::cast)

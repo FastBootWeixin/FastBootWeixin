@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.util.Date;
@@ -30,19 +31,19 @@ import java.util.Date;
 public class WxUserMessageProcessor implements WxMessageProcessor<WxUserMessage> {
 
     @Override
-    public WxUserMessage process(WxRequest wxRequest, WxUserMessage wxMessage) {
+    public WxUserMessage process(WxMessageParameter wxMessageParameter, WxUserMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
             return wxMessage;
         }
         if (wxMessage.getToUser() == null) {
-            wxMessage.setToUser(wxRequest.getBody().getFromUserName());
+            wxMessage.setToUser(wxMessageParameter.getToUser());
         }
         if (wxMessage.getFromUser() == null) {
-            wxMessage.setFromUser(wxRequest.getBody().getToUserName());
+            wxMessage.setFromUser(wxMessageParameter.getFromUser());
         }
         if (wxMessage.getCreateTime() == null) {
-            wxMessage.setCreateTime(new Date());
+            wxMessage.setCreateTime(wxMessageParameter.getCreateTime());
         }
         return wxMessage;
     }
