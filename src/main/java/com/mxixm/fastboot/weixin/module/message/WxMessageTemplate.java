@@ -20,6 +20,7 @@ import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -61,12 +62,12 @@ public class WxMessageTemplate {
         }
     }
 
-    public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
-        this.sendMessage(new WxRequestMessageParameter(wxRequest), wxMessage);
-    }
-
     public void sendMessage(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
         this.sendMessage(wxMessageProcessor.process(wxMessageParameter, wxMessage));
+    }
+
+    public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {
+        this.sendMessage(new WxRequestMessageParameter(wxRequest), wxMessage);
     }
 
     public void sendUserMessage(WxRequest wxRequest, WxMessage wxMessage) {
@@ -81,6 +82,17 @@ public class WxMessageTemplate {
         this.sendMessage(wxRequest, wxMessageContent);
     }
 
+    public void sendMessage(String toUser, WxMessage wxMessage) {
+        WxUserMessage wxUserMessage = wxMessage.toUserMessage();
+        WxMessageParameter wxMessageParameter = WxWebUtils.getWxMessageParameter();
+        wxMessageParameter.setToUser(toUser);
+        this.sendMessage(wxMessageParameter, wxUserMessage);
+    }
+
+    public void sendUserMessage(String toUser, WxMessage wxMessage) {
+        this.sendMessage(toUser, wxMessage);
+    }
+
     public void sendMessage(String toUser, String wxMessageContent) {
         this.sendUserMessage(toUser, WxMessage.Text.builder().content(wxMessageContent).build());
     }
@@ -89,22 +101,8 @@ public class WxMessageTemplate {
         this.sendMessage(toUser, wxMessageContent);
     }
 
-    public void sendMessage(String toUser, WxMessage wxMessage) {
-        WxUserMessage wxUserMessage = wxMessage.toUserMessage();
-        wxUserMessage.setToUser(toUser);
-        this.sendMessage(wxMessage);
-    }
-
-    public void sendUserMessage(String toUser, WxMessage wxMessage) {
-        this.sendMessage(toUser, wxMessage);
-    }
-
     public void sendGroupMessage(WxMessage wxMessage) {
-        this.sendMessage(wxMessage.toGroupMessage());
-    }
-
-    public void sendMessage(int tagId, WxMessage wxMessage) {
-        this.sendGroupMessage(tagId, wxMessage);
+        this.sendMessage(WxWebUtils.getWxMessageParameter(), wxMessage.toGroupMessage());
     }
 
     public void sendGroupMessage(int tagId, WxMessage wxMessage) {
@@ -112,27 +110,32 @@ public class WxMessageTemplate {
         wxGroupMessage.filter = new WxGroupMessage.Filter();
         wxGroupMessage.filter.tagId = tagId;
         wxGroupMessage.toUsers = null;
-        this.sendMessage(wxMessage);
+        this.sendGroupMessage(wxMessage);
     }
 
-    public void sendMessage(Collection<String> toUsers, WxMessage wxMessage) {
-        this.sendGroupMessage(toUsers, wxMessage);
+    public void sendMessage(int tagId, WxMessage wxMessage) {
+        this.sendGroupMessage(tagId, wxMessage);
     }
 
     public void sendGroupMessage(Collection<String> toUsers, WxMessage wxMessage) {
         WxGroupMessage wxGroupMessage = wxMessage.toGroupMessage();
         wxGroupMessage.filter = null;
         wxGroupMessage.toUsers = toUsers;
-        this.sendMessage(wxMessage);
+        this.sendGroupMessage(wxMessage);
+    }
+
+    public void sendMessage(Collection<String> toUsers, WxMessage wxMessage) {
+        this.sendGroupMessage(toUsers, wxMessage);
     }
 
     public void sendTemplateMessage(WxTemplateMessage wxTemplateMessage) {
-        this.sendMessage(wxTemplateMessage);
+        this.sendMessage(WxWebUtils.getWxMessageParameter(), wxTemplateMessage);
     }
 
     public void sendTemplateMessage(String toUser, WxTemplateMessage wxTemplateMessage) {
-        wxTemplateMessage.setToUser(toUser);
-        this.sendMessage(wxTemplateMessage);
+        WxMessageParameter wxMessageParameter = WxWebUtils.getWxMessageParameter();
+        wxMessageParameter.setToUser(toUser);
+        this.sendMessage(wxMessageParameter, wxTemplateMessage);
     }
 
 }

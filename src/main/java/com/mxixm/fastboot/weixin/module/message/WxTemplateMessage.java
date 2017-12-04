@@ -103,7 +103,7 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
 
     public static class TemplateMessageBuilder {
 
-        protected WxMessageBody.Template body = new WxMessageBody.Template();//
+        protected WxMessageBody.Template body = new WxMessageBody.Template();
         protected String toUser;
         protected String templateId;
         protected String url;

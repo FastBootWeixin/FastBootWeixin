@@ -16,11 +16,15 @@
 
 package com.mxixm.fastboot.weixin.util;
 
+import com.mxixm.fastboot.weixin.module.message.parameter.HttpRequestMessageParameter;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -114,12 +118,25 @@ public class WxWebUtils {
             requestAttributes.setAttribute(WX_SESSION_USER, wxWebUser, RequestAttributes.SCOPE_SESSION);
         }
     }
+
     public static WxWebUser getWxWebUserFromSession() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             return (WxWebUser) requestAttributes.getAttribute(WX_SESSION_USER, RequestAttributes.SCOPE_SESSION);
         }
         return null;
+    }
+
+    public static WxMessageParameter getWxMessageParameter() {
+        WxRequest wxRequest = getWxRequestFromRequest();
+        if (wxRequest != null) {
+            return new WxRequestMessageParameter(wxRequest);
+        }
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
+            return new HttpRequestMessageParameter(((ServletRequestAttributes) requestAttributes).getRequest());
+        }
+        return new HttpRequestMessageParameter(null);
     }
 
 }

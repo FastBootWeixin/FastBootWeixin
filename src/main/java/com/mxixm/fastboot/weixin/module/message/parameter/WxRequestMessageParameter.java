@@ -47,4 +47,24 @@ public class WxRequestMessageParameter implements WxMessageParameter {
     public Date getCreateTime() {
         return createTime;
     }
+
+    @Override
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
+    }
+
+    @Override
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
+    }
+
+    @Override
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    @Override
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }

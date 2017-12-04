@@ -1,7 +1,5 @@
 package com.mxixm.fastboot.weixin.module.message.parameter;
 
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -25,30 +23,31 @@ public class HttpRequestMessageParameter implements WxMessageParameter {
 
     private Date createTime;
 
-    public HttpRequestMessageParameter(RequestAttributes requestAttributes) {
-        if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
-            HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-            if (request.getScheme() != null) {
-                this.requestUrl = request.getRequestURL().toString();
-            }
+    public HttpRequestMessageParameter(HttpServletRequest request) {
+        if (request != null && request.getScheme() != null) {
+            this.requestUrl = request.getRequestURL().toString();
         }
         this.createTime = new Date();
     }
 
+    @Override
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
     }
 
-    public void setToUser(String toUser) {
-        this.toUser = toUser;
-    }
-
+    @Override
     public void setFromUser(String fromUser) {
         this.fromUser = fromUser;
     }
 
+    @Override
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public void setToUser(String toUser) {
+        this.toUser = toUser;
     }
 
     @Override

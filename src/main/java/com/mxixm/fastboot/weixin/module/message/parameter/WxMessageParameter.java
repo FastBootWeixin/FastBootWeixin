@@ -37,4 +37,29 @@ public interface WxMessageParameter {
      */
     Date getCreateTime();
 
+    /**
+     * 设置requestUrl
+     * @param requestUrl
+     */
+    void setRequestUrl(String requestUrl);
+
+    /**
+     * 设置toUser
+     * @param toUser
+     */
+    void setToUser(String toUser);
+
+    /**
+     * 设置fromUser
+     * @param fromUser
+     */
+    void setFromUser(String fromUser);
+
+    /**
+     * 设置创建时间
+     * @param createTime
+     */
+    void setCreateTime(Date createTime);
+
+
 }
