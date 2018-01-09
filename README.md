@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.4-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.4%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.3.5-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.5%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/QQ-627254793-FF69b4.svg)](http://weixin.mxixm.com)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.4</version>
+        <version>0.3.5</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -403,3 +403,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.3.4
 1. 新增手动调用WxMessageTemplate发送消息时的参数处理
+
+#### 0.3.5
+1. 再次优化消息和菜单中url的处理逻辑

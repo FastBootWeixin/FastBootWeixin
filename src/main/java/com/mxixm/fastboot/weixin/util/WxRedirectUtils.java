@@ -102,17 +102,17 @@ public class WxRedirectUtils {
             url = url.substring(3);
         }
 
-        String redirectUri = WxUrlUtils.mediaUrl(baseUrl, url);
-        if (!isRedirect || !WxUrlUtils.isCallbackUrl(redirectUri, true)) {
-            return redirectUri;
+        String redirectUrl = WxUrlUtils.mediaUrl(baseUrl, url);
+        if (!isRedirect || !WxUrlUtils.isCallbackUrl(baseUrl, redirectUrl)) {
+            return redirectUrl;
         }
         try {
-            redirectUri = UriUtils.encode(redirectUri, StandardCharsets.UTF_8.name());
+            redirectUrl = UriUtils.encode(redirectUrl, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
             // ignore it
         }
         String finalRedirectUri = baseBuilder.cloneBuilder().queryParam("appid", Wx.Environment.instance().getWxAppId())
-                .queryParam("redirect_uri", redirectUri)
+                .queryParam("redirect_uri", redirectUrl)
                 .queryParam("response_type", "code")
                 .queryParam("scope", isBase ? "snsapi_base" : "snsapi_userinfo")
                 .queryParam("state", state).build().toUriString() + "#wechat_redirect";

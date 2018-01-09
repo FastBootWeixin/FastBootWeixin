@@ -36,43 +36,55 @@ public abstract class WxUrlUtils {
 
     public static String BASE_PATH = "/";
 
-    public static String mediaUrl(String requestUrl, String url) {
-        String lowerUrl = url.toLowerCase();
+    public static String mediaUrl(String requestUrl, String targetUrl) {
+        String lowerUrl = targetUrl.toLowerCase();
         if (lowerUrl.startsWith(HTTP_PROTOCOL) || lowerUrl.startsWith(HTTPS_PROTOCOL)) {
-            return url;
+            return targetUrl;
         }
         if (lowerUrl.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
             URI uri = URI.create(requestUrl);
             String hostUrl = uri.getScheme() + "://" + uri.getHost();
-            return hostUrl + url;
+            return hostUrl + targetUrl;
         } else {
-            return HTTP_PROTOCOL + url;
+            return HTTP_PROTOCOL + targetUrl;
         }
     }
 
     /**
      * 判断是否是回调地址
      *
-     * @param url 判断的url
-     * @param defaultTrue 默认情况下是true
+     * @param targetUrl 判断的url
+     * @param callbackDomain 回调域名
      * @return dummy
      */
-    public static boolean isCallbackUrl(String url, boolean defaultTrue) {
-        String urlHost = URI.create(url).getHost();
-        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
-        if (defaultTrue && StringUtils.isEmpty(callbackDomain)) {
-            return true;
-        }
+    private static boolean isCallbackUrlInternal(String targetUrl, String callbackDomain) {
+        String urlHost = URI.create(targetUrl).getHost();
         return urlHost.equals(callbackDomain);
     }
 
     /**
      * 判断是否是回调地址
      *
+     * @param targetUrl 判断的url
      * @return dummy
      */
-    public static boolean isCallbackUrl(String url) {
-        return isCallbackUrl(url, false);
+    public static boolean isCallbackUrl(String targetUrl) {
+        return isCallbackUrlInternal(targetUrl, Wx.Environment.instance().getCallbackDomain());
+    }
+
+    /**
+     * 判断是否是回调地址
+     *
+     * @param requestUrl 请求地址
+     * @param targetUrl 判断的url
+     * @return dummy
+     */
+    public static boolean isCallbackUrl(String requestUrl, String targetUrl) {
+        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
+        if (StringUtils.isEmpty(callbackDomain)) {
+            callbackDomain = URI.create(requestUrl).getHost();
+        }
+        return isCallbackUrlInternal(targetUrl, callbackDomain);
     }
 
 }
