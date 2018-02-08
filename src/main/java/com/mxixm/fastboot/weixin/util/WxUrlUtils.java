@@ -30,15 +30,26 @@ import java.net.URI;
  */
 public abstract class WxUrlUtils {
 
-    public static String HTTP_PROTOCOL = "http://";
+    public static String HTTP_PROTOCOL = "http:";
 
-    public static String HTTPS_PROTOCOL = "https://";
+    public static String HTTPS_PROTOCOL = "https:";
+
+    public static String RELAX_PROTOCOL = "//";
 
     public static String BASE_PATH = "/";
 
     public static String mediaUrl(String requestUrl, String targetUrl) {
         String lowerUrl = targetUrl.toLowerCase();
+        // 已经包含协议，直接返回
         if (lowerUrl.startsWith(HTTP_PROTOCOL) || lowerUrl.startsWith(HTTPS_PROTOCOL)) {
+            return targetUrl;
+        }
+        // 尝试从requestUrl中获取协议
+        if (lowerUrl.startsWith(RELAX_PROTOCOL)) {
+            if (StringUtils.isEmpty(requestUrl)) {
+                return HTTP_PROTOCOL + targetUrl;
+            }
+
             return targetUrl;
         }
         if (lowerUrl.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
