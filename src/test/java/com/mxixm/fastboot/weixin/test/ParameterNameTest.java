@@ -16,6 +16,10 @@
 
 package com.mxixm.fastboot.weixin.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
+
 public class ParameterNameTest {
 
     /**
@@ -26,11 +30,13 @@ public class ParameterNameTest {
      * @param args
      * @throws NoSuchMethodException
      */
-    public static void main(String[] args) throws NoSuchMethodException {
+    public static void main(String[] args) throws NoSuchMethodException, JsonProcessingException {
 //        Paranamer paranamer = new CachingParanamer();
 //        Method method = WxApiService.class.getMethod("storeFileToTempMedia", File.class);
 //        String[] s = paranamer.lookupParameterNames(method);
 //        System.out.println(s);
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(WxGroupMessage.mpNewsBuilder().mediaId("aa").toGroup("gs", "bb").build()));
     }
 
 }

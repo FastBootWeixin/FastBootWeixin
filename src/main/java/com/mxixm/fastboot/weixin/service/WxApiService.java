@@ -115,6 +115,10 @@ public interface WxApiService {
 
     WxGroupMessage.Result sendGroupMessage(@WxApiBody WxGroupMessage wxMessage);
 
+    WxGroupMessage.Result sendUsersMessage(@WxApiBody WxGroupMessage wxMessage);
+
+    WxGroupMessage.Result previewGroupMessage(@WxApiBody WxGroupMessage wxMessage);
+
     void setMessageStatus(@WxApiBody WxUserMessage.Status status);
 
     WxQrCode.Result createQrCode(WxQrCode wxQrCode);

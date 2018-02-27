@@ -100,6 +100,16 @@ public class WxApp {
         return wxUser.getNickName() + "haha";
     }
 
+    @WxButton(group = WxButton.Group.RIGHT, name = "右1")
+    @WxAsyncMessage
+    public WxMessage right1(WxUser wxUser) {
+        return WxMessage.mpNewsBuilder()
+                .mediaId("NM3drptQ_80iUDLDVQh40u-ma5mSSElnAGAIqAXpiV051I5bLjYFcmNqeAqkMKRQ")
+                .sendIgnoreReprint(true)
+                .toGroup("oKS9_xGOW1xJQnIaKhFUaoei_UxU")
+                .build();
+    }
+
     /**
      * 定义微信菜单，并接受事件
      */
@@ -305,7 +315,7 @@ public class WxApp {
 
     @RequestMapping("mediaUpload")
     public String mediaUpload() {
-        return wxMediaManager.addMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
+        return wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
     }
 
     @RequestMapping("send")

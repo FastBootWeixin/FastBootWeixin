@@ -16,14 +16,12 @@
 
 package com.mxixm.fastboot.weixin.module.message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.BeanUtils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * fastboot-weixin  WxGroupMessage
@@ -49,6 +47,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
 
     @JsonProperty("touser")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonFormat(with = JsonFormat.Feature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED)
     protected Collection<String> toUsers;
 
     @JsonProperty("filter")
@@ -90,6 +89,10 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
             return this;
         }
 
+        public GroupMessageBuilder toUsers(String... users) {
+            return this.toUsers(Arrays.asList(users));
+        }
+
         public GroupMessageBuilder addUser(String user) {
             this.toUsers.add(user);
             return this;
@@ -100,6 +103,10 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
             return this;
         }
 
+        public GroupMessageBuilder addUsers(String... users) {
+            return this.addUsers(Arrays.asList(users));
+        }
+
         public WxGroupMessage build() {
             WxGroupMessage wxGroupMessage;
             if (classMap.containsKey(builder.messageType)) {
@@ -107,6 +114,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
             } else {
                 wxGroupMessage = new WxGroupMessage();
             }
+            wxGroupMessage.setMessageType(builder.messageType);
             wxGroupMessage.setBody(builder.body);
             if (toUsers.isEmpty()) {
                 wxGroupMessage.filter = filter;

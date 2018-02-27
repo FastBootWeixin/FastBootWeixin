@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -278,6 +279,10 @@ public class WxMessage<T extends WxMessageBody> {
 
         public WxGroupMessage.GroupMessageBuilder toGroup(Collection<String> userList) {
             return new WxGroupMessage.GroupMessageBuilder(this).toUsers(userList);
+        }
+
+        public WxGroupMessage.GroupMessageBuilder toGroup(String... users) {
+            return new WxGroupMessage.GroupMessageBuilder(this).toUsers(Arrays.asList(users));
         }
 
         @Override

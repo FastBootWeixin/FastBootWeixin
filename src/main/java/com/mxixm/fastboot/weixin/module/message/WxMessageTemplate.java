@@ -23,6 +23,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
@@ -54,7 +55,15 @@ public class WxMessageTemplate {
         if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
             this.wxApiService.sendUserMessage((WxUserMessage) wxMessage);
         } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
-            this.wxApiService.sendGroupMessage((WxGroupMessage) wxMessage);
+            // 群发消息根据参数不同调用不同的接口
+            WxGroupMessage wxGroupMessage = (WxGroupMessage) wxMessage;
+            if (CollectionUtils.isEmpty(wxGroupMessage.toUsers)) {
+                this.wxApiService.sendGroupMessage((WxGroupMessage) wxMessage);
+            } else if (wxGroupMessage.toUsers.size() > 1) {
+                this.wxApiService.sendUsersMessage((WxGroupMessage) wxMessage);
+            } else {
+                this.wxApiService.previewGroupMessage((WxGroupMessage) wxMessage);
+            }
         } else if (WxTemplateMessage.class.isAssignableFrom(wxMessage.getClass())) {
             this.wxApiService.sendTemplateMessage((WxTemplateMessage) wxMessage);
         } else {
