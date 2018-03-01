@@ -38,27 +38,54 @@ public abstract class WxUrlUtils {
 
     public static String BASE_PATH = "/";
 
+    public static String HOST_DOT = ".";
+
+    /**
+     * 实在没有的时候，把流量引给我自己，一般不会有这种情况
+     */
+    public static String DEFAULT_HOST = "mxixm.com";
+
     public static String mediaUrl(String requestUrl, String targetUrl) {
         String lowerUrl = targetUrl.toLowerCase();
         // 已经包含协议，直接返回
         if (lowerUrl.startsWith(HTTP_PROTOCOL) || lowerUrl.startsWith(HTTPS_PROTOCOL)) {
             return targetUrl;
         }
-        // 尝试从requestUrl中获取协议
-        if (lowerUrl.startsWith(RELAX_PROTOCOL)) {
-            if (StringUtils.isEmpty(requestUrl)) {
-                return HTTP_PROTOCOL + targetUrl;
-            }
 
-            return targetUrl;
-        }
-        if (lowerUrl.startsWith(BASE_PATH) && !StringUtils.isEmpty(requestUrl)) {
+        // 先解析出来protocol和host
+        String protocol = HTTP_PROTOCOL;
+        String host = DEFAULT_HOST;
+        if (!StringUtils.isEmpty(requestUrl)) {
             URI uri = URI.create(requestUrl);
-            String hostUrl = uri.getScheme() + "://" + uri.getHost();
-            return hostUrl + targetUrl;
-        } else {
-            return HTTP_PROTOCOL + targetUrl;
+            protocol = uri.getScheme() + ":";
+            host = uri.getHost();
         }
+
+        // 如果是//开头，则拼接协议后返回
+        if (lowerUrl.startsWith(RELAX_PROTOCOL)) {
+            return protocol + targetUrl;
+        }
+
+        // 如果是/开头，则是绝对路径
+        if (lowerUrl.startsWith(BASE_PATH)) {
+            return protocol + RELAX_PROTOCOL + host + targetUrl;
+        }
+
+        // 如果是域名
+        if (lowerUrl.indexOf(HOST_DOT) > -1) {
+            // 如果包含.且(不包含/，或者包含/但.在/之前)
+            if (lowerUrl.indexOf(BASE_PATH) == -1 || lowerUrl.indexOf(HOST_DOT) < lowerUrl.indexOf(BASE_PATH)) {
+                // 则前面是域名，加上协议和//
+                return protocol + RELAX_PROTOCOL + targetUrl;
+            }
+        }
+
+        // 不是域名，则是一个相对路径
+        return protocol + RELAX_PROTOCOL + host + BASE_PATH + targetUrl;
+    }
+
+    public static String mediaUrl(String targetUrl) {
+        return mediaUrl(Wx.Environment.instance().getCallbackUrl(), targetUrl);
     }
 
     /**
@@ -80,7 +107,7 @@ public abstract class WxUrlUtils {
      * @return dummy
      */
     public static boolean isCallbackUrl(String targetUrl) {
-        return isCallbackUrlInternal(targetUrl, Wx.Environment.instance().getCallbackDomain());
+        return isCallbackUrlInternal(targetUrl, Wx.Environment.instance().getCallbackHost());
     }
 
     /**
@@ -91,7 +118,7 @@ public abstract class WxUrlUtils {
      * @return dummy
      */
     public static boolean isCallbackUrl(String requestUrl, String targetUrl) {
-        String callbackDomain = Wx.Environment.instance().getCallbackDomain();
+        String callbackDomain = Wx.Environment.instance().getCallbackHost();
         if (StringUtils.isEmpty(callbackDomain)) {
             callbackDomain = URI.create(requestUrl).getHost();
         }

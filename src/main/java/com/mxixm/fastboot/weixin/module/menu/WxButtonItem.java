@@ -237,7 +237,10 @@ public class WxButtonItem {
         public Builder setUrl(String url) {
             // 如果是callbackUrl，则重定向，否则不重定向
             // WxUrlUtils.mediaUrl()
-            this.url = StringUtils.isEmpty(url) ? null : WxUrlUtils.isCallbackUrl(url) ? WxRedirectUtils.redirect(url) : url;
+            if (!StringUtils.isEmpty(url)) {
+                url = WxUrlUtils.mediaUrl(url);
+                this.url = WxUrlUtils.isCallbackUrl(url) ? WxRedirectUtils.redirect(url) : url;
+            }
             return this;
         }
 

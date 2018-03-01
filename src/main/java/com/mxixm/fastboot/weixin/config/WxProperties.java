@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.module.web.session.DefaultWxSessionIdGenerator;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionIdGenerator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,14 @@ public class WxProperties implements InitializingBean {
      * “开发 - 接口权限 - 网页服务 - 网页帐号 - 网页授权获取用户基本信息”的配置选项中，修改授权回调域名。
      * 请注意，这里填写的是域名（是一个字符串），而不是URL，因此请勿加 http:// 等协议头
      */
+    @Deprecated
     private String callbackDomain;
+
+    /**
+     * 用于替换上面的属性，以达到菜单使用相对路径的目的
+     * 如果只配置callbackDomain则默认使用http协议生成callbackUrl
+     */
+    private String callbackUrl;
 
     private Invoker invoker = new Invoker();
 
@@ -82,7 +90,16 @@ public class WxProperties implements InitializingBean {
         Wx.Environment.instance().setWxAppId(this.appid);
         Wx.Environment.instance().setWxAppSecret(this.appsecret);
         Wx.Environment.instance().setWxToken(this.token);
-        Wx.Environment.instance().setCallbackDomain(this.callbackDomain);
+        // 优先使用callbackUrl
+        Wx.Environment.instance().setCallbackUrl(StringUtils.isEmpty(this.callbackUrl) ? this.callbackDomain : this.callbackUrl);
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 
     public String getPath() {

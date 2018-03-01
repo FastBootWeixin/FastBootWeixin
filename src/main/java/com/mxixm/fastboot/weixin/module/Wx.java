@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.module;
 
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
+import org.springframework.util.StringUtils;
 
 import java.net.URI;
 
@@ -76,23 +77,33 @@ public class Wx {
 
         private String wxAppSecret;
 
-        private String callbackDomain;
+        private URI callbackUri;
 
-        public String getCallbackDomain() {
-            return callbackDomain;
+        private String callbackUrl;
+
+        public String getCallbackHost() {
+            return callbackUri.getHost();
         }
 
-        public void setCallbackDomain(String callbackDomain) {
-            if (callbackDomain == null) {
+        public void setCallbackUrl(String callbackUrl) {
+            if (StringUtils.isEmpty(callbackUrl)) {
                 return;
             }
-            callbackDomain = callbackDomain.toLowerCase();
-            if (callbackDomain.startsWith(WxUrlUtils.HTTP_PROTOCOL) || callbackDomain.startsWith(WxUrlUtils.HTTPS_PROTOCOL)) {
-                callbackDomain = URI.create(callbackDomain).getHost();
-            } else if (callbackDomain.startsWith(WxUrlUtils.BASE_PATH)) {
-                callbackDomain = callbackDomain.substring(1);
+            callbackUrl = callbackUrl.toLowerCase();
+            if (!callbackUrl.startsWith(WxUrlUtils.HTTP_PROTOCOL) && !callbackUrl.startsWith(WxUrlUtils.HTTPS_PROTOCOL)) {
+                // 默认http协议
+                callbackUrl = WxUrlUtils.HTTP_PROTOCOL + WxUrlUtils.RELAX_PROTOCOL + callbackUrl;
             }
-            this.callbackDomain = callbackDomain;
+            this.callbackUri = URI.create(callbackUrl);
+            this.callbackUrl = callbackUrl;
+        }
+
+        public URI getCallbackUri() {
+            return callbackUri;
+        }
+
+        public String getCallbackUrl() {
+            return this.callbackUrl;
         }
 
         public String getWxToken() {

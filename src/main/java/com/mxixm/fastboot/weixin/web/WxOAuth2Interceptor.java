@@ -91,12 +91,12 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
 
     private String getRequestUrl(HttpServletRequest request) {
         StringBuilder sb = new StringBuilder();
-        if (StringUtils.isEmpty(Wx.Environment.instance().getCallbackDomain())) {
+        if (StringUtils.isEmpty(Wx.Environment.instance().getCallbackHost())) {
             sb.append(request.getRequestURL().toString());
         } else {
             URI uri = URI.create(request.getRequestURL().toString());
             sb.append(uri.getScheme() + "://");
-            sb.append(Wx.Environment.instance().getCallbackDomain());
+            sb.append(Wx.Environment.instance().getCallbackHost());
             sb.append(uri.getPath());
         }
         sb.append((StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString()));
