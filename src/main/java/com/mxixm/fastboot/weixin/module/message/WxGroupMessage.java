@@ -90,15 +90,25 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
         }
 
         public GroupMessageBuilder toUsers(String... users) {
-            return this.toUsers(Arrays.asList(users));
+            return this.toUsers(new ArrayList<>(Arrays.asList(users)));
+        }
+
+        public GroupMessageBuilder preview(String user) {
+            return this.toUsers(Arrays.asList(user));
         }
 
         public GroupMessageBuilder addUser(String user) {
+            if (this.toUsers == null) {
+                this.toUsers = new ArrayList<>();
+            }
             this.toUsers.add(user);
             return this;
         }
 
         public GroupMessageBuilder addUsers(Collection<String> users) {
+            if (this.toUsers == null) {
+                this.toUsers = new ArrayList<>();
+            }
             this.toUsers.addAll(users);
             return this;
         }

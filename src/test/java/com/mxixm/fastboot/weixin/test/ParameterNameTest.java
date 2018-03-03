@@ -18,7 +18,9 @@ package com.mxixm.fastboot.weixin.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
+import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 
 public class ParameterNameTest {
 
@@ -37,6 +39,15 @@ public class ParameterNameTest {
 //        System.out.println(s);
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(WxGroupMessage.mpNewsBuilder().mediaId("aa").toGroup("gs", "bb").build()));
+        Wx.Environment.instance().setCallbackUrl("http://mxixm.com");
+        System.out.println(WxUrlUtils.mediaUrl("a"));
+        System.out.println(WxUrlUtils.mediaUrl("a.b"));
+        System.out.println(WxUrlUtils.mediaUrl("/a"));
+        System.out.println(WxUrlUtils.mediaUrl("/a.b"));
+        System.out.println(WxUrlUtils.mediaUrl("baidu.com"));
+        System.out.println(WxUrlUtils.mediaUrl("//baidu.com"));
+        System.out.println(WxUrlUtils.mediaUrl("https://baidu.com"));
+        System.out.println(WxUrlUtils.mediaUrl("baidu/h.c"));
     }
 
 }

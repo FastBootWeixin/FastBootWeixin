@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.5-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.5%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.3.6-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.6%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.5</version>
+        <version>0.3.6</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -325,14 +325,16 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 提供微信OAUTH2认证拦截，通过配置wx.callback-domain填写OAUTH2授权回调页面域名，通过配置wx.mvc.interceptor.includePatterns和wx.mvc.interceptor.excludePatterns来配置拦截的目标地址，你可以提供一个WxOAuth2Callback接口的实现类作为Bean，在WxOAuth2Interceptor中会自动注入这个bean，并在微信Web认证通过后调用after(WxOAuth2Context context)方法把相关的context传递给该Bean的方法，你可以在该方法中获取到context了的WxWebUser，并通过WxUserManager把WxWebUser转换为WxUser。关系详细信息请参考：[微信网页授权](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842)。
 
-附加功能1: view类型的WxButton，自动判断其中url是否属于授权回调域名下地址，根据需要自动处理为包含OAuth2的url。可结合默认的拦截器实现菜单url获取点击用户信息的功能。
+自0.3.6版本后，提供wx.callback-domain的替代属性wx.callback-url，用于设置回调的url，包含回调域名以及协议类型。比wx.callback-domain多了协议类型，请使用该配置替换callback-domain配置。
+
+附加功能1: view类型的WxButton，自动判断其中url是否属于授权回调域名下地址，根据需要自动处理为包含OAuth2的url。可结合默认的拦截器实现菜单url获取点击用户信息的功能。同时结合wx.callback-url功能，支持菜单中配置相对路径，无需携带域名。
 
 附加功能2：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
 
 ### 六、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)
 2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
-3. [OSChina仓库](https://git.oschina.net/kingshine/FastBootWeixin)
+3. [Gitee](https://gitee.com/kingshine/FastBootWeixin)
 
 
 ### 七、暂时不支持的功能
@@ -406,3 +408,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.3.5
 1. 再次优化消息和菜单中url的处理逻辑
+
+####
+1. 新增wx.callback-url配置以替换wx.callback-domain，基于此可在菜单配置中使用url相对路径。
+2. 修复群发消息的bug，新增预览群发消息

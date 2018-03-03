@@ -282,7 +282,11 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public WxGroupMessage.GroupMessageBuilder toGroup(String... users) {
-            return new WxGroupMessage.GroupMessageBuilder(this).toUsers(Arrays.asList(users));
+            return new WxGroupMessage.GroupMessageBuilder(this).toUsers(users);
+        }
+
+        public WxGroupMessage.GroupMessageBuilder preview(String user) {
+            return new WxGroupMessage.GroupMessageBuilder(this).preview(user);
         }
 
         @Override
