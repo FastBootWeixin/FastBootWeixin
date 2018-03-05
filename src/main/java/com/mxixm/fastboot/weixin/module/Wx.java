@@ -82,7 +82,7 @@ public class Wx {
         private String callbackUrl;
 
         public String getCallbackHost() {
-            return callbackUri.getHost();
+            return callbackUri != null ? callbackUri.getHost() : null;
         }
 
         public void setCallbackUrl(String callbackUrl) {
