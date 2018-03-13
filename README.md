@@ -58,6 +58,7 @@
 - wx.token=随机生成的一串字母与数字，推荐使用随机生成32位的UUID
 - wx.appid=测试号的appid，测试号管理界面有
 - wx.appsecret=测试号的appsecret，测试号管理界面有
+- wx.callback-url=服务调用的url地址，用于微信web的oauth2授权回调等，若没有可为空。
 
 测试代码：
 ```
@@ -185,9 +186,11 @@ public class WxApp {
 
 软件可使用[ngrok](https://www.ngrok.cc/)或者[natapp](https://natapp.cn/)，使用方式请参考两者官方文档。
 
+启动后生成的域名url地址可以配置在wx.callback-url中，以便进行oauth2认证。授权回调页面域名中也需配置上上面生成的url中的域名。
+
 #### 5. 配置测试公众号
 
-在测试公众号的接口配置信息中填写在第三步中生成的域名，token使用配置文件中的token，保存后，如果不出意外应该会验证成功。如有问题请及时反馈。
+在测试公众号的接口配置信息中填写在第四步中生成的域名，token使用配置文件中的token，保存后，如果不出意外应该会验证成功。如有问题请及时反馈。
 
 ### 二、示例图解
 
