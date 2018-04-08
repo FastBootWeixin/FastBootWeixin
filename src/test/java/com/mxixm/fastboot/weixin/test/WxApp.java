@@ -30,6 +30,8 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
+import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -326,10 +329,23 @@ public class WxApp {
         return "";
     }
 
+    @RequestMapping("sendGroup")
+    @ResponseBody
+    public WxMessage sendGroup(String text) {
+        return WxMessage.textBuilder().content(text).toGroup().build();
+    }
+
     @RequestMapping("qrcode")
     @ResponseBody
     public WxQrCode.Result qrcode() {
         return wxExtendService.createQrCode(WxQrCode.builder().temporary(1).build());
+    }
+
+    @RequestMapping("wx/bind")
+    @ResponseBody
+    public String login() {
+        WxWebUser wxWebUser = WxWebUtils.getWxWebUserFromSession();
+        return wxWebUser.getOpenId();
     }
 
 }

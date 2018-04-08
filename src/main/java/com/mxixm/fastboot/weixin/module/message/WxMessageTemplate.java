@@ -87,6 +87,10 @@ public class WxMessageTemplate {
         this.sendMessage(wxRequest, WxMessage.Text.builder().content(wxMessageContent).build());
     }
 
+    public void sendMessage(WxMessageParameter wxMessageParameter, String wxMessageContent) {
+        this.sendMessage(wxMessageParameter, WxMessage.Text.builder().content(wxMessageContent).build());
+    }
+
     public void sendUserMessage(WxRequest wxRequest, String wxMessageContent) {
         this.sendMessage(wxRequest, wxMessageContent);
     }

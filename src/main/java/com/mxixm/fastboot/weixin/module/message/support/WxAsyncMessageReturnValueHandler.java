@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.core.MethodParameter;
@@ -84,9 +85,9 @@ public class WxAsyncMessageReturnValueHandler implements HandlerMethodReturnValu
         HttpServletResponse servletResponse = webRequest.getNativeResponse(HttpServletResponse.class);
         ServletServerHttpResponse outputMessage = new ServletServerHttpResponse(servletResponse);
         outputMessage.getBody();
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest(request);
-        wxAsyncMessageTemplate.send(wxRequest, returnValue);
+        // HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+        WxMessageParameter wxMessageParameter = WxWebUtils.getWxMessageParameter();
+        wxAsyncMessageTemplate.send(wxMessageParameter, returnValue);
     }
 
     private Class getGenericType(MethodParameter returnType) {

@@ -19,6 +19,8 @@ package com.mxixm.fastboot.weixin.module.message.support;
 import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,25 +53,39 @@ public class WxAsyncMessageTemplate implements InitializingBean, DisposableBean 
     }
 
     public void send(WxRequest wxRequest, Object returnValue) {
-        this.asyncExecutor.submit(() -> sendMessage(wxRequest, returnValue));
+        this.asyncExecutor.execute(() -> sendMessage(new WxRequestMessageParameter(wxRequest), returnValue));
+    }
+
+    public void send(WxMessageParameter wxMessageParameter, Object returnValue) {
+        this.asyncExecutor.execute(() -> sendMessage(wxMessageParameter, returnValue));
     }
 
     public void send(WxRequest wxRequest, Supplier supplier) {
-        this.asyncExecutor.submit(() -> sendMessage(wxRequest, supplier.get()));
+        this.asyncExecutor.execute(() -> sendMessage(new WxRequestMessageParameter(wxRequest), supplier.get()));
     }
 
-    private void sendMessage(WxRequest wxRequest, Object value) {
+    public void send(WxMessageParameter wxMessageParameter, Supplier supplier) {
+        this.asyncExecutor.execute(() -> sendMessage(wxMessageParameter, supplier.get()));
+    }
+
+    /**
+     * 发送的核心方法，是否有必要再WxMessageTemplate中也放一个呢
+     * @param wxMessageParameter
+     * @param value
+     */
+    private void sendMessage(WxMessageParameter wxMessageParameter, Object value) {
         if (value == null) {
             return;
         }
         if (value instanceof WxMessage) {
-            wxMessageTemplate.sendMessage(wxRequest, (WxMessage) value);
+            wxMessageTemplate.sendMessage(wxMessageParameter, (WxMessage) value);
         } else if (value instanceof CharSequence) {
-            wxMessageTemplate.sendMessage(wxRequest, value.toString());
+            wxMessageTemplate.sendMessage(wxMessageParameter, value.toString());
         } else if (value instanceof Iterable) {
-            ((Iterable) value).forEach(v -> sendMessage(wxRequest, v));
+            ((Iterable) value).forEach(v -> sendMessage(wxMessageParameter, v));
         } else if (value.getClass().isArray()) {
-            Arrays.stream((Object[]) value).forEach(v -> sendMessage(wxRequest, v));
+            // 这里应该要判断下数组中元素类型不是原始类型才能进行强制转换
+            Arrays.stream((Object[]) value).forEach(v -> sendMessage(wxMessageParameter, v));
         }
     }
 
