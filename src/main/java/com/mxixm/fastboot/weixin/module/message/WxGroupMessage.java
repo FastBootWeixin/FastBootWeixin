@@ -59,7 +59,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
      */
     protected static class Filter {
 
-        @JsonProperty("isToAll")
+        @JsonProperty("is_to_all")
         protected boolean isToAll = true;
 
         @JsonProperty("tag_id")
@@ -245,7 +245,6 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
 
         @JsonProperty("mpnews")
         protected WxMessageBody.MpNews body;
-
 
         /**
          * 图文消息被判定为转载时，是否继续群发。1为继续群发（转载），0为停止群发。该参数默认为0。

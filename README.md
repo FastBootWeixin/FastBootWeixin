@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.6-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.6%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.3.7-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.7%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.6</version>
+        <version>0.3.7</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -120,7 +120,7 @@ public class WxApp {
             name = "点击链接")
     @WxAsyncMessage
     public WxMessage link() {
-        return WxMessage.News.builder().addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://baidu.com").build();
+        return WxMessage.newsBuilder().addItem("测试图文消息", "测试", "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png", "http://baidu.com").build();
     }
 
     /**
@@ -156,7 +156,7 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
     public WxMessage message(WxSession wxSession, String content) {
         wxSession.setAttribute("last", content);
-        return WxMessage.News.builder()
+        return WxMessage.newsBuilder()
                 .addItem(WxMessageBody.News.Item.builder().title(content).description("随便一点")
                         .picUrl("http://k2.jsqq.net/uploads/allimg/1702/7_170225142233_1.png")
                         .url("http://baidu.com").build())
@@ -387,31 +387,37 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 #### 0.2.1.beta
 1. 增加部分说明，修复部分bug，包括上个版本WxAsyncMessage中返回消息提示服务器故障的bug。
-2. 增加菜单url自动重写为微信web认证url
+2. 增加菜单url自动重写为微信web认证url。
 
 #### 0.3.0 不要使用
-1. 优化部分包名
+1. 优化部分包名。
 2. 修复一个大bug：当没有配置消息处理器时提示服务器故障。默认提供一个返回空的处理器。
 3. 发布正式版。
 
 #### 0.3.1 不要使用
-1. 修复上次拦截器返回修改为HttpEntity.EMPTY导致原方法声明与返回类不一致的bug
-2. 修复忘了加getter的问题
+1. 修复上次拦截器返回修改为HttpEntity.EMPTY导致原方法声明与返回类不一致的bug。
+2. 修复忘了加getter的问题。
 
 #### 0.3.2
-1. 修复图文消息的bug（Request异步使用时，getRequestURL等会错误）
-2. 修复url处理会处理为小写的bug
+1. 修复图文消息的bug（Request异步使用时，getRequestURL等会错误）。
+2. 修复url处理会处理为小写的bug。
 
 #### 0.3.3
-1. 修复无后缀文件名上传素材时提示无效的媒体类型错误
-2. 修复未关注用户放缓存导致关注后取不到信息的bug
+1. 修复无后缀文件名上传素材时提示无效的媒体类型错误。
+2. 修复未关注用户放缓存导致关注后取不到信息的bug。
 
 #### 0.3.4
-1. 新增手动调用WxMessageTemplate发送消息时的参数处理
+1. 新增手动调用WxMessageTemplate发送消息时的参数处理。
 
 #### 0.3.5
-1. 再次优化消息和菜单中url的处理逻辑
+1. 再次优化消息和菜单中url的处理逻辑。
 
 #### 0.3.6
 1. 新增wx.callback-url配置以替换wx.callback-domain，基于此可在菜单配置中使用url相对路径。
 2. 修复群发消息的bug，新增预览群发消息
+
+#### 0.3.7
+1. 修复未配置wx.callback-xxx时报空指针的bug。
+2. 修复返回值类型为WxMessage的Controller方法，在非微信请求的情况下报空指针的bug。
+3. 修复群发消息中，群发全部时报invalid group id错误的bug。
+4. 修复异步发送消息时，异常无法被捕获的bug。
