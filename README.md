@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.7-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.7%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.3.8-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.8%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.7</version>
+        <version>0.3.8</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -416,7 +416,7 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 1. 新增wx.callback-url配置以替换wx.callback-domain，基于此可在菜单配置中使用url相对路径。
 2. 修复群发消息的bug，新增预览群发消息
 
-#### 0.3.7
+#### 0.3.8
 1. 修复未配置wx.callback-xxx时报空指针的bug。
 2. 修复返回值类型为WxMessage的Controller方法，在非微信请求的情况下报空指针的bug。
 3. 修复群发消息中，群发全部时报invalid group id错误的bug。
