@@ -120,7 +120,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
         public WxGroupMessage build() {
             WxGroupMessage wxGroupMessage;
             if (classMap.containsKey(builder.messageType)) {
-                wxGroupMessage = BeanUtils.instantiate(classMap.get(builder.messageType));
+                wxGroupMessage = BeanUtils.instantiateClass(classMap.get(builder.messageType));
             } else {
                 wxGroupMessage = new WxGroupMessage();
             }

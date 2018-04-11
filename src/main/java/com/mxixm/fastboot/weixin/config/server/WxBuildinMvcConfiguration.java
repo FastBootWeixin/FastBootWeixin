@@ -48,11 +48,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.lang.Nullable;
+import org.springframework.validation.MessageCodesResolver;
+import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.lang.invoke.MethodHandles;
@@ -178,7 +183,13 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         }
     }
 
-    public static class WxMvcConfigurer extends WebMvcConfigurerAdapter implements Ordered {
+    /**
+     * 从WebMvcConfigurerAdapter切到了WebMvcConfigurer
+     * 因为在Spring5中，WebMvcConfigurer添加了默认方法，不需要使用Adapter这种过时的东西了
+     * 故WebMvcConfigurerAdapter被弃用了，但为了兼容4.x和5.x，我这里只能把WebMvcConfigurerAdapter代码挪过来了
+     *
+     */
+    public static class WxMvcConfigurer implements WebMvcConfigurer, Ordered {
 
         private HandlerInterceptor wxOAuth2Interceptor;
 
@@ -200,6 +211,149 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         public int getOrder() {
             return Ordered.HIGHEST_PRECEDENCE + 1000;
         }
+
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configurePathMatch(PathMatchConfigurer configurer) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addFormatters(FormatterRegistry registry) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addViewControllers(ViewControllerRegistry registry) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureViewResolvers(ViewResolverRegistry registry) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation is empty.
+         */
+        @Override
+        public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation returns {@code null}.
+         */
+        @Override
+        @Nullable
+        public Validator getValidator() {
+            return null;
+        }
+
+        /**
+         * {@inheritDoc}
+         * <p>This implementation returns {@code null}.
+         */
+        @Override
+        @Nullable
+        public MessageCodesResolver getMessageCodesResolver() {
+            return null;
+        }
+
+
     }
 
     /*public static class WxMvcConfigurer extends WebMvcConfigurerAdapter {

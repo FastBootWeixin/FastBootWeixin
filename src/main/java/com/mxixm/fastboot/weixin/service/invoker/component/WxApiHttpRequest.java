@@ -46,6 +46,15 @@ public final class WxApiHttpRequest implements ClientHttpRequest {
         return this.delegate.getMethod();
     }
 
+    /**
+     * 同样是兼容SB2.0, Spring5才加入的这个方法
+     * 不写Override，写了在4.x版本会报错，注意递归调用
+     * @return
+     */
+    public String getMethodValue() {
+        return this.delegate.getMethod().name();
+    }
+
     @Override
     public URI getURI() {
         return this.delegate.getURI();

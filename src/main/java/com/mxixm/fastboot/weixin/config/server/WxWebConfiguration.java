@@ -51,7 +51,7 @@ public class WxWebConfiguration {
     public WxSessionManager wxSessionManager() {
         return new DefaultWxSessionManager(wxProperties.getServer().getSessionTimeout(),
                 wxProperties.getServer().getMaxActiveLimit(),
-                BeanUtils.instantiate(wxProperties.getServer().getWxSessionIdGeneratorClass()));
+                BeanUtils.instantiateClass(wxProperties.getServer().getWxSessionIdGeneratorClass()));
     }
 
 }

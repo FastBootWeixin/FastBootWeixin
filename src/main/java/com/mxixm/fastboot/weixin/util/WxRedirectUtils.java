@@ -108,7 +108,8 @@ public class WxRedirectUtils {
         }
         try {
             redirectUrl = UriUtils.encode(redirectUrl, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
+            // java.io.UnsupportedEncodingException在SB2.0中不再抛出，故兼容下，处理为Exception
             // ignore it
         }
         String finalRedirectUri = baseBuilder.cloneBuilder().queryParam("appid", Wx.Environment.instance().getWxAppId())

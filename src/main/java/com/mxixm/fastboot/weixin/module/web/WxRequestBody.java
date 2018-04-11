@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.module.web;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import org.springframework.beans.BeanUtils;
 
@@ -43,7 +42,7 @@ public class WxRequestBody {
      * @return dummy
      */
     public static <T extends WxRequestBody> T of(Class<T> clazz, WxRequest.Body body) {
-        WxRequestBody wxRequestBody = BeanUtils.instantiate(clazz);
+        WxRequestBody wxRequestBody = BeanUtils.instantiateClass(clazz);
         return (T) wxRequestBody.of(body);
     }
 

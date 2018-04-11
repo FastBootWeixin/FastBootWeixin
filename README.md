@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.3.8-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.3.8%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.5.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.5.0%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -8,7 +8,7 @@
 
 在使用本框架前建议对[微信公众号开发文档](https://mp.weixin.qq.com/wiki)有所了解，不过在不了解公众号文档的情况下使用本框架也能完成一个简单的微信公众号。
 
-> 注意：目前发布的是rc版，可能仍有部分bug，生产环境使用需谨慎。当然也不要不使用哈，欢迎大家提issue和contribute，也欢迎加群627254793讨论，开源项目需要大家共同来共享，谢谢~
+> 目前已兼容Spring Boot 1.4+以及Spring Boot 2.x，欢迎大家提issue和contribute，也欢迎加群627254793讨论，开源项目需要大家共同来共享，谢谢~
 
 ### 一、简单示例：
 
@@ -19,7 +19,7 @@
 #### 2. 准备完成，创建maven项目并加入maven依赖
 
 ```
-<!-- 支持1.4.0.RELEASE及以上 -->
+<!-- 支持1.4.0.RELEASE及以上，包括2.x -->
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.3.8</version>
+        <version>0.5.0</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -424,3 +424,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 2. 修复返回值类型为WxMessage的Controller方法，在非微信请求的情况下报空指针的bug。
 3. 修复群发消息中，群发全部时报invalid group id错误的bug。
 4. 修复异步发送消息时，异常无法被捕获的bug。
+
+#### 0.5.0
+1. 加入Spring Boot 2.x支持

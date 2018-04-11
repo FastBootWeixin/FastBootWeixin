@@ -46,7 +46,7 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
     private ServletContext servletContext;
 
     /*
-    本想支持所有类型的，但是想想没有必要，也不好处理，干脆值覆盖父类的功能
+    本想支持所有类型的，但是想想没有必要，也不好处理，干脆只覆盖父类的功能
     还有也不直接支持File文件，不想写了
     @Override
     protected boolean supports(Class<?> clazz) {

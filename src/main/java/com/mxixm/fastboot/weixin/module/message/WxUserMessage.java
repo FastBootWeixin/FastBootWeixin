@@ -154,7 +154,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
         public WxUserMessage build() {
             WxUserMessage wxUserMessage;
             if (classMap.containsKey(builder.messageType)) {
-                wxUserMessage = BeanUtils.instantiate(classMap.get(builder.messageType));
+                wxUserMessage = BeanUtils.instantiateClass(classMap.get(builder.messageType));
             } else {
                 wxUserMessage = new WxUserMessage();
             }
