@@ -53,6 +53,8 @@ public abstract class WxUrlUtils {
         }
 
         // 先解析出来protocol和host
+        // 是否要考虑context-path? request.getContextPath()有可能不是/，可能会带来一些问题。可参考UrlPathHelper
+        // 菜单链接可能同样有这个问题
         String protocol = HTTP_PROTOCOL;
         String host = DEFAULT_HOST;
         if (!StringUtils.isEmpty(requestUrl)) {
