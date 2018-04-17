@@ -82,16 +82,16 @@ public class WxApp {
      * 定义微信菜单
      */
     @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "中")
-    public List<WxMessage> middle(WxUser wxUser) {
+    @WxAsyncMessage
+    public WxMessage middle(WxUser wxUser) {
         WxQrCode wxQrCode = WxQrCode.builder().permanent(wxUser.getOpenId()).build();
         WxQrCode.Result qrCode = wxExtendService.createQrCode(wxQrCode);
-        List<WxMessage> messages = new ArrayList<>();
-        messages.add(WxMessage.textBuilder().content("消息规则").build());
-        messages.add(WxMessage.imageBuilder()
+//        List<WxMessage> messages = new ArrayList<>();
+//        messages.add(WxMessage.textBuilder().content("消息规则").build());
+        return WxMessage.imageBuilder()
                 .mediaUrl(qrCode.getShowUrl())
 //                .mediaPath("E:/showqrcode2.jpg")
-                .build());
-        return messages;
+                .build();
     }
 
     /**
@@ -159,9 +159,9 @@ public class WxApp {
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FORTH,
             name = "图片消息")
-    public WxMessage imgae() {
+    public WxMessage image() {
         return WxMessage.imageBuilder()
-                .mediaUrl("http://www.uimaker.com/uploads/allimg/130216/1_130216120816_1.png")
+                .mediaUrl("http://img.zcool.cn/community/01f09e577b85450000012e7e182cf0.jpg@1280w_1l_2o_100sh.jpg")
                 .build();
     }
 

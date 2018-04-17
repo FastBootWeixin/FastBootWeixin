@@ -48,6 +48,7 @@ public class WxMediaResourceMessageConverter extends ResourceHttpMessageConverte
     /*
     本想支持所有类型的，但是想想没有必要，也不好处理，干脆只覆盖父类的功能
     还有也不直接支持File文件，不想写了
+    Spring5对ResourceHttpMessageConverter做了改造，注意兼容
     @Override
     protected boolean supports(Class<?> clazz) {
         return WxWebUtils.isMutlipart(clazz);

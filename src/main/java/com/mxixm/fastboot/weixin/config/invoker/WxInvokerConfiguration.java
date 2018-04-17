@@ -107,12 +107,9 @@ public class WxInvokerConfiguration {
         builder = (RestTemplateBuilder) ReflectionUtils.invokeMethod(method, builder, arg);
 
         builder = builder.errorHandler(new WxResponseErrorHandler());
-        List<HttpMessageConverter<?>> converterList = new ArrayList<>();
         // 加入默认转换
         // 为了兼容SB2.0，暂时不考虑用户自定义的转换器，因为SB2.0修改了HttpMessageConverters的包地址，不能直接依赖进来了。
-        converterList.add(new WxHttpInputMessageConverter());
-        converterList.addAll(getDefaultWxMessageConverters());
-        builder = builder.messageConverters(Collections.unmodifiableList(converterList));
+        builder = builder.messageConverters(Collections.unmodifiableList(getDefaultWxMessageConverters()));
         return new WxApiTemplate(builder.build());
     }
 
@@ -173,18 +170,44 @@ public class WxInvokerConfiguration {
      * @return list
      */
     private List<HttpMessageConverter<?>> getDefaultWxMessageConverters() {
-        List<HttpMessageConverter<?>> list = new ArrayList<>();
-        list.add(new ByteArrayHttpMessageConverter());
-        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        stringConverter.setWriteAcceptCharset(false);
-        list.add(stringConverter);
-        list.add(new StringHttpMessageConverter());
-        list.add(this.wxMediaResourceMessageConverter);
-        list.add(new MappingJackson2HttpMessageConverter());
-        list.add(new Jaxb2RootElementHttpMessageConverter());
-        list.add(new AllEncompassingFormHttpMessageConverter());
-        list.add(new ResourceHttpMessageConverter());
-        return list;
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        List<HttpMessageConverter<?>> partConverters = new ArrayList<>();
+
+        converters.add(new WxHttpInputMessageConverter());
+
+        ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+        converters.add(byteArrayHttpMessageConverter);
+        partConverters.add(byteArrayHttpMessageConverter);
+
+        StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+        stringHttpMessageConverter.setWriteAcceptCharset(false);
+        converters.add(stringHttpMessageConverter);
+        partConverters.add(stringHttpMessageConverter);
+
+        stringHttpMessageConverter = new StringHttpMessageConverter();
+        converters.add(stringHttpMessageConverter);
+        partConverters.add(stringHttpMessageConverter);
+
+        converters.add(this.wxMediaResourceMessageConverter);
+        partConverters.add(this.wxMediaResourceMessageConverter);
+
+        AllEncompassingFormHttpMessageConverter allEncompassingFormHttpMessageConverter = new AllEncompassingFormHttpMessageConverter();
+        converters.add(allEncompassingFormHttpMessageConverter);
+
+        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        converters.add(mappingJackson2HttpMessageConverter);
+        partConverters.add(mappingJackson2HttpMessageConverter);
+
+        Jaxb2RootElementHttpMessageConverter jaxb2RootElementHttpMessageConverter = new Jaxb2RootElementHttpMessageConverter();
+        converters.add(jaxb2RootElementHttpMessageConverter);
+        partConverters.add(jaxb2RootElementHttpMessageConverter);
+
+        ResourceHttpMessageConverter resourceHttpMessageConverter = new ResourceHttpMessageConverter();
+        converters.add(resourceHttpMessageConverter);
+        partConverters.add(resourceHttpMessageConverter);
+        allEncompassingFormHttpMessageConverter.setPartConverters(partConverters);
+
+        return converters;
     }
 
 }

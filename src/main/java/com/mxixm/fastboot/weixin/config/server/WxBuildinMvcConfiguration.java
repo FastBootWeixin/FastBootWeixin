@@ -50,7 +50,6 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.MessageCodesResolver;
 import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -338,7 +337,6 @@ public class WxBuildinMvcConfiguration implements ImportAware {
          * <p>This implementation returns {@code null}.
          */
         @Override
-        @Nullable
         public Validator getValidator() {
             return null;
         }
@@ -348,7 +346,6 @@ public class WxBuildinMvcConfiguration implements ImportAware {
          * <p>This implementation returns {@code null}.
          */
         @Override
-        @Nullable
         public MessageCodesResolver getMessageCodesResolver() {
             return null;
         }

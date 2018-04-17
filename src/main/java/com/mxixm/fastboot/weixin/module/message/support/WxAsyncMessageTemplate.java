@@ -138,7 +138,7 @@ private static class LogUncaughtExceptionHandler implements Thread.UncaughtExcep
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        logger.error("线程：" + t.getName() + ",执行异常", e);
+        logger.error("线程：" + t.getName() + "，执行异常，异常原因是" + e.getMessage(), e);
     }
 }
 
