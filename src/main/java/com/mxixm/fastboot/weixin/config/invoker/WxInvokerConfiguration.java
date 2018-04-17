@@ -54,6 +54,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -192,6 +193,7 @@ public class WxInvokerConfiguration {
         partConverters.add(this.wxMediaResourceMessageConverter);
 
         AllEncompassingFormHttpMessageConverter allEncompassingFormHttpMessageConverter = new AllEncompassingFormHttpMessageConverter();
+        allEncompassingFormHttpMessageConverter.setMultipartCharset(Charset.defaultCharset());
         converters.add(allEncompassingFormHttpMessageConverter);
 
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
