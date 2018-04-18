@@ -254,8 +254,13 @@ public class WxRequest {
          * @return
          */
         public String getScene() {
-            if (scene == null && eventKey != null && eventKey.startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
-                scene = eventKey.substring(WxQrCode.QR_SCENE_SUFFIX.length());
+            if (scene == null && eventKey != null) {
+                if (WxEvent.Type.SCAN == eventType) {
+                    scene = eventKey;
+                } else if (eventKey.startsWith(WxQrCode.QR_SCENE_SUFFIX)) {
+                    // 明确是否只有扫关注码时才有scene，如果是则可再加入WxEvent.Type.Subscribe == eventType的判断
+                    scene = eventKey.substring(WxQrCode.QR_SCENE_SUFFIX.length());
+                }
             }
             return scene;
         }
