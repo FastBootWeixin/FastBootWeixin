@@ -4,7 +4,7 @@
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
-#### 本框架基于SpringBoot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
+#### 本框架基于Spring Boot实现，使用注解完成快速开发，可以快速的完成一个微信公众号，重新定义公众号开发。
 
 在使用本框架前建议对[微信公众号开发文档](https://mp.weixin.qq.com/wiki)有所了解，不过在不了解公众号文档的情况下使用本框架也能完成一个简单的微信公众号。
 
@@ -389,12 +389,12 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 1. 增加部分说明，修复部分bug，包括上个版本WxAsyncMessage中返回消息提示服务器故障的bug。
 2. 增加菜单url自动重写为微信web认证url。
 
-#### 0.3.0 不要使用
+#### ~~0.3.0~~
 1. 优化部分包名。
 2. 修复一个大bug：当没有配置消息处理器时提示服务器故障。默认提供一个返回空的处理器。
 3. 发布正式版。
 
-#### 0.3.1 不要使用
+#### ~~0.3.1~~
 1. 修复上次拦截器返回修改为HttpEntity.EMPTY导致原方法声明与返回类不一致的bug。
 2. 修复忘了加getter的问题。
 
@@ -425,8 +425,10 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 3. 修复群发消息中，群发全部时报invalid group id错误的bug。
 4. 修复异步发送消息时，异常无法被捕获的bug。
 
-#### 0.5.0
+#### ~~0.5.0~~
 1. 加入Spring Boot 2.x支持
 
 #### 0.5.1
 1. 修复缺失MessageConverter的bug
+2. 修复Spring 5的FormHttpMessageConverter中对ContentType头包装了charset导致微信服务器不兼容的bug
+3. 优化WxRequest.Body中的scene

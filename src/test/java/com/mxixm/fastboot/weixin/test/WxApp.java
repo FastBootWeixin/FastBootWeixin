@@ -189,7 +189,8 @@ public class WxApp {
      */
     @WxEventMapping(type = WxEvent.Type.UNSUBSCRIBE)
     public void unsubscribe(WxRequest wxRequest, WxUser wxUser) {
-        System.out.println(wxUser.getNickName() + "退订了公众号");
+        System.out.println("取消关注" + wxUser.getOpenId());
+//        System.out.println(wxUser.getNickName() + "退订了公众号");
     }
 
     /**
@@ -201,6 +202,12 @@ public class WxApp {
     @WxEventMapping(type = WxEvent.Type.SUBSCRIBE)
     public String subscribe(WxRequest wxRequest, WxUser wxUser) {
         return "欢迎您关注本公众号，本公众号使用FastBootWeixin框架开发，简单极速开发微信公众号，你值得拥有";
+    }
+
+    @WxEventMapping(type = WxEvent.Type.SCAN)
+    public String scan(WxRequest wxRequest, WxUser wxUser) {
+        System.out.println("扫描二维码" + wxUser.getOpenId());
+        return "触发扫描二维码";
     }
 
     /**
@@ -283,8 +290,8 @@ public class WxApp {
                 .data("keynote1", "1324.76", "#FF0000")
                 .data("keynote2", "2017-10-25", "#0000FF")
                 .templateId("IIXwm9TJ5F-tAXPdqP7D4xL6rRK-lVwpNWlVRIsZ9Wo")
-                .toUser("oKS9_xLsaQsSmvhSZI5EHgUHorLs")
-                .url("http://www.baidu.com")
+                .toUser(text.getFromUserName())
+//                .url("http://www.baidu.com")
                 .build();
         wxMessageTemplate.sendTemplateMessage(templateMessage);
         return "模板消息已发送";
