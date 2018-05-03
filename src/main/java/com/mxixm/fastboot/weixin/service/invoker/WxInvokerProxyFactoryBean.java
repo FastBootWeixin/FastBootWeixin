@@ -114,7 +114,7 @@ public class WxInvokerProxyFactoryBean<T> implements InitializingBean, MethodInt
 
     @Override
     public Class<?> getObjectType() {
-        return WxApiService.class;
+        return clazz;
     }
 
     @Override
