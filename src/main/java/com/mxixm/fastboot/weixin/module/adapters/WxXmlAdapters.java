@@ -69,7 +69,9 @@ public class WxXmlAdapters {
     public static class EventAdaptor extends XmlAdapter<String, WxEvent.Type> {
         @Override
         public WxEvent.Type unmarshal(String s) throws Exception {
-            return WxEvent.Type.valueOf(s.toUpperCase());
+//            WxEvent.Type type = WxEvent.Type.valueOf(s.toUpperCase());
+//            return type != null ? type : WxEvent.Type.UNKNOWN;
+            return null;
         }
 
         @Override

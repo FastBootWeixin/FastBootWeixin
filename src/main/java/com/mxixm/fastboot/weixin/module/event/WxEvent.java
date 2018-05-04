@@ -104,6 +104,12 @@ public class WxEvent {
         TEMPLATESENDJOBFINISH(Wx.Category.EVENT),
 
         /**
+         * 在群发消息发送任务完成后，微信服务器会将是否送达成功作为通知，发送到开发者中心中填写的服务器配置地址中。
+         * 注意群发消息成功的回调中，还有很多其他信息，暂时未提供支持，后续加入
+         */
+        MASSSENDJOBFINISH(Wx.Category.EVENT),
+
+        /**
          * 理论上应该拆分个系统Category里面
          * 系统事件：资质认证成功（此时立即获得接口权限）
          */
@@ -132,7 +138,12 @@ public class WxEvent {
         /**
          * 认证过期失效通知
          */
-        VERIFY_EXPIRED(Wx.Category.SYSTEM);
+        VERIFY_EXPIRED(Wx.Category.SYSTEM),
+
+        /**
+         * 不认识的类型，可能是微信接口里有，但是没有被发现的
+         */
+        UNKNOWN(Wx.Category.SYSTEM);
 
         /**
          * 消息类别

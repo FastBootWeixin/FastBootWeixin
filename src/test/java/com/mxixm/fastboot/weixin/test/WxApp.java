@@ -35,6 +35,7 @@ import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -346,6 +347,12 @@ public class WxApp {
     public String login() {
         WxWebUser wxWebUser = WxWebUtils.getWxWebUserFromSession();
         return wxWebUser.getOpenId();
+    }
+
+    @PostMapping("doError")
+    @ResponseBody
+    public WxMessage err(String text) {
+        return WxMessage.textBuilder().content(text).toGroup("oKS9_xGOW1xJQnIaKhFUaoei_UxU", "oKS9_xBZfDTmA3v6ahWs-hrkAqT4").build();
     }
 
 }
