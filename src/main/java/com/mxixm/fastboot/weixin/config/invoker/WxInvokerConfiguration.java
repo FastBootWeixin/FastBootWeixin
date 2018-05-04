@@ -193,7 +193,7 @@ public class WxInvokerConfiguration {
         partConverters.add(this.wxMediaResourceMessageConverter);
 
         AllEncompassingFormHttpMessageConverter allEncompassingFormHttpMessageConverter = new AllEncompassingFormHttpMessageConverter();
-        allEncompassingFormHttpMessageConverter.setMultipartCharset(Charset.defaultCharset());
+//        allEncompassingFormHttpMessageConverter.setMultipartCharset(Charset.defaultCharset());
         converters.add(allEncompassingFormHttpMessageConverter);
 
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();

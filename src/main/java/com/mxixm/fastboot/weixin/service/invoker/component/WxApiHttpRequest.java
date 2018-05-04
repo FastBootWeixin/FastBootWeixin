@@ -18,12 +18,15 @@ package com.mxixm.fastboot.weixin.service.invoker.component;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * FastBootWeixin WxApiHttpRequest
@@ -65,8 +68,33 @@ public final class WxApiHttpRequest implements ClientHttpRequest {
         return new WxApiHttpResponse(this.delegate.execute(), this);
     }
 
+    /**
+     * 针对下面这个比较恶心的魔法逻辑的说明：
+     * 由于Spring5在对ContentType是MULTIPART_FORM_DATA的头处理时自动添加了charset参数。
+     * see org.springframework.http.converter.FormHttpMessageConverter.writeMultipart
+     * 如果设置了multipartCharset，则不会添加charset参数。
+     * 但是在获取filename时又去判断如果设置了multipartCharset，则调用MimeDelegate.encode(filename, this.multipartCharset.name())
+     * 对filename进行encode，但是MimeDelegate调用了javax.mail.internet.MimeUtility这个类，这个类有可能没有被依赖进来，不是强依赖的
+     * 故会导致一样的报错。实在没办法切入源码了，故加入下面这个逻辑。
+     * 在Spring4中在multipartCharset为空时，也不会自动添加charset，故没有此问题。
+     * 而根本原因是微信的服务器兼容性太差了，header中的charset是有http标准规定的，竟然不兼容！
+     *
+     * @return OutputStream
+     * @throws IOException
+     */
     @Override
     public OutputStream getBody() throws IOException {
+        HttpHeaders httpHeaders = this.delegate.getHeaders();
+        MediaType contentType = httpHeaders.getContentType();
+        if (contentType != null && contentType.includes(MediaType.MULTIPART_FORM_DATA)) {
+            Map<String, String> parameters = contentType.getParameters();
+            if (parameters.containsKey("charset")) {
+                Map<String, String> newParameters = new LinkedHashMap<>(contentType.getParameters());
+                newParameters.remove("charset");
+                MediaType newContentType = new MediaType(MediaType.MULTIPART_FORM_DATA, newParameters);
+                httpHeaders.setContentType(newContentType);
+            }
+        }
         return this.delegate.getBody();
     }
 

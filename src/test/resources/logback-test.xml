@@ -8,7 +8,7 @@
 			<pattern>${pattern}</pattern>
 		</layout>
 	</appender>
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="ROOT_CONSOLE"/>
 	</root>
 </configuration>

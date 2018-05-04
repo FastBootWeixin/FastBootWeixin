@@ -670,7 +670,7 @@ public class WxRequestBody {
     public static class Scan extends Event {
 
         /**
-         * 事件KEY值，qrscene_为前缀，后面为二维码的参数值
+         * 事件KEY值，对于Scan事件，eventKey就是scene
          */
         protected String eventKey;
 
