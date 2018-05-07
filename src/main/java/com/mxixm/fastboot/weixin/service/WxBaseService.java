@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.token;
+package com.mxixm.fastboot.weixin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
@@ -31,14 +32,15 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 /**
- * FastBootWeixin WxTokenServer
+ * FastBootWeixin WxBaseService
+ * 用于提供微信的基础服务，获取access_token等，其中的接口都是不需要使用access_token的接口
  * 注意拦截调用异常，如果是token过期，重新获取token并重试
  *
  * @author Guangshan
  * @date 2017/7/23 17:14
  * @since 0.1.2
  */
-public class WxTokenServer {
+public class WxBaseService {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -48,7 +50,7 @@ public class WxTokenServer {
 
     private final ObjectMapper jsonConverter = new ObjectMapper();
 
-    public WxTokenServer(WxApiTemplate wxApiTemplate, WxProperties wxProperties) {
+    public WxBaseService(WxApiTemplate wxApiTemplate, WxProperties wxProperties) {
         this.wxApiTemplate = wxApiTemplate;
         this.wxProperties = wxProperties;
     }

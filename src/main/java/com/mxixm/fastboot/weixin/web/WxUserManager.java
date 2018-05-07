@@ -16,8 +16,8 @@
 
 package com.mxixm.fastboot.weixin.web;
 
+import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.service.WxApiService;
-import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.util.CacheMap;
 
@@ -48,19 +48,19 @@ public class WxUserManager {
             .cacheTimeout(24 * 60 * 60 * 1000)
             .refreshOnRead().build();
 
-    private WxTokenServer wxTokenServer;
+    private WxBaseService wxBaseService;
 
     private WxApiService wxApiService;
 
-    public WxUserManager(WxTokenServer wxTokenServer, WxApiService wxApiService) {
-        this.wxTokenServer = wxTokenServer;
+    public WxUserManager(WxBaseService wxBaseService, WxApiService wxApiService) {
+        this.wxBaseService = wxBaseService;
         this.wxApiService = wxApiService;
     }
 
     public WxWebUser getWxWebUser(String code) {
         WxWebUser wxWebUser = webUserCache.get(code);
         if (wxWebUser == null) {
-            wxWebUser = wxTokenServer.getWxWebUserByCode(code);
+            wxWebUser = wxBaseService.getWxWebUserByCode(code);
             webUserCache.put(code, wxWebUser);
         }
         return wxWebUser;
@@ -90,13 +90,13 @@ public class WxUserManager {
         }
         wxUser = tokenUserCache.get(wxWebUser.getRefreshToken());
         if (wxUser == null) {
-            if (!wxTokenServer.isVerifyUserAccessToken(wxWebUser)) {
-                WxWebUser newWxWebUser = wxTokenServer.getWxWebUserByRefreshToken(wxWebUser.getRefreshToken());
+            if (!wxBaseService.isVerifyUserAccessToken(wxWebUser)) {
+                WxWebUser newWxWebUser = wxBaseService.getWxWebUserByRefreshToken(wxWebUser.getRefreshToken());
                 wxWebUser.setAccessToken(newWxWebUser.getAccessToken());
                 wxWebUser.setExpiresIn(newWxWebUser.getExpiresIn());
                 wxWebUser.setCreateTime(new Date());
             }
-            wxUser = wxTokenServer.getWxUserByWxWebUser(wxWebUser);
+            wxUser = wxBaseService.getWxUserByWxWebUser(wxWebUser);
             tokenUserCache.put(wxWebUser.getRefreshToken(), wxUser);
             openIdUserCache.put(wxWebUser.getOpenId(), wxUser);
         }

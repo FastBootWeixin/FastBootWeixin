@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.common;
 
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
-import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
+import com.mxixm.fastboot.weixin.support.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 
@@ -37,8 +37,8 @@ public class WxBeans {
         return WxContextUtils.getBean(WxUserManager.class);
     }
 
-    public static WxAccessTokenManager wxAccessTokenManager() {
-        return WxContextUtils.getBean(WxAccessTokenManager.class);
+    public static WxTokenManager wxTokenManager() {
+        return WxContextUtils.getBean(WxTokenManager.class);
     }
 
     public static WxMenuManager wxMenuManager() {

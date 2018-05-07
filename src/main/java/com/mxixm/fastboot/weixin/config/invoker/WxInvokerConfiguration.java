@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.config.invoker;
 
 import com.mxixm.fastboot.weixin.common.WxBeans;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
+import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
@@ -30,7 +30,7 @@ import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiExecutor;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.service.invoker.handler.WxResponseErrorHandler;
 import com.mxixm.fastboot.weixin.support.DefaultWxUserProvider;
-import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
+import com.mxixm.fastboot.weixin.support.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;
@@ -54,7 +54,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,12 +131,12 @@ public class WxInvokerConfiguration {
      * 这里之前引用了conversionService，这个conversionService是在WxMvcConfigurer时初始化的
      * 于是产生了循环依赖
      *
-     * @param wxAccessTokenManager
+     * @param wxTokenManager
      * @return dummy
      */
     @Bean
-    public WxApiExecutor wxApiExecutor(WxAccessTokenManager wxAccessTokenManager) {
-        return new WxApiExecutor(wxApiTemplate(), wxAccessTokenManager);
+    public WxApiExecutor wxApiExecutor(WxTokenManager wxTokenManager) {
+        return new WxApiExecutor(wxApiTemplate(), wxTokenManager);
     }
 
     @Bean
@@ -157,8 +156,8 @@ public class WxInvokerConfiguration {
     }
 
     @Bean
-    public WxUserManager wxUserManager(@Lazy WxTokenServer wxTokenServer, @Lazy WxApiService wxApiService) {
-        return new WxUserManager(wxTokenServer, wxApiService);
+    public WxUserManager wxUserManager(@Lazy WxBaseService wxBaseService, @Lazy WxApiService wxApiService) {
+        return new WxUserManager(wxBaseService, wxApiService);
     }
 
     /**

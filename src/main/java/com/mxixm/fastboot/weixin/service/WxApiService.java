@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.service;
 
+import com.mxixm.fastboot.weixin.module.ticket.WxTicket;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiBody;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiParam;
@@ -146,5 +147,7 @@ public interface WxApiService {
     WxCard.Result getCards(WxCard.ListSelector listSelector);
 
     WxCard cardInfo(WxCard.CardSelector cardSelector);
+
+    WxTicket getTicket(@WxApiParam("type") WxTicket.Type type);
 
 }

@@ -26,7 +26,7 @@ import com.mxixm.fastboot.weixin.service.invoker.common.ReaderInputStream;
 import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import com.mxixm.fastboot.weixin.support.WxAccessTokenManager;
+import com.mxixm.fastboot.weixin.support.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxAppAssert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +62,7 @@ public class WxApiExecutor {
 
     private final WxApiTemplate wxApiTemplate;
 
-    private final WxAccessTokenManager wxAccessTokenManager;
+    private final WxTokenManager wxTokenManager;
 
     private final WxApiResponseExtractor wxApiResponseExtractor;
 
@@ -70,10 +70,10 @@ public class WxApiExecutor {
 
 //    private final ConversionService conversionService;
 
-    public WxApiExecutor(WxApiTemplate wxApiTemplate, WxAccessTokenManager wxAccessTokenManager) {
+    public WxApiExecutor(WxApiTemplate wxApiTemplate, WxTokenManager wxTokenManager) {
         this.wxApiTemplate = wxApiTemplate;
         this.wxApiResponseExtractor = new WxApiResponseExtractor(this.wxApiTemplate.getMessageConverters());
-        this.wxAccessTokenManager = wxAccessTokenManager;
+        this.wxTokenManager = wxTokenManager;
 //        this.conversionService = conversionService;
     }
 
@@ -91,7 +91,7 @@ public class WxApiExecutor {
     private RequestEntity buildHttpRequestEntity(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         UriComponentsBuilder builder = wxApiMethodInfo.fromArgs(args);
         // 替换accessToken
-        builder.replaceQueryParam(WX_ACCESS_TOKEN_PARAM_NAME, wxAccessTokenManager.getToken());
+        builder.replaceQueryParam(WX_ACCESS_TOKEN_PARAM_NAME, wxTokenManager.getToken());
         HttpHeaders httpHeaders = null;
         Object body = null;
         if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.JSON) {

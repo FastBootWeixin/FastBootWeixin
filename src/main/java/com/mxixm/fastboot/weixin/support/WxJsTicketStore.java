@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,30 +17,30 @@
 package com.mxixm.fastboot.weixin.support;
 
 /**
- * FastBootWeixin WxTokenStore
+ * FastBootWeixin WxJsTicketStore
  * 注意考虑分布式存储，或许需要加一个lock，因为获取之后上一个会失效，所以不能完全交给setToken方法自己加锁
  * todo 该类放在这儿不太合理，等正式版时挪个位置
  *
  * @author Guangshan
- * @date 2017/7/23 17:08
- * @since 0.1.2
+ * @date 2018-5-7 23:35:38
+ * @since 0.6.0
  */
-public interface WxTokenStore {
+public interface WxJsTicketStore {
 
     /**
-     * 获取Token
+     * 获取Ticket
      *
      * @return dummy
      */
-    String getToken();
+    String getTicket();
 
     /**
-     * 设置token
+     * 设置ticket
      *
-     * @param token
+     * @param ticket
      * @param expireTime
      */
-    void setToken(String token, long expireTime);
+    void setTicket(String ticket, long expireTime);
 
     /**
      * 获取过期时间

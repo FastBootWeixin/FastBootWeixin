@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.config.token;
+package com.mxixm.fastboot.weixin.config.ticket;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
-import com.mxixm.fastboot.weixin.service.WxBaseService;
-import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
-import com.mxixm.fastboot.weixin.support.WxTokenManager;
-import com.mxixm.fastboot.weixin.support.WxTokenStore;
+import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.support.MemoryWxJsTicketStore;
+import com.mxixm.fastboot.weixin.support.WxJsTicketManager;
+import com.mxixm.fastboot.weixin.support.WxJsTicketStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,37 +30,32 @@ import org.springframework.context.annotation.Configuration;
 import java.lang.invoke.MethodHandles;
 
 /**
- * FastBootWeixin WxTokenConfiguration
+ * FastBootWeixin WxTicketConfiguration
  *
  * @author Guangshan
- * @date 2017/09/21 23:33
- * @since 0.1.2
+ * @date 2018-5-8 00:10:14
+ * @since 0.6.0
  */
 @Configuration
-public class WxTokenConfiguration {
+public class WxTicketConfiguration {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     private final WxProperties wxProperties;
 
-    public WxTokenConfiguration(WxProperties wxProperties) {
+    public WxTicketConfiguration(WxProperties wxProperties) {
         this.wxProperties = wxProperties;
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public WxTokenStore wxTokenStore() {
-        return new MemoryWxTokenStore();
+    public WxJsTicketStore wxJsTicketStore() {
+        return new MemoryWxJsTicketStore();
     }
 
     @Bean
-    public WxBaseService wxTokenServer(WxApiTemplate wxApiTemplate) {
-        return new WxBaseService(wxApiTemplate, wxProperties);
-    }
-
-    @Bean
-    public WxTokenManager wxTokenManager(WxBaseService wxBaseService, WxTokenStore wxTokenStore) {
-        return new WxTokenManager(wxBaseService, wxTokenStore);
+    public WxJsTicketManager wxJsTicketManager(WxApiService wxApiService, WxJsTicketStore wxJsTicketStore) {
+        return new WxJsTicketManager(this.wxProperties.getAppid(), wxApiService, wxJsTicketStore);
     }
 
 }

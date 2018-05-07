@@ -18,6 +18,8 @@ package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.module.js.WxJsApi;
+import com.mxixm.fastboot.weixin.module.js.WxJsConfig;
 import com.mxixm.fastboot.weixin.module.message.*;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
@@ -30,6 +32,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
+import com.mxixm.fastboot.weixin.support.WxJsTicketManager;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +69,9 @@ public class WxApp {
 
     @Autowired
     WxExtendService wxExtendService;
+
+    @Autowired
+    WxJsTicketManager wxJsTicketManager;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -360,6 +366,12 @@ public class WxApp {
     @ResponseBody
     public WxMessage err(String text) {
         return WxMessage.textBuilder().content(text).toGroup("oKS9_xGOW1xJQnIaKhFUaoei_UxU", "oKS9_xBZfDTmA3v6ahWs-hrkAqT4").build();
+    }
+
+    @RequestMapping("getWxJsConfig")
+    @ResponseBody
+    public WxJsConfig wxJsConfig(String text) {
+        return wxJsTicketManager.getWxJsConfig("http://baidu.com", WxJsApi.getLocation);
     }
 
 }

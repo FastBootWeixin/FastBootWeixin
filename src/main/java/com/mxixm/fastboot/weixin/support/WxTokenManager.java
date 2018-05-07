@@ -17,7 +17,7 @@
 package com.mxixm.fastboot.weixin.support;
 
 import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
-import com.mxixm.fastboot.weixin.module.token.WxTokenServer;
+import com.mxixm.fastboot.weixin.service.WxBaseService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -25,26 +25,26 @@ import java.time.Instant;
 import java.util.concurrent.*;
 
 /**
- * FastBootWeixin WxAccessTokenManager
+ * FastBootWeixin WxTokenManager
  * 暂时没有定时任务，懒获取
  *
  * @author Guangshan
  * @date 2017/7/23 18:26
  * @since 0.1.2
  */
-public class WxAccessTokenManager implements InitializingBean {
+public class WxTokenManager implements InitializingBean {
 
     private WxTokenStore wxTokenStore;
 
-    private WxTokenServer wxTokenServer;
+    private WxBaseService wxBaseService;
 
     /**
      * 守护线程timer
      */
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1), Executors.defaultThreadFactory());
 
-    public WxAccessTokenManager(WxTokenServer wxTokenServer, WxTokenStore wxTokenStore) {
-        this.wxTokenServer = wxTokenServer;
+    public WxTokenManager(WxBaseService wxBaseService, WxTokenStore wxTokenStore) {
+        this.wxBaseService = wxBaseService;
         this.wxTokenStore = wxTokenStore;
     }
 
@@ -60,7 +60,7 @@ public class WxAccessTokenManager implements InitializingBean {
             try {
                 // 拿到锁之后再判断一次过期时间，如果过期的话视为还没刷新
                 if (wxTokenStore.getExpireTime() < now) {
-                    WxAccessToken wxAccessToken = wxTokenServer.refreshToken();
+                    WxAccessToken wxAccessToken = wxBaseService.refreshToken();
                     wxTokenStore.setToken(wxAccessToken.getAccessToken(), now + wxAccessToken.getExpiresIn() * 1000);
                     return wxAccessToken.getAccessToken();
                 }
@@ -82,7 +82,7 @@ public class WxAccessTokenManager implements InitializingBean {
         long expireTime = wxTokenStore.getExpireTime();
         // 如果当前仍在有效期，但是在刷新期内，异步刷新，并返回当前的值
         if (now <= expireTime && expireTime <= now - tokenRedundance) {
-            executor.submit(() -> this.refrestToken());
+            executor.execute(() -> this.refrestToken());
             return this.wxTokenStore.getToken();
         } else if (expireTime < now) {
             return this.refrestToken();
