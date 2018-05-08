@@ -110,6 +110,21 @@ public class WxJsTicketManager {
                 .ticket(this.getTicket()).build();
     }
 
+    public WxJsConfig getWxJsConfig(String url, String... wxJsApis) {
+        return this.getWxJsConfig(false, url, wxJsApis);
+    }
+
+    public WxJsConfig getWxJsConfig(boolean debug, String url, String... wxJsApis) {
+        return WxJsConfig.builder()
+                .appId(appId)
+                .debug(debug)
+                .nonceStr(generateNonce())
+                .timestamp(getTimestamp())
+                .jsApiList(wxJsApis)
+                .url(url)
+                .ticket(this.getTicket()).build();
+    }
+
     private final static String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     /**
