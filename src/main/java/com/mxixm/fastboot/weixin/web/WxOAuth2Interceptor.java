@@ -44,6 +44,8 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
+    private static final String CODE_PREFIX = "code=";
+
     /**
      * 登录回调函数，可以通过构造函数指定，也可以直接注入进来
      */
@@ -77,6 +79,8 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
                     wxOAuth2Callback.after(new WxOAuth2Callback.WxOAuth2Context(wxWebUser, state, response, request));
                 }
                 WxWebUtils.setWxWebUserToSession(request, wxWebUser);
+                // 拿到之后最好是重定向到没有code的页面，否则code会暴露，带来安全问题
+                // 但本身这个code就是只能用一次的，故暂时不增加一次重定向
                 return true;
             }
         }
@@ -99,7 +103,19 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
             sb.append(Wx.Environment.instance().getCallbackHost());
             sb.append(uri.getPath());
         }
-        sb.append((StringUtils.isEmpty(request.getQueryString()) ? "" : "?" + request.getQueryString()));
+        // 强制移除code参数，如果不移除的话，会导致微信跳转回来带两个code参数，这样是有问题的
+        String queryString = request.getQueryString();
+        if (!StringUtils.isEmpty(queryString) && queryString.contains(CODE_PREFIX)) {
+            String[] queryParams = queryString.split("&");
+            for (String param : queryParams) {
+                if (!param.contains(CODE_PREFIX)) {
+                    sb.append(param).append('&');
+                }
+            }
+            if (sb.charAt(sb.length() - 1) == '&') {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+        }
         return sb.toString();
     }
 

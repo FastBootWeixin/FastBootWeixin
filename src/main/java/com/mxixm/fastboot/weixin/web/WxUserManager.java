@@ -16,11 +16,15 @@
 
 package com.mxixm.fastboot.weixin.web;
 
+import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.util.CacheMap;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.Objects;
 
@@ -32,6 +36,8 @@ import java.util.Objects;
  * @since 0.1.2
  */
 public class WxUserManager {
+
+    private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     private final CacheMap<String, WxWebUser> webUserCache = CacheMap.<String, WxWebUser>builder()
             .cacheName("WxWebUserCache")
@@ -57,11 +63,19 @@ public class WxUserManager {
         this.wxApiService = wxApiService;
     }
 
+    /**
+     * 这里对code做缓存，会带来安全漏洞，其他人可以把自己的code发给别人
+     * 打开方打开后session中其实不是自己的，在上面的所有操作都不是自己的，做一些充值动作，其实是给别人充值。
+     * @param code
+     * @return
+     */
     public WxWebUser getWxWebUser(String code) {
-        WxWebUser wxWebUser = webUserCache.get(code);
-        if (wxWebUser == null) {
+         WxWebUser wxWebUser = null;
+        try {
             wxWebUser = wxBaseService.getWxWebUserByCode(code);
-            webUserCache.put(code, wxWebUser);
+        } catch (WxApiResultException e) {
+            // 拦截异常，统一返回null
+            logger.error(e.getErrorMessage(), e);
         }
         return wxWebUser;
     }
