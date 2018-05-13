@@ -26,7 +26,7 @@ import com.mxixm.fastboot.weixin.service.invoker.common.ReaderInputStream;
 import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import com.mxixm.fastboot.weixin.support.WxTokenManager;
+import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxAppAssert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,7 +91,7 @@ public class WxApiExecutor {
     private RequestEntity buildHttpRequestEntity(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         UriComponentsBuilder builder = wxApiMethodInfo.fromArgs(args);
         // 替换accessToken
-        builder.replaceQueryParam(WX_ACCESS_TOKEN_PARAM_NAME, wxTokenManager.getToken());
+        builder.replaceQueryParam(WX_ACCESS_TOKEN_PARAM_NAME, wxTokenManager.get());
         HttpHeaders httpHeaders = null;
         Object body = null;
         if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.JSON) {

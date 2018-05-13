@@ -16,7 +16,7 @@
 
 package com.mxixm.fastboot.weixin.service;
 
-import com.mxixm.fastboot.weixin.module.ticket.WxTicket;
+import com.mxixm.fastboot.weixin.module.credential.WxTicket;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiBody;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiForm;
 import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiParam;

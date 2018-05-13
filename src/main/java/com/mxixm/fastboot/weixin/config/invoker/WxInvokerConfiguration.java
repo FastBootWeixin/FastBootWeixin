@@ -30,7 +30,7 @@ import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiExecutor;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.service.invoker.handler.WxResponseErrorHandler;
 import com.mxixm.fastboot.weixin.support.DefaultWxUserProvider;
-import com.mxixm.fastboot.weixin.support.WxTokenManager;
+import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;

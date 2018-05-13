@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.support;
+package com.mxixm.fastboot.weixin.module.credential;
 
 /**
  * FastBootWeixin WxTokenStore
@@ -22,43 +22,9 @@ package com.mxixm.fastboot.weixin.support;
  * todo 该类放在这儿不太合理，等正式版时挪个位置
  *
  * @author Guangshan
- * @date 2017/7/23 17:08
- * @since 0.1.2
+ * @date 2018-5-13 23:13:23
+ * @since 0.6.0
  */
-public interface WxTokenStore {
-
-    /**
-     * 获取Token
-     *
-     * @return dummy
-     */
-    String getToken();
-
-    /**
-     * 设置token
-     *
-     * @param token
-     * @param expireTime
-     */
-    void setToken(String token, long expireTime);
-
-    /**
-     * 获取过期时间
-     *
-     * @return dummy
-     */
-    long getExpireTime();
-
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     *
-     * @return dummy
-     */
-    boolean lock();
-
-    /**
-     * 解锁
-     */
-    void unlock();
+public interface WxTokenStore extends WxCredentialStore {
 
 }

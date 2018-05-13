@@ -14,43 +14,32 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.ticket;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.mxixm.fastboot.weixin.module.credential;
 
 /**
- * fastboot-weixin  WxTicket
+ * fastboot-weixin  WxCredential
+ * 微信凭证相关，包括AccessToken，JsTicket，CardTicket
  *
  * @author Guangshan
- * @date 2018/5/7 22:16
+ * @date 2018/5/13 23:23
  * @since 0.6.0
  */
-public class WxTicket {
+public interface WxCredential {
 
-    @JsonProperty("ticket")
-    private String ticket;
+    /**
+     * 获取有效时长
+     * @return 过期时间
+     */
+    int getExpiresIn();
 
-    @JsonProperty("expires_in")
-    private int expiresIn;
+    /**
+     * 获取凭证
+     * @return 凭证
+     */
+    String getCredential();
 
-    public String getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(String ticket) {
-        this.ticket = ticket;
-    }
-
-    public int getExpiresIn() {
-        return expiresIn;
-    }
-
-    public void setExpiresIn(int expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
-    public enum Type {
-        jsapi, wx_card
+    enum Type {
+        ACCESS_TOKEN, JS_TICKET, CARD_TICKET
     }
 
 }

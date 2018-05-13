@@ -26,6 +26,12 @@ import java.lang.reflect.Proxy;
 public class TestInvocation {
 
     public static void main(String[] args) {
+        for (int i = 0; i <= 9; i++) {
+//            for (char j = 'a'; j < 't'; j++) {
+            for (int j = 0; j <= 9; j++) {
+                System.out.println("i" + i + j + ".app");
+            }
+        }
         InvokedObject o = new InvokedObject();
         InvokedObjectInterface ob = (InvokedObjectInterface) Proxy.newProxyInstance(TestInvocation.class.getClassLoader(), new Class[]{InvokedObjectInterface.class}, new MyInvocation(o));
         o.set(ob);

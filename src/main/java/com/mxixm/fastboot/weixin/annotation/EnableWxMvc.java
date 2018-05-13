@@ -17,13 +17,12 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.config.credential.WxCredentialConfiguration;
 import com.mxixm.fastboot.weixin.config.invoker.WxInvokerConfiguration;
 import com.mxixm.fastboot.weixin.config.media.WxMediaConfiguration;
 import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageConfiguration;
 import com.mxixm.fastboot.weixin.config.server.WxBuildinMvcConfiguration;
 import com.mxixm.fastboot.weixin.config.server.WxWebConfiguration;
-import com.mxixm.fastboot.weixin.config.ticket.WxTicketConfiguration;
-import com.mxixm.fastboot.weixin.config.token.WxTokenConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -47,8 +46,7 @@ import java.lang.annotation.*;
 @Import({WxInvokerConfiguration.class,
         WxAsyncMessageConfiguration.class,
         WxBuildinMvcConfiguration.class,
-        WxTokenConfiguration.class,
-        WxTicketConfiguration.class,
+        WxCredentialConfiguration.class,
         WxMediaConfiguration.class,
         WxWebConfiguration.class})
 public @interface EnableWxMvc {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.token;
+package com.mxixm.fastboot.weixin.module.credential;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @date 2017/7/23 17:45
  * @since 0.1.2
  */
-public class WxAccessToken {
+public class WxAccessToken implements WxCredential {
 
     @JsonProperty("access_token")
     private String accessToken;
@@ -40,8 +40,14 @@ public class WxAccessToken {
         return this.accessToken;
     }
 
+    @Override
     public int getExpiresIn() {
         return this.expiresIn;
+    }
+
+    @Override
+    public String getCredential() {
+        return accessToken;
     }
 
     public void setAccessToken(String accessToken) {
@@ -91,6 +97,6 @@ public class WxAccessToken {
 
     @Override
     public String toString() {
-        return "com.mxixm.fastboot.weixin.module.token.WxAccessToken(accessToken=" + this.getAccessToken() + ", expiresIn=" + this.getExpiresIn() + ")";
+        return "com.mxixm.fastboot.weixin.module.credential.WxAccessToken(accessToken=" + this.getAccessToken() + ", expiresIn=" + this.getExpiresIn() + ")";
     }
 }

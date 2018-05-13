@@ -16,13 +16,12 @@
 
 package com.mxixm.fastboot.weixin.support;
 
+import com.mxixm.fastboot.weixin.module.credential.AbstractMemoryCredentialStore;
+import com.mxixm.fastboot.weixin.module.credential.WxJsTicketStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.invoke.MethodHandles;
-import java.time.Instant;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * FastBootWeixin MemoryWxTokenStore
@@ -31,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2018-5-7 23:35:38
  * @since 0.6.0
  */
-public class MemoryWxJsTicketStore implements WxJsTicketStore {
+public class MemoryWxJsTicketStore extends AbstractMemoryCredentialStore implements WxJsTicketStore {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -43,12 +42,7 @@ public class MemoryWxJsTicketStore implements WxJsTicketStore {
     /**
      * 过期时间
      */
-    private long expireTime;
-
-    /**
-     * 锁
-     */
-    private Lock lock = new ReentrantLock();
+    private long expires;
 
     /**
      * 获取Token
@@ -56,7 +50,7 @@ public class MemoryWxJsTicketStore implements WxJsTicketStore {
      * @return dummy
      */
     @Override
-    public String getTicket() {
+    public String get() {
         return ticket;
     }
 
@@ -64,12 +58,12 @@ public class MemoryWxJsTicketStore implements WxJsTicketStore {
      * 设置ticket
      *
      * @param ticket
-     * @param expireTime
+     * @param expires
      */
     @Override
-    public void setTicket(String ticket, long expireTime) {
+    public void store(String ticket, long expires) {
         this.ticket = ticket;
-        this.expireTime = expireTime;
+        this.expires = expires;
     }
 
     /**
@@ -78,32 +72,8 @@ public class MemoryWxJsTicketStore implements WxJsTicketStore {
      * @return dummy
      */
     @Override
-    public long getExpireTime() {
-        return expireTime;
+    public long expires() {
+        return expires;
     }
 
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     *
-     * @return dummy
-     */
-    @Override
-    public boolean lock() {
-        this.lock.lock();
-        long now = Instant.now().toEpochMilli();
-        // 如果在有效期内，则说明加锁失败，获得锁的时候已经被别人刷新了
-        if (now < this.getExpireTime()) {
-            this.unlock();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     */
-    @Override
-    public void unlock() {
-        this.lock.unlock();
-    }
 }

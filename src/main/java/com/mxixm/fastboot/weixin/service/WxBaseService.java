@@ -18,7 +18,8 @@ package com.mxixm.fastboot.weixin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.module.token.WxAccessToken;
+import com.mxixm.fastboot.weixin.exception.WxApiResultException;
+import com.mxixm.fastboot.weixin.module.credential.WxAccessToken;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
@@ -96,8 +97,8 @@ public class WxBaseService {
 
     private WxWebUser getWxWebUserByBuilder(UriComponentsBuilder builder) {
         String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxAccessTokenException.hasException(result)) {
-            throw new WxAccessTokenException(result);
+        if (WxApiResultException.hasException(result)) {
+            throw new WxApiResultException(result);
         } else {
             try {
                 return jsonConverter.readValue(result, WxWebUser.class);
@@ -116,8 +117,8 @@ public class WxBaseService {
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
         String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxAccessTokenException.hasException(result)) {
-            throw new WxAccessTokenException(result);
+        if (WxApiResultException.hasException(result)) {
+            throw new WxApiResultException(result);
         } else {
             try {
                 return jsonConverter.readValue(result, WxUser.class);
@@ -134,7 +135,7 @@ public class WxBaseService {
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId());
         String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxAccessTokenException.hasException(result)) {
+        if (WxApiResultException.hasException(result)) {
             return false;
         } else {
             return true;

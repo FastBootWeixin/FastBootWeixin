@@ -16,11 +16,12 @@
 
 package com.mxixm.fastboot.weixin.support;
 
+import com.mxixm.fastboot.weixin.module.credential.AbstractMemoryCredentialStore;
+import com.mxixm.fastboot.weixin.module.credential.WxTokenStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.lang.invoke.MethodHandles;
-import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2017/7/23 17:08
  * @since 0.1.2
  */
-public class MemoryWxTokenStore implements WxTokenStore {
+public class MemoryWxTokenStore extends AbstractMemoryCredentialStore implements WxTokenStore {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -43,7 +44,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
     /**
      * 过期时间
      */
-    private long expireTime;
+    private long expires;
 
     /**
      * 锁
@@ -56,7 +57,7 @@ public class MemoryWxTokenStore implements WxTokenStore {
      * @return dummy
      */
     @Override
-    public String getToken() {
+    public String get() {
         return token;
     }
 
@@ -64,12 +65,12 @@ public class MemoryWxTokenStore implements WxTokenStore {
      * 设置token
      *
      * @param token
-     * @param expireTime
+     * @param expires
      */
     @Override
-    public void setToken(String token, long expireTime) {
+    public void store(String token, long expires) {
         this.token = token;
-        this.expireTime = expireTime;
+        this.expires = expires;
     }
 
     /**
@@ -78,32 +79,8 @@ public class MemoryWxTokenStore implements WxTokenStore {
      * @return dummy
      */
     @Override
-    public long getExpireTime() {
-        return expireTime;
+    public long expires() {
+        return expires;
     }
 
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     *
-     * @return dummy
-     */
-    @Override
-    public boolean lock() {
-        this.lock.lock();
-        long now = Instant.now().toEpochMilli();
-        // 如果在有效期内，则说明加锁失败，获得锁的时候已经被别人刷新了
-        if (now < this.getExpireTime()) {
-            this.unlock();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     */
-    @Override
-    public void unlock() {
-        this.lock.unlock();
-    }
 }

@@ -59,6 +59,9 @@ public abstract class AbstractWxApiRequestContributor<T extends Annotation> impl
             return null;
         } else if (value instanceof String) {
             return (String) value;
+        } else if (value instanceof Enum) {
+            // 枚举通过toString取值，conversionService默认从name取值
+            return value.toString();
         } else if (cs != null) {
             return (String) cs.convert(value, sourceType, STRING_TYPE_DESCRIPTOR);
         } else {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.support;
+package com.mxixm.fastboot.weixin.module.credential;
 
 /**
  * FastBootWeixin WxJsTicketStore
@@ -25,40 +25,6 @@ package com.mxixm.fastboot.weixin.support;
  * @date 2018-5-7 23:35:38
  * @since 0.6.0
  */
-public interface WxJsTicketStore {
-
-    /**
-     * 获取Ticket
-     *
-     * @return dummy
-     */
-    String getTicket();
-
-    /**
-     * 设置ticket
-     *
-     * @param ticket
-     * @param expireTime
-     */
-    void setTicket(String ticket, long expireTime);
-
-    /**
-     * 获取过期时间
-     *
-     * @return dummy
-     */
-    long getExpireTime();
-
-    /**
-     * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
-     *
-     * @return dummy
-     */
-    boolean lock();
-
-    /**
-     * 解锁
-     */
-    void unlock();
+public interface WxJsTicketStore extends WxCredentialStore {
 
 }
