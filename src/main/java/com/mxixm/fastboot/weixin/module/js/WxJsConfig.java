@@ -209,7 +209,7 @@ public class WxJsConfig {
         private String signature() {
             Assert.notNull(ticket, "ticket不能为空");
             Assert.notNull(nonceStr, "nonceStr不能为空");
-            Assert.isTrue(timestamp > 0, "timestamp不能为0");
+            Assert.isTrue(timestamp > 0 && timestamp < 10000000000L, "timestamp必须是1到10位数字");
             Assert.notNull(url, "url不能为空");
             StringBuilder sb = new StringBuilder();
             String raw = sb.append("jsapi_ticket=").append(ticket).append('&')

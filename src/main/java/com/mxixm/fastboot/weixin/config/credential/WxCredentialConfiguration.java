@@ -17,14 +17,11 @@
 package com.mxixm.fastboot.weixin.config.credential;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
-import com.mxixm.fastboot.weixin.module.credential.WxTokenStore;
+import com.mxixm.fastboot.weixin.module.credential.*;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.support.MemoryWxJsTicketStore;
-import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
-import com.mxixm.fastboot.weixin.module.credential.WxJsTicketStore;
 import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,8 +72,14 @@ public class WxCredentialConfiguration {
     }
 
     @Bean
-    public WxJsTicketManager wxJsTicketManager(WxApiService wxApiService, WxJsTicketStore wxJsTicketStore) {
-        return new WxJsTicketManager(this.wxProperties.getAppid(), wxApiService, wxJsTicketStore);
+    @ConditionalOnMissingBean
+    public WxJsTicketPart wxJsTicketPart() {
+        return new DefaultWxJsTicketPart();
+    }
+
+    @Bean
+    public WxJsTicketManager wxJsTicketManager(WxJsTicketPart wxJsTicketPart, WxJsTicketStore wxJsTicketStore, WxApiService wxApiService) {
+        return new WxJsTicketManager(this.wxProperties.getAppid(), wxJsTicketPart, wxJsTicketStore, wxApiService);
     }
 
 }

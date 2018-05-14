@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.5.1-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.5.1%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.6.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.6.0%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.5.1</version>
+        <version>0.6.0</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -334,11 +334,20 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 
 附加功能2：自动判断消息中的url是否需要添加OAuth重定向，请参考WxRedirectUtils。
 
+#### 13. 内置WxJsConfig管理器
+
+代码中可使用WxJsTicketManager来获取WxJsTicket
+```
+@Autowired
+WxJsTicketManager wxJsTicketManager;
+```
+详细使用参考其中方法
+
 ### 六、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)
 2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
 3. [Gitee](https://gitee.com/kingshine/FastBootWeixin)
-
+4. [GitHub](https://github.com/FastBootWeixin/FastBootWeixin)
 
 ### 七、暂时不支持的功能
 #### 1. 自定义客服回复消息
@@ -351,7 +360,6 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 用户分组什么的是否有好的实现？暂时没有需求
 #### 5. 公众号其他高级功能
 如支付等
-#### 6. 待优化：WxMediaStore 完成
 
 ### 八、更新日志
 
@@ -432,3 +440,8 @@ PS：你也可以使用这种方式任意生成自己的代理调用接口，后
 1. 修复缺失MessageConverter的bug
 2. 修复Spring 5的FormHttpMessageConverter中对ContentType头包装了charset导致微信服务器不兼容的bug
 3. 优化WxRequest.Body中的scene
+
+#### 0.6.0
+1. 添加WxJsTicket相关的支持
+2. 修复群发消息回调报错的bug
+3. 修复可能引起code被盗用的安全性bug

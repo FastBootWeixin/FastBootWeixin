@@ -369,8 +369,8 @@ public class WxApp {
 
     @RequestMapping("getWxJsConfig")
     @ResponseBody
-    public WxJsConfig wxJsConfig(String text) {
-        return wxJsTicketManager.getWxJsConfig("http://baidu.com", WxJsApi.getLocation);
+    public WxJsConfig wxJsConfig() {
+        return wxJsTicketManager.getWxJsConfigFromRequest(WxJsApi.getLocation);
     }
 
 }

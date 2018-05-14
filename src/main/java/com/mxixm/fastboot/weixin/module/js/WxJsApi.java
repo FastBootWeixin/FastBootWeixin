@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.module.js;
 
 /**
  * fastboot-weixin  WxJsApi
+ * 这个不按标准命名规范，只为和微信官方一致，请谅解
  *
  * @author Guangshan
  * @date 2018/5/7 22:29
@@ -60,5 +61,4 @@ public enum WxJsApi {
     addCard,
     chooseCard,
     openCard
-
 }
