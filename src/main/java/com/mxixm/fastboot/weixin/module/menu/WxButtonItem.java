@@ -29,6 +29,7 @@ import org.springframework.util.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * FastBootWeixin WxButtonItem
@@ -65,8 +66,16 @@ public class WxButtonItem {
     private String url;
 
     @JsonInclude(Include.NON_NULL)
-    @JsonProperty("mediaId")
+    @JsonProperty("media_id")
     private String mediaId;
+
+    @JsonInclude(Include.NON_NULL)
+    @JsonProperty("appid")
+    private String appId;
+
+    @JsonInclude(Include.NON_NULL)
+    @JsonProperty("pagepath")
+    private String pagePath;
 
     public WxButtonItem() {
     }
@@ -103,6 +112,14 @@ public class WxButtonItem {
         return mediaId;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getPagePath() {
+        return pagePath;
+    }
+
     public WxButton.Group getGroup() {
         return group;
     }
@@ -113,7 +130,7 @@ public class WxButtonItem {
     }
 
     WxButtonItem(WxButton.Group group, WxButton.Type type, boolean main, WxButton.Order order, String name,
-                 String key, String url, String mediaId) {
+                 String key, String url, String mediaId, String appId, String pagePath) {
         super();
         this.group = group;
         this.type = type;
@@ -123,6 +140,8 @@ public class WxButtonItem {
         this.key = key;
         this.url = url;
         this.mediaId = mediaId;
+        this.appId = appId;
+        this.pagePath = pagePath;
     }
 
     @Override
@@ -156,12 +175,18 @@ public class WxButtonItem {
             return false;
         }
         // VIEW会自动抹掉key，只有两个key都非null的时候才做下一步判断
-        if (getKey() != null && that.getKey() != null && !getKey().equals(that.getKey())) {
+        if (getKey() != null && that.getKey() != null && !that.getKey().equals(getKey())) {
             return false;
         }
         // 同上
         if (getUrl() != null && that.getUrl() != null && !getUrl().equals(that.getUrl())) {
             return false;
+        }
+        // 小程序类型，做特殊判断
+        if (getType() == WxButton.Type.MINI_PROGRAM) {
+            if (!Objects.equals(getAppId(), that.getAppId()) || !Objects.equals(getPagePath(), that.getPagePath()) || !Objects.equals(getUrl(), that.getUrl())) {
+                return false;
+            }
         }
         return getMediaId() == null || that.getMediaId() == null || getMediaId().equals(that.getMediaId());
     }
@@ -199,6 +224,8 @@ public class WxButtonItem {
         private String key;
         private String url;
         private String mediaId;
+        private String appId;
+        private String pagePath;
 
         Builder() {
             super();
@@ -234,6 +261,16 @@ public class WxButtonItem {
             return this;
         }
 
+        public Builder setAppId(String appId) {
+            this.appId = StringUtils.isEmpty(appId) ? null : appId;
+            return this;
+        }
+
+        public Builder setPagePath(String pagePath) {
+            this.pagePath = StringUtils.isEmpty(pagePath) ? null : pagePath;
+            return this;
+        }
+
         public Builder setUrl(String url) {
             // 如果是callbackUrl，则重定向，否则不重定向
             // WxUrlUtils.mediaUrl()
@@ -265,7 +302,9 @@ public class WxButtonItem {
                     "view类型必须有url");
             Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || !StringUtils.isEmpty(this.mediaId),
                     "media_id类型和view_limited类型必须有mediaId");
-            return new WxButtonItem(group, type, main, order, name, (type == WxButton.Type.VIEW && url != null) ? url : key, url, mediaId);
+            Assert.isTrue(this.type != WxButton.Type.MINI_PROGRAM || (!StringUtils.isEmpty(this.appId) && !StringUtils.isEmpty(this.pagePath)),
+                    "miniprogram类型必须有appid和pagepath");
+            return new WxButtonItem(group, type, main, order, name, (type == WxButton.Type.VIEW && url != null) ? url : key, url, mediaId, appId, pagePath);
         }
 
     }

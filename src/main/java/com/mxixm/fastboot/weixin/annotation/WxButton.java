@@ -63,14 +63,30 @@ public @interface WxButton {
 
     /**
      * 这里可以写一个自动生成key的策略
-     *
-     * @return dummy
      */
     String key() default "";
 
+    /**
+     * 网页 链接，用户点击菜单可打开链接，不超过1024字节。
+     * type为miniprogram时，不支持小程序的老版本客户端将打开本url。
+     */
     String url() default "";
 
+    /**
+     * media_id类型和view_limited类型必须
+     * 调用新增永久素材接口返回的合法media_id
+     */
     String mediaId() default "";
+
+    /**
+     * miniprogram类型必须，小程序的appid（仅认证公众号可配置）
+     */
+    String appId() default "";
+
+    /**
+     * miniprogram类型必须，小程序的页面路径
+     */
+    String pagePath() default "";
 
     /**
      * 哪个按钮组
@@ -149,7 +165,13 @@ public @interface WxButton {
          * 跳转图文消息URL
          */
         @JsonProperty("view_limited")
-        VIEW_LIMITED;
+        VIEW_LIMITED,
+
+        /**
+         * 跳转小程序
+         */
+        @JsonProperty("miniprogram")
+        MINI_PROGRAM
 
     }
 

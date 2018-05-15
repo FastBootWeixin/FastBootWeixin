@@ -213,7 +213,7 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("{");
-        builder.append(this.name);
+        builder.append(StringUtils.isEmpty(this.name) ? this.category.name() : this.name);
         builder.append(",category=").append(this.category);
         if (StringUtils.hasText(this.eventKey)) {
             builder.append(",eventKey=").append(this.eventKey);

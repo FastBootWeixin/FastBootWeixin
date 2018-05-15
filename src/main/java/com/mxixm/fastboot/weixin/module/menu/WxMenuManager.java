@@ -53,14 +53,15 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private List<WxButtonItem> buttons = new ArrayList<>();
 
-    private WxButtonEventKeyStrategy wxButtonEventKeyStrategy = new WxButtonEventKeyStrategy();
+    private WxButtonEventKeyStrategy wxButtonEventKeyStrategy;
 
     private WxMenu wxMenu;
 
     private boolean autoCreate;
 
-    public WxMenuManager(WxApiService wxApiService, boolean autoCreate) {
+    public WxMenuManager(WxApiService wxApiService, WxButtonEventKeyStrategy wxButtonEventKeyStrategy, boolean autoCreate) {
         this.wxApiService = wxApiService;
+        this.wxButtonEventKeyStrategy = wxButtonEventKeyStrategy;
         this.autoCreate = autoCreate;
     }
 
@@ -73,6 +74,8 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                 .setKey(wxButtonEventKeyStrategy.getEventKey(wxButton))
                 .setMediaId(wxButton.mediaId())
                 .setName(wxButton.name())
+                .setAppId(wxButton.appId())
+                .setPagePath(wxButton.pagePath())
                 .setUrl(wxButton.url()).build();
         if (wxButton.main()) {
             Assert.isNull(mainButtonLookup.get(wxButton.group()), String.format("已经存在该分组的主菜单，分组是%s", wxButton.group()));
@@ -197,35 +200,4 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
             return "com.mxixm.fastboot.weixin.module.menu.WxMenuManager.WxMenus(wxMenu=" + this.wxMenu + ", conditionalWxMenu=" + this.conditionalWxMenu + ")";
         }
     }
-
-    /**
-     * 关于eventKey生成，只有在启用菜单自动生成时才有效，故加在这里面
-     */
-    private static class WxButtonEventKeyStrategy {
-
-        private Map<String, Integer> nameMap = new HashMap<>();
-
-        public String getEventKey(WxButton wxButton) {
-            if (wxButton.type() == WxButton.Type.VIEW) {
-                return wxButton.url();
-            }
-            if (!StringUtils.isEmpty(wxButton.key())) {
-                return wxButton.key();
-            }
-            if (wxButton.main()) {
-                return wxButton.group().name();
-            } else {
-                String key = wxButton.group().name() + "_" + (wxButton.order().ordinal() + 1);
-                if (nameMap.containsKey(key)) {
-                    int count = nameMap.get(key) + 1;
-                    nameMap.put(key, count);
-                    return key + "_" + count;
-                } else {
-                    nameMap.put(key, 1);
-                    return key;
-                }
-            }
-        }
-    }
-
 }

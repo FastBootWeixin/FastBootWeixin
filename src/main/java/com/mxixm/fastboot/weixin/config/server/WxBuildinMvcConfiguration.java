@@ -18,6 +18,8 @@ package com.mxixm.fastboot.weixin.config.server;
 
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.menu.DefaultWxButtonEventKeyStrategy;
+import com.mxixm.fastboot.weixin.module.menu.WxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.service.WxApiService;
@@ -41,6 +43,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -98,15 +102,21 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     }
 
     @Bean
-    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate) {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager(), wxSessionManager, wxAsyncMessageTemplate);
+    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate, @Lazy WxMenuManager wxMenuManager) {
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager, wxSessionManager, wxAsyncMessageTemplate);
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }
 
     @Bean
-    public WxMenuManager wxMenuManager() {
-        return new WxMenuManager(wxApiService, menuAutoCreate);
+    @ConditionalOnMissingBean
+    public WxButtonEventKeyStrategy wxButtonEventKeyStrategy() {
+        return new DefaultWxButtonEventKeyStrategy();
+    }
+
+    @Bean
+    public WxMenuManager wxMenuManager(WxButtonEventKeyStrategy wxButtonEventKeyStrategy) {
+        return new WxMenuManager(wxApiService, wxButtonEventKeyStrategy, menuAutoCreate);
     }
 
     @Bean
