@@ -103,10 +103,11 @@ public class DefaultWxSessionManager implements WxSessionManager, InitializingBe
             return null;
         }
         WxSession wxSession = sessions.get(wxSessionIdGenerator.generate(wxRequest));
-        if (wxSession == null && create) {
+        if (wxSession != null) {
+            wxSession.access();
+        } else if (create) {
             wxSession = createWxSession(wxRequest);
         }
-        wxSession.access();
         return wxSession;
     }
 
