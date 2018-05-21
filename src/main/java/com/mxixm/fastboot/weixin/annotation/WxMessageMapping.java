@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -38,29 +39,38 @@ public @interface WxMessageMapping {
     /**
      * 请求的消息类型
      *
-     * @return dummy
+     * @return type
      */
+    @AliasFor("type")
+    WxMessage.Type value();
+
+    /**
+     * 请求的消息类型
+     *
+     * @return type
+     */
+    @AliasFor("value")
     WxMessage.Type type();
 
     /**
      * 通配符
      * todo 加入括号pathVaribale，根据非通配符长度计算权重。正则与此相同。
      *
-     * @return dummy
+     * @return wildcard
      */
     String[] wildcard() default "*";
 
     /**
      * 匹配模式，正则表达式，暂时不支持
      *
-     * @return dummy
+     * @return pattern
      */
     String pattern() default "";
 
     /**
      * 名称
      *
-     * @return dummy
+     * @return name
      */
     String name() default "";
 

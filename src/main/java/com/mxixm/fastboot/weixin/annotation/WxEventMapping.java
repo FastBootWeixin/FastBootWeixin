@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -38,14 +39,23 @@ public @interface WxEventMapping {
     /**
      * 请求事件的类型
      *
-     * @return dummy
+     * @return type
      */
+    @AliasFor("type")
+    WxEvent.Type value();
+
+    /**
+     * 请求事件的类型
+     *
+     * @return type
+     */
+    @AliasFor("value")
     WxEvent.Type type();
 
     /**
      * 名称
      *
-     * @return dummy
+     * @return name
      */
     String name() default "";
 
