@@ -41,15 +41,6 @@ public @interface WxEventMapping {
      *
      * @return type
      */
-    @AliasFor("type")
-    WxEvent.Type value();
-
-    /**
-     * 请求事件的类型
-     *
-     * @return type
-     */
-    @AliasFor("value")
     WxEvent.Type type();
 
     /**

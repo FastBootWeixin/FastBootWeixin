@@ -41,15 +41,6 @@ public @interface WxMessageMapping {
      *
      * @return type
      */
-    @AliasFor("type")
-    WxMessage.Type value();
-
-    /**
-     * 请求的消息类型
-     *
-     * @return type
-     */
-    @AliasFor("value")
     WxMessage.Type type();
 
     /**
