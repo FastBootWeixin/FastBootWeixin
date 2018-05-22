@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
@@ -29,6 +28,7 @@ import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
+import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -307,9 +307,10 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return WxMappingInfo
                 .category(Wx.Category.BUTTON)
                 // eventKey是url，如果类型是VIEW的话
+                // 在builder中已处理
                 .eventKey(wxButtonItem.getKey())
-                .mappingName(wxButton.name())
-                .buttonTypes(wxButton.type())
+                .mappingName(wxButtonItem.getName())
+                .buttonTypes(wxButtonItem.getType())
                 .build();
     }
 

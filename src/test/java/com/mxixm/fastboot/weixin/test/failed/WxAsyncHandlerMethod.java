@@ -20,9 +20,6 @@ import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.method.HandlerMethod;
 

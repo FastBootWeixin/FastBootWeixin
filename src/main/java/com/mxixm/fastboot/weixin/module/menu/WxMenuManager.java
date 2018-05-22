@@ -18,16 +18,17 @@ package com.mxixm.fastboot.weixin.module.menu;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
-import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 
 import java.lang.invoke.MethodHandles;
 import java.util.*;
@@ -39,7 +40,7 @@ import java.util.*;
  * @date 2017/09/21 23:39
  * @since 0.1.2
  */
-public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent> {
+public class WxMenuManager implements EnvironmentAware, ApplicationListener<ApplicationReadyEvent> {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -49,8 +50,6 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private MultiValueMap<WxButton.Group, WxButtonItem> groupButtonLookup = new LinkedMultiValueMap<>();
 
-    private Map<String, WxButtonItem> buttonKeyLookup = new HashMap<>();
-
     private List<WxButtonItem> buttons = new ArrayList<>();
 
     private WxButtonEventKeyStrategy wxButtonEventKeyStrategy;
@@ -59,10 +58,17 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
 
     private boolean autoCreate;
 
+    private Environment environment;
+
     public WxMenuManager(WxApiService wxApiService, WxButtonEventKeyStrategy wxButtonEventKeyStrategy, boolean autoCreate) {
         this.wxApiService = wxApiService;
         this.wxButtonEventKeyStrategy = wxButtonEventKeyStrategy;
         this.autoCreate = autoCreate;
+    }
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     public WxButtonItem add(WxButton wxButton) {
@@ -72,20 +78,18 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
                 .setMain(wxButton.main())
                 .setOrder(wxButton.order())
                 .setKey(wxButtonEventKeyStrategy.getEventKey(wxButton))
-                .setMediaId(wxButton.mediaId())
-                .setName(wxButton.name())
-                .setAppId(wxButton.appId())
-                .setPagePath(wxButton.pagePath())
-                .setUrl(wxButton.url()).build();
-        if (wxButton.main()) {
-            Assert.isNull(mainButtonLookup.get(wxButton.group()), String.format("已经存在该分组的主菜单，分组是%s", wxButton.group()));
-            mainButtonLookup.put(wxButton.group(), buttonItem);
+                .setMediaId(this.environment.resolvePlaceholders(wxButton.mediaId()))
+                .setName(this.environment.resolvePlaceholders(wxButton.name()))
+                .setAppId(this.environment.resolvePlaceholders(wxButton.appId()))
+                .setPagePath(this.environment.resolvePlaceholders(wxButton.pagePath()))
+                .setUrl(this.environment.resolvePlaceholders(wxButton.url()))
+                .build();
+        if (buttonItem.isMain()) {
+            Assert.isNull(mainButtonLookup.get(buttonItem.getGroup()), String.format("已经存在该分组的主菜单，分组是%s", buttonItem.getGroup()));
+            mainButtonLookup.put(buttonItem.getGroup(), buttonItem);
         } else {
             // 可以校验不要超过五个，或者忽略最后的
-            groupButtonLookup.add(wxButton.group(), buttonItem);
-        }
-        if (!StringUtils.isEmpty(wxButton.key())) {
-            buttonKeyLookup.put(wxButton.key(), buttonItem);
+            groupButtonLookup.add(buttonItem.getGroup(), buttonItem);
         }
         buttons.add(buttonItem);
         return buttonItem;
@@ -94,7 +98,7 @@ public class WxMenuManager implements ApplicationListener<ApplicationReadyEvent>
     public WxMenu getMenu() {
         if (wxMenu == null) {
             wxMenu = new WxMenu();
-            mainButtonLookup.entrySet().stream().sorted(Comparator.comparingInt(e2 -> e2.getKey().ordinal()))
+            mainButtonLookup.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
                     .forEach(m -> {
                         groupButtonLookup.getOrDefault(m.getKey(), new ArrayList<>()).stream()
                                 .sorted(Comparator.comparingInt(w -> w.getOrder().ordinal()))

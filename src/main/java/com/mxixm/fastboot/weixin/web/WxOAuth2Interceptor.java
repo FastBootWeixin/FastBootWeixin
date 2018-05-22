@@ -17,8 +17,8 @@
 package com.mxixm.fastboot.weixin.web;
 
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

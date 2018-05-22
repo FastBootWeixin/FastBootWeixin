@@ -19,7 +19,6 @@ package com.mxixm.fastboot.weixin.module.message.processor.group;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.processor.AbstractWxMessageBodyProcessor;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WxRedirectUtils;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 

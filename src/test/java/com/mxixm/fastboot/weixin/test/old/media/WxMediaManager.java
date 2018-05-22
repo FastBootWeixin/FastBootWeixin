@@ -16,11 +16,11 @@
 
 package com.mxixm.fastboot.weixin.test.old.media;
 
-import com.mxixm.fastboot.weixin.service.WxApiService;
-import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
+import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 

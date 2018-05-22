@@ -17,9 +17,6 @@
 package com.mxixm.fastboot.weixin.service;
 
 import com.mxixm.fastboot.weixin.module.credential.WxTicket;
-import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiBody;
-import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiForm;
-import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiParam;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
@@ -31,6 +28,9 @@ import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.user.WxTag;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
+import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiBody;
+import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiForm;
+import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiParam;
 import org.springframework.core.io.Resource;
 
 /**

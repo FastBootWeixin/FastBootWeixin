@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 

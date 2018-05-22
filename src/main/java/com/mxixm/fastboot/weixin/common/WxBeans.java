@@ -16,9 +16,9 @@
 
 package com.mxixm.fastboot.weixin.common;
 
+import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
-import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
 import com.mxixm.fastboot.weixin.util.WxContextUtils;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 

@@ -292,8 +292,8 @@ public class WxButtonItem {
             Assert.isTrue(!main || name.getBytes(StandardCharsets.UTF_8).length <= 16, "一级菜单名过长");
             // 判断二级菜单长度，是main或者不是main且长度小于等于60
             Assert.isTrue(main || name.getBytes().length <= 60, "二级菜单名过长");
-            // 当url不为空的时候，key是url，忽略assert
-            Assert.isTrue(url != null || key == null || key.getBytes().length <= 128, "key不能过长");
+            // 当类型为view的时候，key是url，忽略assert
+            Assert.isTrue(this.type == WxButton.Type.VIEW || key == null || key.getBytes().length <= 128, "key不能过长");
             Assert.notNull(type, "菜单必须有类型");
             Assert.notNull(group, "菜单必须有分组");
             Assert.isTrue(this.type != WxButton.Type.CLICK || !StringUtils.isEmpty(this.key),
@@ -302,8 +302,9 @@ public class WxButtonItem {
                     "view类型必须有url");
             Assert.isTrue((this.type != WxButton.Type.MEDIA_ID && this.type != WxButton.Type.VIEW_LIMITED) || !StringUtils.isEmpty(this.mediaId),
                     "media_id类型和view_limited类型必须有mediaId");
-            Assert.isTrue(this.type != WxButton.Type.MINI_PROGRAM || (!StringUtils.isEmpty(this.appId) && !StringUtils.isEmpty(this.pagePath)),
-                    "miniprogram类型必须有appid和pagepath");
+            Assert.isTrue(this.type != WxButton.Type.MINI_PROGRAM || (!StringUtils.isEmpty(this.appId) && !StringUtils.isEmpty(this.pagePath) && !StringUtils.isEmpty(this.url)),
+                    "miniprogram类型必须有appid、pagepath和url");
+            // type为view时，key是url，固定写死
             return new WxButtonItem(group, type, main, order, name, (type == WxButton.Type.VIEW && url != null) ? url : key, url, mediaId, appId, pagePath);
         }
 

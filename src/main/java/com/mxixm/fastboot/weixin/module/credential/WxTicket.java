@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.module.credential;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mxixm.fastboot.weixin.module.credential.WxCredential;
 
 /**
  * fastboot-weixin  WxTicket

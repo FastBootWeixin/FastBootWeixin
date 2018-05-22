@@ -17,9 +17,6 @@
 package com.mxixm.fastboot.weixin.module.message;
 
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
-
-import java.util.Date;
 
 /**
  * FastBootWeixin WxCommonMessageProcessor

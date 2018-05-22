@@ -30,12 +30,16 @@ import java.util.Map;
  * @since 0.6.0
  */
 public class DefaultWxButtonEventKeyStrategy implements WxButtonEventKeyStrategy {
+
     private Map<String, Integer> nameMap = new HashMap<>();
 
     @Override
     public String getEventKey(WxButton wxButton) {
+        // 对于view类型，手动设置的key是不生效的，key竟然恒定是url，坑啊
+        // 这个不用担心，在WxButtonItem的builder中已经自动处理了，所以这里返回什么无所谓
+        // 不用担心占位符的问题
         if (wxButton.type() == WxButton.Type.VIEW) {
-            return wxButton.url();
+            return null;
         }
         if (!StringUtils.isEmpty(wxButton.key())) {
             return wxButton.key();

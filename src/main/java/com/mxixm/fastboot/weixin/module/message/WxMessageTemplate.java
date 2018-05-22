@@ -18,8 +18,8 @@ package com.mxixm.fastboot.weixin.module.message;
 
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
-import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

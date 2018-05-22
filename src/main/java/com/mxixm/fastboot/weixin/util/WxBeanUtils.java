@@ -17,13 +17,7 @@
 package com.mxixm.fastboot.weixin.util;
 
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Date;
 
 /**
  * fastboot-weixin  WxBeanUtils

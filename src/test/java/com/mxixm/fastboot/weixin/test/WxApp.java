@@ -17,22 +17,22 @@
 package com.mxixm.fastboot.weixin.test;
 
 import com.mxixm.fastboot.weixin.annotation.*;
+import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
+import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.js.WxJsApi;
 import com.mxixm.fastboot.weixin.module.js.WxJsConfig;
-import com.mxixm.fastboot.weixin.module.message.*;
-import com.mxixm.fastboot.weixin.service.WxApiService;
-import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.*;
 import com.mxixm.fastboot.weixin.module.user.WxTagUser;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
-import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;

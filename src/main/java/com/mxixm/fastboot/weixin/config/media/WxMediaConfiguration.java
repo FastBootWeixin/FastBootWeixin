@@ -16,10 +16,10 @@
 
 package com.mxixm.fastboot.weixin.config.media;
 
+import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.media.WxMediaStore;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
-import com.mxixm.fastboot.weixin.module.media.WxMediaStore;
-import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.support.MapDbWxMediaStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -17,12 +17,9 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.module.Wx;
-import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 /**

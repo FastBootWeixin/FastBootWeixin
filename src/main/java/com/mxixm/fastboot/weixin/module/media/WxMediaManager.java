@@ -16,9 +16,9 @@
 
 package com.mxixm.fastboot.weixin.module.media;
 
+import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
-import com.mxixm.fastboot.weixin.exception.WxApiException;
 import com.mxixm.fastboot.weixin.util.WxMediaUtils;
 import org.springframework.core.io.Resource;
 

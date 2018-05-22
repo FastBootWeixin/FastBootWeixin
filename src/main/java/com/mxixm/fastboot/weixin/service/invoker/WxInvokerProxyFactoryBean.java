@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.service.invoker;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiExecutor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

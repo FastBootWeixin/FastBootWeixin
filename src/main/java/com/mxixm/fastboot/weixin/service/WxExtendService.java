@@ -1,8 +1,6 @@
 package com.mxixm.fastboot.weixin.service;
 
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
-import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
-import com.mxixm.fastboot.weixin.service.invoker.annotation.WxApiParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.util.UriComponentsBuilder;
 

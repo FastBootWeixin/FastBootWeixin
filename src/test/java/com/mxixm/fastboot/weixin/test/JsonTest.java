@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;

@@ -20,7 +20,6 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

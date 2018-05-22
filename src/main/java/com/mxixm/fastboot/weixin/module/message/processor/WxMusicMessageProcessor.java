@@ -19,7 +19,6 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
-import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
  * FastBootWeixin WxGroupMusicMessageProcessor

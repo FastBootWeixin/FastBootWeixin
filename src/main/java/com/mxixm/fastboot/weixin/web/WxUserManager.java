@@ -17,9 +17,9 @@
 package com.mxixm.fastboot.weixin.web;
 
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
-import com.mxixm.fastboot.weixin.service.WxBaseService;
-import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
+import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.util.CacheMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

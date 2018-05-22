@@ -17,16 +17,17 @@
 package com.mxixm.fastboot.weixin.config.message;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.module.message.*;
-import com.mxixm.fastboot.weixin.module.message.processor.*;
-import com.mxixm.fastboot.weixin.module.message.processor.group.WxGroupNewsMessageProcessor;
-import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
+import com.mxixm.fastboot.weixin.module.message.WxTemplateMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.processor.*;
+import com.mxixm.fastboot.weixin.module.message.processor.group.WxGroupNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.processor.user.WxUserNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
+import com.mxixm.fastboot.weixin.service.WxApiService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
