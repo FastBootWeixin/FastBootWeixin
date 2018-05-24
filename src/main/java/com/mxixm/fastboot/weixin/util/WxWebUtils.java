@@ -76,7 +76,7 @@ public class WxWebUtils {
      * 暂时只支持这几种类型
      *
      * @param paramType
-     * @return dummy
+     * @return the result
      */
     public static boolean isMutlipart(Class paramType) {
         return (byte[].class == paramType ||

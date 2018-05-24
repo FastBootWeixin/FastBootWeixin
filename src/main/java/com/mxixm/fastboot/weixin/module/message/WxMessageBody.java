@@ -157,7 +157,8 @@ public class WxMessageBody {
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Image extends Media {
 
-        public Image() {}
+        public Image() {
+        }
 
         public Image(String mediaId, String mediaPath, String mediaUrl) {
             super(mediaId, mediaPath, mediaUrl);
@@ -375,6 +376,122 @@ public class WxMessageBody {
         @Override
         public String toString() {
             return "com.mxixm.fastboot.weixin.module.message.WxMessage.Video.WxMessageBody(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", thumbMediaPath=" + this.getThumbMediaPath() + ", thumbMediaUrl=" + this.getThumbMediaUrl() + ")";
+        }
+    }
+
+    /**
+     * 小程序类型，这个只有用户消息有，群发消息没有
+     * 有空把其他equals、hashcode、toString重构一下
+     */
+    @XmlType(name = "MiniProgram")
+    @XmlAccessorType(XmlAccessType.NONE)
+    public static class MiniProgram extends WxMessageBody {
+
+        @XmlElement(name = "ThumbMediaId")
+        @JsonProperty("thumb_media_id")
+        protected String thumbMediaId;
+
+        @XmlElement(name = "Title")
+        @JsonProperty("title")
+        protected String title;
+
+        @XmlElement(name = "Appid")
+        @JsonProperty("appid")
+        protected String appId;
+
+        @XmlElement(name = "Pagepath")
+        @JsonProperty("pagepath")
+        protected String pagePath;
+
+        @JsonIgnore
+        protected String thumbMediaPath;
+
+        @JsonIgnore
+        protected String thumbMediaUrl;
+
+        public MiniProgram() {
+        }
+
+        public String getThumbMediaId() {
+            return thumbMediaId;
+        }
+
+        public void setThumbMediaId(String thumbMediaId) {
+            this.thumbMediaId = thumbMediaId;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getAppId() {
+            return appId;
+        }
+
+        public void setAppId(String appId) {
+            this.appId = appId;
+        }
+
+        public String getPagePath() {
+            return pagePath;
+        }
+
+        public void setPagePath(String pagePath) {
+            this.pagePath = pagePath;
+        }
+
+        public String getThumbMediaPath() {
+            return thumbMediaPath;
+        }
+
+        public void setThumbMediaPath(String thumbMediaPath) {
+            this.thumbMediaPath = thumbMediaPath;
+        }
+
+        public String getThumbMediaUrl() {
+            return thumbMediaUrl;
+        }
+
+        public void setThumbMediaUrl(String thumbMediaUrl) {
+            this.thumbMediaUrl = thumbMediaUrl;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            MiniProgram that = (MiniProgram) o;
+            return Objects.equals(thumbMediaId, that.thumbMediaId) &&
+                    Objects.equals(title, that.title) &&
+                    Objects.equals(appId, that.appId) &&
+                    Objects.equals(pagePath, that.pagePath) &&
+                    Objects.equals(thumbMediaPath, that.thumbMediaPath) &&
+                    Objects.equals(thumbMediaUrl, that.thumbMediaUrl);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(thumbMediaId, title, appId, pagePath, thumbMediaPath, thumbMediaUrl);
+        }
+
+        @Override
+        public String toString() {
+            return "MiniProgram{" +
+                    "thumbMediaId='" + thumbMediaId + '\'' +
+                    ", title='" + title + '\'' +
+                    ", appId='" + appId + '\'' +
+                    ", pagePath='" + pagePath + '\'' +
+                    ", thumbMediaPath='" + thumbMediaPath + '\'' +
+                    ", thumbMediaUrl='" + thumbMediaUrl + '\'' +
+                    '}';
         }
     }
 
@@ -653,7 +770,6 @@ public class WxMessageBody {
         }
 
     }
-
 
 
     @XmlType(name = "MpNewsBody")

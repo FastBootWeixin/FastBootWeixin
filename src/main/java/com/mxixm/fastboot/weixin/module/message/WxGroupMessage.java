@@ -122,6 +122,7 @@ public class WxGroupMessage<T extends WxMessageBody> extends WxMessage<T> {
             if (classMap.containsKey(builder.messageType)) {
                 wxGroupMessage = BeanUtils.instantiateClass(classMap.get(builder.messageType));
             } else {
+                // 如果不存在时，是否有必要抛出异常提示？暂时不加
                 wxGroupMessage = new WxGroupMessage();
             }
             wxGroupMessage.setMessageType(builder.messageType);

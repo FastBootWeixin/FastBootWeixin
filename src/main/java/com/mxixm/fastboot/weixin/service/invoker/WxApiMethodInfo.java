@@ -107,7 +107,7 @@ public class WxApiMethodInfo {
      * 2、少多个，则以表单提交
      *
      * @param method
-     * @return dummy
+     * @return the result
      */
     private WxApiRequest.Method prepareRequestInfo(Method method) {
         // 保存参数类型，如果有设置的注解类型则为注解类型
@@ -167,7 +167,7 @@ public class WxApiMethodInfo {
      * 这里有个问题，如果原始连接是带有固定参数的，这里会解析出问题
      *
      * @param args
-     * @return dummy
+     * @return the result
      */
     public UriComponentsBuilder fromArgs(Object... args) {
         UriComponentsBuilder base = baseBuilder.cloneBuilder();

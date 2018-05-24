@@ -54,7 +54,7 @@ public class MemoryWxTokenStore extends AbstractMemoryCredentialStore implements
     /**
      * 获取Token
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public String get() {
@@ -76,7 +76,7 @@ public class MemoryWxTokenStore extends AbstractMemoryCredentialStore implements
     /**
      * 获取过期时间
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public long expires() {

@@ -24,6 +24,7 @@ import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
+import com.mxixm.fastboot.weixin.module.message.support.WxSyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.advice.WxMediaResponseBodyAdvice;
@@ -178,7 +179,9 @@ public class WxBuildinMvcConfiguration implements ImportAware {
             } else {
                 argumentResolvers.add(new WxArgumentResolver(beanFactory.getBean(WxUserManager.class), beanFactory.getBean(WxUserProvider.class)));
             }
+            // 可以换成@Autowired，Spring内部框架就是这样做的
             returnValueHandlers.add(beanFactory.getBean(WxAsyncMessageReturnValueHandler.class));
+            returnValueHandlers.add(beanFactory.getBean(WxSyncMessageReturnValueHandler.class));
             argumentResolvers.addAll(requestMappingHandlerAdapter.getArgumentResolvers());
             returnValueHandlers.addAll(requestMappingHandlerAdapter.getReturnValueHandlers());
             requestMappingHandlerAdapter.setArgumentResolvers(argumentResolvers);
@@ -366,7 +369,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
         private WxArgumentResolver wxArgumentResolver;
 
-        private WxAsyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler;
+        private WxSyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler;
 
         /**
          * 之前这里产生循环依赖，因为ConversionService是这个里面生成的，而conversionService又被WxApiExecutor依赖
@@ -383,7 +386,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
             } else {
                 this.wxArgumentResolver = new WxArgumentResolver(wxUserProvider);
             }
-            this.wxAsyncMessageReturnValueHandler = beanFactory.getBean(WxAsyncMessageReturnValueHandler.class);
+            this.wxAsyncMessageReturnValueHandler = beanFactory.getBean(WxSyncMessageReturnValueHandler.class);
         }
 
         @Override

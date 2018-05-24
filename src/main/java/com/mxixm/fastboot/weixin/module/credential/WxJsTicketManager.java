@@ -52,7 +52,7 @@ public class WxJsTicketManager extends AbstractWxCredentialManager {
     }
 
     @Override
-    public WxCredential refreshInternal() {
+    protected WxCredential refreshInternal() {
         return wxApiService.getTicket(WxTicket.Type.JS_API);
     }
 

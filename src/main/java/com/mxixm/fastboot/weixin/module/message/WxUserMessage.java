@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import org.springframework.beans.BeanUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -51,6 +51,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
         classMap.put(Type.MPNEWS, WxUserMessage.MpNews.class);
         classMap.put(Type.WXCARD, WxUserMessage.WxCard.class);
         classMap.put(Type.STATUS, WxUserMessage.Status.class);
+        classMap.put(Type.MINI_PROGRAM, WxUserMessage.MiniProgram.class);
     }
 
     /**
@@ -156,6 +157,7 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
             if (classMap.containsKey(builder.messageType)) {
                 wxUserMessage = BeanUtils.instantiateClass(classMap.get(builder.messageType));
             } else {
+                // 没有这种类型时，是否有必要抛出异常？
                 wxUserMessage = new WxUserMessage();
             }
             wxUserMessage.setMessageType(builder.messageType);
@@ -241,6 +243,25 @@ public class WxUserMessage<T extends WxMessageBody> extends WxMessage<T> {
 
         @Override
         public void setBody(WxMessageBody.Video body) {
+            this.body = body;
+        }
+    }
+
+    @XmlRootElement(name = "xml")
+    @XmlAccessorType(XmlAccessType.NONE)
+    public static class MiniProgram extends WxUserMessage<WxMessageBody.MiniProgram> {
+
+        @XmlElement(name = "Miniprogrampage")
+        @JsonProperty("miniprogrampage")
+        protected WxMessageBody.MiniProgram body;
+
+        @Override
+        public WxMessageBody.MiniProgram getBody() {
+            return body;
+        }
+
+        @Override
+        public void setBody(WxMessageBody.MiniProgram body) {
             this.body = body;
         }
     }

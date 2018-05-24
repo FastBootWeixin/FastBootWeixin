@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.module.message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -100,6 +100,7 @@ public class WxMessage<T extends WxMessageBody> {
 
         /**
          * 视频消息
+         * 注意群发消息里，示例中是mpvideo，而文档里是video，到底是啥？
          */
         @JsonProperty("video")
         VIDEO(Intent.ALL, Wx.Category.MESSAGE),
@@ -145,6 +146,12 @@ public class WxMessage<T extends WxMessageBody> {
          */
         @JsonProperty("wxcard")
         WXCARD(Intent.SEND, Wx.Category.MESSAGE),
+
+        /**
+         * 发送小程序消息
+         */
+        @JsonProperty("miniprogrampage")
+        MINI_PROGRAM(Intent.SEND, Wx.Category.MESSAGE),
 
         /**
          * 发送写入状态
@@ -461,6 +468,74 @@ public class WxMessage<T extends WxMessageBody> {
         return new VideoBuilder();
     }
 
+    public static class MiniProgramBuilder extends WxMessage.Builder<MiniProgramBuilder, WxMessageBody.MiniProgram> {
+
+        MiniProgramBuilder() {
+            super();
+            this.msgType(Type.MINI_PROGRAM);
+            this.body(new WxMessageBody.MiniProgram());
+        }
+
+        public MiniProgramBuilder body(String title, String appId, String pagePath, String thumbMediaId) {
+            this.body.title = title;
+            this.body.appId = appId;
+            this.body.pagePath = pagePath;
+            this.body.thumbMediaId = thumbMediaId;
+            return this;
+        }
+
+        public MiniProgramBuilder thumbMediaPath(String thumbMediaPath) {
+            this.body.thumbMediaPath = thumbMediaPath;
+            return this;
+        }
+
+        public MiniProgramBuilder thumbMediaUrl(String thumbMediaUrl) {
+            this.body.thumbMediaUrl = thumbMediaUrl;
+            return this;
+        }
+
+        public MiniProgramBuilder title(String title) {
+            this.body.title = title;
+            return this;
+        }
+
+        public MiniProgramBuilder appId(String appId) {
+            this.body.appId = appId;
+            return this;
+        }
+
+        public MiniProgramBuilder pagePath(String pagePath) {
+            this.body.pagePath = pagePath;
+            return this;
+        }
+
+        public MiniProgramBuilder thumbMediaId(String thumbMediaId) {
+            this.body.thumbMediaId = thumbMediaId;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "MiniProgramBuilder{" +
+                    "messageType=" + messageType +
+                    ", body=" + body +
+                    '}';
+        }
+    }
+
+
+    public static class MiniProgram {
+
+        public static MiniProgramBuilder builder() {
+            return miniProgramBuilder();
+        }
+
+    }
+
+    public static MiniProgramBuilder miniProgramBuilder() {
+        return new MiniProgramBuilder();
+    }
+
 
     public static class MusicBuilder extends WxMessage.MediaBuilder<MusicBuilder, WxMessageBody.Music> {
 
@@ -554,7 +629,7 @@ public class WxMessage<T extends WxMessageBody> {
          * @param description
          * @param picUrl
          * @param url
-         * @return dummy
+         * @return the result
          */
         public NewsBuilder firstItem(String title, String description, String picUrl, String url) {
             this.items.addFirst(new WxMessageBody.News.Item(title, description, picUrl, url));

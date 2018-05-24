@@ -162,7 +162,7 @@ public class WxMediaResource extends AbstractResource {
      * copy from StandardMultipartHttpServletRequest
      *
      * @param disposition
-     * @return dummy
+     * @return the result
      */
     private String extractFilename(String disposition) {
         String fileName = extractFilename(disposition, FILENAME_KEY);
@@ -314,7 +314,7 @@ public class WxMediaResource extends AbstractResource {
     /**
      * body只在
      *
-     * @return dummy
+     * @return the result
      */
     public byte[] getBody() {
         if (this.body == null && this.file != null) {

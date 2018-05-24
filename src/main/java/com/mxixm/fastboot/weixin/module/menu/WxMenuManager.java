@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.menu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
+import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +28,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -125,6 +127,10 @@ public class WxMenuManager implements EnvironmentAware, ApplicationListener<Appl
         }
         WxMenu newWxMenu = this.getMenu();
         // WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
+        if (CollectionUtils.isEmpty(newWxMenu.mainButtons)) {
+            logger.error("未扫描到有效菜单，请检查项目配置，可能是@WxController类没有被扫描到或者没有声明为@WxController",
+                    new WxAppException("未检测到有效菜单，停止创建菜单动作"));
+        }
         if (oldWxMenu == null || isMenuChanged(oldWxMenu)) {
             String result = wxApiService.createMenu(newWxMenu);
             logger.info("==============================================================");

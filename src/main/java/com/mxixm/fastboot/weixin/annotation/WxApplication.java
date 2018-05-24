@@ -41,7 +41,7 @@ public @interface WxApplication {
     /**
      * 是否自动创建菜单
      *
-     * @return dummy
+     * @return the result
      */
     @AliasFor(annotation = EnableWxMvc.class, attribute = "menuAutoCreate")
     boolean menuAutoCreate() default true;

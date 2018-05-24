@@ -87,7 +87,7 @@ public class WxInvokerProxyFactoryBean<T> implements InitializingBean, MethodInt
      * 后续加上缓存，一定要加
      *
      * @param inv
-     * @return dummy
+     * @return the result
      * @throws Throwable
      */
     @Override

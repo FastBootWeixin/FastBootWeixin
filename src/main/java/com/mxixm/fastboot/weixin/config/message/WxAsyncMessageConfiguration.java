@@ -26,6 +26,7 @@ import com.mxixm.fastboot.weixin.module.message.processor.*;
 import com.mxixm.fastboot.weixin.module.message.processor.group.WxGroupNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.processor.user.WxUserNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
+import com.mxixm.fastboot.weixin.module.message.support.WxSyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import org.springframework.context.annotation.Bean;
@@ -60,8 +61,14 @@ public class WxAsyncMessageConfiguration {
 
     @Bean
     @Lazy
+    public WxSyncMessageReturnValueHandler wxSyncMessageReturnValueHandler() {
+        return new WxSyncMessageReturnValueHandler(wxMessageTemplate());
+    }
+
+    @Bean
+    @Lazy
     public WxAsyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler() {
-        return new WxAsyncMessageReturnValueHandler(wxProperties, wxAsyncMessageTemplate());
+        return new WxAsyncMessageReturnValueHandler(wxAsyncMessageTemplate());
     }
 
     @Bean
@@ -91,6 +98,7 @@ public class WxAsyncMessageConfiguration {
         list.add(new WxVoiceMessageProcessor(wxMediaManager));
         list.add(new WxMusicMessageProcessor(wxMediaManager));
         list.add(new WxVideoMessageProcessor(wxMediaManager));
+        list.add(new WxMiniProgramMessageProcessor(wxMediaManager));
 
         list.add(new WxUserNewsMessageProcessor());
         list.add(new WxGroupNewsMessageProcessor());

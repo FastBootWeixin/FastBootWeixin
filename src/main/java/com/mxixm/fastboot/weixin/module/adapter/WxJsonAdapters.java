@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.adapters;
+package com.mxixm.fastboot.weixin.module.adapter;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -57,7 +57,7 @@ public class WxJsonAdapters {
          * Deserializer后会把值送给convert
          *
          * @param typeFactory
-         * @return dummy
+         * @return the result
          */
         @Override
         public JavaType getInputType(TypeFactory typeFactory) {
@@ -82,7 +82,7 @@ public class WxJsonAdapters {
          * Deserializer后会把值送给convert
          *
          * @param typeFactory
-         * @return dummy
+         * @return the result
          */
         @Override
         public JavaType getInputType(TypeFactory typeFactory) {
@@ -107,7 +107,7 @@ public class WxJsonAdapters {
          * Deserializer后会把值送给convert
          *
          * @param typeFactory
-         * @return dummy
+         * @return the result
          */
         @Override
         public JavaType getInputType(TypeFactory typeFactory) {

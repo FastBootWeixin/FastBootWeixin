@@ -39,7 +39,7 @@ public class WxRequestBody {
      *
      * @param clazz
      * @param <T>
-     * @return dummy
+     * @return the result
      */
     public static <T extends WxRequestBody> T of(Class<T> clazz, WxRequest.Body body) {
         WxRequestBody wxRequestBody = BeanUtils.instantiateClass(clazz);

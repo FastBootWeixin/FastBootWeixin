@@ -155,7 +155,7 @@ public class WxApiExecutor {
      *
      * @param wxApiMethodInfo
      * @param args
-     * @return dummy
+     * @return the result
      */
     private Object getFormBody(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
@@ -213,7 +213,7 @@ public class WxApiExecutor {
     /**
      * 获取一个application/json头
      *
-     * @return dummy
+     * @return the result
      */
     private HttpHeaders buildJsonHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -224,7 +224,7 @@ public class WxApiExecutor {
     /**
      * text/xml头
      *
-     * @return dummy
+     * @return the result
      */
     private HttpHeaders buildXmlHeaders() {
         HttpHeaders headers = new HttpHeaders();

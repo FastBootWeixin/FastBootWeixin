@@ -38,7 +38,7 @@ public interface WxUserProvider<T> {
      * 没bug啦，改进了
      *
      * @param clazz
-     * @return dummy
+     * @return the result
      */
     default boolean isMatch(Class<?> clazz) {
         Type[] types = this.getClass().getGenericInterfaces();

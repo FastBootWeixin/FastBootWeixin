@@ -45,7 +45,7 @@ public class WxRedirectUtils {
      * 跳转到基本的微信认证页面
      *
      * @param url
-     * @return dummy
+     * @return the result
      */
     public static String baseRedirect(String url) {
         return BASE_REDIRECT + url;
@@ -55,7 +55,7 @@ public class WxRedirectUtils {
      * 跳转到带认证的微信认证页面
      *
      * @param url
-     * @return dummy
+     * @return the result
      */
     public static String authRedirect(String url) {
         return AUTH_REDIRECT + url;

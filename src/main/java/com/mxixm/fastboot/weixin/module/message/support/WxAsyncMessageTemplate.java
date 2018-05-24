@@ -32,7 +32,7 @@ import java.util.concurrent.*;
 import java.util.function.Supplier;
 
 /**
- * FastBootWeixin WxAsyncMessageReturnValueHandler
+ * FastBootWeixin WxSyncMessageReturnValueHandler
  *
  * @author Guangshan
  * @date 2017/8/20 22:53
@@ -53,40 +53,19 @@ public class WxAsyncMessageTemplate implements InitializingBean, DisposableBean 
     }
 
     public void send(WxRequest wxRequest, Object returnValue) {
-        this.asyncExecutor.execute(() -> sendMessage(new WxRequestMessageParameter(wxRequest), returnValue));
+        this.asyncExecutor.execute(() -> wxMessageTemplate.sendMessage(new WxRequestMessageParameter(wxRequest), returnValue));
     }
 
     public void send(WxMessageParameter wxMessageParameter, Object returnValue) {
-        this.asyncExecutor.execute(() -> sendMessage(wxMessageParameter, returnValue));
+        this.asyncExecutor.execute(() -> wxMessageTemplate.sendMessage(wxMessageParameter, returnValue));
     }
 
     public void send(WxRequest wxRequest, Supplier supplier) {
-        this.asyncExecutor.execute(() -> sendMessage(new WxRequestMessageParameter(wxRequest), supplier.get()));
+        this.asyncExecutor.execute(() -> wxMessageTemplate.sendMessage(new WxRequestMessageParameter(wxRequest), supplier.get()));
     }
 
     public void send(WxMessageParameter wxMessageParameter, Supplier supplier) {
-        this.asyncExecutor.execute(() -> sendMessage(wxMessageParameter, supplier.get()));
-    }
-
-    /**
-     * 发送的核心方法，是否有必要再WxMessageTemplate中也放一个呢
-     * @param wxMessageParameter
-     * @param value
-     */
-    private void sendMessage(WxMessageParameter wxMessageParameter, Object value) {
-        if (value == null) {
-            return;
-        }
-        if (value instanceof WxMessage) {
-            wxMessageTemplate.sendMessage(wxMessageParameter, (WxMessage) value);
-        } else if (value instanceof CharSequence) {
-            wxMessageTemplate.sendMessage(wxMessageParameter, value.toString());
-        } else if (value instanceof Iterable) {
-            ((Iterable) value).forEach(v -> sendMessage(wxMessageParameter, v));
-        } else if (value.getClass().isArray()) {
-            // 这里应该要判断下数组中元素类型不是原始类型才能进行强制转换
-            Arrays.stream((Object[]) value).forEach(v -> sendMessage(wxMessageParameter, v));
-        }
+        this.asyncExecutor.execute(() -> wxMessageTemplate.sendMessage(wxMessageParameter, supplier.get()));
     }
 
     @Override

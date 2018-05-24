@@ -37,7 +37,7 @@ public abstract class AbstractMemoryCredentialStore implements WxCredentialStore
     /**
      * 多线程或者分布式时，防止多个同时设置token值，也同时用于防止tokenManage同时多次刷新
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public boolean lock() {

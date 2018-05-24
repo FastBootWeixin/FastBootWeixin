@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.test.failed.second;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -768,7 +768,7 @@ public class WxMessage {
              * @param description
              * @param picUrl
              * @param url
-             * @return dummy
+             * @return the result
              */
             public Builder firstItem(String title, String description, String picUrl, String url) {
                 this.items.addFirst(new WxMessageBody.News.Item(title, description, picUrl, url));

@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.mxixm.fastboot.weixin.module.adapters.WxJsonAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxJsonAdapters;
 
 import java.util.Date;
 import java.util.List;

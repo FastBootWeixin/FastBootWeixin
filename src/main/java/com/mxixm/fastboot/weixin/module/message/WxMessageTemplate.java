@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -52,6 +53,9 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxMessage wxMessage) {
+        if (wxMessage == null) {
+            return;
+        }
         if (WxUserMessage.class.isAssignableFrom(wxMessage.getClass())) {
             this.wxApiService.sendUserMessage((WxUserMessage) wxMessage);
         } else if (WxGroupMessage.class.isAssignableFrom(wxMessage.getClass())) {
@@ -73,6 +77,30 @@ public class WxMessageTemplate {
 
     public void sendMessage(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
         this.sendMessage(wxMessageProcessor.process(wxMessageParameter, wxMessage));
+    }
+
+    /**
+     * 总的发送逻辑，支持所有类型的value
+     * @param wxMessageParameter 参数
+     * @param value 值。支持WxMessage类型、迭代器类型，数组类型和CharSequence类型，其他的都按toString处理为字符串再发送
+     */
+    public void sendMessage(WxMessageParameter wxMessageParameter, Object value) {
+        if (value == null) {
+            return;
+        }
+        if (value instanceof WxMessage) {
+            this.sendMessage(wxMessageParameter, (WxMessage) value);
+        } else if (value instanceof CharSequence) {
+            this.sendMessage(wxMessageParameter, value.toString());
+        } else if (value instanceof Iterable) {
+            ((Iterable) value).forEach(v -> sendMessage(wxMessageParameter, v));
+        } else if (value.getClass().isArray()) {
+            // 这里应该要判断下数组中元素类型不是原始类型才能进行强制转换
+            Arrays.stream((Object[]) value).forEach(v -> sendMessage(wxMessageParameter, v));
+        } else {
+            // 其他情况调用toString()发送，开发者要注意
+            this.sendMessage(wxMessageParameter, value.toString());
+        }
     }
 
     public void sendMessage(WxRequest wxRequest, WxMessage wxMessage) {

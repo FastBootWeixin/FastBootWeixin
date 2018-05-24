@@ -90,7 +90,7 @@ public class WxInvokerConfiguration {
     /**
      * 是否有必要模仿Spring不提供RestTemplate，只提供RestTemplateBuilder
      *
-     * @return dummy
+     * @return the result
      */
     @Bean(name = WxBeans.WX_API_TEMPLATE_NAME)
     public WxApiTemplate wxApiTemplate() {
@@ -132,7 +132,7 @@ public class WxInvokerConfiguration {
      * 于是产生了循环依赖
      *
      * @param wxTokenManager
-     * @return dummy
+     * @return the result
      */
     @Bean
     public WxApiExecutor wxApiExecutor(WxTokenManager wxTokenManager) {

@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.module.media;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mxixm.fastboot.weixin.module.adapters.WxJsonAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxJsonAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -113,7 +113,7 @@ public class WxMedia {
      * 静态工厂方法
      *
      * @param mediaId
-     * @return dummy
+     * @return the result
      */
     public static WxMedia of(String mediaId) {
         return new WxMedia(mediaId);
@@ -127,7 +127,7 @@ public class WxMedia {
         /**
          * 获取关键信息
          *
-         * @return dummy
+         * @return the result
          */
         String keyInfo();
 

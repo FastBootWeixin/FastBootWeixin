@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.module.web;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
@@ -70,7 +70,6 @@ public class WxRequest {
         body = (Body) xmlConverter.read(Body.class, new ServletServerHttpRequest(request));
         requestUrl = request.getRequestURL().toString();
         requestUri = request.getRequestURI();
-        WxWebUtils.setWxRequestToRequest(request, this);
     }
 
     public HttpServletRequest getRawRequest() {
@@ -1423,7 +1422,7 @@ public class WxRequest {
 
         /**
          * @param name
-         * @return dummy
+         * @return the result
          */
         public Object getParameter(String name) {
             PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(this.getClass(), name);

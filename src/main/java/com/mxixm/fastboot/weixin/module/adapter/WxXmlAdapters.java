@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.adapters;
+package com.mxixm.fastboot.weixin.module.adapter;
 
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;

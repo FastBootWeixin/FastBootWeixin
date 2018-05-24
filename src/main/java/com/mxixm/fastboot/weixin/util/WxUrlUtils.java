@@ -95,7 +95,7 @@ public abstract class WxUrlUtils {
      *
      * @param targetUrl 判断的url
      * @param callbackHost 回调域名
-     * @return dummy
+     * @return the result
      */
     private static boolean isCallbackUrlInternal(String targetUrl, String callbackHost) {
         String urlHost = URI.create(targetUrl).getHost();
@@ -106,7 +106,7 @@ public abstract class WxUrlUtils {
      * 判断是否是回调地址
      *
      * @param targetUrl 判断的url
-     * @return dummy
+     * @return the result
      */
     public static boolean isCallbackUrl(String targetUrl) {
         return isCallbackUrlInternal(targetUrl, Wx.Environment.instance().getCallbackHost());
@@ -117,7 +117,7 @@ public abstract class WxUrlUtils {
      *
      * @param requestUrl 请求地址
      * @param targetUrl 判断的url
-     * @return dummy
+     * @return the result
      */
     public static boolean isCallbackUrl(String requestUrl, String targetUrl) {
         String callbackHost = Wx.Environment.instance().getCallbackHost();

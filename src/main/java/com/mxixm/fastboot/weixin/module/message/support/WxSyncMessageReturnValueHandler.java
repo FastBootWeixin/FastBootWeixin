@@ -18,17 +18,13 @@ package com.mxixm.fastboot.weixin.module.message.support;
 
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
-import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
-import com.mxixm.fastboot.weixin.util.WxMessageUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletResponse;
@@ -49,27 +45,31 @@ import java.lang.reflect.ParameterizedType;
  * @update 2018-5-24 17:24:21
  * @since 0.6.1
  */
-public class WxAsyncMessageReturnValueHandler extends AbstractWxMessageReturnValueHandler {
+public class WxSyncMessageReturnValueHandler extends AbstractWxMessageReturnValueHandler {
 
-    private WxAsyncMessageTemplate wxAsyncMessageTemplate;
+    private WxMessageTemplate wxMessageTemplate;
 
-    public WxAsyncMessageReturnValueHandler(WxAsyncMessageTemplate wxAsyncMessageTemplate) {
-        this.wxAsyncMessageTemplate = wxAsyncMessageTemplate;
+    public WxSyncMessageReturnValueHandler(WxMessageTemplate wxMessageTemplate) {
+        this.wxMessageTemplate = wxMessageTemplate;
     }
 
     @Override
     protected boolean supportsReturnTypeInternal(MethodParameter returnType) {
-        // 是否显式声明为async了，如果是则直接异步发送
+        // 是否显式声明为async了，如果是不从这里发送
         boolean isAsyncMessage = returnType.hasMethodAnnotation(WxAsyncMessage.class);
-        // 是否是WxMapping，如果声明为wxMapping，则直接异步发送(因为这种类型没有必要同步，报错了还会返回到客户端提示异常，不友好)
+        // 是否是WxMapping，如果声明为wxMapping，则不通过这里而是直接异步发送
+        // 理论上可控制顺序来控制这里的判断减少，但是稳妥起见多判断一次
         boolean isWxMapping = returnType.hasMethodAnnotation(WxMapping.class);
-        return isAsyncMessage || isWxMapping;
+        Class realType = getGenericType(returnType);
+        // 对于非WxMapping的handler，判断返回类型是否是WxMessage，如果是则同步发送消息
+        boolean isWxMessage = WxMessage.class.isAssignableFrom(realType);
+        return !isAsyncMessage && !isWxMapping && isWxMessage;
     }
 
     @Override
     protected void handlReturnValueInternal(Object returnValue) {
         WxMessageParameter wxMessageParameter = WxWebUtils.getWxMessageParameter();
-        wxAsyncMessageTemplate.send(wxMessageParameter, returnValue);
+        wxMessageTemplate.sendMessage(wxMessageParameter, returnValue);
     }
 
 }

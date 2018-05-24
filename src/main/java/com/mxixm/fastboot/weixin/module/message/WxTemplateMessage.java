@@ -81,6 +81,7 @@ public class WxTemplateMessage extends WxMessage<WxMessageBody.Template> {
 
     /**
      * 消息模板链接的小程序
+     * 在消息体中也有MiniProgram类型，虽然两个可以复用，但字段有点小区别，暂时不考虑复用
      */
     protected static class MiniProgram {
         /**

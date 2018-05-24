@@ -42,7 +42,7 @@ public @interface WxButton {
     /**
      * 显示名称
      *
-     * @return dummy
+     * @return the result
      */
     String name();
 

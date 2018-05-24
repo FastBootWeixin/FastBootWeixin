@@ -85,7 +85,7 @@ public final class WxMessageWildcardCondition extends AbstractRequestCondition<W
      *
      * @param other
      * @param request
-     * @return dummy
+     * @return the result
      */
     @Override
     public int compareTo(WxMessageWildcardCondition other, HttpServletRequest request) {

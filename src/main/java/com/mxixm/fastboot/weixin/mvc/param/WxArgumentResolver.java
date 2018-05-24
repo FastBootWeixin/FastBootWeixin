@@ -103,7 +103,7 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
      * @param name
      * @param parameter
      * @param request
-     * @return dummy
+     * @return the result
      * @throws Exception
      */
     @Override

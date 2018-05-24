@@ -134,7 +134,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，异步返回文本消息
      * @param content
-     * @return dummy
+     * @return the result
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
     @WxAsyncMessage
@@ -149,7 +149,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，同步返回图文消息
      * @param content
-     * @return dummy
+     * @return the result
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "1*")
     public WxMessage message(WxSession wxSession, String content) {
@@ -167,7 +167,7 @@ public class WxApp {
     /**
      * 接受用户文本消息，异步返回文本消息
      * @param content
-     * @return dummy
+     * @return the result
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "2*")
     @WxAsyncMessage

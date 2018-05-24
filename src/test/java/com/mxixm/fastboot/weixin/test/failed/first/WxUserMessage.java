@@ -18,7 +18,7 @@ package com.mxixm.fastboot.weixin.test.failed.first;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mxixm.fastboot.weixin.module.adapters.WxXmlAdapters;
+import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

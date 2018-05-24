@@ -191,7 +191,7 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
      * remove其实是通过这个来实现的，但是这里功能明显导致删除会失败，结果会内存溢出，所以我重写了remove方法
      * 这里的entrySet实现可能是有点问题的，因为返回的是一个新的实例。
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public TreeSet<Entry<K, V>> entrySet() {

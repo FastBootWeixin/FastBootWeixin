@@ -1,28 +1,15 @@
-/*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * 
  */
-
 package com.mxixm.fastboot.weixin.test;
 
-import com.mxixm.fastboot.weixin.annotation.*;
-import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
+import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
+import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.annotation.WxEventMapping;
+import com.mxixm.fastboot.weixin.annotation.WxMessageMapping;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
-import com.mxixm.fastboot.weixin.module.js.WxJsApi;
-import com.mxixm.fastboot.weixin.module.js.WxJsConfig;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
 import com.mxixm.fastboot.weixin.module.message.*;
@@ -33,12 +20,9 @@ import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
-import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -47,17 +31,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * FastBootWeixin WxApp
+ * @author Chanting
  *
- * @author Guangshan
- * @date 2017/09/21 23:47
- * @since 0.1.2
  */
-@WxApplication
-@WxController
-public class WxApp {
-
-    @Autowired
+//@WxApplication
+//@WxController
+public class WxAppTest {
+	@Autowired
     WxApiService wxApiService;
 
     @Autowired
@@ -69,49 +49,70 @@ public class WxApp {
     @Autowired
     WxExtendService wxExtendService;
 
-    @Autowired
-    WxJsTicketManager wxJsTicketManager;
-
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(WxApp.class, args);
+    public static void main1(String[] args) throws Exception {
+        SpringApplication.run(WxAppTest.class, args);
     }
 
+    public static void main(String[] args) {
+        // cc=123456&code=1234565
+        // cc=123456&code=1234565&kk=123456
+        // code=1234565&cc=123456
+        // code=123456
+        StringBuilder sb = new StringBuilder();
+
+        String queryString = "code=123456";
+        String[] querys = queryString.split("&");
+        for (String q : querys) {
+            if (!q.contains("code=")) {
+                sb.append(q).append('&');
+            }
+        }
+        if (sb.charAt(sb.length() - 1) == '&') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        System.out.println(queryString);
+    }
 
     /**
      * 定义微信菜单
      */
-    @WxButton(group = WxButton.Group.LEFT, main = true, name = "左")
+    @WxButton(group = WxButton.Group.LEFT, main = true, name = "左边")
     public void left() {
     }
 
     /**
      * 定义微信菜单
      */
-    @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "中")
-    @WxAsyncMessage
-    public WxMessage middle(WxUser wxUser) {
+    @WxButton(group = WxButton.Group.MIDDLE, main = true, name = "中边")
+    public List<WxMessage> middle(WxUser wxUser) {
         WxQrCode wxQrCode = WxQrCode.builder().permanent(wxUser.getOpenId()).build();
         WxQrCode.Result qrCode = wxExtendService.createQrCode(wxQrCode);
-//        List<WxMessage> messages = new ArrayList<>();
-//        messages.add(WxMessage.textBuilder().content("消息规则").build());
-        return WxMessage.imageBuilder()
+        List<WxMessage> messages = new ArrayList<>();
+        messages.add(WxMessage.textBuilder().content("消息规则").build());
+        messages.add(WxMessage.imageBuilder()
                 .mediaUrl(qrCode.getShowUrl())
 //                .mediaPath("E:/showqrcode2.jpg")
-                .build();
+                .build());
+        return messages;
     }
 
     /**
      * 定义微信菜单
      */
-    @WxButton(group = WxButton.Group.RIGHT, main = true, name = "右")
+    @WxButton(group = WxButton.Group.RIGHT, main = true, name = "右边")
     @WxAsyncMessage
     public String right(WxUser wxUser) {
         return wxUser.getNickName() + "haha";
     }
 
-    @WxButton(group = WxButton.Group.RIGHT, name = "右1")
+    @WxButton(group = WxButton.Group.RIGHT, name = "右边1")
+    @WxAsyncMessage
     public WxMessage right1(WxUser wxUser) {
-        return WxMessage.miniProgramBuilder().appId("wx286b93c14bbf93aa").pagePath("pages/lunar/index").build();
+        return WxMessage.mpNewsBuilder()
+                .mediaId("NM3drptQ_80iUDLDVQh40u-ma5mSSElnAGAIqAXpiV051I5bLjYFcmNqeAqkMKRQ")
+                .sendIgnoreReprint(true)
+                .toGroup("oKS9_xGOW1xJQnIaKhFUaoei_UxU")
+                .build();
     }
 
     /**
@@ -160,9 +161,9 @@ public class WxApp {
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FORTH,
             name = "图片消息")
-    public WxMessage image() {
+    public WxMessage imgae() {
         return WxMessage.imageBuilder()
-                .mediaUrl("http://img.zcool.cn/community/01f09e577b85450000012e7e182cf0.jpg@1280w_1l_2o_100sh.jpg")
+                .mediaUrl("http://www.uimaker.com/uploads/allimg/130216/1_130216120816_1.png")
                 .build();
     }
 
@@ -190,8 +191,7 @@ public class WxApp {
      */
     @WxEventMapping(type = WxEvent.Type.UNSUBSCRIBE)
     public void unsubscribe(WxRequest wxRequest, WxUser wxUser) {
-        System.out.println("取消关注" + wxUser.getOpenId());
-//        System.out.println(wxUser.getNickName() + "退订了公众号");
+        System.out.println(wxUser.getNickName() + "退订了公众号");
     }
 
     /**
@@ -203,12 +203,6 @@ public class WxApp {
     @WxEventMapping(type = WxEvent.Type.SUBSCRIBE)
     public String subscribe(WxRequest wxRequest, WxUser wxUser) {
         return "欢迎您关注本公众号，本公众号使用FastBootWeixin框架开发，简单极速开发微信公众号，你值得拥有";
-    }
-
-    @WxEventMapping(type = WxEvent.Type.SCAN)
-    public String scan(WxRequest wxRequest, WxUser wxUser) {
-        System.out.println("扫描二维码" + wxUser.getOpenId());
-        return "触发扫描二维码";
     }
 
     /**
@@ -291,8 +285,8 @@ public class WxApp {
                 .data("keynote1", "1324.76", "#FF0000")
                 .data("keynote2", "2017-10-25", "#0000FF")
                 .templateId("IIXwm9TJ5F-tAXPdqP7D4xL6rRK-lVwpNWlVRIsZ9Wo")
-                .toUser(text.getFromUserName())
-//                .url("http://www.baidu.com")
+                .toUser("oKS9_xLsaQsSmvhSZI5EHgUHorLs")
+                .url("http://www.baidu.com")
                 .build();
         wxMessageTemplate.sendTemplateMessage(templateMessage);
         return "模板消息已发送";
@@ -337,35 +331,10 @@ public class WxApp {
         return "";
     }
 
-    @RequestMapping("sendGroup")
-    @ResponseBody
-    public WxMessage sendGroup(String text) {
-        return WxMessage.textBuilder().content(text).toGroup().build();
-    }
-
     @RequestMapping("qrcode")
     @ResponseBody
     public WxQrCode.Result qrcode() {
         return wxExtendService.createQrCode(WxQrCode.builder().temporary(1).build());
-    }
-
-    @RequestMapping("wx/bind")
-    @ResponseBody
-    public String login() {
-        WxWebUser wxWebUser = WxWebUtils.getWxWebUserFromSession();
-        return wxWebUser.getOpenId();
-    }
-
-    @PostMapping("doError")
-    @ResponseBody
-    public WxMessage err(String text) {
-        return WxMessage.textBuilder().content(text).toGroup("oKS9_xGOW1xJQnIaKhFUaoei_UxU", "oKS9_xBZfDTmA3v6ahWs-hrkAqT4").build();
-    }
-
-    @RequestMapping("getWxJsConfig")
-    @ResponseBody
-    public WxJsConfig wxJsConfig() {
-        return wxJsTicketManager.getWxJsConfigFromRequest(WxJsApi.getLocation);
     }
 
 }

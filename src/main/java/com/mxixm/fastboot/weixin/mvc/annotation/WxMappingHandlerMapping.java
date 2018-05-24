@@ -30,6 +30,7 @@ import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpEntity;
@@ -180,7 +181,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.mappingRegistry.acquireReadLock();
         try {
             HandlerMethod handlerMethod = null;
-            WxRequest.Body wxRequestBody = new WxRequest(request, wxSessionManager).getBody();
+            WxRequest wxRequest = new WxRequest(request, wxSessionManager);
+            WxRequest.Body wxRequestBody = wxRequest.getBody();
+            WxWebUtils.setWxRequestToRequest(request, wxRequest);
             // switch不被推荐缺少default
             switch (wxRequestBody.getCategory()) {
                 case BUTTON:

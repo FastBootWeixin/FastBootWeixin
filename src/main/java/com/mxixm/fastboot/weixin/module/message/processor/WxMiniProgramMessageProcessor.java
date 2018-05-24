@@ -24,36 +24,38 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.core.io.FileSystemResource;
 
 /**
- * FastBootWeixin WxGroupVideoMessageProcessor
+ * FastBootWeixin WxMiniProgramMessageProcessor
  *
  * @author Guangshan
- * @date 2018-5-24 15:57:06
- * @since 0.6.1
+ * @date 2017/8/20 22:53
+ * @since 0.1.2
  */
-public class WxVideoMessageProcessor extends AbstractWxMediaMessageProcessor<WxMessageBody.Video> {
+public class WxMiniProgramMessageProcessor extends AbstractWxMessageBodyProcessor<WxMessageBody.MiniProgram> {
 
-    public WxVideoMessageProcessor(WxMediaManager wxMediaManager) {
-        super(wxMediaManager);
+    protected WxMediaManager wxMediaManager;
+
+    public WxMiniProgramMessageProcessor(WxMediaManager wxMediaManager) {
+        this.wxMediaManager = wxMediaManager;
     }
 
     @Override
-    protected WxMessageBody.Video processBody(WxMessageParameter WxMessageParameter, WxMessageBody.Video body) {
-        super.processBody(WxMessageParameter, body);
-        processVideoBody(WxMessageParameter, body);
+    protected WxMessageBody.MiniProgram processBody(WxMessageParameter WxMessageParameter, WxMessageBody.MiniProgram body) {
+        processMiniProgramBody(WxMessageParameter, body);
         return body;
     }
 
-    protected WxMessageBody.Video processVideoBody(WxMessageParameter WxMessageParameter, WxMessageBody.Video body) {
+    protected WxMessageBody.MiniProgram processMiniProgramBody(WxMessageParameter WxMessageParameter, WxMessageBody.MiniProgram body) {
+        // 为了避免重复代码提示，两个地方用了相同的逻辑的不同写法，todo 待优化
         if (body.getThumbMediaId() == null) {
-            String thumbMediaId = null;
             // 优先使用path
             if (body.getThumbMediaPath() != null) {
-                thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
+                String thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
+                body.setThumbMediaId(thumbMediaId);
             } else if (body.getThumbMediaUrl() != null) {
                 String url = WxUrlUtils.mediaUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
-                thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
+                String thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
+                body.setThumbMediaId(thumbMediaId);
             }
-            body.setThumbMediaId(thumbMediaId);
         }
         return body;
     }

@@ -84,7 +84,7 @@ public class WxMediaManager {
      *
      * @param video
      * @param description
-     * @return dummy
+     * @return the result
      */
     public String addVideoMedia(File video, WxMedia.Video description) {
         String mediaId = wxMediaStore.findMediaIdByFile(video);
@@ -167,7 +167,7 @@ public class WxMediaManager {
      * 这个怎么存呢？是否有必要存一个映射关系？
      *
      * @param news
-     * @return dummy
+     * @return the result
      */
     public WxMedia.NewsResult storeNews(WxMedia.News news) {
         return wxApiService.addNews(news);
@@ -186,7 +186,7 @@ public class WxMediaManager {
      * 主要限制是同一个接口相同的参数可能得到的是不同的结果
      *
      * @param mediaId
-     * @return dummy
+     * @return the result
      */
     public WxMedia.News getNews(String mediaId) {
         return wxApiService.getNewsMedia(WxMedia.of(mediaId));

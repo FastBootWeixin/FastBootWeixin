@@ -48,6 +48,8 @@ public interface WxApiService {
 
     WxMenuManager.WxMenus getMenu();
 
+    void deleteMenu();
+
     String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
 
     WxMedia.TempMediaResult uploadTempMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") Resource media);
@@ -73,7 +75,7 @@ public interface WxApiService {
      * @param type
      * @param media
      * @param description
-     * @return dummy
+     * @return the result
      */
     WxMedia.MediaResult uploadMedia(@WxApiParam("type") WxMedia.Type type,
                                     @WxApiForm("media") Resource media,
@@ -83,7 +85,7 @@ public interface WxApiService {
      * 同下面两个地址，没办法，返回类型不同，我也很无奈啊
      *
      * @param mediaId
-     * @return dummy
+     * @return the result
      */
     WxMediaResource getMedia(@WxApiBody WxMedia mediaId);
 
@@ -91,7 +93,7 @@ public interface WxApiService {
      * 主要限制是同一个接口相同的参数可能得到的是不同的结果
      *
      * @param mediaId
-     * @return dummy
+     * @return the result
      */
     WxMedia.News getNewsMedia(@WxApiBody WxMedia mediaId);
 
@@ -100,7 +102,7 @@ public interface WxApiService {
      * 代理中有这三个类型的值，加一个代理转换器，明天就做
      *
      * @param mediaId
-     * @return dummy
+     * @return the result
      */
     WxMedia.Video getVideoMedia(@WxApiBody WxMedia mediaId);
 

@@ -47,7 +47,7 @@ public class MemoryWxJsTicketStore extends AbstractMemoryCredentialStore impleme
     /**
      * 获取Token
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public String get() {
@@ -69,7 +69,7 @@ public class MemoryWxJsTicketStore extends AbstractMemoryCredentialStore impleme
     /**
      * 获取过期时间
      *
-     * @return dummy
+     * @return the result
      */
     @Override
     public long expires() {
