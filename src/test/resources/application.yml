@@ -1,0 +1,10 @@
+wx:
+  appid: wx2a0e54054e2fb7c0
+  path: wx
+  appsecret: 019f8bef3d15cbf787b1875475fab7de
+  token: 0438a06a0f8b41b1b4c248c741fec81e
+  callback-url: http://vxyufx.natappfree.cc
+  mvc:
+    interceptor:
+      include-patterns:
+        - /wx/**

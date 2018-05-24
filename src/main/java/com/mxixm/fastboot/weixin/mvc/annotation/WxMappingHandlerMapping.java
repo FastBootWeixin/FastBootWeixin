@@ -229,6 +229,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequestBody.getContent());
             if (!handlerMethods.isEmpty()) {
                 return handlerMethods.get(0);
+            } else {
+                // 如果没有匹配的时候，返回空。因为默认的wildcard是*所以默认情况肯定是有匹配的
+                return null;
             }
         }
         return mappingRegistry.getHandlerMessageByMessageType(wxRequestBody.getMessageType());
