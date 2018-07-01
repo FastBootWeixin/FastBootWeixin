@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.6.0-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.6.0%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.6.1-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.6.1%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -445,3 +445,9 @@ WxJsTicketManager wxJsTicketManager;
 1. 添加WxJsTicket相关的支持
 2. 修复群发消息回调报错的bug
 3. 修复可能引起code被盗用的安全性bug
+
+#### 0.6.1
+1. 重构消息处理器
+2. 为@WxButton新增${}表达式解析
+3. 微信菜单新增小程序类型
+4. 修复在没有匹配的wildcard的情况下，返回内容错误的情况
