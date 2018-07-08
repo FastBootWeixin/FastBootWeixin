@@ -47,11 +47,6 @@ public class MemoryWxTokenStore extends AbstractMemoryCredentialStore implements
     private long expires;
 
     /**
-     * 锁
-     */
-    private Lock lock = new ReentrantLock();
-
-    /**
      * 获取Token
      *
      * @return the result

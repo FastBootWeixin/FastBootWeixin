@@ -25,6 +25,14 @@ package com.mxixm.fastboot.weixin.module.credential;
  * @date 2018-5-13 23:13:23
  * @since 0.6.0
  */
-public interface WxTokenStore extends WxCredentialStore {
+public interface WxTokenStore extends WxCredentialStore.Single {
+
+    class Adapter extends Single.Adapter implements WxTokenStore {
+
+        public Adapter(WxCredentialStore wxCredentialStore) {
+            super(WxCredential.Type.ACCESS_TOKEN, wxCredentialStore);
+        }
+
+    }
 
 }

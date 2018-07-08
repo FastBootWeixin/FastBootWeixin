@@ -45,7 +45,7 @@ public class WxJsTicketManager extends AbstractWxCredentialManager {
     private final WxJsTicketPart wxJsTicketPart;
 
     public WxJsTicketManager(String appId, WxJsTicketPart wxJsTicketPart, WxJsTicketStore wxJsTicketStore, WxApiService wxApiService) {
-        super(wxJsTicketStore);
+        super(WxCredential.Type.JS_TICKET, wxJsTicketStore);
         this.appId = appId;
         this.wxJsTicketPart = wxJsTicketPart;
         this.wxApiService = wxApiService;

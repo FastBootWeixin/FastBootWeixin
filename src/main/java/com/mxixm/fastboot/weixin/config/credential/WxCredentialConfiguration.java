@@ -25,6 +25,7 @@ import com.mxixm.fastboot.weixin.support.MemoryWxJsTicketStore;
 import com.mxixm.fastboot.weixin.support.MemoryWxTokenStore;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,12 +51,6 @@ public class WxCredentialConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public WxTokenStore wxTokenStore() {
-        return new MemoryWxTokenStore();
-    }
-
-    @Bean
     public WxBaseService wxBaseService(WxApiTemplate wxApiTemplate) {
         return new WxBaseService(wxApiTemplate, wxProperties);
     }
@@ -66,9 +61,37 @@ public class WxCredentialConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(value = {WxJsTicketStore.class, WxCredentialStore.class}, ignored = WxTokenStore.class)
     public WxJsTicketStore wxJsTicketStore() {
         return new MemoryWxJsTicketStore();
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean(value = {WxTokenStore.class, WxCredentialStore.class}, ignored = WxJsTicketStore.class)
+    public WxTokenStore wxTokenStore() {
+        return new MemoryWxTokenStore();
+    }
+
+
+    /**
+     * 按照ConditionalOnBean的解析顺序，优先判断WxCredentialStore
+     * 如果存在，则包装为WxJsTicketStore.Adaptor类型
+     * @param wxCredentialStore
+     * @return
+     */
+    @Bean
+    @ConditionalOnBean(WxCredentialStore.class)
+    @ConditionalOnMissingBean
+    public WxJsTicketStore wxJsTicketStoreAdaptor(WxCredentialStore wxCredentialStore) {
+        return new WxJsTicketStore.Adapter(wxCredentialStore);
+    }
+
+    @Bean
+    @ConditionalOnBean(WxCredentialStore.class)
+    @ConditionalOnMissingBean
+    public WxTokenStore wxTokenStoreAdaptor(WxCredentialStore wxCredentialStore) {
+        return new WxTokenStore.Adapter(wxCredentialStore);
     }
 
     @Bean

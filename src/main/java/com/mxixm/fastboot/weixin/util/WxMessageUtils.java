@@ -16,7 +16,6 @@
 
 package com.mxixm.fastboot.weixin.util;
 
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 
 import java.util.HashSet;

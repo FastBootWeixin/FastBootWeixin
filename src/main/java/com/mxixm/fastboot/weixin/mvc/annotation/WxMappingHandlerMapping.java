@@ -121,6 +121,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return wxVerifyMethodHandler;
         }
         if (isWxPostRequest(request)) {
+            WxRequest wxRequest = new WxRequest(request, wxSessionManager);
+            WxWebUtils.setWxRequestToRequest(request, wxRequest);
             final HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
@@ -181,9 +183,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.mappingRegistry.acquireReadLock();
         try {
             HandlerMethod handlerMethod = null;
-            WxRequest wxRequest = new WxRequest(request, wxSessionManager);
-            WxRequest.Body wxRequestBody = wxRequest.getBody();
-            WxWebUtils.setWxRequestToRequest(request, wxRequest);
+            WxRequest.Body wxRequestBody = WxWebUtils.getWxRequestBodyFromRequest(request);
             // switch不被推荐缺少default
             switch (wxRequestBody.getCategory()) {
                 case BUTTON:

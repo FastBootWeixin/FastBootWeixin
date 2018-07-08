@@ -16,6 +16,8 @@
 
 package com.mxixm.fastboot.weixin.module.credential;
 
+import com.mxixm.fastboot.weixin.module.Wx;
+
 import java.util.Random;
 
 /**
@@ -27,8 +29,6 @@ import java.util.Random;
  */
 public class DefaultWxJsTicketPart implements WxJsTicketPart {
     
-    private final static String dictionary = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
     /**
      * 考虑随机化是否有问题
      * @param length 随机字符串长度
@@ -41,8 +41,8 @@ public class DefaultWxJsTicketPart implements WxJsTicketPart {
         // StringBuffer类生成，为了拼接字符串
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length; ++i) {
-            int number = random.nextInt(dictionary.length());
-            sb.append(dictionary.charAt(number));
+            int number = random.nextInt(Wx.DICTIONARY.length());
+            sb.append(Wx.DICTIONARY.charAt(number));
         }
         return sb.toString();
     }

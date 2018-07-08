@@ -32,7 +32,7 @@ public class WxTokenManager extends AbstractWxCredentialManager implements Initi
     private WxBaseService wxBaseService;
 
     public WxTokenManager(WxBaseService wxBaseService, WxTokenStore wxTokenStore) {
-        super(wxTokenStore);
+        super(WxCredential.Type.ACCESS_TOKEN, wxTokenStore);
         this.wxBaseService = wxBaseService;
     }
 

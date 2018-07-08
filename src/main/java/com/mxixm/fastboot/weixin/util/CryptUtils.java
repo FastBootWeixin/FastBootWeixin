@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.exception.WxCryptException;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -56,7 +57,7 @@ public abstract class CryptUtils {
         try {
             sha = MessageDigest.getInstance(KEY_SHA1);
         } catch (NoSuchAlgorithmException e) {
-            throw new WxAppException(e);
+            throw new WxCryptException(WxCryptException.Code.NO_SUCH_ALGORITHM);
         }
         // 使用指定的字节数组对摘要进行最后更新
         sha.update(data.getBytes(StandardCharsets.UTF_8));

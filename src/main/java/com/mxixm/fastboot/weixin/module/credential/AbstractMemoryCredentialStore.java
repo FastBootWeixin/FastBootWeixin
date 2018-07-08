@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date 2018/5/13 23:48
  * @since 0.6.0
  */
-public abstract class AbstractMemoryCredentialStore implements WxCredentialStore {
+public abstract class AbstractMemoryCredentialStore implements WxCredentialStore.Single {
 
     /**
      * 锁

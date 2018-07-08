@@ -32,6 +32,8 @@ import java.util.concurrent.*;
  */
 public abstract class AbstractWxCredentialManager {
 
+    private WxCredential.Type type;
+
     private WxCredentialStore wxCredentialStore;
 
     /**
@@ -39,7 +41,8 @@ public abstract class AbstractWxCredentialManager {
      */
     private static ExecutorService executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1), Executors.defaultThreadFactory());
 
-    public AbstractWxCredentialManager(WxCredentialStore wxCredentialStore) {
+    public AbstractWxCredentialManager(WxCredential.Type type, WxCredentialStore wxCredentialStore) {
+        this.type = type;
         this.wxCredentialStore = wxCredentialStore;
     }
 
@@ -55,17 +58,17 @@ public abstract class AbstractWxCredentialManager {
      */
     public String refresh() {
         long now = Instant.now().toEpochMilli();
-        if (this.wxCredentialStore.lock()) {
+        if (this.wxCredentialStore.lock(this.type)) {
             try {
                 // 拿到锁之后再判断一次过期时间，如果过期的话视为还没刷新
-                if (wxCredentialStore.expires() < now) {
+                if (wxCredentialStore.expires(this.type) < now) {
                     WxCredential wxCredential = this.refreshInternal();
-                    wxCredentialStore.store(wxCredential.getCredential(), now + wxCredential.getExpiresIn() * 1000);
+                    wxCredentialStore.store(this.type, wxCredential.getCredential(), now + wxCredential.getExpiresIn() * 1000);
                     return wxCredential.getCredential();
                 }
             } finally {
                 // 如果加锁成功了，一定要解锁
-                wxCredentialStore.unlock();
+                wxCredentialStore.unlock(this.type);
             }
         } else {
             // 加锁失败，直接获取当前token
@@ -73,7 +76,7 @@ public abstract class AbstractWxCredentialManager {
             // 因为如果此时获取了旧的token，但是如果旧的token失效了，那么此时请求会失败
             // 如果设置了请求token失败时重新获取的策略，很有可能造成线程阻塞。
         }
-        return wxCredentialStore.get();
+        return wxCredentialStore.get(this.type);
     }
 
     /**
@@ -81,7 +84,7 @@ public abstract class AbstractWxCredentialManager {
      * @return 新的凭证
      */
     public String forceRefresh() {
-        wxCredentialStore.store(null, 0);
+        wxCredentialStore.store(this.type, null, 0);
         return this.refresh();
     }
 
@@ -93,15 +96,15 @@ public abstract class AbstractWxCredentialManager {
 
     public String get() {
         long now = Instant.now().toEpochMilli();
-        long expiresTime = wxCredentialStore.expires();
+        long expiresTime = wxCredentialStore.expires(this.type);
         // 如果当前仍在有效期，但是在刷新期内，异步刷新，并返回当前的值
         if (now <= expiresTime && expiresTime <= now - tokenRedundance) {
             executor.execute(() -> this.refresh());
-            return this.wxCredentialStore.get();
+            return this.wxCredentialStore.get(this.type);
         } else if (expiresTime < now) {
             return this.refresh();
         }
-        return this.wxCredentialStore.get();
+        return this.wxCredentialStore.get(this.type);
     }
 
 }
