@@ -676,6 +676,10 @@ public class WxMessageBody {
             return this.articles;
         }
 
+        public static Item.Builder itemBuilder() {
+            return Item.builder();
+        }
+
         /**
          * 突然想省个事，虽然这里确实是用builder更好一点，但是我就是不用
          * 写builder了，但是刚才还有个事情忘记了，不知道是啥了。
