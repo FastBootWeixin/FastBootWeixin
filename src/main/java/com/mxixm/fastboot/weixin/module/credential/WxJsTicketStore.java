@@ -25,6 +25,14 @@ package com.mxixm.fastboot.weixin.module.credential;
  * @date 2018-5-7 23:35:38
  * @since 0.6.0
  */
-public interface WxJsTicketStore extends WxCredentialStore {
+public interface WxJsTicketStore extends WxCredentialStore.Single {
+
+    class Adapter extends Single.Adapter implements WxJsTicketStore {
+
+        public Adapter(WxCredentialStore wxCredentialStore) {
+            super(WxCredential.Type.JS_TICKET, wxCredentialStore);
+        }
+
+    }
 
 }

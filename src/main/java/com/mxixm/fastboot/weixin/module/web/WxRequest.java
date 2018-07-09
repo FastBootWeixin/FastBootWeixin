@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.*;
@@ -37,10 +38,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * FastBootWeixin WxRequest
@@ -63,9 +61,32 @@ public class WxRequest {
 
     private final String requestUri;
 
+    private final String openId;
+
+    private final String nonce;
+
+    private final String signature;
+
+    /**
+     * 加密类型，固定为aes
+     */
+    private final String encryptType;
+    /**
+     * 消息签名，用于加解密
+     */
+    private final String messageSignature;
+
+    private final Long timestamp;
+
     public WxRequest(HttpServletRequest request, WxSessionManager wxSessionManager) throws IOException {
         this.request = request;
         this.wxSessionManager = wxSessionManager;
+        this.openId = request.getParameter("openid");
+        this.nonce = request.getParameter("nonce");
+        this.signature = request.getParameter("signature");
+        this.messageSignature = request.getParameter("msg_signature ");
+        this.timestamp = Long.valueOf(request.getParameter("timestamp"));
+        this.encryptType = request.getParameter("encryptType");
         // ServletWebRequest
         body = (Body) xmlConverter.read(Body.class, new ServletServerHttpRequest(request));
         requestUrl = request.getRequestURL().toString();
@@ -128,6 +149,34 @@ public class WxRequest {
         return value;
     }
 
+    public String getOpenId() {
+        return openId;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public String getEncryptType() {
+        return encryptType;
+    }
+
+    public String getMessageSignature() {
+        return messageSignature;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public boolean isEncrypted() {
+        return !StringUtils.isEmpty(this.encryptType);
+    }
+
     @XmlRootElement(name = "xml")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Body {
@@ -140,6 +189,13 @@ public class WxRequest {
          */
         @XmlElement(name = "ToUserName", required = true)
         private String toUserName;
+
+        /**
+         * 可选通用
+         * 加密消息体
+         */
+        @XmlElement(name = "Encrypt", required = false)
+        private String encrypt;
 
         /**
          * 通用
@@ -610,6 +666,10 @@ public class WxRequest {
             return status;
         }
 
+        public String getEncrypt() {
+            return encrypt;
+        }
+
         public void setStatus(String status) {
             this.status = status;
         }
@@ -782,266 +842,110 @@ public class WxRequest {
             this.errorCount = errorCount;
         }
 
+        public void setEncrypt(String encrypt) {
+            this.encrypt = encrypt;
+        }
+
         @Override
         public boolean equals(Object o) {
-            if (o == this) {
+            if (this == o) {
                 return true;
             }
             if (!(o instanceof Body)) {
                 return false;
             }
-            final Body other = (Body) o;
-            if (!other.canEqual((Object) this)) {
-                return false;
-            }
-            final Object this$toUserName = this.getToUserName();
-            final Object other$toUserName = other.getToUserName();
-            if (this$toUserName == null ? other$toUserName != null : !this$toUserName.equals(other$toUserName)) {
-                return false;
-            }
-            final Object this$fromUserName = this.getFromUserName();
-            final Object other$fromUserName = other.getFromUserName();
-            if (this$fromUserName == null ? other$fromUserName != null : !this$fromUserName.equals(other$fromUserName)) {
-                return false;
-            }
-            final Object this$createTime = this.getCreateTime();
-            final Object other$createTime = other.getCreateTime();
-            if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime)) {
-                return false;
-            }
-            final Object this$messageType = this.getMessageType();
-            final Object other$messageType = other.getMessageType();
-            if (this$messageType == null ? other$messageType != null : !this$messageType.equals(other$messageType)) {
-                return false;
-            }
-            final Object this$category = this.getCategory();
-            final Object other$category = other.getCategory();
-            if (this$category == null ? other$category != null : !this$category.equals(other$category)) {
-                return false;
-            }
-            final Object this$eventType = this.getEventType();
-            final Object other$eventType = other.getEventType();
-            if (this$eventType == null ? other$eventType != null : !this$eventType.equals(other$eventType)) {
-                return false;
-            }
-            final Object this$buttonType = this.getButtonType();
-            final Object other$buttonType = other.getButtonType();
-            if (this$buttonType == null ? other$buttonType != null : !this$buttonType.equals(other$buttonType)) {
-                return false;
-            }
-            final Object this$eventKey = this.getEventKey();
-            final Object other$eventKey = other.getEventKey();
-            if (this$eventKey == null ? other$eventKey != null : !this$eventKey.equals(other$eventKey)) {
-                return false;
-            }
-            final Object this$menuId = this.getMenuId();
-            final Object other$menuId = other.getMenuId();
-            if (this$menuId == null ? other$menuId != null : !this$menuId.equals(other$menuId)) {
-                return false;
-            }
-            final Object this$scanCodeInfo = this.getScanCodeInfo();
-            final Object other$scanCodeInfo = other.getScanCodeInfo();
-            if (this$scanCodeInfo == null ? other$scanCodeInfo != null : !this$scanCodeInfo.equals(other$scanCodeInfo)) {
-                return false;
-            }
-            final Object this$sendPicsInfo = this.getSendPicsInfo();
-            final Object other$sendPicsInfo = other.getSendPicsInfo();
-            if (this$sendPicsInfo == null ? other$sendPicsInfo != null : !this$sendPicsInfo.equals(other$sendPicsInfo)) {
-                return false;
-            }
-            final Object this$sendLocationInfo = this.getSendLocationInfo();
-            final Object other$sendLocationInfo = other.getSendLocationInfo();
-            if (this$sendLocationInfo == null ? other$sendLocationInfo != null : !this$sendLocationInfo.equals(other$sendLocationInfo)) {
-                return false;
-            }
-            final Object this$content = this.getContent();
-            final Object other$content = other.getContent();
-            if (this$content == null ? other$content != null : !this$content.equals(other$content)) {
-                return false;
-            }
-            final Object this$picUrl = this.getPicUrl();
-            final Object other$picUrl = other.getPicUrl();
-            if (this$picUrl == null ? other$picUrl != null : !this$picUrl.equals(other$picUrl)) {
-                return false;
-            }
-            final Object this$mediaId = this.getMediaId();
-            final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
-                return false;
-            }
-            final Object this$format = this.getFormat();
-            final Object other$format = other.getFormat();
-            if (this$format == null ? other$format != null : !this$format.equals(other$format)) {
-                return false;
-            }
-            final Object this$recognition = this.getRecognition();
-            final Object other$recognition = other.getRecognition();
-            if (this$recognition == null ? other$recognition != null : !this$recognition.equals(other$recognition)) {
-                return false;
-            }
-            final Object this$thumbMediaId = this.getThumbMediaId();
-            final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
-                return false;
-            }
-            final Object this$locationX = this.getLocationX();
-            final Object other$locationX = other.getLocationX();
-            if (this$locationX == null ? other$locationX != null : !this$locationX.equals(other$locationX)) {
-                return false;
-            }
-            final Object this$locationY = this.getLocationY();
-            final Object other$locationY = other.getLocationY();
-            if (this$locationY == null ? other$locationY != null : !this$locationY.equals(other$locationY)) {
-                return false;
-            }
-            final Object this$scale = this.getScale();
-            final Object other$scale = other.getScale();
-            if (this$scale == null ? other$scale != null : !this$scale.equals(other$scale)) {
-                return false;
-            }
-            final Object this$label = this.getLabel();
-            final Object other$label = other.getLabel();
-            if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
-                return false;
-            }
-            final Object this$title = this.getTitle();
-            final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
-                return false;
-            }
-            final Object this$description = this.getDescription();
-            final Object other$description = other.getDescription();
-            if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
-                return false;
-            }
-            final Object this$url = this.getUrl();
-            final Object other$url = other.getUrl();
-            if (this$url == null ? other$url != null : !this$url.equals(other$url)) {
-                return false;
-            }
-            final Object this$ticket = this.getTicket();
-            final Object other$ticket = other.getTicket();
-            if (this$ticket == null ? other$ticket != null : !this$ticket.equals(other$ticket)) {
-                return false;
-            }
-            final Object this$latitude = this.getLatitude();
-            final Object other$latitude = other.getLatitude();
-            if (this$latitude == null ? other$latitude != null : !this$latitude.equals(other$latitude)) {
-                return false;
-            }
-            final Object this$longitude = this.getLongitude();
-            final Object other$longitude = other.getLongitude();
-            if (this$longitude == null ? other$longitude != null : !this$longitude.equals(other$longitude)) {
-                return false;
-            }
-            final Object this$precision = this.getPrecision();
-            final Object other$precision = other.getPrecision();
-            if (this$precision == null ? other$precision != null : !this$precision.equals(other$precision)) {
-                return false;
-            }
-            final Object this$expiredTime = this.getExpiredTime();
-            final Object other$expiredTime = other.getExpiredTime();
-            if (this$expiredTime == null ? other$expiredTime != null : !this$expiredTime.equals(other$expiredTime)) {
-                return false;
-            }
-            final Object this$failTime = this.getFailTime();
-            final Object other$failTime = other.getFailTime();
-            if (this$failTime == null ? other$failTime != null : !this$failTime.equals(other$failTime)) {
-                return false;
-            }
-            final Object this$failReason = this.getFailReason();
-            final Object other$failReason = other.getFailReason();
-            if (this$failReason == null ? other$failReason != null : !this$failReason.equals(other$failReason)) {
-                return false;
-            }
-            final Object this$msgId = this.getMsgId();
-            final Object other$msgId = other.getMsgId();
-            if (this$msgId == null ? other$msgId != null : !this$msgId.equals(other$msgId)) {
-                return false;
-            }
-            return true;
+            Body body = (Body) o;
+            return Objects.equals(getToUserName(), body.getToUserName()) &&
+                    Objects.equals(getEncrypt(), body.getEncrypt()) &&
+                    Objects.equals(getFromUserName(), body.getFromUserName()) &&
+                    Objects.equals(getCreateTime(), body.getCreateTime()) &&
+                    getMessageType() == body.getMessageType() &&
+                    getCategory() == body.getCategory() &&
+                    getEventType() == body.getEventType() &&
+                    getButtonType() == body.getButtonType() &&
+                    Objects.equals(getEventKey(), body.getEventKey()) &&
+                    Objects.equals(getScene(), body.getScene()) &&
+                    Objects.equals(getMenuId(), body.getMenuId()) &&
+                    Objects.equals(getScanCodeInfo(), body.getScanCodeInfo()) &&
+                    Objects.equals(getSendPicsInfo(), body.getSendPicsInfo()) &&
+                    Objects.equals(getSendLocationInfo(), body.getSendLocationInfo()) &&
+                    Objects.equals(getContent(), body.getContent()) &&
+                    Objects.equals(getPicUrl(), body.getPicUrl()) &&
+                    Objects.equals(getMediaId(), body.getMediaId()) &&
+                    Objects.equals(getFormat(), body.getFormat()) &&
+                    Objects.equals(getRecognition(), body.getRecognition()) &&
+                    Objects.equals(getThumbMediaId(), body.getThumbMediaId()) &&
+                    Objects.equals(getLocationX(), body.getLocationX()) &&
+                    Objects.equals(getLocationY(), body.getLocationY()) &&
+                    Objects.equals(getScale(), body.getScale()) &&
+                    Objects.equals(getLabel(), body.getLabel()) &&
+                    Objects.equals(getTitle(), body.getTitle()) &&
+                    Objects.equals(getDescription(), body.getDescription()) &&
+                    Objects.equals(getUrl(), body.getUrl()) &&
+                    Objects.equals(getTicket(), body.getTicket()) &&
+                    Objects.equals(getLatitude(), body.getLatitude()) &&
+                    Objects.equals(getLongitude(), body.getLongitude()) &&
+                    Objects.equals(getPrecision(), body.getPrecision()) &&
+                    Objects.equals(getExpiredTime(), body.getExpiredTime()) &&
+                    Objects.equals(getFailTime(), body.getFailTime()) &&
+                    Objects.equals(getFailReason(), body.getFailReason()) &&
+                    Objects.equals(getMsgId(), body.getMsgId()) &&
+                    Objects.equals(getStatus(), body.getStatus()) &&
+                    Objects.equals(getTotalCount(), body.getTotalCount()) &&
+                    Objects.equals(getFilterCount(), body.getFilterCount()) &&
+                    Objects.equals(getSendCount(), body.getSendCount()) &&
+                    Objects.equals(getErrorCount(), body.getErrorCount());
         }
 
         @Override
         public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $toUserName = this.getToUserName();
-            result = result * PRIME + ($toUserName == null ? 43 : $toUserName.hashCode());
-            final Object $fromUserName = this.getFromUserName();
-            result = result * PRIME + ($fromUserName == null ? 43 : $fromUserName.hashCode());
-            final Object $createTime = this.getCreateTime();
-            result = result * PRIME + ($createTime == null ? 43 : $createTime.hashCode());
-            final Object $messageType = this.getMessageType();
-            result = result * PRIME + ($messageType == null ? 43 : $messageType.hashCode());
-            final Object $category = this.getCategory();
-            result = result * PRIME + ($category == null ? 43 : $category.hashCode());
-            final Object $eventType = this.getEventType();
-            result = result * PRIME + ($eventType == null ? 43 : $eventType.hashCode());
-            final Object $buttonType = this.getButtonType();
-            result = result * PRIME + ($buttonType == null ? 43 : $buttonType.hashCode());
-            final Object $eventKey = this.getEventKey();
-            result = result * PRIME + ($eventKey == null ? 43 : $eventKey.hashCode());
-            final Object $menuId = this.getMenuId();
-            result = result * PRIME + ($menuId == null ? 43 : $menuId.hashCode());
-            final Object $scanCodeInfo = this.getScanCodeInfo();
-            result = result * PRIME + ($scanCodeInfo == null ? 43 : $scanCodeInfo.hashCode());
-            final Object $sendPicsInfo = this.getSendPicsInfo();
-            result = result * PRIME + ($sendPicsInfo == null ? 43 : $sendPicsInfo.hashCode());
-            final Object $sendLocationInfo = this.getSendLocationInfo();
-            result = result * PRIME + ($sendLocationInfo == null ? 43 : $sendLocationInfo.hashCode());
-            final Object $content = this.getContent();
-            result = result * PRIME + ($content == null ? 43 : $content.hashCode());
-            final Object $picUrl = this.getPicUrl();
-            result = result * PRIME + ($picUrl == null ? 43 : $picUrl.hashCode());
-            final Object $mediaId = this.getMediaId();
-            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
-            final Object $format = this.getFormat();
-            result = result * PRIME + ($format == null ? 43 : $format.hashCode());
-            final Object $recognition = this.getRecognition();
-            result = result * PRIME + ($recognition == null ? 43 : $recognition.hashCode());
-            final Object $thumbMediaId = this.getThumbMediaId();
-            result = result * PRIME + ($thumbMediaId == null ? 43 : $thumbMediaId.hashCode());
-            final Object $locationX = this.getLocationX();
-            result = result * PRIME + ($locationX == null ? 43 : $locationX.hashCode());
-            final Object $locationY = this.getLocationY();
-            result = result * PRIME + ($locationY == null ? 43 : $locationY.hashCode());
-            final Object $scale = this.getScale();
-            result = result * PRIME + ($scale == null ? 43 : $scale.hashCode());
-            final Object $label = this.getLabel();
-            result = result * PRIME + ($label == null ? 43 : $label.hashCode());
-            final Object $title = this.getTitle();
-            result = result * PRIME + ($title == null ? 43 : $title.hashCode());
-            final Object $description = this.getDescription();
-            result = result * PRIME + ($description == null ? 43 : $description.hashCode());
-            final Object $url = this.getUrl();
-            result = result * PRIME + ($url == null ? 43 : $url.hashCode());
-            final Object $ticket = this.getTicket();
-            result = result * PRIME + ($ticket == null ? 43 : $ticket.hashCode());
-            final Object $latitude = this.getLatitude();
-            result = result * PRIME + ($latitude == null ? 43 : $latitude.hashCode());
-            final Object $longitude = this.getLongitude();
-            result = result * PRIME + ($longitude == null ? 43 : $longitude.hashCode());
-            final Object $precision = this.getPrecision();
-            result = result * PRIME + ($precision == null ? 43 : $precision.hashCode());
-            final Object $expiredTime = this.getExpiredTime();
-            result = result * PRIME + ($expiredTime == null ? 43 : $expiredTime.hashCode());
-            final Object $failTime = this.getFailTime();
-            result = result * PRIME + ($failTime == null ? 43 : $failTime.hashCode());
-            final Object $failReason = this.getFailReason();
-            result = result * PRIME + ($failReason == null ? 43 : $failReason.hashCode());
-            final Object $msgId = this.getMsgId();
-            result = result * PRIME + ($msgId == null ? 43 : $msgId.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Body;
+            return Objects.hash(getToUserName(), getEncrypt(), getFromUserName(), getCreateTime(), getMessageType(), getCategory(), getEventType(), getButtonType(), getEventKey(), getScene(), getMenuId(), getScanCodeInfo(), getSendPicsInfo(), getSendLocationInfo(), getContent(), getPicUrl(), getMediaId(), getFormat(), getRecognition(), getThumbMediaId(), getLocationX(), getLocationY(), getScale(), getLabel(), getTitle(), getDescription(), getUrl(), getTicket(), getLatitude(), getLongitude(), getPrecision(), getExpiredTime(), getFailTime(), getFailReason(), getMsgId(), getStatus(), getTotalCount(), getFilterCount(), getSendCount(), getErrorCount());
         }
 
         @Override
         public String toString() {
-            return "com.mxixm.fastboot.weixin.module.web.WxRequest.WxMessageBody(toUser=" + this.getToUserName() + ", fromUser=" + this.getFromUserName() + ", createTime=" + this.getCreateTime() + ", messageType=" + this.getMessageType() + ", category=" + this.getCategory() + ", eventType=" + this.getEventType() + ", buttonType=" + this.getButtonType() + ", eventKey=" + this.getEventKey() + ", menuId=" + this.getMenuId() + ", scanCodeInfo=" + this.getScanCodeInfo() + ", sendPicsInfo=" + this.getSendPicsInfo() + ", sendLocationInfo=" + this.getSendLocationInfo() + ", content=" + this.getContent() + ", picUrl=" + this.getPicUrl() + ", mediaId=" + this.getMediaId() + ", format=" + this.getFormat() + ", recognition=" + this.getRecognition() + ", thumbMediaId=" + this.getThumbMediaId() + ", locationX=" + this.getLocationX() + ", locationY=" + this.getLocationY() + ", scale=" + this.getScale() + ", label=" + this.getLabel() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", url=" + this.getUrl() + ", ticket=" + this.getTicket() + ", latitude=" + this.getLatitude() + ", longitude=" + this.getLongitude() + ", precision=" + this.getPrecision() + ", expiredTime=" + this.getExpiredTime() + ", failTime=" + this.getFailTime() + ", failReason=" + this.getFailReason() + ", msgId=" + this.getMsgId() + ")";
+            return "WxRequest.Body{" +
+                    "toUserName='" + toUserName + '\'' +
+                    ", encrypt='" + encrypt + '\'' +
+                    ", fromUserName='" + fromUserName + '\'' +
+                    ", createTime=" + createTime +
+                    ", messageType=" + messageType +
+                    ", category=" + category +
+                    ", eventType=" + eventType +
+                    ", buttonType=" + buttonType +
+                    ", eventKey='" + eventKey + '\'' +
+                    ", scene='" + scene + '\'' +
+                    ", menuId='" + menuId + '\'' +
+                    ", scanCodeInfo=" + scanCodeInfo +
+                    ", sendPicsInfo=" + sendPicsInfo +
+                    ", sendLocationInfo=" + sendLocationInfo +
+                    ", content='" + content + '\'' +
+                    ", picUrl='" + picUrl + '\'' +
+                    ", mediaId='" + mediaId + '\'' +
+                    ", format='" + format + '\'' +
+                    ", recognition='" + recognition + '\'' +
+                    ", thumbMediaId='" + thumbMediaId + '\'' +
+                    ", locationX=" + locationX +
+                    ", locationY=" + locationY +
+                    ", scale=" + scale +
+                    ", label='" + label + '\'' +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", url='" + url + '\'' +
+                    ", ticket='" + ticket + '\'' +
+                    ", latitude=" + latitude +
+                    ", longitude=" + longitude +
+                    ", precision=" + precision +
+                    ", expiredTime=" + expiredTime +
+                    ", failTime=" + failTime +
+                    ", failReason='" + failReason + '\'' +
+                    ", msgId=" + msgId +
+                    ", status='" + status + '\'' +
+                    ", totalCount=" + totalCount +
+                    ", filterCount=" + filterCount +
+                    ", sendCount=" + sendCount +
+                    ", errorCount=" + errorCount +
+                    '}';
         }
 
         /**

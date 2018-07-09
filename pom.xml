@@ -5,7 +5,7 @@
 
     <groupId>com.mxixm</groupId>
     <artifactId>fastboot-weixin</artifactId>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.6.1</version>
     <packaging>jar</packaging>
 
     <name>FastBootWeixin</name>
@@ -62,7 +62,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <wx.httpclient.version>4.5.3</wx.httpclient.version>
         <wx.httpcore.version>4.4.6</wx.httpcore.version>
-        <wx.springboot.version>2.0.1.RELEASE</wx.springboot.version>
+        <wx.springboot.version>2.0.2.RELEASE</wx.springboot.version>
         <!--<wx.springboot.version>1.5.6.RELEASE</wx.springboot.version>-->
     </properties>
 

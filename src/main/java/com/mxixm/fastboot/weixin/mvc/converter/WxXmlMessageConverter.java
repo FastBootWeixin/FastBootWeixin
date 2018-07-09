@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017, Guangshan (guangshan1992@qq.com) and the original author or authors.
+ * Copyright (c) 2016-2018, Guangshan (guangshan1992@qq.com) and the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,35 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.service.invoker.common;
+package com.mxixm.fastboot.weixin.mvc.converter;
 
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
+import com.mxixm.fastboot.weixin.service.WxMessageCryptService;
+import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 
 /**
- * FastBootWeixin WxJaxb2RootElementHttpMessageConverter
+ * FastBootWeixin WxXmlMessageConverter
  * 用于转化CData，暂时不使用，实在没办法了再使用
  * 这里其实还引出了一个大问题，因为我这里使用了CharacterEscapeHandler接口，这个是在rt.jar包中的
  * com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler，因为是rt.jar，所以在编译时并不会把这个包加进去
@@ -40,11 +54,48 @@ import java.lang.invoke.MethodHandles;
  * @date 2017/08/23 22:31
  * @since 0.1.2
  */
-public class WxJaxb2RootElementHttpMessageConverter extends Jaxb2RootElementHttpMessageConverter {
+public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
     private static final CDataCharacterEscapeHandler characterEscapeHandler = new CDataCharacterEscapeHandler();
+
+    private final WxMessageCryptService wxMessageCryptService;
+
+    public WxXmlMessageConverter(WxMessageCryptService wxMessageCryptService) {
+        this.wxMessageCryptService = wxMessageCryptService;
+    }
+
+    /**
+     * 只读WxRequest.Body这种类型
+     * @param clazz 传入的Class
+     * @param mediaType 媒体类型
+     * @return 是否支持读
+     */
+    @Override
+    public boolean canRead(Class<?> clazz, @Nullable MediaType mediaType) {
+        return super.canRead(clazz, mediaType) &&  WxRequest.Body.class.isAssignableFrom(clazz);
+    }
+
+    public WxRequest.Body read(HttpServletRequest request) throws IOException {
+        WxRequest.Body body = (WxRequest.Body) super.read(WxRequest.Body.class, new ServletServerHttpRequest(request));
+        return body;
+    }
+
+    @Override
+    protected Object readFromSource(Class<?> clazz, HttpHeaders headers, Source source) throws IOException {
+        Assert.isAssignable(WxRequest.Body.class, clazz, "错误的使用了消息转化器");
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
+        WxRequest.Body body = (WxRequest.Body) super.readFromSource(clazz, headers, source);
+        if (!wxRequest.isEncrypted()) {
+            return body;
+        }
+        if (StringUtils.isEmpty(body.getEncrypt()) && !StringUtils.isEmpty(body.getFromUserName())) {
+            return body;
+        }
+        String decryptedMessage = wxMessageCryptService.decrypt(wxRequest, body.getEncrypt());
+        return super.readFromSource(clazz, headers, new StreamSource(new ByteArrayInputStream(decryptedMessage.getBytes(StandardCharsets.UTF_8))));
+    }
 
     @Override
     protected void customizeMarshaller(Marshaller marshaller) {

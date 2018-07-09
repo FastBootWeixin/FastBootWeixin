@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.module.web.session.DefaultWxSessionIdGenerator;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionIdGenerator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -39,11 +40,31 @@ import java.util.List;
 @ConfigurationProperties(prefix = "wx")
 public class WxProperties implements InitializingBean {
 
+    private static final int ENCODING_AED_KEY_LENGTH = 43;
+
     private String token;
 
+    /**
+     * 规范化命名
+     */
+    @Deprecated
     private String appid;
 
+    /**
+     * 规范化命名
+     */
+    private String appId;
+
+    /**
+     * 规范化命名
+     */
+    @Deprecated
     private String appsecret;
+
+    /**
+     * 规范化命名
+     */
+    private String appSecret;
 
     /**
      * 微信接口配置信息里的path路径
@@ -65,6 +86,18 @@ public class WxProperties implements InitializingBean {
      */
     private String callbackUrl;
 
+    /**
+     * 是否启用消息加解密。
+     * 明文模式配置false，兼容模式true或者false均可，加密模式配置为true
+     * 注意配置为true时一定要提供EncodingAESKey
+     */
+    private boolean encrypt = false;
+
+    /**
+     * 微信消息加解密使用的aesKey，base64编码，长度为43
+     */
+    private String encodingAesKey;
+
     private Invoker invoker = new Invoker();
 
     private System system = new System();
@@ -77,6 +110,22 @@ public class WxProperties implements InitializingBean {
 
     private Server server = new Server();
 
+    public boolean isEncrypt() {
+        return encrypt;
+    }
+
+    public void setEncrypt(boolean encrypt) {
+        this.encrypt = encrypt;
+    }
+
+    public String getEncodingAesKey() {
+        return encodingAesKey;
+    }
+
+    public void setEncodingAesKey(String encodingAesKey) {
+        this.encodingAesKey = encodingAesKey;
+    }
+
     public WxProperties() {
     }
 
@@ -87,9 +136,14 @@ public class WxProperties implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        Wx.Environment.instance().setWxAppId(this.appid);
-        Wx.Environment.instance().setWxAppSecret(this.appsecret);
+        Assert.isTrue(!this.encrypt ||
+                (this.encodingAesKey != null && this.encodingAesKey.length() == ENCODING_AED_KEY_LENGTH),
+                "当加密配置为true时，必须存在encodingAesKey，且长度必须为43，请检查配置");
+        Wx.Environment.instance().setWxAppId(this.appId);
+        Wx.Environment.instance().setWxAppSecret(this.appSecret);
         Wx.Environment.instance().setWxToken(this.token);
+        Wx.Environment.instance().setEncrypt(this.encrypt);
+        Wx.Environment.instance().setEncodingAesKey(this.encodingAesKey);
         // 优先使用callbackUrl
         Wx.Environment.instance().setCallbackUrl(StringUtils.isEmpty(this.callbackUrl) ? this.callbackDomain : this.callbackUrl);
     }
@@ -115,11 +169,11 @@ public class WxProperties implements InitializingBean {
     }
 
     public String getAppid() {
-        return this.appid;
+        return this.appId;
     }
 
     public String getAppsecret() {
-        return this.appsecret;
+        return this.appSecret;
     }
 
     public String getCallbackDomain() {
@@ -155,11 +209,11 @@ public class WxProperties implements InitializingBean {
     }
 
     public void setAppid(String appid) {
-        this.appid = appid;
+        this.appId = appid;
     }
 
     public void setAppsecret(String appsecret) {
-        this.appsecret = appsecret;
+        this.appSecret = appsecret;
     }
 
     public void setCallbackDomain(String callbackDomain) {
@@ -188,6 +242,22 @@ public class WxProperties implements InitializingBean {
 
     public void setServer(Server server) {
         this.server = server;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public void setAppSecret(String appSecret) {
+        this.appSecret = appSecret;
     }
 
     @Override

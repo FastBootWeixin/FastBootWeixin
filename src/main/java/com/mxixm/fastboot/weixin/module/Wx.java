@@ -20,6 +20,7 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
+import java.util.Dictionary;
 
 /**
  * FastBootWeixin Wx 微信常量类
@@ -29,6 +30,8 @@ import java.net.URI;
  * @since 0.1.2
  */
 public class Wx {
+
+    public static final String DICTIONARY = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     /**
      * 个人定义的类目
@@ -80,6 +83,10 @@ public class Wx {
         private URI callbackUri;
 
         private String callbackUrl;
+
+        private boolean encrypt = false;
+
+        private String encodingAesKey;
 
         public String getCallbackHost() {
             return callbackUri != null ? callbackUri.getHost() : null;
@@ -136,6 +143,22 @@ public class Wx {
 
         public void setDefaultMediaPath(String defaultMediaPath) {
             this.defaultMediaPath = defaultMediaPath;
+        }
+
+        public boolean isEncrypt() {
+            return encrypt;
+        }
+
+        public void setEncrypt(boolean encrypt) {
+            this.encrypt = encrypt;
+        }
+
+        public String getEncodingAesKey() {
+            return encodingAesKey;
+        }
+
+        public void setEncodingAesKey(String encodingAesKey) {
+            this.encodingAesKey = encodingAesKey;
         }
     }
 

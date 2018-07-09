@@ -45,20 +45,20 @@ public class WxApiResultException extends WxApiException {
 
     private String errorMessage;
 
-    WxApiResultCode resultCode;
+    Code resultCode;
 
     public WxApiResultException(int code, String errorMessage) {
         super(code + ":" + errorMessage);
         this.code = code;
         this.errorMessage = errorMessage;
-        this.resultCode = WxApiResultCode.of(code);
+        this.resultCode = Code.of(code);
     }
 
     public WxApiResultException(String errorResult) {
         super(errorResult);
         // 设置code和errorMessage
         prepare(errorResult);
-        this.resultCode = WxApiResultCode.of(code);
+        this.resultCode = Code.of(code);
     }
 
     public int getCode() {
@@ -69,13 +69,13 @@ public class WxApiResultException extends WxApiException {
         return errorMessage;
     }
 
-    public WxApiResultCode getResultCode() {
+    public Code getResultCode() {
         return resultCode;
     }
 
     public void prepare(String errorResult) {
-        this.code = WxApiResultCode.Unknown_Error.errcode;
-        this.errorMessage = WxApiResultCode.Unknown_Error.errdesc;
+        this.code = Code.Unknown_Error.errcode;
+        this.errorMessage = Code.Unknown_Error.errdesc;
         try {
             int codeStringStart = errorResult.indexOf(WX_API_RESULT_ERRCODE);
             int codeStart = errorResult.indexOf(":", codeStringStart) + 1;
@@ -100,7 +100,7 @@ public class WxApiResultException extends WxApiException {
         return false;
     }
 
-    public enum WxApiResultCode {
+    public enum Code {
 
         SYSTEM_BUSY(-1, "系统繁忙，此时请开发者稍候再试"),
 
@@ -416,13 +416,13 @@ public class WxApiResultException extends WxApiException {
 
         String errdesc;
 
-        WxApiResultCode(int errcode, String errdesc) {
+        Code(int errcode, String errdesc) {
             this.errcode = errcode;
             this.errdesc = errdesc;
         }
 
-        public static WxApiResultCode of(int errcode) {
-            return Arrays.stream(WxApiResultCode.values()).filter(v -> v.errcode == errcode).findFirst().orElse(Unknown_Error);
+        public static Code of(int errcode) {
+            return Arrays.stream(Code.values()).filter(v -> v.errcode == errcode).findFirst().orElse(Unknown_Error);
         }
 
     }

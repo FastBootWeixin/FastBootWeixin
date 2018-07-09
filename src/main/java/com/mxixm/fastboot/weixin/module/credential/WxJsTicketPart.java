@@ -26,7 +26,7 @@ package com.mxixm.fastboot.weixin.module.credential;
  */
 public interface WxJsTicketPart {
 
-    int DEFAULT_LENGTH = 10;
+    int DEFAULT_LENGTH = 16;
 
     /**
      * 随机字符串
