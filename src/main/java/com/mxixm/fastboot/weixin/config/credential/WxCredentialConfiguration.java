@@ -77,22 +77,31 @@ public class WxCredentialConfiguration {
     /**
      * 按照ConditionalOnBean的解析顺序，优先判断WxCredentialStore
      * 如果存在，则包装为WxJsTicketStore.Adaptor类型
-     * @param wxCredentialStore
-     * @return
      */
-    @Bean
     @ConditionalOnBean(WxCredentialStore.class)
-    @ConditionalOnMissingBean
-    public WxJsTicketStore wxJsTicketStoreAdaptor(WxCredentialStore wxCredentialStore) {
-        return new WxJsTicketStore.Adapter(wxCredentialStore);
+    private static class WxCredentialStoreConfiguration {
+
+        private final WxCredentialStore wxCredentialStore;
+
+        public WxCredentialStoreConfiguration(WxCredentialStore wxCredentialStore) {
+            this.wxCredentialStore = wxCredentialStore;
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public WxJsTicketStore wxJsTicketStoreAdaptor() {
+            return new WxJsTicketStore.Adapter(wxCredentialStore);
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public WxTokenStore wxTokenStoreAdaptor() {
+            return new WxTokenStore.Adapter(wxCredentialStore);
+        }
+
     }
 
-    @Bean
-    @ConditionalOnBean(WxCredentialStore.class)
-    @ConditionalOnMissingBean
-    public WxTokenStore wxTokenStoreAdaptor(WxCredentialStore wxCredentialStore) {
-        return new WxTokenStore.Adapter(wxCredentialStore);
-    }
+
 
     @Bean
     @ConditionalOnMissingBean
