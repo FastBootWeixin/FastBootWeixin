@@ -23,6 +23,7 @@ package com.mxixm.fastboot.weixin.service;
 import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.exception.WxCryptException;
 import com.mxixm.fastboot.weixin.module.Wx;
+import com.mxixm.fastboot.weixin.module.message.WxEncryptMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.CryptUtils;
 import org.apache.commons.logging.Log;
@@ -56,8 +57,14 @@ import java.util.stream.Stream;
  * <li>如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件</li>
  * <li>如果安装了JDK，将两个jar文件放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件</li>
  * </ol>
+ *
+ * fastboot-weixin  WxXmlCryptoService
+ *
+ * @author Guangshan
+ * @date 2018-7-11 00:07:34
+ * @since 0.6.2
  */
-public class WxMessageCryptService implements InitializingBean {
+public class WxXmlCryptoService implements InitializingBean {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -75,7 +82,7 @@ public class WxMessageCryptService implements InitializingBean {
 
     private Cipher decryptCipher;
 
-    public WxMessageCryptService(WxProperties wxProperties) {
+    public WxXmlCryptoService(WxProperties wxProperties) {
         this.wxProperties = wxProperties;
     }
 
@@ -100,14 +107,67 @@ public class WxMessageCryptService implements InitializingBean {
     }
 
     /**
+     * 将公众平台回复用户的消息加密打包.
+     * <ol>
+     * <li>对要发送的消息进行AES-CBC加密</li>
+     * <li>生成安全签名</li>
+     * <li>将消息密文和安全签名打包成xml格式</li>
+     * </ol>
+     *
+     * @param wxRequest 微信请求
+     * @param body      需要加密的数据
+     * @return 包含加密内容的加密消息实体
+     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
+     */
+    public WxEncryptMessage encrypt(WxRequest wxRequest, String body) throws WxCryptException {
+        // 加密
+        String encrypted = encrypt(body);
+        String rawString = Stream.of(token, encrypted, wxRequest.getTimestamp().toString(),
+                wxRequest.getNonce()).sorted().collect(Collectors.joining());
+        String signature = CryptUtils.encryptSHA1(rawString);
+        WxEncryptMessage wxEncryptMessage = new WxEncryptMessage(
+                encrypted, signature, wxRequest.getTimestamp(), wxRequest.getNonce());
+        return wxEncryptMessage;
+    }
+
+    /**
+     * 检验消息的真实性，并且获取解密后的明文.
+     * <ol>
+     * <li>利用收到的密文生成安全签名，进行签名验证</li>
+     * <li>若验证通过，则提取xml中的加密消息</li>
+     * <li>对消息进行解密</li>
+     * </ol>
+     *
+     * @param wxRequest 微信请求
+     * @param body      密文，对应POST请求的数据
+     * @return 解密后的原文
+     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
+     */
+    public String decrypt(WxRequest wxRequest, String body)
+            throws WxCryptException {
+        // 密钥，公众账号的app secret
+        String rawString = Stream.of(token, wxRequest.getTimestamp().toString(), wxRequest.getNonce(), body).sorted().collect(Collectors.joining());
+        // 验证安全签名
+        String signature = CryptUtils.encryptSHA1(rawString);
+        // 和URL中的签名比较是否相等
+        if (!signature.equals(wxRequest.getMessageSignature())) {
+            throw new WxCryptException(WxCryptException.Code.VALIDATE_SIGNATURE_ERROR);
+        }
+        // 解密
+        String result = decrypt(rawString);
+        return result;
+    }
+
+
+    /**
      * 对明文进行加密.
      *
      * @param text 需要加密的明文
      * @return 加密后base64编码的字符串
      * @throws WxCryptException aes加密失败
      */
-    public String encrypt(String randomString, String text) throws WxCryptException {
-        byte[] randomBytes = randomString.getBytes(CHARSET);
+    private String encrypt(String text) throws WxCryptException {
+        byte[] randomBytes = getRandomString().getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
         byte[] appidBytes = appId.getBytes(CHARSET);
@@ -159,8 +219,7 @@ public class WxMessageCryptService implements InitializingBean {
             byte[] networkOrder = Arrays.copyOfRange(bytes, 16, 20);
             int xmlLength = recoverNetworkBytesOrder(networkOrder);
             xmlContent = new String(Arrays.copyOfRange(bytes, 20, 20 + xmlLength), CHARSET);
-            fromAppid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length),
-                    CHARSET);
+            fromAppid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length), CHARSET);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new WxCryptException(WxCryptException.Code.ILLEGAL_BUFFER);
@@ -173,59 +232,8 @@ public class WxMessageCryptService implements InitializingBean {
     }
 
     /**
-     * 将公众平台回复用户的消息加密打包.
-     * <ol>
-     * <li>对要发送的消息进行AES-CBC加密</li>
-     * <li>生成安全签名</li>
-     * <li>将消息密文和安全签名打包成xml格式</li>
-     * </ol>
-     *
-     * @param message  公众平台待回复用户的消息，xml格式的字符串
-     * @param timestamp 时间戳，可以自己生成，也可以用URL参数的timestamp
-     * @param nonce     随机串，可以自己生成，也可以用URL参数的nonce
-     * @return 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的xml格式的字符串
-     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
-     */
-    public String encrypt(String message, String timestamp, String nonce) throws WxCryptException {
-        // 加密
-        String encrypt = encrypt(getRandomString(), message);
-        String rawString = Stream.of(token, timestamp, nonce, encrypt).sorted().collect(Collectors.joining());
-        String signature = CryptUtils.encryptSHA1(rawString);
-        // 生成发送的xml
-//		String result = XMLParse.generate(encrypt, signature, timestamp, nonce);
-        return signature;
-    }
-
-    /**
-     * 检验消息的真实性，并且获取解密后的明文.
-     * <ol>
-     * <li>利用收到的密文生成安全签名，进行签名验证</li>
-     * <li>若验证通过，则提取xml中的加密消息</li>
-     * <li>对消息进行解密</li>
-     * </ol>
-     *
-     * @param wxRequest        微信请求
-     * @param body      密文，对应POST请求的数据
-     * @return 解密后的原文
-     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
-     */
-    public String decrypt(WxRequest wxRequest, String body)
-            throws WxCryptException {
-        // 密钥，公众账号的app secret
-        String rawString = Stream.of(token, wxRequest.getTimestamp().toString(), wxRequest.getNonce(), body).sorted().collect(Collectors.joining());
-        // 验证安全签名
-        String signature = CryptUtils.encryptSHA1(rawString);
-        // 和URL中的签名比较是否相等
-        if (!signature.equals(wxRequest.getMessageSignature())) {
-            throw new WxCryptException(WxCryptException.Code.VALIDATE_SIGNATURE_ERROR);
-        }
-        // 解密
-        String result = decrypt(rawString);
-        return result;
-    }
-
-    /**
      * 生成4个字节的网络字节序
+     *
      * @return 字节数组
      */
     private byte[] getNetworkBytesOrder(int sourceNumber) {
@@ -239,6 +247,7 @@ public class WxMessageCryptService implements InitializingBean {
 
     /**
      * 还原4个字节的网络字节序
+     *
      * @return 数字
      */
     private int recoverNetworkBytesOrder(byte[] orderBytes) {
@@ -254,6 +263,7 @@ public class WxMessageCryptService implements InitializingBean {
 
     /**
      * 随机生成16位字符串
+     *
      * @return 随机串
      */
     private String getRandomString() {

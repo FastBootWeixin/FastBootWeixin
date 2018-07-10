@@ -16,8 +16,9 @@
 
 package com.mxixm.fastboot.weixin.mvc.converter;
 
+import com.mxixm.fastboot.weixin.module.message.WxEncryptMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import com.mxixm.fastboot.weixin.service.WxMessageCryptService;
+import com.mxixm.fastboot.weixin.service.WxXmlCryptoService;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler;
 import org.apache.commons.logging.Log;
@@ -26,17 +27,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
@@ -60,21 +63,22 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
 
     private static final CDataCharacterEscapeHandler characterEscapeHandler = new CDataCharacterEscapeHandler();
 
-    private final WxMessageCryptService wxMessageCryptService;
+    private final WxXmlCryptoService wxXmlCryptoService;
 
-    public WxXmlMessageConverter(WxMessageCryptService wxMessageCryptService) {
-        this.wxMessageCryptService = wxMessageCryptService;
+    public WxXmlMessageConverter(WxXmlCryptoService wxXmlCryptoService) {
+        this.wxXmlCryptoService = wxXmlCryptoService;
     }
 
     /**
      * 只读WxRequest.Body这种类型
-     * @param clazz 传入的Class
+     *
+     * @param clazz     传入的Class
      * @param mediaType 媒体类型
      * @return 是否支持读
      */
     @Override
-    public boolean canRead(Class<?> clazz, @Nullable MediaType mediaType) {
-        return super.canRead(clazz, mediaType) &&  WxRequest.Body.class.isAssignableFrom(clazz);
+    public boolean canRead(Class<?> clazz, MediaType mediaType) {
+        return super.canRead(clazz, mediaType) && WxRequest.Body.class.isAssignableFrom(clazz);
     }
 
     public WxRequest.Body read(HttpServletRequest request) throws IOException {
@@ -93,8 +97,21 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
         if (StringUtils.isEmpty(body.getEncrypt()) && !StringUtils.isEmpty(body.getFromUserName())) {
             return body;
         }
-        String decryptedMessage = wxMessageCryptService.decrypt(wxRequest, body.getEncrypt());
+        String decryptedMessage = wxXmlCryptoService.decrypt(wxRequest, body.getEncrypt());
         return super.readFromSource(clazz, headers, new StreamSource(new ByteArrayInputStream(decryptedMessage.getBytes(StandardCharsets.UTF_8))));
+    }
+
+    @Override
+    protected void writeToResult(Object o, HttpHeaders headers, Result result) throws IOException {
+        WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
+        if (!wxRequest.isEncrypted()) {
+            super.writeToResult(o, headers, result);
+        } else {
+            StreamResult rawResult = new StreamResult(new StringWriter(256));
+            super.writeToResult(o, headers, rawResult);
+            WxEncryptMessage wxEncryptMessage = wxXmlCryptoService.encrypt(wxRequest, rawResult.getWriter().toString());
+            super.writeToResult(wxEncryptMessage, headers, result);
+        }
     }
 
     @Override
