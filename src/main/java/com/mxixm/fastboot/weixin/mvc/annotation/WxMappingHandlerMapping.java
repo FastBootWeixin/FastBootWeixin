@@ -25,6 +25,7 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
+import com.mxixm.fastboot.weixin.mvc.converter.WxXmlMessageConverter;
 import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
@@ -36,6 +37,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
@@ -67,7 +69,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private static final ParamsRequestCondition WX_VERIFY_PARAMS_CONDITION = new ParamsRequestCondition("echostr", "nonce", "signature", "timestamp");
 
-    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition("openid", "nonce", "signature", "timestamp");
+    private static final ParamsRequestCondition WX_POST_PARAMS_CONDITION = new ParamsRequestCondition("nonce", "signature", "timestamp");
 
     private static final ConsumesRequestCondition WX_POST_CONSUMES_CONDITION = new ConsumesRequestCondition(MediaType.TEXT_XML_VALUE);
 
@@ -96,7 +98,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final WxAsyncHandlerFactory wxAsyncHandlerFactory;
 
-    public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager, WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
+    private final WxXmlMessageConverter wxXmlMessageConverter;
+
+    public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
+                                   WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
+                                   WxXmlMessageConverter wxXmlMessageConverter) {
         super();
         this.path = (path.startsWith("/") ? "" : "/") + path;
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerifyService, WX_VERIFY_METHOD);
@@ -105,6 +111,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.wxAsyncHandlerFactory = new WxAsyncHandlerFactory(wxAsyncMessageTemplate);
         this.defaultHandlerMethod = new HandlerMethod((Supplier)(() -> HttpEntity.EMPTY), SUPPLIER_METHOD);
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
+        this.wxXmlMessageConverter = wxXmlMessageConverter;
     }
 
     @Override
@@ -123,6 +130,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         if (isWxPostRequest(request)) {
             WxRequest wxRequest = new WxRequest(request, wxSessionManager);
             WxWebUtils.setWxRequestToRequest(request, wxRequest);
+            wxRequest.setBody(wxXmlMessageConverter.read(request));
             final HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }

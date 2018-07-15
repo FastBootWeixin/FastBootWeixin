@@ -243,7 +243,6 @@ public class WxApp {
      * @return the result
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
-    @WxAsyncMessage
     public String text(WxRequest wxRequest, String content) {
         WxSession wxSession = wxRequest.getWxSession();
         if (wxSession != null && wxSession.getAttribute("last") != null) {

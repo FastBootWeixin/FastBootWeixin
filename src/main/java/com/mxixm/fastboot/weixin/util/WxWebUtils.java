@@ -35,6 +35,7 @@ import java.io.Reader;
 /**
  * FastBootWeixin WxWebUtils
  * 绑定一些参数
+ * todo 是否有必要抽离一个WxQequestContext
  *
  * @author Guangshan
  * @date 2017/8/12 22:51

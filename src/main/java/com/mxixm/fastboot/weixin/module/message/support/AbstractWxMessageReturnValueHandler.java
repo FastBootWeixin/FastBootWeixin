@@ -49,6 +49,7 @@ import java.lang.reflect.ParameterizedType;
  * @update 2018-5-24 17:24:21
  * @since 0.6.1
  */
+@Deprecated
 public abstract class AbstractWxMessageReturnValueHandler implements HandlerMethodReturnValueHandler {
 
     /**
@@ -64,7 +65,7 @@ public abstract class AbstractWxMessageReturnValueHandler implements HandlerMeth
     public boolean supportsReturnType(MethodParameter returnType) {
         // 是否需要xml格式的相应，如果需要xml响应，则不通过这个处理器处理
         // 判断逻辑是方法声明为WxMaping且支持XML响应且没有显式声明为WxAsyncMessage
-        boolean returnXml =  WxMessageUtils.supportsXmlResponse(returnType.getParameterType()) &&
+        boolean returnXml = WxMessageUtils.supportsXmlResponse(returnType.getParameterType()) &&
                 returnType.hasMethodAnnotation(WxMapping.class) && !returnType.hasMethodAnnotation(WxAsyncMessage.class);
         // 逻辑分开，快速返回，防止代码不易理解
         if (returnXml) {

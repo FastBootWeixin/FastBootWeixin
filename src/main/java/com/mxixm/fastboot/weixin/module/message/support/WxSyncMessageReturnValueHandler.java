@@ -45,6 +45,7 @@ import java.lang.reflect.ParameterizedType;
  * @update 2018-5-24 17:24:21
  * @since 0.6.1
  */
+@Deprecated
 public class WxSyncMessageReturnValueHandler extends AbstractWxMessageReturnValueHandler {
 
     private WxMessageTemplate wxMessageTemplate;

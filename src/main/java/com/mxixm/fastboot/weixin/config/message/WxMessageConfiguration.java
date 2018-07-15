@@ -25,8 +25,6 @@ import com.mxixm.fastboot.weixin.module.message.WxUserMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.processor.*;
 import com.mxixm.fastboot.weixin.module.message.processor.group.WxGroupNewsMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.processor.user.WxUserNewsMessageProcessor;
-import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
-import com.mxixm.fastboot.weixin.module.message.support.WxSyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +42,7 @@ import java.util.List;
  * @since 0.1.2
  */
 @Configuration
-public class WxAsyncMessageConfiguration {
+public class WxMessageConfiguration {
 
     private final WxProperties wxProperties;
 
@@ -52,13 +50,15 @@ public class WxAsyncMessageConfiguration {
 
     private final WxApiService wxApiService;
 
-    public WxAsyncMessageConfiguration(
+    public WxMessageConfiguration(
             WxProperties wxProperties, WxMediaManager wxMediaManager, @Lazy WxApiService wxApiService) {
         this.wxProperties = wxProperties;
         this.wxMediaManager = wxMediaManager;
         this.wxApiService = wxApiService;
     }
 
+    /**
+     * 干掉这两个，用新的替换
     @Bean
     @Lazy
     public WxSyncMessageReturnValueHandler wxSyncMessageReturnValueHandler() {
@@ -70,6 +70,7 @@ public class WxAsyncMessageConfiguration {
     public WxAsyncMessageReturnValueHandler wxAsyncMessageReturnValueHandler() {
         return new WxAsyncMessageReturnValueHandler(wxAsyncMessageTemplate());
     }
+     **/
 
     @Bean
     public WxMessageTemplate wxMessageTemplate() {
@@ -81,6 +82,10 @@ public class WxAsyncMessageConfiguration {
         return new WxAsyncMessageTemplate(wxProperties, wxMessageTemplate());
     }
 
+    /**
+     * todo 如果需要开放给开发者自定义消息处理，则需要把这个改成WxMessageProcessors，类似于HttpMessageConverters
+     * @return WxMessageProcessor
+     */
     @Bean
     public WxMessageProcessor wxMessageProcessor() {
         WxMessageProcessorChain wxMessageProcessorChain = new WxMessageProcessorChain();

@@ -47,6 +47,7 @@ import java.lang.invoke.MethodHandles;
  * @date 2017/08/15 23:43
  * @since 0.1.2
  */
+@Deprecated
 @ControllerAdvice
 public class WxMessageResponseBodyAdvice implements ResponseBodyAdvice<WxMessage>, Ordered {
 

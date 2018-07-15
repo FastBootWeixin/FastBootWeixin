@@ -22,18 +22,21 @@ import com.mxixm.fastboot.weixin.module.menu.DefaultWxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.support.WxSyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.advice.WxMediaResponseBodyAdvice;
-import com.mxixm.fastboot.weixin.mvc.advice.WxMessageResponseBodyAdvice;
-import com.mxixm.fastboot.weixin.mvc.advice.WxStringResponseBodyAdvice;
 import com.mxixm.fastboot.weixin.mvc.annotation.WxMappingHandlerMapping;
+import com.mxixm.fastboot.weixin.mvc.converter.WxXmlMessageConverter;
 import com.mxixm.fastboot.weixin.mvc.param.WxArgumentResolver;
+import com.mxixm.fastboot.weixin.mvc.processor.WxMappingReturnValueHandler;
+import com.mxixm.fastboot.weixin.mvc.processor.WxMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
+import com.mxixm.fastboot.weixin.service.WxXmlCryptoService;
 import com.mxixm.fastboot.weixin.service.invoker.common.WxMediaResourceMessageConverter;
 import com.mxixm.fastboot.weixin.web.WxOAuth2Interceptor;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
@@ -75,7 +78,7 @@ import java.util.List;
  * @since 0.1.2
  */
 @Configuration
-public class WxBuildinMvcConfiguration implements ImportAware {
+public class WxMvcConfiguration implements ImportAware {
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -89,7 +92,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
 
     private boolean menuAutoCreate = true;
 
-    public WxBuildinMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcessor wxMessageProcessor, @Lazy WxApiService wxApiService) {
+    public WxMvcConfiguration(WxProperties wxProperties, BeanFactory beanFactory, @Lazy WxMessageProcessor wxMessageProcessor, @Lazy WxApiService wxApiService) {
         this.wxProperties = wxProperties;
         this.beanFactory = beanFactory;
         this.wxMessageProcessor = wxMessageProcessor;
@@ -102,8 +105,8 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     }
 
     @Bean
-    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate, @Lazy WxMenuManager wxMenuManager) {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager, wxSessionManager, wxAsyncMessageTemplate);
+    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate, @Lazy WxMenuManager wxMenuManager, WxXmlMessageConverter wxXmlMessageConverter) {
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager, wxSessionManager, wxAsyncMessageTemplate, wxXmlMessageConverter);
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }
@@ -134,6 +137,8 @@ public class WxBuildinMvcConfiguration implements ImportAware {
         return new WxMvcAdapterCustomer();
     }
 
+    /**
+     * 0.6.2使用WxXmlMessageConverter替换
     @Bean
     public WxMessageResponseBodyAdvice wxMessageResponseBodyAdvice() {
         return new WxMessageResponseBodyAdvice(wxMessageProcessor);
@@ -143,6 +148,7 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     public WxStringResponseBodyAdvice wxStringResponseBodyAdvice() {
         return new WxStringResponseBodyAdvice(wxMessageProcessor);
     }
+     **/
 
     @Bean
     public WxMediaResponseBodyAdvice wxMediaResponseBodyAdvice() {
@@ -152,6 +158,26 @@ public class WxBuildinMvcConfiguration implements ImportAware {
     @Bean
     public WxOAuth2Interceptor wxOAuth2Interceptor() {
         return new WxOAuth2Interceptor();
+    }
+
+    @Bean
+    public WxXmlCryptoService wxXmlCryptoService() {
+        return new WxXmlCryptoService(wxProperties);
+    }
+
+    @Bean
+    public WxXmlMessageConverter wxXmlMessageConverter() {
+        return new WxXmlMessageConverter(wxMessageProcessor, wxXmlCryptoService());
+    }
+
+    @Bean
+    public WxMappingReturnValueHandler wxMappingReturnValueHandler(WxXmlMessageConverter wxXmlMessageConverter, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
+        return new WxMappingReturnValueHandler(wxXmlMessageConverter, wxAsyncMessageTemplate);
+    }
+
+    @Bean
+    public WxMessageReturnValueHandler wxMessageReturnValueHandler(WxMessageTemplate wxMessageTemplate, WxAsyncMessageTemplate wxAsyncMessageTemplate) {
+        return new WxMessageReturnValueHandler(wxMessageTemplate, wxAsyncMessageTemplate);
     }
 
     @Override
@@ -180,8 +206,10 @@ public class WxBuildinMvcConfiguration implements ImportAware {
                 argumentResolvers.add(new WxArgumentResolver(beanFactory.getBean(WxUserManager.class), beanFactory.getBean(WxUserProvider.class)));
             }
             // 可以换成@Autowired，Spring内部框架就是这样做的
-            returnValueHandlers.add(beanFactory.getBean(WxAsyncMessageReturnValueHandler.class));
-            returnValueHandlers.add(beanFactory.getBean(WxSyncMessageReturnValueHandler.class));
+            // returnValueHandlers.add(beanFactory.getBean(WxAsyncMessageReturnValueHandler.class));
+            // returnValueHandlers.add(beanFactory.getBean(WxSyncMessageReturnValueHandler.class));
+            returnValueHandlers.add(beanFactory.getBean(WxMappingReturnValueHandler.class));
+            returnValueHandlers.add(beanFactory.getBean(WxMessageReturnValueHandler.class));
             argumentResolvers.addAll(requestMappingHandlerAdapter.getArgumentResolvers());
             returnValueHandlers.addAll(requestMappingHandlerAdapter.getReturnValueHandlers());
             requestMappingHandlerAdapter.setArgumentResolvers(argumentResolvers);

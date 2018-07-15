@@ -112,11 +112,11 @@ public class WxMessageTemplate {
     }
 
     public void sendMessage(WxRequest wxRequest, String wxMessageContent) {
-        this.sendMessage(wxRequest, WxMessage.Text.builder().content(wxMessageContent).build());
+        this.sendMessage(wxRequest, WxMessage.textBuilder().content(wxMessageContent).build());
     }
 
     public void sendMessage(WxMessageParameter wxMessageParameter, String wxMessageContent) {
-        this.sendMessage(wxMessageParameter, WxMessage.Text.builder().content(wxMessageContent).build());
+        this.sendMessage(wxMessageParameter, WxMessage.textBuilder().content(wxMessageContent).build());
     }
 
     public void sendUserMessage(WxRequest wxRequest, String wxMessageContent) {

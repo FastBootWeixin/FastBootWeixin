@@ -16,7 +16,11 @@
 
 package com.mxixm.fastboot.weixin.mvc.converter;
 
+import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.message.WxEncryptMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
+import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.service.WxXmlCryptoService;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
@@ -27,6 +31,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -53,9 +58,11 @@ import java.nio.charset.StandardCharsets;
  * 如maven仓库中的 jaxb-impl-2.3.0.jar，就是这个的相同实现，包名中去掉internal即可。
  * 如果有一天真的要启用这个类，那么可以参考spring的ConditionOnClass来判断两种实现是否存在，如果存在则使用。
  *
+ * todo 消息的处理和消息的转换是否可以分开。即wxMessageProcessor是否应该放在这里面做？
+ *
  * @author Guangshan
  * @date 2017/08/23 22:31
- * @since 0.1.2
+ * @since 0.6.2
  */
 public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter {
 
@@ -63,14 +70,17 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
 
     private static final CDataCharacterEscapeHandler characterEscapeHandler = new CDataCharacterEscapeHandler();
 
+    private final WxMessageProcessor wxMessageProcessor;
+
     private final WxXmlCryptoService wxXmlCryptoService;
 
-    public WxXmlMessageConverter(WxXmlCryptoService wxXmlCryptoService) {
+    public WxXmlMessageConverter(WxMessageProcessor wxMessageProcessor, WxXmlCryptoService wxXmlCryptoService) {
+        this.wxMessageProcessor = wxMessageProcessor;
         this.wxXmlCryptoService = wxXmlCryptoService;
     }
 
     /**
-     * 只读WxRequest.Body这种类型
+     * 只读WxRequest.Body这种类型，且必须在Wx请求的上下文重
      *
      * @param clazz     传入的Class
      * @param mediaType 媒体类型
@@ -78,7 +88,8 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
      */
     @Override
     public boolean canRead(Class<?> clazz, MediaType mediaType) {
-        return super.canRead(clazz, mediaType) && WxRequest.Body.class.isAssignableFrom(clazz);
+        return super.canRead(clazz, mediaType) && WxRequest.Body.class.isAssignableFrom(clazz) &&
+                WxWebUtils.getWxRequestFromRequest() != null;
     }
 
     public WxRequest.Body read(HttpServletRequest request) throws IOException {
@@ -102,16 +113,37 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
     }
 
     @Override
+    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+        // 同时支持字符串返回值
+        return (CharSequence.class.isAssignableFrom(clazz) || WxMessage.class.isAssignableFrom(clazz))
+                && WxWebUtils.getWxRequestFromRequest() != null;
+    }
+
+    @Override
     protected void writeToResult(Object o, HttpHeaders headers, Result result) throws IOException {
         WxRequest wxRequest = WxWebUtils.getWxRequestFromRequest();
+        WxMessage wxMessage = processObject(o);
         if (!wxRequest.isEncrypted()) {
-            super.writeToResult(o, headers, result);
+            super.writeToResult(wxMessage, headers, result);
         } else {
             StreamResult rawResult = new StreamResult(new StringWriter(256));
-            super.writeToResult(o, headers, rawResult);
+            super.writeToResult(wxMessage, headers, rawResult);
             WxEncryptMessage wxEncryptMessage = wxXmlCryptoService.encrypt(wxRequest, rawResult.getWriter().toString());
             super.writeToResult(wxEncryptMessage, headers, result);
         }
+    }
+
+    private WxMessage processObject(Object o) {
+        WxMessage wxMessage;
+        WxMessageParameter wxMessageParameter = WxWebUtils.getWxMessageParameter();
+        if (o instanceof CharSequence) {
+            wxMessage = WxMessage.textBuilder().content(o.toString()).build();
+        } else if (o instanceof WxMessage) {
+            wxMessage = (WxMessage) o;
+        } else {
+            throw new WxAppException("错误的消息类型");
+        }
+        return wxMessageProcessor.process(wxMessageParameter, wxMessage);
     }
 
     @Override
@@ -129,7 +161,7 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
         public void escape(char[] ch, int start, int length, boolean isAttVal, Writer out) throws IOException {
             out.write("<![CDATA[");
             out.write(ch, start, length);
-            out.write("]]");
+            out.write("]]>");
         }
     }
 

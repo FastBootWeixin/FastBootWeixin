@@ -49,11 +49,9 @@ import java.util.*;
  */
 public class WxRequest {
 
-    private static Jaxb2RootElementHttpMessageConverter xmlConverter = new Jaxb2RootElementHttpMessageConverter();
+    private Body body;
 
     private final HttpServletRequest request;
-
-    private final Body body;
 
     private final WxSessionManager wxSessionManager;
 
@@ -84,13 +82,15 @@ public class WxRequest {
         this.openId = request.getParameter("openid");
         this.nonce = request.getParameter("nonce");
         this.signature = request.getParameter("signature");
-        this.messageSignature = request.getParameter("msg_signature ");
+        this.messageSignature = request.getParameter("msg_signature");
         this.timestamp = Long.valueOf(request.getParameter("timestamp"));
-        this.encryptType = request.getParameter("encryptType");
-        // ServletWebRequest
-        body = (Body) xmlConverter.read(Body.class, new ServletServerHttpRequest(request));
+        this.encryptType = request.getParameter("encrypt_type");
         requestUrl = request.getRequestURL().toString();
         requestUri = request.getRequestURI();
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
     }
 
     public HttpServletRequest getRawRequest() {

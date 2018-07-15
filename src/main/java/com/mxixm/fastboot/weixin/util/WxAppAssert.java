@@ -18,6 +18,8 @@ package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 
+import java.util.Objects;
+
 /**
  * FastBootWeixin WxAppAssert
  *
@@ -29,6 +31,12 @@ public abstract class WxAppAssert {
 
     public static void notNull(Object object, String message) {
         if (object == null) {
+            throw new WxAppException(message);
+        }
+    }
+
+    public static void equals(Object left, Object right, String message) {
+        if (!Objects.equals(left, right)) {
             throw new WxAppException(message);
         }
     }

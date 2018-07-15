@@ -20,8 +20,8 @@ import com.mxixm.fastboot.weixin.config.WxProperties;
 import com.mxixm.fastboot.weixin.config.credential.WxCredentialConfiguration;
 import com.mxixm.fastboot.weixin.config.invoker.WxInvokerConfiguration;
 import com.mxixm.fastboot.weixin.config.media.WxMediaConfiguration;
-import com.mxixm.fastboot.weixin.config.message.WxAsyncMessageConfiguration;
-import com.mxixm.fastboot.weixin.config.server.WxBuildinMvcConfiguration;
+import com.mxixm.fastboot.weixin.config.message.WxMessageConfiguration;
+import com.mxixm.fastboot.weixin.config.server.WxMvcConfiguration;
 import com.mxixm.fastboot.weixin.config.server.WxWebConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
@@ -44,8 +44,8 @@ import java.lang.annotation.*;
 @PropertySource("classpath:/wx.properties")
 @EnableConfigurationProperties(WxProperties.class)
 @Import({WxInvokerConfiguration.class,
-        WxAsyncMessageConfiguration.class,
-        WxBuildinMvcConfiguration.class,
+        WxMessageConfiguration.class,
+        WxMvcConfiguration.class,
         WxCredentialConfiguration.class,
         WxMediaConfiguration.class,
         WxWebConfiguration.class})

@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -37,6 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
@@ -90,7 +92,7 @@ public class WxXmlCryptoService implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         this.token = wxProperties.getToken();
         this.appId = wxProperties.getAppId();
-        if (!wxProperties.isEncrypt()) {
+        if (!wxProperties.isEncrypt() || StringUtils.isEmpty(wxProperties.getEncodingAesKey())) {
             return;
         }
         this.aesKey = Base64.getDecoder().decode(wxProperties.getEncodingAesKey() + "=");
@@ -154,8 +156,7 @@ public class WxXmlCryptoService implements InitializingBean {
             throw new WxCryptException(WxCryptException.Code.VALIDATE_SIGNATURE_ERROR);
         }
         // 解密
-        String result = decrypt(rawString);
-        return result;
+        return decrypt(body);
     }
 
 
@@ -174,12 +175,12 @@ public class WxXmlCryptoService implements InitializingBean {
         int length = randomBytes.length +
                 textBytes.length + networkBytesOrder.length + appidBytes.length;
         byte[] padBytes = PKCS7Padding.pad(length);
-        Object[] objects = Stream.of(randomBytes, textBytes, networkBytesOrder, appidBytes, padBytes)
+        Object[] objects = Stream.of(randomBytes, networkBytesOrder, textBytes, appidBytes, padBytes)
                 .flatMap(a -> Arrays.stream(ObjectUtils.toObjectArray(a)))
                 .collect(Collectors.toList())
                 .toArray();
         // 获得最终的字节流, 未加密
-        byte[] unencrypted = toPrimitive((Byte[]) objects);
+        byte[] unencrypted = toPrimitive(objects);
         try {
             // 加密
             byte[] encrypted = encryptCipher.doFinal(unencrypted);
@@ -207,7 +208,7 @@ public class WxXmlCryptoService implements InitializingBean {
             // 解密
             original = decryptCipher.doFinal(encrypted);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new WxCryptException(WxCryptException.Code.DECRYPT_AES_ERROR);
         }
 
@@ -283,10 +284,10 @@ public class WxXmlCryptoService implements InitializingBean {
      * @param array
      * @return
      */
-    private byte[] toPrimitive(Byte[] array) {
+    private byte[] toPrimitive(Object[] array) {
         byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; ++i) {
-            Byte b = array[i];
+            Byte b = (Byte) array[i];
             result[i] = b;
         }
         return result;
