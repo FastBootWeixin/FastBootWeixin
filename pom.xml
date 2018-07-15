@@ -5,7 +5,7 @@
 
     <groupId>com.mxixm</groupId>
     <artifactId>fastboot-weixin</artifactId>
-    <version>0.6.1</version>
+    <version>0.6.2</version>
     <packaging>jar</packaging>
 
     <name>FastBootWeixin</name>
@@ -174,6 +174,11 @@
                                     <name>date</name>
                                     <placement>a</placement>
                                     <head>时间:</head>
+                                </tag>
+                                <tag>
+                                    <name>update</name>
+                                    <placement>a</placement>
+                                    <head>更新:</head>
                                 </tag>
                             </tags>
                         </configuration>

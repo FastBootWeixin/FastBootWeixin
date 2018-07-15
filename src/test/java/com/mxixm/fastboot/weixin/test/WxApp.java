@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.module.extend.WxShortUrl;
 import com.mxixm.fastboot.weixin.module.js.WxJsApi;
 import com.mxixm.fastboot.weixin.module.js.WxJsConfig;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
@@ -33,6 +34,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
+import com.mxixm.fastboot.weixin.util.WxMessageUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -276,6 +278,19 @@ public class WxApp {
         return "收到消息内容为" + content + "!结果匹配！" + match;
     }
 
+    /**
+     * 接受用户文本消息，异步返回文本消息
+     *
+     * @param content
+     * @return the result
+     */
+    @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "3*")
+    @WxAsyncMessage
+    public String text3(WxRequestBody.Text text, String content) {
+        return WxMessageUtils.linkBuilder().href("http://baidu.com").text("123123").build();
+    }
+
+
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "群发*")
     @WxAsyncMessage
     public WxMessage groupMessage(String content) {
@@ -346,6 +361,12 @@ public class WxApp {
     @ResponseBody
     public WxQrCode.Result qrcode() {
         return wxExtendService.createQrCode(WxQrCode.builder().temporary(1).build());
+    }
+
+    @RequestMapping("shortUrl")
+    @ResponseBody
+    public String shortUrl() {
+        return wxExtendService.createShortUrl(WxShortUrl.builder().longUrl("http://wap.koudaitong.com/v2/showcase/goods?alias=128wi9shh&spm=h56083&redirect_count=1").build());
     }
 
     @RequestMapping("wx/bind")

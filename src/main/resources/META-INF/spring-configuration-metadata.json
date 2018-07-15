@@ -32,6 +32,12 @@
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.server",
+      "sourceMethod": "getServer()",
+      "type": "com.mxixm.fastboot.weixin.config.WxProperties$Server"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
       "name": "wx.system",
       "sourceMethod": "getSystem()",
       "type": "com.mxixm.fastboot.weixin.config.WxProperties$System"
@@ -46,19 +52,52 @@
   "properties": [
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.app-id",
+      "description": "规范化命名",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.app-secret",
+      "description": "规范化命名",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
       "name": "wx.appid",
+      "description": "规范化命名",
       "type": "java.lang.String"
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
       "name": "wx.appsecret",
+      "description": "规范化命名",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.callback-domain",
+      "description": "用户在网页授权页同意授权给公众号后，微信会将授权数据传给一个回调页面，回调页面需在此域名下，以确保安全可靠\n 在微信公众号请求用户网页授权之前，开发者需要先到公众平台官网中的\n “开发 - 接口权限 - 网页服务 - 网页帐号 - 网页授权获取用户基本信息”的配置选项中，修改授权回调域名。\n 请注意，这里填写的是域名（是一个字符串），而不是URL，因此请勿加 http:\/\/ 等协议头",
       "type": "java.lang.String"
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
       "name": "wx.callback-url",
-      "description": "用户在网页授权页同意授权给公众号后，微信会将授权数据传给一个回调页面，回调页面需在此域名下，以确保安全可靠",
+      "description": "用于替换上面的属性，以达到菜单使用相对路径的目的\n 如果只配置callbackDomain则默认使用http协议生成callbackUrl",
       "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "name": "wx.encoding-aes-key",
+      "description": "微信消息加解密使用的aesKey，base64编码，长度为43",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "defaultValue": false,
+      "name": "wx.encrypt",
+      "description": "是否启用消息加解密。\n 明文模式配置false，兼容模式true或者false均可，加密模式配置为true\n 注意配置为true时一定要提供EncodingAESKey",
+      "type": "java.lang.Boolean"
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc$Interceptor",
@@ -67,8 +106,16 @@
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties$Mvc$Interceptor",
+      "defaultValue": "\/wx\/**",
       "name": "wx.mvc.interceptor.include-patterns",
       "type": "java.util.List<java.lang.String>"
+    },
+    {
+      "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",
+      "defaultValue": "\/",
+      "name": "wx.path",
+      "description": "微信接口配置信息里的path路径",
+      "type": "java.lang.String"
     },
     {
       "sourceType": "com.mxixm.fastboot.weixin.config.WxProperties",

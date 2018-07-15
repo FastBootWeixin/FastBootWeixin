@@ -41,6 +41,8 @@ public class WxApiResultException extends WxApiException {
 
     public static final String WX_API_RESULT_ERRMSG = "\"errmsg\":";
 
+    public static final String INVALID_ACCESS_TOKEN_MESSAGE = "invalid credential, access_token is invalid or not latest";
+
     private int code;
 
     private String errorMessage;
@@ -52,6 +54,10 @@ public class WxApiResultException extends WxApiException {
         this.code = code;
         this.errorMessage = errorMessage;
         this.resultCode = Code.of(code);
+        // 因为一个code对应多个可能，所以只能做一个特殊处理
+        if (this.resultCode == Code.APPSECRET_ERROR && errorMessage.startsWith(INVALID_ACCESS_TOKEN_MESSAGE)) {
+            this.resultCode = Code.INVALID_ACCESS_TOKEN;
+        }
     }
 
     public WxApiResultException(String errorResult) {
@@ -59,6 +65,9 @@ public class WxApiResultException extends WxApiException {
         // 设置code和errorMessage
         prepare(errorResult);
         this.resultCode = Code.of(code);
+        if (this.resultCode == Code.APPSECRET_ERROR && errorMessage.startsWith(INVALID_ACCESS_TOKEN_MESSAGE)) {
+            this.resultCode = Code.INVALID_ACCESS_TOKEN;
+        }
     }
 
     public int getCode() {
@@ -74,8 +83,8 @@ public class WxApiResultException extends WxApiException {
     }
 
     public void prepare(String errorResult) {
-        this.code = Code.Unknown_Error.errcode;
-        this.errorMessage = Code.Unknown_Error.errdesc;
+        this.code = Code.UNKNOWN_ERROR.errcode;
+        this.errorMessage = Code.UNKNOWN_ERROR.errdesc;
         try {
             int codeStringStart = errorResult.indexOf(WX_API_RESULT_ERRCODE);
             int codeStart = errorResult.indexOf(":", codeStringStart) + 1;
@@ -103,6 +112,8 @@ public class WxApiResultException extends WxApiException {
     public enum Code {
 
         SYSTEM_BUSY(-1, "系统繁忙，此时请开发者稍候再试"),
+
+        INVALID_ACCESS_TOKEN(40000, "不合法的认证信息，access_token不合法或者不是最新的"),
 
         APPSECRET_ERROR(40001, "获取access_token时AppSecret错误，或者access_token无效。请开发者认真比对AppSecret的正确性，或查看是否正在为恰当的公众号调用接口"),
 
@@ -404,13 +415,11 @@ public class WxApiResultException extends WxApiException {
 
         ILLEGAL_BEGIN(9001036, "查询起始值begin不合法"),
 
-        System_Busy(-1, "系统繁忙，此时请开发者稍候再试"),
+        SUCCESS(0, "请求成功"),
 
-        Success(0, "请求成功"),
+        INVALID_IP_ERROR(40164, "调用接口的IP地址不在白名单中，请在接口IP白名单中进行设置"),
 
-        Invalid_IP_Error(40164, "调用接口的IP地址不在白名单中，请在接口IP白名单中进行设置"),
-
-        Unknown_Error(9999999, "未知错误，请查看message");
+        UNKNOWN_ERROR(9999999, "未知错误，请查看message");
 
         int errcode;
 
@@ -422,7 +431,7 @@ public class WxApiResultException extends WxApiException {
         }
 
         public static Code of(int errcode) {
-            return Arrays.stream(Code.values()).filter(v -> v.errcode == errcode).findFirst().orElse(Unknown_Error);
+            return Arrays.stream(Code.values()).filter(v -> v.errcode == errcode).findFirst().orElse(UNKNOWN_ERROR);
         }
 
     }

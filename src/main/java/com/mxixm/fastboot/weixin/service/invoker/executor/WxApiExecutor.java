@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.service.invoker.executor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.exception.WxApiResponseException;
+import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
 import com.mxixm.fastboot.weixin.module.credential.WxTokenManager;
 import com.mxixm.fastboot.weixin.service.invoker.WxApiMethodInfo;
@@ -78,10 +79,24 @@ public class WxApiExecutor {
     }
 
     public Object execute(WxApiMethodInfo wxApiMethodInfo, Object[] args) {
+        return this.execute(wxApiMethodInfo, args, true);
+    }
+
+    public Object execute(WxApiMethodInfo wxApiMethodInfo, Object[] args, boolean retry) {
         RequestEntity requestEntity = buildHttpRequestEntity(wxApiMethodInfo, args);
         // 后续这里可以区分情况，只有对于stream类型才使用extract，因为如果先执行转为HttpInputMessage
         // 其实是转为了byte放在了内存中，相当于多转了一层，大文件还是会多耗费点内存的，但是这里为了用更多的技术，就这样玩了。
-        ResponseEntity<HttpInputMessage> responseEntity = wxApiTemplate.exchange(requestEntity, HttpInputMessage.class);
+        ResponseEntity<HttpInputMessage> responseEntity = null;
+        try {
+            responseEntity = wxApiTemplate.exchange(requestEntity, HttpInputMessage.class);
+        } catch (WxApiResultException e) {
+            // access_token错误，刷新后重试
+            if (retry && e.getResultCode() == WxApiResultException.Code.INVALID_ACCESS_TOKEN) {
+                wxTokenManager.forceRefresh();
+                return execute(wxApiMethodInfo, args, false);
+            }
+            throw e;
+        }
         if (!responseEntity.getStatusCode().is2xxSuccessful()) {
             throw new WxApiResponseException(responseEntity);
         }

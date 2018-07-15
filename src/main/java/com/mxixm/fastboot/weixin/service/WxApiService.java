@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.service;
 import com.mxixm.fastboot.weixin.module.credential.WxTicket;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.module.extend.WxShortUrl;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
@@ -124,7 +125,19 @@ public interface WxApiService {
 
     void setMessageStatus(@WxApiBody WxUserMessage.Status status);
 
+    /**
+     * 创建二维码
+     * @param wxQrCode 二维码相关参数
+     * @return 创建结果
+     */
     WxQrCode.Result createQrCode(WxQrCode wxQrCode);
+
+    /**
+     * 长链接转短链接
+     * @param wxShortUrl 链接相关参数
+     * @return 转换结果
+     */
+    WxShortUrl.Result createShortUrl(WxShortUrl wxShortUrl);
 
     // 这个是错的，因为请求前缀是mp.weixin.qq.com而不是api.weixin.qq.com
     // WxMediaResource showQrCode(@WxApiParam("ticket") String ticket);

@@ -16,9 +16,8 @@
 
 package com.mxixm.fastboot.weixin.test;
 
-import com.mxixm.fastboot.weixin.exception.WxCryptException;
+import com.mxixm.fastboot.weixin.exception.WxCryptoException;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.service.WxXmlCryptoService;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.ObjectUtils;
 
@@ -48,7 +47,7 @@ public class SpringBootTest {
         System.out.println(Arrays.toString(encrypt2("1234")));
     }
 
-    private static Object[] encrypt1(String text) throws WxCryptException {
+    private static Object[] encrypt1(String text) throws WxCryptoException {
         byte[] randomBytes = "1234567890098765".getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
@@ -70,12 +69,12 @@ public class SpringBootTest {
 //            return base64Encrypted;
 //        } catch (Exception e) {
 //            logger.error(e.getMessage(), e);
-//            throw new WxCryptException(WxCryptException.Code.ENCRYPT_AES_ERROR);
+//            throw new WxCryptoException(WxCryptoException.Code.ENCRYPT_AES_ERROR);
 //        }
         return objects;
     }
 
-    private static byte[] encrypt2(String text) throws WxCryptException {
+    private static byte[] encrypt2(String text) throws WxCryptoException {
         ByteGroup byteCollector = new ByteGroup();
         byte[] randomStrBytes = "1234567890098765".getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);

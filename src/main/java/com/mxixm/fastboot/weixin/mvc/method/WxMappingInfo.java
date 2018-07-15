@@ -225,7 +225,10 @@ public final class WxMappingInfo implements RequestCondition<WxMappingInfo> {
             builder.append(",buttons=").append(this.wxButtonTypeCondition);
         }
         if (!this.wxMessageTypeCondition.isEmpty()) {
-            builder.append(",buttons=").append(this.wxMessageTypeCondition);
+            builder.append(",messages=").append(this.wxMessageTypeCondition);
+        }
+        if (!this.wxMessageWildcardCondition.isEmpty()) {
+            builder.append(",wildcards=").append(this.wxMessageWildcardCondition);
         }
         builder.append('}');
         return builder.toString();

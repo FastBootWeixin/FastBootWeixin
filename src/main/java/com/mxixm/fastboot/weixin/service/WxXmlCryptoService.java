@@ -21,7 +21,7 @@
 package com.mxixm.fastboot.weixin.service;
 
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.exception.WxCryptException;
+import com.mxixm.fastboot.weixin.exception.WxCryptoException;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.message.WxEncryptMessage;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
@@ -38,7 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.security.InvalidKeyException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
@@ -59,7 +59,7 @@ import java.util.stream.Stream;
  * <li>如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件</li>
  * <li>如果安装了JDK，将两个jar文件放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件</li>
  * </ol>
- *
+ * <p>
  * fastboot-weixin  WxXmlCryptoService
  *
  * @author Guangshan
@@ -96,16 +96,20 @@ public class WxXmlCryptoService implements InitializingBean {
             return;
         }
         this.aesKey = Base64.getDecoder().decode(wxProperties.getEncodingAesKey() + "=");
-        SecretKeySpec keySpec = new SecretKeySpec(this.aesKey, "AES");
+        try {
+            SecretKeySpec keySpec = new SecretKeySpec(this.aesKey, "AES");
 
-        encryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
-        IvParameterSpec ive = new IvParameterSpec(aesKey, 0, 16);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, keySpec, ive);
+            encryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
+            IvParameterSpec ive = new IvParameterSpec(aesKey, 0, 16);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, keySpec, ive);
 
-        // 设置解密模式为AES的CBC模式
-        decryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
-        IvParameterSpec ivd = new IvParameterSpec(Arrays.copyOfRange(aesKey, 0, 16));
-        decryptCipher.init(Cipher.DECRYPT_MODE, keySpec, ivd);
+            // 设置解密模式为AES的CBC模式
+            decryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
+            IvParameterSpec ivd = new IvParameterSpec(Arrays.copyOfRange(aesKey, 0, 16));
+            decryptCipher.init(Cipher.DECRYPT_MODE, keySpec, ivd);
+        } catch (InvalidKeyException e) {
+            throw new WxCryptoException(WxCryptoException.Code.ILLEGAL_AES_KEY, e);
+        }
     }
 
     /**
@@ -119,9 +123,9 @@ public class WxXmlCryptoService implements InitializingBean {
      * @param wxRequest 微信请求
      * @param body      需要加密的数据
      * @return 包含加密内容的加密消息实体
-     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
+     * @throws WxCryptoException 执行失败，请查看该异常的错误码和具体的错误信息
      */
-    public WxEncryptMessage encrypt(WxRequest wxRequest, String body) throws WxCryptException {
+    public WxEncryptMessage encrypt(WxRequest wxRequest, String body) throws WxCryptoException {
         // 加密
         String encrypted = encrypt(body);
         String rawString = Stream.of(token, encrypted, wxRequest.getTimestamp().toString(),
@@ -143,17 +147,17 @@ public class WxXmlCryptoService implements InitializingBean {
      * @param wxRequest 微信请求
      * @param body      密文，对应POST请求的数据
      * @return 解密后的原文
-     * @throws WxCryptException 执行失败，请查看该异常的错误码和具体的错误信息
+     * @throws WxCryptoException 执行失败，请查看该异常的错误码和具体的错误信息
      */
     public String decrypt(WxRequest wxRequest, String body)
-            throws WxCryptException {
+            throws WxCryptoException {
         // 密钥，公众账号的app secret
         String rawString = Stream.of(token, wxRequest.getTimestamp().toString(), wxRequest.getNonce(), body).sorted().collect(Collectors.joining());
         // 验证安全签名
         String signature = CryptUtils.encryptSHA1(rawString);
         // 和URL中的签名比较是否相等
         if (!signature.equals(wxRequest.getMessageSignature())) {
-            throw new WxCryptException(WxCryptException.Code.VALIDATE_SIGNATURE_ERROR);
+            throw new WxCryptoException(WxCryptoException.Code.VALIDATE_SIGNATURE_ERROR);
         }
         // 解密
         return decrypt(body);
@@ -165,9 +169,9 @@ public class WxXmlCryptoService implements InitializingBean {
      *
      * @param text 需要加密的明文
      * @return 加密后base64编码的字符串
-     * @throws WxCryptException aes加密失败
+     * @throws WxCryptoException aes加密失败
      */
-    private String encrypt(String text) throws WxCryptException {
+    private String encrypt(String text) throws WxCryptoException {
         byte[] randomBytes = getRandomString().getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
@@ -189,7 +193,7 @@ public class WxXmlCryptoService implements InitializingBean {
             return base64Encrypted;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new WxCryptException(WxCryptException.Code.ENCRYPT_AES_ERROR);
+            throw new WxCryptoException(WxCryptoException.Code.ENCRYPT_AES_ERROR);
         }
     }
 
@@ -198,9 +202,9 @@ public class WxXmlCryptoService implements InitializingBean {
      *
      * @param text 需要解密的密文
      * @return 解密得到的明文
-     * @throws WxCryptException aes解密失败
+     * @throws WxCryptoException aes解密失败
      */
-    private String decrypt(String text) throws WxCryptException {
+    private String decrypt(String text) throws WxCryptoException {
         byte[] original;
         try {
             // 使用BASE64对密文进行解码
@@ -209,7 +213,7 @@ public class WxXmlCryptoService implements InitializingBean {
             original = decryptCipher.doFinal(encrypted);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new WxCryptException(WxCryptException.Code.DECRYPT_AES_ERROR);
+            throw new WxCryptoException(WxCryptoException.Code.DECRYPT_AES_ERROR);
         }
 
         String xmlContent, fromAppid;
@@ -223,11 +227,11 @@ public class WxXmlCryptoService implements InitializingBean {
             fromAppid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length), CHARSET);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new WxCryptException(WxCryptException.Code.ILLEGAL_BUFFER);
+            throw new WxCryptoException(WxCryptoException.Code.ILLEGAL_BUFFER);
         }
         // appid不相同的情况
         if (!fromAppid.equals(appId)) {
-            throw new WxCryptException(WxCryptException.Code.VALIDATE_APPID_ERROR);
+            throw new WxCryptoException(WxCryptoException.Code.VALIDATE_APPID_ERROR);
         }
         return xmlContent;
     }

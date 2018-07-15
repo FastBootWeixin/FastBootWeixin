@@ -17,17 +17,22 @@
 package com.mxixm.fastboot.weixin.exception;
 
 /**
- * fastboot-weixin  WxCryptException
+ * fastboot-weixin  WxCryptoException
  *
  * @author Guangshan
  * @date 2018/7/8 14:38
  * @since 0.7.0
  */
-public class WxCryptException extends WxAppException {
+public class WxCryptoException extends WxAppException {
     private Code code;
 
-    public WxCryptException(Code code) {
+    public WxCryptoException(Code code) {
         super(code.message);
+        this.code = code;
+    }
+
+    public WxCryptoException(Code code, Exception cause) {
+        super(code.message, cause);
         this.code = code;
     }
 
@@ -40,7 +45,7 @@ public class WxCryptException extends WxAppException {
         VALIDATE_SIGNATURE_ERROR("签名验证错误"),
         PARSE_XML_ERROR("xml解析失败"),
         COMPUTE_SIGNATURE_ERROR("sha加密生成签名失败"),
-        ILLEGAL_AES_KEY("SymmetricKey非法"),
+        ILLEGAL_AES_KEY("SymmetricKey非法，需要在JDK官网下载JCE无限制权限策略文件，参考readme"),
         VALIDATE_APPID_ERROR("appid校验失败"),
         ENCRYPT_AES_ERROR("aes加密失败"),
         DECRYPT_AES_ERROR("aes解密失败"),

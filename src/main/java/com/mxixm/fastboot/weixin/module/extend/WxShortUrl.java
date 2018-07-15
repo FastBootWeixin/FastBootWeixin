@@ -79,25 +79,15 @@ public class WxShortUrl {
      */
     public static class Result {
 
-        @JsonProperty("errcode")
-        private Integer errorCode;
-
-        @JsonProperty("errmsg")
-        private String errorMessage;
-
         @JsonProperty("short_url")
         private String shortUrl;
 
-        public Integer getErrorCode() {
-            return errorCode;
-        }
-
-        public String getErrorMessage() {
-            return errorMessage;
-        }
-
         public String getShortUrl() {
             return shortUrl;
+        }
+
+        public void setShortUrl(String shortUrl) {
+            this.shortUrl = shortUrl;
         }
     }
 

@@ -25,6 +25,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -555,7 +556,7 @@ public class WxProperties implements InitializingBean {
 
         public static class Interceptor {
 
-            List<String> includePatterns = new ArrayList<>();
+            List<String> includePatterns = Collections.singletonList("/wx/**");
 
             List<String> excludePatterns = new ArrayList<>();
 

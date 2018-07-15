@@ -1,6 +1,6 @@
 # How To Use
 [![Travis](https://travis-ci.org/FastBootWeixin/FastBootWeixin.svg?branch=master)](http://weixin.mxixm.com)
-[![Maven Central](https://img.shields.io/badge/maven--central-0.6.1-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.6.1%7Cjar)
+[![Maven Central](https://img.shields.io/badge/maven--central-0.6.2-blue.svg)](http://search.maven.org/#artifactdetails%7Ccom.mxixm%7Cfastboot-weixin%7C0.6.2%7Cjar)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![QQ群](https://img.shields.io/badge/chat-on%20QQ-ff69b4.svg?style=flat-square)](https://jq.qq.com/?_wv=1027&k=5iRu13U)
 
@@ -31,7 +31,7 @@
     <dependency>
         <groupId>com.mxixm</groupId>
         <artifactId>fastboot-weixin</artifactId>
-        <version>0.6.1</version>
+        <version>0.6.2</version>
     </dependency>
 
     <!-- SpringBoot的web项目，必须 -->
@@ -343,6 +343,18 @@ WxJsTicketManager wxJsTicketManager;
 ```
 详细使用参考其中方法
 
+#### 14. 支持消息加解密
+
+配置wx.encrypt=true，wx.encodingAesKey=公众号后台设置的aesKey，即开启消息加解密模式
+
+注意开启消息加解密时，需要开启JCE无限制权限。
+
+JDK7的下载地址: http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
+
+JDK8的下载地址: http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+
+下载后解压，可以看到local_policy.jar和US_export_policy.jar以及readme.txt。如果安装了JRE，将两个jar文件放到%JRE_HOME%\lib\security目录下覆盖原来的文件。如果安装了JDK，还要将两个jar文件也放到%JDK_HOME%\jre\lib\security目录下覆盖原来文件。
+
 ### 六、相关链接
 1. [JavaDocs](http://weixin.mxixm.com)
 2. [微信公众号开发文档](https://mp.weixin.qq.com/wiki)
@@ -352,13 +364,11 @@ WxJsTicketManager wxJsTicketManager;
 ### 七、暂时不支持的功能
 #### 1. 自定义客服回复消息
 之后可以加入支持，使用注解定义消息客服，类似于@RabbitListener的方式
-#### 2. 消息加解密
-没有想到好的方式把消息加解密融合到SpringMvc中
-#### 3. 个性化菜单
+#### 2. 个性化菜单
 稍微有点麻烦，用户分类
-#### 4. 高级用户管理
+#### 3. 高级用户管理
 用户分组什么的是否有好的实现？暂时没有需求
-#### 5. 公众号其他高级功能
+#### 4. 公众号其他高级功能
 如支付等
 
 ### 八、更新日志
@@ -451,3 +461,10 @@ WxJsTicketManager wxJsTicketManager;
 2. 为@WxButton新增${}表达式解析
 3. 微信菜单新增小程序类型
 4. 修复在没有匹配的wildcard的情况下，返回内容错误的情况
+
+#### 0.6.2
+1. 完成消息加解密支持
+2. 添加长链接转短连接接口
+3. 添加调用接口的access_token容错处理，access_token失效时先强制刷新再重新调用接口
+4. 重构微信请求转换器和返回值处理器，优化原逻辑
+5. 在WxMessageUtils中添加微信文本消息中的a标签构造器

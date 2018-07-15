@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -50,5 +51,100 @@ public class WxMessageUtils {
     public static boolean supportsXmlResponse(Class<?> type) {
         return xmlResponseTypes.contains(type) || CharSequence.class.isAssignableFrom(type);
     }
+
+    public static Link.Builder linkBuilder() {
+        return new Link.Builder();
+    }
+
+    /**
+     * 小程序元素，用于返回文本内容使用小程序。文本消息只支持a标签
+     * appid对应的小程序必须与公众号有绑定关系
+     */
+    public static class Link {
+
+        private static final String linkTemplate = "<a href=\"%s\" %s>%s</a>";
+
+        private static final String mimiProgramTemplate = "data-miniprogram-appid=\"%s\" data-miniprogram-path=\"%s\"";
+
+        /**
+         * 对于不支持data-miniprogram-appid 项的客户端版本，如果有herf项，则仍然保持跳href中的网页链接
+         */
+        private String href;
+
+        /**
+         * 填写小程序appid，则表示该链接跳小程序
+         */
+        private String appId;
+
+        /**
+         * 填写小程序路径，路径与app.json中保持一致，可带参数
+         */
+        private String path;
+
+        /**
+         * 显示文本内容
+         */
+        private String text;
+
+        Link(String href, String appId, String path, String text) {
+            this.href = href;
+            this.appId = appId;
+            this.path = path;
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            String extendAttribute = "";
+            if (!StringUtils.isEmpty(appId)) {
+                extendAttribute = String.format(mimiProgramTemplate, appId, path);
+            }
+            return String.format(linkTemplate, href, extendAttribute, text);
+        }
+
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private String href = "#";
+            private String appId = "";
+            private String path = "";
+            private String text = "";
+
+            Builder() {
+            }
+
+            public Builder href(String href) {
+                this.href = href;
+                return this;
+            }
+
+            public Builder appId(String appId) {
+                this.appId = appId;
+                return this;
+            }
+
+            public Builder path(String path) {
+                this.path = path;
+                return this;
+            }
+
+            public Builder text(String text) {
+                this.text = text;
+                return this;
+            }
+
+            public String build() {
+                return new Link(href, appId, path, text).toString();
+            }
+
+            @Override
+            public String toString() {
+                return "com.mxixm.fastboot.weixin.util.WxMessageUtils.Link.Builder(href=" + this.href + ", appId=" + this.appId + ", path=" + this.path + ", text=" + this.text + ")";
+            }
+        }
+    }
+
 
 }

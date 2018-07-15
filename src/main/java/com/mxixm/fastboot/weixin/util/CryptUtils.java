@@ -16,8 +16,7 @@
 
 package com.mxixm.fastboot.weixin.util;
 
-import com.mxixm.fastboot.weixin.exception.WxAppException;
-import com.mxixm.fastboot.weixin.exception.WxCryptException;
+import com.mxixm.fastboot.weixin.exception.WxCryptoException;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -57,7 +56,7 @@ public abstract class CryptUtils {
         try {
             sha = MessageDigest.getInstance(KEY_SHA1);
         } catch (NoSuchAlgorithmException e) {
-            throw new WxCryptException(WxCryptException.Code.NO_SUCH_ALGORITHM);
+            throw new WxCryptoException(WxCryptoException.Code.NO_SUCH_ALGORITHM);
         }
         // 使用指定的字节数组对摘要进行最后更新
         sha.update(data.getBytes(StandardCharsets.UTF_8));
