@@ -32,6 +32,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * FastBootWeixin WxInvokerProxyFactoryBean
@@ -93,7 +94,7 @@ public class WxInvokerProxyFactoryBean<T> implements InitializingBean, MethodInt
     @Override
     public Object invoke(MethodInvocation inv) throws Throwable {
         if (ReflectionUtils.isObjectMethod(inv.getMethod())) {
-            if ("toString".equals(inv.getMethod().getName())) {
+            if (ReflectionUtils.isToStringMethod(inv.getMethod())) {
                 return clazz.getName();
             }
             return ReflectionUtils.invokeMethod(inv.getMethod(), inv.getThis(), inv.getArguments());
