@@ -35,6 +35,8 @@ import java.lang.annotation.*;
 @WxMapping
 public @interface WxMessageMapping {
 
+    String MATCH_ALL_WILDCARD = "*";
+
     /**
      * 请求的消息类型
      *
@@ -48,7 +50,7 @@ public @interface WxMessageMapping {
      *
      * @return wildcard
      */
-    String[] wildcard() default "*";
+    String[] wildcard() default MATCH_ALL_WILDCARD;
 
     /**
      * 匹配模式，正则表达式，暂时不支持

@@ -397,6 +397,11 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             if (matches.isEmpty()) {
                 return Collections.emptyList();
             }
+            // 因为有*通配符的是，也会作为长度1进行判断，会和其他长度为1的比如单字符匹配的冲突，所以这里移除匹配结果里的*
+            if (matches.size() > 1 && matches.contains(WxMessageMapping.MATCH_ALL_WILDCARD)) {
+                // 有可能从列表中存在多个*通配符，这样使用时不合法的，应该最多存在一个*通配符
+                matches.remove("*");
+            }
             if (matches.size() > 1) {
                 if (matches.get(0).length() == matches.get(1).length()) {
                     logger.error("有两个重复的通配符！以后加入通配符权重！！");
