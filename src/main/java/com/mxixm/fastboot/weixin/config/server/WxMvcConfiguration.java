@@ -23,9 +23,7 @@ import com.mxixm.fastboot.weixin.module.menu.WxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessageProcessor;
 import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
-import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
-import com.mxixm.fastboot.weixin.module.message.support.WxSyncMessageReturnValueHandler;
 import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
 import com.mxixm.fastboot.weixin.mvc.advice.WxMediaResponseBodyAdvice;
@@ -196,7 +194,7 @@ public class WxMvcConfiguration implements ImportAware {
         private BeanFactory beanFactory;
 
         @Override
-        public void afterPropertiesSet() throws Exception {
+        public void afterPropertiesSet() {
             RequestMappingHandlerAdapter requestMappingHandlerAdapter = this.beanFactory.getBean(RequestMappingHandlerAdapter.class);
             List<HandlerMethodArgumentResolver> argumentResolvers = new ArrayList<>();
             List<HandlerMethodReturnValueHandler> returnValueHandlers = new ArrayList<>();
