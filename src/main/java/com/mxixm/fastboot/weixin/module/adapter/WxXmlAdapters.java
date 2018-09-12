@@ -54,7 +54,7 @@ public class WxXmlAdapters {
     public static class MsgTypeAdaptor extends XmlAdapter<String, WxMessage.Type> {
         @Override
         public WxMessage.Type unmarshal(String s) throws Exception {
-            return WxMessage.Type.valueOf(s.toUpperCase());
+            return WxMessage.Type.valueOf(s.toUpperCase().trim());
         }
 
         @Override
@@ -69,7 +69,7 @@ public class WxXmlAdapters {
     public static class EventAdaptor extends XmlAdapter<String, WxEvent.Type> {
         @Override
         public WxEvent.Type unmarshal(String s) throws Exception {
-            WxEvent.Type type = WxEvent.Type.valueOf(s.toUpperCase());
+            WxEvent.Type type = WxEvent.Type.valueOf(s.toUpperCase().trim());
             return type != null ? type : WxEvent.Type.UNKNOWN;
         }
 
