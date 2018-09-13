@@ -40,7 +40,7 @@ public @interface WxEventMapping {
      *
      * @return type
      */
-    WxEvent.Type type();
+    WxEvent.Type[] type() default {};
 
     /**
      * 名称

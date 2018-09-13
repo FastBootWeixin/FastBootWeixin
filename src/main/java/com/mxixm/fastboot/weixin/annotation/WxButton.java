@@ -103,6 +103,13 @@ public @interface WxButton {
     }
 
     /**
+     * 菜单层次
+     */
+    enum Level {
+        MAIN, SUB
+    }
+
+    /**
      * 类型
      */
     enum Type {

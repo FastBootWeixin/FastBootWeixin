@@ -19,7 +19,7 @@ package com.mxixm.fastboot.weixin.mvc.annotation;
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
-import com.mxixm.fastboot.weixin.module.menu.WxButtonItem;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
@@ -37,7 +37,6 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.*;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
@@ -317,14 +316,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private WxMappingInfo createWxButtonMappingInfo(WxButton wxButton) {
         // 在这里加上菜单管理是否启用的判断
-        WxButtonItem wxButtonItem = wxMenuManager.add(wxButton);
+        WxMenu.Button button = wxMenuManager.add(wxButton);
         return WxMappingInfo
                 .category(Wx.Category.BUTTON)
                 // eventKey是url，如果类型是VIEW的话
                 // 在builder中已处理
-                .eventKey(wxButtonItem.getKey())
-                .mappingName(wxButtonItem.getName())
-                .buttonTypes(wxButtonItem.getType())
+                .eventKey(button.getKey())
+                .mappingName(button.getName())
+                .buttonTypes(button.getType())
                 .build();
     }
 

@@ -22,7 +22,8 @@ import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.extend.WxShortUrl;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
-import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
+import com.mxixm.fastboot.weixin.module.menu.WxMenus;
 import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
 import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
 import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
@@ -47,11 +48,11 @@ public interface WxApiService {
 
     String getCallbackIp();
 
-    WxMenuManager.WxMenus getMenu();
+    WxMenus getMenu();
 
     void deleteMenu();
 
-    String createMenu(@WxApiBody WxMenuManager.WxMenu menu);
+    String createMenu(@WxApiBody WxMenu menu);
 
     WxMedia.TempMediaResult uploadTempMedia(@WxApiParam("type") WxMedia.Type type, @WxApiForm("media") Resource media);
 

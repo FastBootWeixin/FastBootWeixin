@@ -42,7 +42,7 @@ public @interface WxMessageMapping {
      *
      * @return type
      */
-    WxMessage.Type type();
+    WxMessage.Type[] type() default {};
 
     /**
      * 通配符
@@ -57,7 +57,7 @@ public @interface WxMessageMapping {
      *
      * @return pattern
      */
-    String pattern() default "";
+    // String pattern() default "";
 
     /**
      * 名称
