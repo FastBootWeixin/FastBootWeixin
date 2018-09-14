@@ -39,11 +39,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.*;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -99,6 +104,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final WxXmlMessageConverter wxXmlMessageConverter;
 
+    private final WxRequestContext wxRequestContext = new WxRequestContext();
+
     public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
                                    WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
                                    WxXmlMessageConverter wxXmlMessageConverter) {
@@ -127,10 +134,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
             return wxVerifyMethodHandler;
         }
         if (isWxPostRequest(request)) {
-            WxRequest wxRequest = new WxRequest(request, wxSessionManager);
-            WxWebUtils.setWxRequestToRequest(request, wxRequest);
-            wxRequest.setBody(wxXmlMessageConverter.read(request));
-            final HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
+            WxRequest.Body wxRequestBody = wxRequestContext.get(request);
+            final HandlerMethod handlerMethod = lookupHandlerMethod(request, wxRequestBody);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
         return null;
@@ -187,10 +192,13 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
      */
     @Override
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
+            return lookupHandlerMethod(request, wxRequestContext.get(request));
+    }
+
+    protected HandlerMethod lookupHandlerMethod(HttpServletRequest request, WxRequest.Body wxRequestBody) throws Exception {
         this.mappingRegistry.acquireReadLock();
         try {
             HandlerMethod handlerMethod = null;
-            WxRequest.Body wxRequestBody = WxWebUtils.getWxRequestBodyFromRequest(request);
             // switch不被推荐缺少default
             switch (wxRequestBody.getCategory()) {
                 case BUTTON:
@@ -223,6 +231,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     private HandlerMethod lookupButtonHandlerMethod(WxRequest.Body wxRequestBody) {
+        WxMenu.Button button = wxMenuManager.getMaping(wxRequestBody);
         HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequestBody.getEventKey());
         if (handlerMethod == null) {
             handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequestBody.getButtonType());
@@ -297,6 +306,12 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
     }
 
+    @Override
+    protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
+        HandlerExecutionChain chain = super.getHandlerExecutionChain(handler, request);
+        return chain;
+    }
+
     private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
         WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
         // 由于这个机制，所以无法为同一个方法绑定多个WxButton、WxEventMapping、WxMessageMapping
@@ -316,7 +331,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private WxMappingInfo createWxButtonMappingInfo(WxButton wxButton) {
         // 在这里加上菜单管理是否启用的判断
-        WxMenu.Button button = wxMenuManager.add(wxButton);
+        WxMenu.Button button = wxMenuManager.addButton(wxButton);
         return WxMappingInfo
                 .category(Wx.Category.BUTTON)
                 // eventKey是url，如果类型是VIEW的话
@@ -581,6 +596,54 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         public String getMappingName() {
             return this.mappingName;
         }
+    }
+
+    /**
+     * 用于拦截微信请求
+     * 用于修复加入Spring Boot Starter Actuator后框架失效的问题
+     * 这里的时序是这样的，先进入WebMvcMetricsFilter，调用本类的getHandler方法
+     * 此时调用这里的get方法，把WxRequestBody设置到ThreadLocal中。
+     * 再次执行真实调用，进入这里的preHandle，最后调用afterCompletion清除threadLocal
+     * 那么有这么一种风险，设置完threadLocal后，在未执行preHandle之前，发生了异常，此时将会导致threadLocal无法释放
+     * 可能带来阴性bug，此处要想完美解决问题，必须使用filter或者执行类型判断ServletRequestWrapper，拿到原始request。
+     */
+    private class WxRequestContext implements HandlerInterceptor {
+
+        ThreadLocal<WxRequest.Body> wxRequestBodyHolder = new ThreadLocal<>();
+
+        @Override
+        public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+                throws Exception {
+            WxRequest wxRequest = new WxRequest(request, wxSessionManager);
+            WxWebUtils.setWxRequestToRequest(request, wxRequest);
+            wxRequest.setBody(get(request));
+            return true;
+        }
+
+        @Override
+        public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        }
+
+        @Override
+        public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+            this.remove();
+        }
+
+        public void set(HttpServletRequest request) throws IOException {
+            wxRequestBodyHolder.set(wxXmlMessageConverter.read(request));
+        }
+
+        public WxRequest.Body get(HttpServletRequest request) throws IOException {
+            if (wxRequestBodyHolder.get() == null) {
+                this.set(request);
+            }
+            return wxRequestBodyHolder.get();
+        }
+
+        public void remove() {
+            wxRequestBodyHolder.remove();
+        }
+
     }
 
 }
