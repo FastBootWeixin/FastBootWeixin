@@ -141,7 +141,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 WxWebUtils.setWxRequestToRequest(request, wxRequest);
                 wxRequest.setBody(wxXmlMessageConverter.read(request));
             }
-            final HandlerMethod handlerMethod = lookupHandlerMethod(wxRequest);
+            final HandlerMethod handlerMethod = lookupHandlerMethod(wxRequest.getBody().getCategory().name(), request);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
         return null;
@@ -196,6 +196,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     /**
      * 父类中只有getHandlerInternal方法有使用
      */
+    /*
     @Override
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
             return lookupHandlerMethod(WxWebUtils.getWxRequestFromRequest(request));
@@ -231,12 +232,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         } finally {
             this.mappingRegistry.releaseReadLock();
         }
-    }
+    } */
 
     protected void handleMatch(HandlerMethod handlerMethod, HttpServletRequest request) {
         // 返回XML
         if (handlerMethod != null) {
             request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
+            if (logger.isDebugEnabled()) {
+                logger.debug("find match wx handler, handler is " + handlerMethod);
+            }
         }
     }
 
@@ -273,14 +277,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return AnnotatedElementUtils.hasAnnotation(beanType, WxController.class);
     }
 
-    @Override
-    protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
-        this.mappingRegistry.register(mapping, handler, method);
-    }
+//    @Override
+//    protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
+//        this.mappingRegistry.register(mapping, handler, method);
+//    }
 
     @Override
     protected Set<String> getMappingPathPatterns(WxMappingInfo info) {
-        return Collections.singleton("/");
+        return Collections.singleton(info.getCategory().name());
     }
 
     @Override
