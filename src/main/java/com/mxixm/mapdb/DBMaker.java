@@ -16,8 +16,6 @@
 
 package com.mxixm.mapdb;
 
-import org.mapdb.EngineWrapper.ReadOnlyEngine;
-
 import java.io.File;
 import java.io.IOError;
 import java.io.IOException;
@@ -793,7 +791,7 @@ public class DBMaker<DBMakerT extends DBMaker<DBMakerT>> {
         engine = extendWrapSnapshotEngine(engine);
 
         if(readOnly)
-            engine = new ReadOnlyEngine(engine);
+            engine = new EngineWrapper.ReadOnlyEngine(engine);
 
 
         if(propsGetBool(Keys.closeOnJvmShutdown)){

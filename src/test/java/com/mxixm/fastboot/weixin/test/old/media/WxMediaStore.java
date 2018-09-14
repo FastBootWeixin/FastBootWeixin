@@ -18,9 +18,9 @@ package com.mxixm.fastboot.weixin.test.old.media;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.HTreeMap;
+import com.mxixm.mapdb.DB;
+import com.mxixm.mapdb.DBMaker;
+import com.mxixm.mapdb.HTreeMap;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
