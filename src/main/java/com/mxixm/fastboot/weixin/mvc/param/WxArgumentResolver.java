@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.mvc.param;
 
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.module.user.WxUserProvider;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
@@ -116,6 +117,9 @@ public class WxArgumentResolver extends AbstractNamedValueMethodArgumentResolver
         }
         if (parameter.getParameterType() == WxRequest.Body.class) {
             return wxRequest.getBody();
+        }
+        if (parameter.getParameterType() == WxMenu.Button.class) {
+            return wxRequest.getButton();
         }
         if (parameter.getParameterType() == WxUser.class) {
             return wxUserManager.getWxUser(wxRequest.getBody().getFromUserName());

@@ -21,6 +21,7 @@ import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
@@ -76,6 +77,11 @@ public class WxRequest {
 
     private final Long timestamp;
 
+    /**
+     * 请求关联的按钮
+     */
+    private WxMenu.Button button;
+
     public WxRequest(HttpServletRequest request, WxSessionManager wxSessionManager) throws IOException {
         this.request = request;
         this.wxSessionManager = wxSessionManager;
@@ -87,6 +93,14 @@ public class WxRequest {
         this.encryptType = request.getParameter("encrypt_type");
         requestUrl = request.getRequestURL().toString();
         requestUri = request.getRequestURI();
+    }
+
+    public WxMenu.Button getButton() {
+        return button;
+    }
+
+    public void setButton(WxMenu.Button button) {
+        this.button = button;
     }
 
     public void setBody(Body body) {

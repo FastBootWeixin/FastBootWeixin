@@ -48,8 +48,6 @@ public class WxWebUtils {
 
     private static final String WX_REQUEST_ATTRIBUTE = "WX_REQUEST_ATTRIBUTE";
 
-    private static final String WX_REQUEST_BUTTON = "WX_REQUEST_BUTTON";
-
     public static final String X_WX_REQUEST_URL = "X-Wx-Request-Url";
 
     public static final String WX_SESSION_USER = "WX_SESSION_USER";
@@ -69,14 +67,6 @@ public class WxWebUtils {
 
     public static WxRequest getWxRequestFromRequest(HttpServletRequest request) {
         return (WxRequest) request.getAttribute(WX_REQUEST_ATTRIBUTE);
-    }
-
-    public static void setWxButtonToRequest(HttpServletRequest request, WxMenu.Button wxButton) {
-        request.setAttribute(WX_REQUEST_BUTTON, wxButton);
-    }
-
-    public static WxMenu.Button getWxButtonFromRequest(HttpServletRequest request) {
-        return (WxMenu.Button) request.getAttribute(WX_REQUEST_BUTTON);
     }
 
     public static WxRequest.Body getWxRequestBodyFromRequest(HttpServletRequest request) {

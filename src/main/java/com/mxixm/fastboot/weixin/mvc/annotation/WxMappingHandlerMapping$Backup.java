@@ -107,8 +107,8 @@ public class WxMappingHandlerMapping$Backup extends AbstractHandlerMethodMapping
     // private final WxRequestContext wxRequestContext = new WxRequestContext();
 
     public WxMappingHandlerMapping$Backup(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
-                                          WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
-                                          WxXmlMessageConverter wxXmlMessageConverter) {
+                                   WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
+                                   WxXmlMessageConverter wxXmlMessageConverter) {
         super();
         this.path = (path.startsWith("/") ? "" : "/") + path;
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerifyService, WX_VERIFY_METHOD);
@@ -141,7 +141,7 @@ public class WxMappingHandlerMapping$Backup extends AbstractHandlerMethodMapping
                 WxWebUtils.setWxRequestToRequest(request, wxRequest);
                 wxRequest.setBody(wxXmlMessageConverter.read(request));
             }
-            final HandlerMethod handlerMethod = lookupHandlerMethod(request, wxRequest.getBody());
+            final HandlerMethod handlerMethod = lookupHandlerMethod(wxRequest);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
         return null;
@@ -198,28 +198,32 @@ public class WxMappingHandlerMapping$Backup extends AbstractHandlerMethodMapping
      */
     @Override
     protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
-            return lookupHandlerMethod(request, WxWebUtils.getWxRequestBodyFromRequest(request));
+        return lookupHandlerMethod(WxWebUtils.getWxRequestFromRequest(request));
     }
 
-    protected HandlerMethod lookupHandlerMethod(HttpServletRequest request, WxRequest.Body wxRequestBody) throws Exception {
+    protected HandlerMethod lookupHandlerMethod(WxRequest wxRequest) throws Exception {
+        WxRequest.Body wxRequestBody = wxRequest.getBody();
+        if (wxRequestBody == null) {
+            return null;
+        }
         this.mappingRegistry.acquireReadLock();
         try {
             HandlerMethod handlerMethod = null;
             // switch不被推荐缺少default
             switch (wxRequestBody.getCategory()) {
                 case BUTTON:
-                    handlerMethod = lookupButtonHandlerMethod(request, wxRequestBody);
+                    handlerMethod = lookupButtonHandlerMethod(wxRequest);
                     break;
                 case EVENT:
-                    handlerMethod = lookupEventHandlerMethod(request, wxRequestBody);
+                    handlerMethod = lookupEventHandlerMethod(wxRequest);
                     break;
                 case MESSAGE:
-                    handlerMethod = lookupMessageHandlerMethod(request, wxRequestBody);
+                    handlerMethod = lookupMessageHandlerMethod(wxRequest);
                     break;
                 default:
                     break;
             }
-            handleMatch(handlerMethod, request);
+            handleMatch(handlerMethod, wxRequest.getRawRequest());
             if (logger.isDebugEnabled() && handlerMethod != null) {
                 logger.debug("find match wx handler, handler is " + handlerMethod);
             }
@@ -236,21 +240,22 @@ public class WxMappingHandlerMapping$Backup extends AbstractHandlerMethodMapping
         }
     }
 
-    private HandlerMethod lookupButtonHandlerMethod(HttpServletRequest request, WxRequest.Body wxRequestBody) {
-        WxMenu.Button wxButton = wxMenuManager.getMapping(wxRequestBody);
-        WxWebUtils.setWxButtonToRequest(request, wxButton);
-        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequestBody.getEventKey());
+    private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
+        WxMenu.Button button = wxMenuManager.getMapping(wxRequest.getBody());
+        wxRequest.setButton(button);
+        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequest.getBody().getEventKey());
         if (handlerMethod == null) {
-            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequestBody.getButtonType());
+            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequest.getBody().getButtonType());
         }
         return handlerMethod;
     }
 
-    private HandlerMethod lookupEventHandlerMethod(HttpServletRequest request, WxRequest.Body wxRequestBody) {
-        return mappingRegistry.getHandlerEventByEventType(wxRequestBody.getEventType());
+    private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
+        return mappingRegistry.getHandlerEventByEventType(wxRequest.getBody().getEventType());
     }
 
-    private HandlerMethod lookupMessageHandlerMethod(HttpServletRequest request, WxRequest.Body wxRequestBody) {
+    private HandlerMethod lookupMessageHandlerMethod(WxRequest wxRequest) {
+        WxRequest.Body wxRequestBody = wxRequest.getBody();
         if (wxRequestBody.getMessageType() == WxMessage.Type.TEXT) {
             List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequestBody.getContent());
             if (!handlerMethods.isEmpty()) {
