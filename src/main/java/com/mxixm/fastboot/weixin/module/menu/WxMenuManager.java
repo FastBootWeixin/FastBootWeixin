@@ -19,10 +19,12 @@ package com.mxixm.fastboot.weixin.module.menu;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.util.WxMenuUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.EmbeddedValueResolverAware;
@@ -30,6 +32,10 @@ import org.springframework.util.*;
 
 import java.lang.invoke.MethodHandles;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * FastBootWeixin WxMenuManager
@@ -39,6 +45,8 @@ import java.util.*;
  * @since 0.1.2
  */
 public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationListener<ApplicationReadyEvent> {
+
+    private static ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(1, Executors.defaultThreadFactory());
 
     private static final Log logger = LogFactory.getLog(MethodHandles.lookup().lookupClass());
 
@@ -58,6 +66,9 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
 
     private StringValueResolver stringValueResolver;
 
+    @Value("wx.system.menuRefreshIntervalMs:3600000")
+    private int menuRefreshIntervalMs;
+
     public WxMenuManager(WxApiService wxApiService, WxButtonEventKeyStrategy wxButtonEventKeyStrategy, boolean autoCreate) {
         this.wxApiService = wxApiService;
         this.wxButtonEventKeyStrategy = wxButtonEventKeyStrategy;
@@ -69,8 +80,8 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
         this.stringValueResolver = stringValueResolver;
     }
 
-    public WxMenu.Button add(WxButton wxButton) {
-        WxMenu.Button buttonItem = WxMenu.Button.builder()
+    public WxMenu.Button addButton(WxButton wxButton) {
+        WxMenu.Button button = WxMenu.Button.builder()
                 .setGroup(wxButton.group())
                 .setType(wxButton.type())
                 .setMain(wxButton.main())
@@ -82,24 +93,39 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
                 .setPagePath(this.stringValueResolver.resolveStringValue(wxButton.pagePath()))
                 .setUrl(this.stringValueResolver.resolveStringValue(wxButton.url()))
                 .build();
-        if (buttonItem.isMain()) {
-            Assert.isNull(mainButtonLookup.get(buttonItem.getGroup()), String.format("已经存在该分组的主菜单，分组是%s", buttonItem.getGroup()));
-            mainButtonLookup.put(buttonItem.getGroup(), buttonItem);
-        } else {
-            // 可以校验不要超过五个，或者忽略最后的
-            groupButtonLookup.add(buttonItem.getGroup(), buttonItem);
-        }
-        return buttonItem;
+        return addButton(button);
     }
 
-    public WxMenu getMenu() {
-        if (this.wxMenu == null) {
-            this.wxMenu = initMenu();
+    public WxMenu.Button addButton(WxMenu.Button wxButton) {
+        if (wxButton.isMain()) {
+            Assert.isNull(mainButtonLookup.get(wxButton.getGroup()), String.format("已经存在该分组的主菜单，分组是%s", wxButton.getGroup()));
+            mainButtonLookup.put(wxButton.getGroup(), wxButton);
+        } else {
+            // 可以校验不要超过五个，或者忽略最后的
+            groupButtonLookup.add(wxButton.getGroup(), wxButton);
         }
+        return wxButton;
+    }
+
+    /**
+     * 获取当前生效菜单
+     *
+     * @return WxMenu
+     */
+    public WxMenu getMenu() {
         return this.wxMenu;
     }
 
-    private WxMenu initMenu() {
+    private void setMenu(WxMenu wxMenu) {
+        this.wxMenu = wxMenu;
+    }
+
+    /**
+     * 根据添加的Button预览菜单
+     *
+     * @return WxMenu
+     */
+    public WxMenu previewMenu() {
         WxMenu wxMenu = new WxMenu();
         mainButtonLookup.entrySet().stream().sorted(Comparator.comparingInt(e -> e.getKey().ordinal()))
                 .forEach(m -> {
@@ -113,6 +139,86 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        this.onApplicationReady();
+        this.mappingMenu();
+    }
+
+    /**
+     * 本来这里面可以直接使用updateMenu的，但是因为增加了个异同判断，故要和updateMenu逻辑区分
+     */
+    private void onApplicationReady() {
+        WxMenu remoteWxMenu = this.fetchMenu();
+        if (!autoCreate) {
+            this.setMenu(remoteWxMenu);
+            // 定时刷新云端菜单
+            executor.scheduleAtFixedRate(() -> refreshMenu(), menuRefreshIntervalMs, menuRefreshIntervalMs, TimeUnit.MILLISECONDS);
+            return;
+        }
+        WxMenu localWxMenu = this.previewMenu();
+        if (CollectionUtils.isEmpty(localWxMenu.mainButtons)) {
+            logger.error("未扫描到有效菜单，请检查项目配置，可能是@WxController类没有被扫描到或者没有声明为@WxController",
+                    new WxAppException("未检测到有效菜单，不执行创建菜单动作，强制使用远程菜单进行映射"));
+            this.setMenu(remoteWxMenu);
+            return;
+        }
+        this.setMenu(localWxMenu);
+        if (isMenuChanged(remoteWxMenu)) {
+            String result = this.commitMenu();
+            logger.info("==============================================================");
+            logger.info("            执行创建菜单操作       ");
+            logger.info("            操作结果：" + result);
+            logger.info("            新的菜单json为：" + localWxMenu);
+            logger.info("==============================================================");
+        } else {
+            logger.info("==============================================================");
+            logger.info("            菜单未发生变化             ");
+            logger.info("            当前菜单json为：" + remoteWxMenu);
+            logger.info("==============================================================");
+        }
+    }
+
+    /**
+     * 把本地menu更新到云端
+     */
+    public String updateMenu() {
+        this.setMenu(this.previewMenu());
+        String result = this.commitMenu();
+        this.mappingMenu();
+        return result;
+    }
+
+    /**
+     * 提交菜单的远程
+     *
+     * @return
+     */
+    private String commitMenu() {
+        WxMenu wxMenu = this.getMenu();
+        if (wxMenu != null && !CollectionUtils.isEmpty(wxMenu.mainButtons)) {
+            String result = wxApiService.createMenu(wxMenu);
+            // 创建生命周期结束时，清除内存
+            mainButtonLookup.clear();
+            groupButtonLookup.clear();
+            return result;
+        }
+        throw new WxAppException("不能创建空菜单");
+    }
+
+    /**
+     * 刷新云端menu到本地
+     *
+     * @return WxMenu
+     */
+    public WxMenu refreshMenu() {
+        this.setMenu(this.fetchMenu());
+        this.mappingMenu();
+        return this.getMenu();
+    }
+
+    /**
+     * 从云端刷新菜单到本地
+     */
+    private WxMenu fetchMenu() {
         WxMenus remoteWxMenus = null;
         try {
             remoteWxMenus = wxApiService.getMenu();
@@ -123,34 +229,7 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
                 throw e;
             }
         }
-        if (!autoCreate) {
-            if (remoteWxMenus != null) {
-                // 处理远程菜单
-                this.wxMenu = processRemoteMenu(remoteWxMenus.wxMenu);
-                mappingMenu(this.wxMenu);
-            }
-            return;
-        }
-        WxMenu localWxMenu = this.getMenu();
-        // WxMenus oldWxMenus = objectMapper.readValue(oldMenuJson, WxMenus.class);
-        if (CollectionUtils.isEmpty(localWxMenu.mainButtons)) {
-            logger.info("未扫描到有效菜单，请检查项目配置，可能是@WxController类没有被扫描到或者没有声明为@WxController",
-                    new WxAppException("未检测到有效菜单，不执行创建菜单动作"));
-        }
-        if (remoteWxMenus == null || isMenuChanged(remoteWxMenus.wxMenu)) {
-            String result = wxApiService.createMenu(localWxMenu);
-            logger.info("==============================================================");
-            logger.info("            执行创建菜单操作       ");
-            logger.info("            操作结果：" + result);
-            logger.info("            新的菜单json为：" + localWxMenu);
-            logger.info("==============================================================");
-        } else {
-            logger.info("==============================================================");
-            logger.info("            菜单未发生变化             ");
-            logger.info("            当前菜单json为：" + remoteWxMenus);
-            logger.info("==============================================================");
-        }
-        mappingMenu(this.wxMenu);
+        return remoteWxMenus != null ? processMenu(remoteWxMenus.wxMenu) : null;
     }
 
     /**
@@ -159,7 +238,7 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
      *
      * @param wxMenu
      */
-    private WxMenu processRemoteMenu(WxMenu wxMenu) {
+    private WxMenu processMenu(WxMenu wxMenu) {
         // 开始用atomicInteger处理，但是atomic用在多线程中，这里有点过度使用
         int[] index = new int[2];
         wxMenu.mainButtons.forEach(button -> {
@@ -179,11 +258,14 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
     }
 
     /**
-     * 映射菜单
-     *
-     * @param wxMenu
+     * 映射菜单，比较合理的方式是这里加个同步锁，因为在mapping的过程中那可能有其他线程在查找。
      */
-    private void mappingMenu(WxMenu wxMenu) {
+    private void mappingMenu() {
+        WxMenu wxMenu = this.getMenu();
+        if (wxMenu == null) {
+            return;
+        }
+        this.keyButtonLookup.clear();
         wxMenu.mainButtons.forEach(button -> {
             // 没有子菜单
             if (CollectionUtils.isEmpty(button.getSubButtons())) {
@@ -196,7 +278,11 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
     }
 
     private boolean isMenuChanged(WxMenu remoteWxMenu) {
-        return !this.wxMenu.equals(remoteWxMenu);
+        return !this.getMenu().equals(remoteWxMenu);
+    }
+
+    public WxMenu.Button getMapping(WxRequest.Body body) {
+        return mainButtonLookup.get(ButtonKey.of(body));
     }
 
     /**
@@ -232,6 +318,11 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
         public static ButtonKey of(WxMenu.Button button) {
             // 只有这里因为微信的机制，要获取不同情况的key，其他都使用原始情况
             return new ButtonKey(WxMenuUtils.getKey(button), button.getType());
+        }
+
+        public static ButtonKey of(WxRequest.Body body) {
+            // 只有这里因为微信的机制，要获取不同情况的key，其他都使用原始情况
+            return new ButtonKey(body.getEventKey(), body.getButtonType());
         }
 
     }

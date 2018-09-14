@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.message.parameter.HttpRequestMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;
@@ -27,7 +28,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
@@ -45,16 +48,35 @@ public class WxWebUtils {
 
     private static final String WX_REQUEST_ATTRIBUTE = "WX_REQUEST_ATTRIBUTE";
 
+    private static final String WX_REQUEST_BUTTON = "WX_REQUEST_BUTTON";
+
     public static final String X_WX_REQUEST_URL = "X-Wx-Request-Url";
 
     public static final String WX_SESSION_USER = "WX_SESSION_USER";
 
+    /**
+     * 为了应对多重包装RequestAttributeChangeIgnoringWrapper导致的属性设置无效，这里简单的这样处理了一下
+     * @param request
+     * @param wxRequest
+     */
     public static void setWxRequestToRequest(HttpServletRequest request, WxRequest wxRequest) {
-        request.setAttribute(WX_REQUEST_ATTRIBUTE, wxRequest);
+        ServletRequest servletRequest = request;
+        while (servletRequest instanceof HttpServletRequestWrapper) {
+            servletRequest = ((HttpServletRequestWrapper) servletRequest).getRequest();
+        }
+        servletRequest.setAttribute(WX_REQUEST_ATTRIBUTE, wxRequest);
     }
 
     public static WxRequest getWxRequestFromRequest(HttpServletRequest request) {
         return (WxRequest) request.getAttribute(WX_REQUEST_ATTRIBUTE);
+    }
+
+    public static void setWxButtonToRequest(HttpServletRequest request, WxMenu.Button wxButton) {
+        request.setAttribute(WX_REQUEST_BUTTON, wxButton);
+    }
+
+    public static WxMenu.Button getWxButtonFromRequest(HttpServletRequest request) {
+        return (WxMenu.Button) request.getAttribute(WX_REQUEST_BUTTON);
     }
 
     public static WxRequest.Body getWxRequestBodyFromRequest(HttpServletRequest request) {

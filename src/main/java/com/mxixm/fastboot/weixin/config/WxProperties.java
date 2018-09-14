@@ -452,6 +452,10 @@ public class WxProperties implements InitializingBean {
      * 微信系统属性
      */
     public static class System {
+
+        // 默认60分钟，菜单刷新时间
+        private int menuRefreshIntervalMs = 60 * 60 * 1000;
+
     }
 
     /**

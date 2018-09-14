@@ -44,7 +44,7 @@ public class WxMenuAnnotationProcessor implements BeanPostProcessor {
         ReflectionUtils.doWithMethods(targetClass, method -> {
             WxButton wxButton = AnnotationUtils.getAnnotation(method, WxButton.class);
             if (wxButton != null) {
-                wxMenuManager.add(wxButton);
+                wxMenuManager.addButton(wxButton);
             }
         });
         return bean;

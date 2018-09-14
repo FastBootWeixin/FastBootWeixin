@@ -5,7 +5,7 @@
 
     <groupId>com.mxixm</groupId>
     <artifactId>fastboot-weixin</artifactId>
-    <version>0.6.2</version>
+    <version>0.7.0</version>
     <packaging>jar</packaging>
 
     <name>FastBootWeixin</name>
@@ -106,11 +106,7 @@
         <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.mapdb/mapdb -->
         <!-- 本来想用最新版本的，但是最新版本依赖太多了！兼职就是巨无霸，于是换成老版本-->
-        <dependency>
-            <groupId>org.mapdb</groupId>
-            <artifactId>mapdb</artifactId>
-            <version>1.0.9</version>
-        </dependency>
+        <!--直接把源码放入本项目-->
         <!--自动生成spring-configuration-metadata-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

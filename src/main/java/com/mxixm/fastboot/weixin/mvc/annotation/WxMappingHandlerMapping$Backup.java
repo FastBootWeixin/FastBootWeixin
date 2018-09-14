@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  * @date 2017/09/21 23:45
  * @since 0.1.2
  */
-public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean {
+public class WxMappingHandlerMapping$Backup extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean {
 
     /**
      * http://blog.csdn.net/Mr_SeaTurtle_/article/details/52992207
@@ -106,9 +106,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     // private final WxRequestContext wxRequestContext = new WxRequestContext();
 
-    public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
-                                   WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
-                                   WxXmlMessageConverter wxXmlMessageConverter) {
+    public WxMappingHandlerMapping$Backup(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
+                                          WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
+                                          WxXmlMessageConverter wxXmlMessageConverter) {
         super();
         this.path = (path.startsWith("/") ? "" : "/") + path;
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerifyService, WX_VERIFY_METHOD);
