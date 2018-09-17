@@ -38,7 +38,8 @@ public class DefaultWxButtonEventKeyStrategy implements WxButtonEventKeyStrategy
         // 对于view类型，手动设置的key是不生效的，key竟然恒定是url，坑啊
         // 这个不用担心，在WxButtonItem的builder中已经自动处理了，所以这里返回什么无所谓
         // 不用担心占位符的问题
-        if (wxButton.type() == WxButton.Type.VIEW) {
+        if (wxButton.type() == WxButton.Type.VIEW || wxButton.type() == WxButton.Type.VIEW_LIMITED ||
+                wxButton.type() == WxButton.Type.MEDIA_ID || wxButton.type() == WxButton.Type.MINI_PROGRAM) {
             return null;
         }
         if (!StringUtils.isEmpty(wxButton.key())) {

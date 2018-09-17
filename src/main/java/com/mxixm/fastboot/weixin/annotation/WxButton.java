@@ -17,6 +17,8 @@
 package com.mxixm.fastboot.weixin.annotation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mxixm.fastboot.weixin.module.Wx;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -31,7 +33,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@WxMapping
+@WxMapping(category = Wx.Category.BUTTON)
 public @interface WxButton {
 
     /**
@@ -44,6 +46,7 @@ public @interface WxButton {
      *
      * @return the result
      */
+    @AliasFor(annotation = WxMapping.class)
     String name();
 
     /**

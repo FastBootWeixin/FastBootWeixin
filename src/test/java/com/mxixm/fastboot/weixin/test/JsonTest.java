@@ -27,6 +27,8 @@ import java.io.IOException;
 public class JsonTest {
 
     public static void main(String[] args) throws IOException {
+        String s = null;
+        Test.test(s);
         Test test = new Test();
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(test));
@@ -104,6 +106,10 @@ public class JsonTest {
 
         @JsonProperty("b")
         private String b;
+
+        public static void test(String... ab) {
+            System.out.println(ab);
+        }
 
     }
 

@@ -14,38 +14,33 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.annotation;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
-import com.mxixm.fastboot.weixin.module.Wx;
-
-import java.lang.annotation.*;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxMapping
- * 标记是微信的Mapping，包括WxButton、WxEventMapping、WxMessageMapping
+ * FastBootWeixin WxMessageContentCondition
  *
  * @author Guangshan
- * @date 2017/09/21 23:28
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-public @interface WxMapping {
+public final class WxMessageContentCondition extends AbstractWxWildcardCondition {
 
-    String MATCH_ALL_WILDCARD = "*";
+    public WxMessageContentCondition(String... wildcards) {
+        super(wildcards);
+    }
 
-    /**
-     * 映射类型，MESSAGE，EVENT，BUTTON，SYSTEM
-     * @return
-     */
-    Wx.Category[] category() default {};
+    @Override
+    protected WxMessageContentCondition instance(String... wildcards) {
+        return new WxMessageContentCondition(wildcards);
+    }
 
-    /**
-     * 映射名
-     * @return
-     */
-    String name() default "";
-
+    @Override
+    protected String getMatchText(WxRequest wxRequest) {
+        if (wxRequest.getBody() != null) {
+            return wxRequest.getBody().getContent();
+        }
+        return null;
+    }
 }

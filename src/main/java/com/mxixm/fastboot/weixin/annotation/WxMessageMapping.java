@@ -16,7 +16,9 @@
 
 package com.mxixm.fastboot.weixin.annotation;
 
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -29,13 +31,19 @@ import java.lang.annotation.*;
  * @date 2017/09/21 23:28
  * @since 0.1.2
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@WxMapping
+@WxMapping(category = Wx.Category.MESSAGE)
 public @interface WxMessageMapping {
 
-    String MATCH_ALL_WILDCARD = "*";
+    /**
+     * 名称
+     *
+     * @return name
+     */
+    @AliasFor(annotation = WxMapping.class)
+    String name() default "";
 
     /**
      * 请求的消息类型
@@ -50,20 +58,23 @@ public @interface WxMessageMapping {
      *
      * @return wildcard
      */
-    String[] wildcard() default MATCH_ALL_WILDCARD;
+    @AliasFor("contents")
+    String[] wildcard() default {};
 
+    /**
+     * 通配符
+     * todo 加入括号pathVaribale，根据非通配符长度计算权重。正则与此相同。
+     *
+     * @return contents
+     */
+    @AliasFor("wildcard")
+    String[] contents() default {};
     /**
      * 匹配模式，正则表达式，暂时不支持
      *
      * @return pattern
      */
-    // String pattern() default "";
 
-    /**
-     * 名称
-     *
-     * @return name
-     */
-    String name() default "";
+    // String pattern() default "";
 
 }

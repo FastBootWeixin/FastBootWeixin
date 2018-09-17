@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.mvc.condition;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 import java.util.Collection;
@@ -25,40 +25,37 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * FastBootWeixin WxMessageTypeCondition
+ * FastBootWeixin WxButtonTypeCondition
  *
  * @author Guangshan
  * @date 2017/8/12 22:51
  * @since 0.1.2
  */
-public final class WxMessageTypeCondition extends AbstractWxEnumCondition<WxMessage.Type> {
+public final class WxButtonTypeCondition extends AbstractWxEnumCondition<WxButton.Type> {
 
-    public WxMessageTypeCondition(WxMessage.Type... types) {
+    public WxButtonTypeCondition(WxButton.Type... types) {
         super(types);
     }
 
-    protected WxMessageTypeCondition(Collection<WxMessage.Type> types) {
+    protected WxButtonTypeCondition(Collection<WxButton.Type> types) {
         super(Collections.unmodifiableSet(new LinkedHashSet<>(types)));
     }
 
-    /**
-     * Returns a new instance with a union of the HTTP request types
-     * from "this" and the "other" instance.
-     */
     @Override
-    public WxMessageTypeCondition combine(AbstractWxEnumCondition other) {
-        Set<WxMessage.Type> set = new LinkedHashSet(this.enums);
-        set.addAll(other.enums);
-        return new WxMessageTypeCondition(set);
+    protected WxButton.Type getMatchEnum(WxRequest wxRequest) {
+        return wxRequest.getBody().getButtonType();
     }
 
     @Override
-    protected WxMessageTypeCondition matchEnum(WxRequest.Body wxRequestBody) {
-        WxMessage.Type wxMessageType = wxRequestBody.getMessageType();
-        if (getEnums().contains(wxMessageType)) {
-            return new WxMessageTypeCondition(wxMessageType);
-        }
-        return null;
+    protected AbstractWxEnumCondition instance(WxButton.Type... enums) {
+        return new WxButtonTypeCondition(enums);
+    }
+
+    @Override
+    public WxButtonTypeCondition combine(AbstractWxEnumCondition other) {
+        Set<WxButton.Type> set = new LinkedHashSet(this.enums);
+        set.addAll(other.enums);
+        return new WxButtonTypeCondition(set);
     }
 
 }

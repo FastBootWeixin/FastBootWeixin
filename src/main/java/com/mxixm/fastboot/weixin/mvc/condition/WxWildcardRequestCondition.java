@@ -18,29 +18,32 @@ package com.mxixm.fastboot.weixin.mvc.condition;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
-import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
+import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * FastBootWeixin WxMessageWildcardCondition
+ * FastBootWeixin WxWildcardRequestCondition
  *
  * @author Guangshan
- * @date 2017/8/12 22:51
- * @since 0.1.2
+ * @date 2018-9-16 17:14:02
+ * @since 0.7.0
  */
-public final class WxMessageWildcardCondition extends AbstractRequestCondition<WxMessageWildcardCondition> {
+public class WxWildcardRequestCondition extends AbstractWxRequestCondition<WxWildcardRequestCondition> {
 
     private Collection<String> wildcards;
 
-    public WxMessageWildcardCondition(String... wildcards) {
-        this(Collections.unmodifiableCollection(wildcards != null ? Arrays.asList(wildcards) : Collections.emptyList()));
+    private Function<WxRequest, String> fun;
+
+    public WxWildcardRequestCondition(WxRequestCondition.Type type, Function<WxRequest, String> fun, String... wildcards) {
+        this(type, fun, convertContent(wildcards));
     }
 
-    public WxMessageWildcardCondition(Collection<String> wildcards) {
+    public WxWildcardRequestCondition(WxRequestCondition.Type type, Function<WxRequest, String> fun, Collection<String> wildcards) {
+        super(type);
+        this.fun = fun;
         this.wildcards = Collections.unmodifiableCollection(wildcards);
     }
 
@@ -59,36 +62,37 @@ public final class WxMessageWildcardCondition extends AbstractRequestCondition<W
     }
 
     @Override
-    public WxMessageWildcardCondition combine(WxMessageWildcardCondition other) {
+    public WxWildcardRequestCondition combine(WxWildcardRequestCondition other) {
+        Assert.isTrue(this.getType() == other.getType(), "合并条件类型必须相同");
         List<String> result = new ArrayList<>();
         result.addAll(this.wildcards);
         result.addAll(other.wildcards);
-        return new WxMessageWildcardCondition(result);
+        return new WxWildcardRequestCondition(this.type, fun, result.toArray(new String[0]));
     }
 
     @Override
-    public WxMessageWildcardCondition getMatchingCondition(HttpServletRequest request) {
-        WxRequest.Body wxRequestBody = WxWebUtils.getWxRequestBodyFromRequest(request);
-        if (wxRequestBody == null || wxRequestBody.getContent() == null) {
+    public WxWildcardRequestCondition getMatchingCondition(WxRequest wxRequest) {
+        if (this.isEmpty()) {
+            return this;
+        }
+        String text = fun.apply(wxRequest);
+        if (this.wildcards.isEmpty() || text == null) {
             return null;
         }
-        String content = wxRequestBody.getContent();
-        if (this.wildcards.isEmpty()) {
-            return null;
-        }
-        List<String> matches = wildcards.stream().filter(w -> WildcardUtils.wildcardMatch(content, w)).collect(Collectors.toList());
-        return matches.isEmpty() ? null : new WxMessageWildcardCondition(matches);
+        List<String> matches = wildcards.stream().filter(w -> WildcardUtils.wildcardMatch(text, w)).collect(Collectors.toList());
+        return matches.isEmpty() ? null : new WxWildcardRequestCondition(this.type, fun, matches.toArray(new String[0]));
     }
 
     /**
-     * 拿通配符的长度判断，以后可以加入权重系统
+     * 拿通配符的长度判断，以后可以加入权重系统，判断通配符长度
      *
      * @param other
-     * @param request
+     * @param wxRequest
      * @return the result
      */
     @Override
-    public int compareTo(WxMessageWildcardCondition other, HttpServletRequest request) {
+    public int compareTo(WxWildcardRequestCondition other, WxRequest wxRequest) {
+        Assert.isTrue(this.getType() == other.getType(), "比较类型必须相同");
         int thisMax = this.wildcards.stream().sorted(Comparator.comparing(String::length).reversed()).findFirst().orElse("").length();
         int thatMax = other.wildcards.stream().sorted(Comparator.comparing(String::length).reversed()).findFirst().orElse("").length();
         return thisMax - thatMax;

@@ -17,8 +17,10 @@
 package com.mxixm.fastboot.weixin.module.menu;
 
 import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.annotation.WxMapping;
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
 import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.util.WxMenuUtils;
@@ -66,7 +68,7 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
 
     private StringValueResolver stringValueResolver;
 
-    @Value("wx.system.menuRefreshIntervalMs:3600000")
+    @Value("${wx.system.menuRefreshIntervalMs:3600000}")
     private int menuRefreshIntervalMs;
 
     public WxMenuManager(WxApiService wxApiService, WxButtonEventKeyStrategy wxButtonEventKeyStrategy, boolean autoCreate) {
@@ -81,12 +83,15 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
     }
 
     public WxMenu.Button addButton(WxButton wxButton) {
+        // 如果不是自动生成菜单，则key不适用自动生成策略，使用默认策略
+        String buttonKey = autoCreate ? this.stringValueResolver.resolveStringValue(wxButtonEventKeyStrategy.getEventKey(wxButton)) :
+                StringUtils.isEmpty(wxButton.key()) ? WxMapping.MATCH_ALL_WILDCARD : this.stringValueResolver.resolveStringValue(wxButton.key());
         WxMenu.Button button = WxMenu.Button.builder()
                 .setGroup(wxButton.group())
                 .setType(wxButton.type())
                 .setMain(wxButton.main())
                 .setOrder(wxButton.order())
-                .setKey(wxButtonEventKeyStrategy.getEventKey(wxButton))
+                .setKey(buttonKey)
                 .setMediaId(this.stringValueResolver.resolveStringValue(wxButton.mediaId()))
                 .setName(this.stringValueResolver.resolveStringValue(wxButton.name()))
                 .setAppId(this.stringValueResolver.resolveStringValue(wxButton.appId()))
@@ -188,6 +193,15 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
     }
 
     /**
+     * 初始化菜单
+     * 创建生命周期结束时，清除内存
+     */
+    public void initMenu() {
+        mainButtonLookup.clear();
+        groupButtonLookup.clear();
+    }
+
+    /**
      * 提交菜单的远程
      *
      * @return
@@ -196,9 +210,6 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
         WxMenu wxMenu = this.getMenu();
         if (wxMenu != null && !CollectionUtils.isEmpty(wxMenu.mainButtons)) {
             String result = wxApiService.createMenu(wxMenu);
-            // 创建生命周期结束时，清除内存
-            mainButtonLookup.clear();
-            groupButtonLookup.clear();
             return result;
         }
         throw new WxAppException("不能创建空菜单");
@@ -282,7 +293,10 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
     }
 
     public WxMenu.Button getMapping(WxRequest.Body body) {
-        return mainButtonLookup.get(ButtonKey.of(body));
+        if (body.getCategory() != Wx.Category.BUTTON) {
+            return null;
+        }
+        return keyButtonLookup.get(ButtonKey.of(body));
     }
 
     /**
