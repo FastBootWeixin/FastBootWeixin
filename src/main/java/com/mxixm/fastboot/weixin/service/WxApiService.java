@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.extend.WxQrCode;
 import com.mxixm.fastboot.weixin.module.extend.WxShortUrl;
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaResource;
+import com.mxixm.fastboot.weixin.module.media.news.WxNews;
 import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.menu.WxMenus;
 import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
@@ -62,14 +63,14 @@ public interface WxApiService {
 
     WxMedia.ImageResult uploadImg(@WxApiForm("media") Resource media);
 
-    WxMedia.NewsResult addNews(@WxApiBody WxMedia.News news);
+    WxNews.Result addNews(@WxApiBody WxNews news);
 
     /**
      * 值返回一个json结果，不管了，如果有错的话会抛出异常的
      *
      * @param news
      */
-    void updateNews(@WxApiBody WxMedia.New news);
+    void updateNews(@WxApiBody WxNews news);
 
     /**
      * 视频不要传description
@@ -97,7 +98,19 @@ public interface WxApiService {
      * @param mediaId
      * @return the result
      */
-    WxMedia.News getNewsMedia(@WxApiBody WxMedia mediaId);
+    WxNews getNews(@WxApiBody WxMedia mediaId);
+
+    /**
+     * 批量获取news
+     * @return
+     */
+    WxNews.PageResult batchGetNews(@WxApiBody WxNews.PageParam param);
+
+    /**
+     * 批量获取媒体
+     * @return
+     */
+    WxMedia.PageResult batchGetMedia(@WxApiBody WxMedia.PageParam param);
 
     /**
      * 是否有更合理的方法去区分同一个请求的三种内容呢？应该是要有一个代理的
@@ -106,7 +119,7 @@ public interface WxApiService {
      * @param mediaId
      * @return the result
      */
-    WxMedia.Video getVideoMedia(@WxApiBody WxMedia mediaId);
+    WxMedia.Video getVideo(@WxApiBody WxMedia mediaId);
 
     void delMedia(@WxApiBody WxMedia mediaId);
 
@@ -144,7 +157,7 @@ public interface WxApiService {
     // WxMediaResource showQrCode(@WxApiParam("ticket") String ticket);
     // batchGetMedia();
 
-    WxTagUser.UserList listUserByTag(WxTagUser wxTagUser);
+    WxTagUser.PageResult listUserByTag(WxTagUser wxTagUser);
 
     WxTag createTag(WxTag wxTag);
 
@@ -160,7 +173,7 @@ public interface WxApiService {
 
     WxTagUser.TagIdList listTagByUser(WxTagUser wxTagUser);
 
-    WxCard.Result getCards(WxCard.ListSelector listSelector);
+    WxCard.PageResult getCards(WxCard.PageParam pageParam);
 
     WxCard cardInfo(WxCard.CardSelector cardSelector);
 

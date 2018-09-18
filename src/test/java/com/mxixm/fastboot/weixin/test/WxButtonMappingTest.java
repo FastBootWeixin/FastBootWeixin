@@ -17,8 +17,8 @@ import org.springframework.boot.SpringApplication;
  * 微信菜单接口
  * 
  */
-@WxController
-@WxApplication(menuAutoCreate = false)
+//@WxController
+//@WxApplication(menuAutoCreate = false)
 public class WxButtonMappingTest {
 	private final Log log = LogFactory.getLog(this.getClass());
 

@@ -55,8 +55,8 @@ import java.util.stream.Collectors;
  * @date 2017/09/21 23:47
  * @since 0.1.2
  */
-//@WxApplication
-//@WxController
+@WxApplication
+@WxController
 public class WxApp {
 
     @Autowired
@@ -315,8 +315,8 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
     public List<WxMessage> cardMessage(String content) {
         Integer tagId = Integer.parseInt(content.substring("卡券".length()));
-        WxTagUser.UserList userList = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
-        return userList.getOpenIdList().stream().flatMap(u -> {
+        WxTagUser.PageResult pageResult = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
+        return pageResult.getOpenIdList().stream().flatMap(u -> {
             List<WxMessage> l = new ArrayList();
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xPsM7ZCw7BW1U2lRRN-J2Qg").toUser(u).build());
@@ -326,7 +326,7 @@ public class WxApp {
 
     @RequestMapping("cards")
     public List<WxCard> cards() {
-        return wxApiService.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
+        return wxApiService.getCards(WxCard.PageParam.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
                 .getCardIdList().stream().map(id -> {
             return wxApiService.cardInfo(WxCard.CardSelector.info(id));
         }).collect(Collectors.toList());

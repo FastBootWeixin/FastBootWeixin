@@ -44,6 +44,7 @@ public interface WxRequestCondition<T> extends RequestCondition<T> {
 		BUTTON_PAGE_PATH(Wx.Category.BUTTON, "buttonPagePaths"),
 		BUTTON_ORDER(Wx.Category.BUTTON, "buttonOrders"),
 		BUTTON_GROUP(Wx.Category.BUTTON, "buttonGroups"),
+		BUTTON_LEVEL(Wx.Category.BUTTON, "buttonLevels"),
 		MESSAGE_TYPE(Wx.Category.MESSAGE, "messageTypes"),
 		MESSAGE_CONTENT(Wx.Category.MESSAGE, "messageContents"),
 		EVENT_TYPE(Wx.Category.EVENT, "eventTypes"),

@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * @date 2017/09/21 23:27
  * @since 0.1.2
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @WxMapping(category = Wx.Category.BUTTON)

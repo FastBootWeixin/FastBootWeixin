@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * @date 2017/09/21 23:27
  * @since 0.1.2
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @WxMapping(category = Wx.Category.BUTTON)
@@ -55,8 +55,9 @@ public @interface WxButtonMapping {
     /**
      * 匹配的菜单层级，默认全部(也可以按上面那种写法，用数组的方式)
      * 暂时去掉，因为WxButton中只有true和false，无法定义全部
+     * 加回来，WxButton中默认定义false，视为不区分。如果定义了true，则视为MAIN
      */
-    // WxButton.Level[] level() default {};
+    WxButton.Level[] level() default {};
 
     /**
      * 匹配菜单需要，默认全部
@@ -95,7 +96,7 @@ public @interface WxButtonMapping {
     String[] pagePaths() default {};
 
     /**
-     * 映射名
+     * 映射名，注意和names区分
      */
     @AliasFor(annotation = WxMapping.class)
     String name() default "";

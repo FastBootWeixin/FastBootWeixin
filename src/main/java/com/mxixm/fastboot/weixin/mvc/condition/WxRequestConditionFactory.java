@@ -38,6 +38,11 @@ public class WxRequestConditionFactory {
                 Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getOrder).orElse(null), buttonOrders);
     }
 
+    public static WxEnumRequestCondition createWxButtonLevelsCondition(WxButton.Level... buttonLevels) {
+        return new WxEnumRequestCondition(WxRequestCondition.Type.BUTTON_LEVEL, wxRequest ->
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getLevel).orElse(null), buttonLevels);
+    }
+
     public static WxWildcardRequestCondition createWxButtonKeysCondition(String... buttonKeys) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.BUTTON_KEY, wxRequest ->
                 Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getKey).orElse(null), buttonKeys);

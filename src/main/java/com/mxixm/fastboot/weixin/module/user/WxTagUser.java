@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * fastboot-weixin  WxTagUser
+ * todo 待重构，修改成Param和Result的风格
  *
  * @author Guangshan
  * @date 2017/9/23 22:57
@@ -125,7 +126,7 @@ public class WxTagUser {
         this.nextOpenId = nextOpenId;
     }
 
-    public static class UserList {
+    public static class PageResult {
 
         @JsonProperty("count")
         private Integer count;

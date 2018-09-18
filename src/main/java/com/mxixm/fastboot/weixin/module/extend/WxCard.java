@@ -1234,7 +1234,7 @@ public class WxCard {
     /**
      * 用于查询卡券
      */
-    public static class ListSelector {
+    public static class PageParam {
 
         @JsonProperty("offset")
         private int offset;
@@ -1245,15 +1245,15 @@ public class WxCard {
         @JsonProperty("status_list")
         private List<Status> statusList;
 
-        public static ListSelector of(int offset, int count, Status... statuses) {
-            ListSelector listSelector = new ListSelector();
-            listSelector.offset = offset;
-            listSelector.count = count;
-            listSelector.statusList = Arrays.asList(statuses);
-            return listSelector;
+        public static PageParam of(int offset, int count, Status... statuses) {
+            PageParam pageParam = new PageParam();
+            pageParam.offset = offset;
+            pageParam.count = count;
+            pageParam.statusList = Arrays.asList(statuses);
+            return pageParam;
         }
 
-        public static ListSelector of(Status... statuses) {
+        public static PageParam of(Status... statuses) {
             return of(0, 50, statuses);
         }
 
@@ -1288,7 +1288,7 @@ public class WxCard {
     /**
      * 卡券列表
      */
-    public static class Result {
+    public static class PageResult {
 
         @JsonProperty("errcode")
         private Integer errorCode;

@@ -244,15 +244,14 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         }
     }
 
+    /**
+     * 创建@WxButton的信息，这个和其他不同之处在于不需要去找类上的注解，只支持方法级注解
+     * @param method 方法
+     * @param handlerType 类
+     * @return 返回
+     */
     private WxMappingInfo createWxButtonInfo(Method method, Class<?> handlerType) {
-        WxMappingInfo wxMappingInfo = createWxButtonInfo(method);
-        if (wxMappingInfo != null) {
-            WxMappingInfo typeWxMappingInfo = createWxButtonInfo(handlerType);
-            if (typeWxMappingInfo != null) {
-                wxMappingInfo = wxMappingInfo.combine(typeWxMappingInfo);
-            }
-        }
-        return wxMappingInfo;
+        return createWxButtonInfo(method);
     }
 
     private WxMappingInfo createWxButtonInfo(AnnotatedElement element) {
@@ -270,6 +269,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .buttonKeys(button.getKey())
                 .buttonNames(button.getName())
                 .buttonUrls(button.getUrl())
+                .buttonLevels(button.isMain() ? WxButton.Level.MAIN : null)
                 .buttonMediaIds(button.getMediaId())
                 .buttonAppIds(button.getAppId())
                 .buttonPagePaths(button.getPagePath())
@@ -304,6 +304,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .buttonPagePaths(resolveEmbeddedValuesInPatterns(wxButtonMapping.pagePaths()))
                 .buttonGroups(wxButtonMapping.group())
                 .buttonOrders(wxButtonMapping.order())
+                .buttonLevels(wxButtonMapping.level())
                 .build();
     }
 
@@ -355,6 +356,17 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .build();
     }
 
+    private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
+        WxMapping wxMapping = element.getAnnotation(WxMapping.class);
+        if (wxMapping == null) {
+            return null;
+        }
+        return WxMappingInfo
+                .create(wxMapping.category())
+                .mappingName(wxMapping.name())
+                .build();
+    }
+
     private int countNotNull(WxMappingInfo... wxMappingInfos) {
         int count = 0;
         for (WxMappingInfo wxMappingInfo : wxMappingInfos) {
@@ -385,17 +397,6 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         } else {
             return new HandlerMethod(handler, method);
         }
-    }
-
-    private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
-        WxMapping wxMapping = element.getAnnotation(WxMapping.class);
-        if (wxMapping == null) {
-            return null;
-        }
-        return WxMappingInfo
-                .create(wxMapping.category())
-                .mappingName(wxMapping.name())
-                .build();
     }
 
     @Override
