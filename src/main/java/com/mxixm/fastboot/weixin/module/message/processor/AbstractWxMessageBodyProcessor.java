@@ -36,7 +36,7 @@ public abstract class AbstractWxMessageBodyProcessor<B extends WxMessageBody> im
     @Override
     public WxMessage<B> process(WxMessageParameter wxMessageParameter, WxMessage<B> wxMessage) {
         if (wxMessage == null) {
-            return wxMessage;
+            return null;
         }
         B body = processBody(wxMessageParameter, wxMessage.getBody());
         if (wxMessage.getBody() != body) {
@@ -45,7 +45,13 @@ public abstract class AbstractWxMessageBodyProcessor<B extends WxMessageBody> im
         return wxMessage;
     }
 
-    protected abstract B processBody(WxMessageParameter wxMessageParameter, B body);
+    /**
+     * 处理消息体
+     * @param parameter 消息参数
+     * @param body      消息体
+     * @return 处理后的消息体
+     */
+    protected abstract B processBody(WxMessageParameter parameter, B body);
 
     @Override
     public boolean supports(WxMessageParameter wxMessageParameter, WxMessage<B> wxMessage) {

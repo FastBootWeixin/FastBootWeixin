@@ -163,6 +163,7 @@ public class WxApp {
             order = WxButton.Order.FORTH,
             name = "图片消息")
     public WxMessage image() {
+        String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.VIDEO, new FileSystemResource("路径"));
         return WxMessage.imageBuilder()
                 .mediaUrl("http://img.zcool.cn/community/01f09e577b85450000012e7e182cf0.jpg@1280w_1l_2o_100sh.jpg")
                 .build();
@@ -387,5 +388,16 @@ public class WxApp {
     public WxJsConfig wxJsConfig() {
         return wxJsTicketManager.getWxJsConfigFromRequest(WxJsApi.getLocation);
     }
+
+    @RequestMapping("testMessage")
+    @ResponseBody
+    public WxMessage wxMessage() {
+        return WxMessage.musicBuilder().thumbMediaId("aaaaaa")
+                .description("aaaaaaaaaaaa")
+                .thumbMediaPath("aaaaaaaaa")
+                .thumbMediaUrl("aaaaaa")
+                .title("aaaaaaaaaa").build();
+    }
+
 
 }

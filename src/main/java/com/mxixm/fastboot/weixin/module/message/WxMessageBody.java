@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.module.message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.core.io.Resource;
 
 import javax.xml.bind.annotation.*;
 import java.util.*;
@@ -57,7 +58,9 @@ public class WxMessageBody {
     @XmlType(name = "MediaBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Media extends WxMessageBody {
+
         @XmlElement(name = "MediaId", required = true)
+        @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("media_id")
         protected String mediaId;
 
@@ -67,10 +70,14 @@ public class WxMessageBody {
         @JsonIgnore
         protected String mediaUrl;
 
-        public Media(String mediaId, String mediaPath, String mediaUrl) {
+        @JsonIgnore
+        protected Resource mediaResource;
+
+        public Media(String mediaId, String mediaPath, String mediaUrl, Resource mediaResource) {
             this.mediaId = mediaId;
             this.mediaPath = mediaPath;
             this.mediaUrl = mediaUrl;
+            this.mediaResource = mediaResource;
         }
 
         public Media() {
@@ -100,56 +107,42 @@ public class WxMessageBody {
             this.mediaUrl = mediaUrl;
         }
 
+        public Resource getMediaResource() {
+            return mediaResource;
+        }
+
+        public void setMediaResource(Resource mediaResource) {
+            this.mediaResource = mediaResource;
+        }
+
         @Override
         public boolean equals(Object o) {
-            if (o == this) {
+            if (this == o) {
                 return true;
             }
-            if (!(o instanceof Media)) {
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            final Media other = (Media) o;
-            if (!other.canEqual(this)) {
-                return false;
-            }
-            final Object this$mediaId = this.getMediaId();
-            final Object other$mediaId = other.getMediaId();
-            if (this$mediaId == null ? other$mediaId != null : !this$mediaId.equals(other$mediaId)) {
-                return false;
-            }
-            final Object this$mediaPath = this.getMediaPath();
-            final Object other$mediaPath = other.getMediaPath();
-            if (this$mediaPath == null ? other$mediaPath != null : !this$mediaPath.equals(other$mediaPath)) {
-                return false;
-            }
-            final Object this$mediaUrl = this.getMediaUrl();
-            final Object other$mediaUrl = other.getMediaUrl();
-            if (this$mediaUrl == null ? other$mediaUrl != null : !this$mediaUrl.equals(other$mediaUrl)) {
-                return false;
-            }
-            return true;
+            Media media = (Media) o;
+            return Objects.equals(mediaId, media.mediaId) &&
+                    Objects.equals(mediaPath, media.mediaPath) &&
+                    Objects.equals(mediaUrl, media.mediaUrl) &&
+                    Objects.equals(mediaResource, media.mediaResource);
         }
 
         @Override
         public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $mediaId = this.getMediaId();
-            result = result * PRIME + ($mediaId == null ? 43 : $mediaId.hashCode());
-            final Object $mediaPath = this.getMediaPath();
-            result = result * PRIME + ($mediaPath == null ? 43 : $mediaPath.hashCode());
-            final Object $mediaUrl = this.getMediaUrl();
-            result = result * PRIME + ($mediaUrl == null ? 43 : $mediaUrl.hashCode());
-            return result;
-        }
-
-        protected boolean canEqual(Object other) {
-            return other instanceof Media;
+            return Objects.hash(mediaId, mediaPath, mediaUrl, mediaResource);
         }
 
         @Override
         public String toString() {
-            return "com.mxixm.fastboot.weixin.module.message.WxMessage.Media(mediaId=" + this.getMediaId() + ", mediaPath=" + this.getMediaPath() + ", mediaUrl=" + this.getMediaUrl() + ")";
+            return "Media{" +
+                    "mediaId='" + mediaId + '\'' +
+                    ", mediaPath='" + mediaPath + '\'' +
+                    ", mediaUrl='" + mediaUrl + '\'' +
+                    ", mediaResource=" + mediaResource +
+                    '}';
         }
     }
 
@@ -160,8 +153,8 @@ public class WxMessageBody {
         public Image() {
         }
 
-        public Image(String mediaId, String mediaPath, String mediaUrl) {
-            super(mediaId, mediaPath, mediaUrl);
+        public Image(String mediaId, String mediaPath, String mediaUrl, Resource mediaResource) {
+            super(mediaId, mediaPath, mediaUrl, mediaResource);
         }
 
         @Override
@@ -185,7 +178,6 @@ public class WxMessageBody {
             return result;
         }
 
-        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Image;
         }
@@ -199,8 +191,8 @@ public class WxMessageBody {
     @XmlType(name = "VoiceBody")
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Voice extends Media {
-        public Voice(String mediaId, String mediaPath, String mediaUrl) {
-            super(mediaId, mediaPath, mediaUrl);
+        public Voice(String mediaId, String mediaPath, String mediaUrl, Resource mediaResource) {
+            super(mediaId, mediaPath, mediaUrl, mediaResource);
         }
 
         public Voice() {
@@ -227,7 +219,6 @@ public class WxMessageBody {
             return result;
         }
 
-        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Voice;
         }
@@ -260,10 +251,14 @@ public class WxMessageBody {
         @JsonIgnore
         protected String thumbMediaUrl;
 
-        public Video(String thumbMediaId, String title, String description, String thumbMediaPath, String thumbMediaUrl) {
+        @JsonIgnore
+        protected Resource thumbMediaResource;
+
+        public Video(String thumbMediaId, String title, String description, Resource thumbMediaResource, String thumbMediaPath, String thumbMediaUrl) {
             this.thumbMediaId = thumbMediaId;
             this.title = title;
             this.description = description;
+            this.thumbMediaResource = thumbMediaResource;
             this.thumbMediaPath = thumbMediaPath;
             this.thumbMediaUrl = thumbMediaUrl;
         }
@@ -311,71 +306,53 @@ public class WxMessageBody {
             this.thumbMediaUrl = thumbMediaUrl;
         }
 
+        public Resource getThumbMediaResource() {
+            return thumbMediaResource;
+        }
+
+        public void setThumbMediaResource(Resource thumbMediaResource) {
+            this.thumbMediaResource = thumbMediaResource;
+        }
+
         @Override
         public boolean equals(Object o) {
-            if (o == this) {
+            if (this == o) {
                 return true;
             }
             if (!(o instanceof Video)) {
                 return false;
             }
-            final Video other = (Video) o;
-            if (!other.canEqual(this)) {
+            if (!super.equals(o)) {
                 return false;
             }
-            final Object this$thumbMediaId = this.getThumbMediaId();
-            final Object other$thumbMediaId = other.getThumbMediaId();
-            if (this$thumbMediaId == null ? other$thumbMediaId != null : !this$thumbMediaId.equals(other$thumbMediaId)) {
-                return false;
-            }
-            final Object this$title = this.getTitle();
-            final Object other$title = other.getTitle();
-            if (this$title == null ? other$title != null : !this$title.equals(other$title)) {
-                return false;
-            }
-            final Object this$description = this.getDescription();
-            final Object other$description = other.getDescription();
-            if (this$description == null ? other$description != null : !this$description.equals(other$description)) {
-                return false;
-            }
-            final Object this$thumbMediaPath = this.getThumbMediaPath();
-            final Object other$thumbMediaPath = other.getThumbMediaPath();
-            if (this$thumbMediaPath == null ? other$thumbMediaPath != null : !this$thumbMediaPath.equals(other$thumbMediaPath)) {
-                return false;
-            }
-            final Object this$thumbMediaUrl = this.getThumbMediaUrl();
-            final Object other$thumbMediaUrl = other.getThumbMediaUrl();
-            if (this$thumbMediaUrl == null ? other$thumbMediaUrl != null : !this$thumbMediaUrl.equals(other$thumbMediaUrl)) {
-                return false;
-            }
-            return true;
+            Video video = (Video) o;
+            return Objects.equals(thumbMediaId, video.thumbMediaId) &&
+                    Objects.equals(title, video.title) &&
+                    Objects.equals(description, video.description) &&
+                    Objects.equals(thumbMediaPath, video.thumbMediaPath) &&
+                    Objects.equals(thumbMediaUrl, video.thumbMediaUrl) &&
+                    Objects.equals(thumbMediaResource, video.thumbMediaResource);
         }
 
         @Override
         public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $thumbMediaId = this.getThumbMediaId();
-            result = result * PRIME + ($thumbMediaId == null ? 43 : $thumbMediaId.hashCode());
-            final Object $title = this.getTitle();
-            result = result * PRIME + ($title == null ? 43 : $title.hashCode());
-            final Object $description = this.getDescription();
-            result = result * PRIME + ($description == null ? 43 : $description.hashCode());
-            final Object $thumbMediaPath = this.getThumbMediaPath();
-            result = result * PRIME + ($thumbMediaPath == null ? 43 : $thumbMediaPath.hashCode());
-            final Object $thumbMediaUrl = this.getThumbMediaUrl();
-            result = result * PRIME + ($thumbMediaUrl == null ? 43 : $thumbMediaUrl.hashCode());
-            return result;
-        }
-
-        @Override
-        protected boolean canEqual(Object other) {
-            return other instanceof Video;
+            return Objects.hash(super.hashCode(), thumbMediaId, title, description, thumbMediaPath, thumbMediaUrl, thumbMediaResource);
         }
 
         @Override
         public String toString() {
-            return "com.mxixm.fastboot.weixin.module.message.WxMessage.Video.WxMessageBody(thumbMediaId=" + this.getThumbMediaId() + ", title=" + this.getTitle() + ", description=" + this.getDescription() + ", thumbMediaPath=" + this.getThumbMediaPath() + ", thumbMediaUrl=" + this.getThumbMediaUrl() + ")";
+            return "Video{" +
+                    "mediaId='" + mediaId + '\'' +
+                    ", mediaPath='" + mediaPath + '\'' +
+                    ", mediaUrl='" + mediaUrl + '\'' +
+                    ", mediaResource=" + mediaResource +
+                    ", thumbMediaId='" + thumbMediaId + '\'' +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", thumbMediaPath='" + thumbMediaPath + '\'' +
+                    ", thumbMediaUrl='" + thumbMediaUrl + '\'' +
+                    ", thumbMediaResource=" + thumbMediaResource +
+                    '}';
         }
     }
 
@@ -502,9 +479,13 @@ public class WxMessageBody {
     @XmlAccessorType(XmlAccessType.NONE)
     public static class Music extends Media {
 
+        /**
+         * 替换父类中的mediaId，因为音乐类型的消息没有mediaId，只有thumbMediaId
+         * 这里用mediaId表示thumbMediaId，以便做一些统一的处理
+         */
         @XmlElement(name = "ThumbMediaId", required = true)
         @JsonProperty("thumb_media_id")
-        protected String thumbMediaId;
+        protected String mediaId;
 
         @XmlElement(name = "Title")
         @JsonProperty("title")
@@ -523,7 +504,7 @@ public class WxMessageBody {
         protected String hqMusicUrl;
 
         public Music(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
-            this.thumbMediaId = thumbMediaId;
+            this.mediaId = thumbMediaId;
             this.title = title;
             this.description = description;
             this.musicUrl = musicUrl;
@@ -534,22 +515,34 @@ public class WxMessageBody {
         }
 
         /**
-         * 懒省事，做个简单的替换
+         * 懒省事，做个简单的替换。音乐类型的消息没有mediaId，只有一个thumbMediaId，这里做一个简单的替换
+         * 使用Media中的mediaId、mediaPath、mediaUrl作为音乐类型的thumb对应的属性。
          *
          * @param thumbMediaId
          */
         @Override
         public void setMediaId(String thumbMediaId) {
-            this.thumbMediaId = thumbMediaId;
+            this.mediaId = thumbMediaId;
         }
 
         @Override
         public String getMediaId() {
-            return this.thumbMediaId;
+            return this.mediaId;
         }
 
+        @JsonIgnore
         public String getThumbMediaId() {
-            return this.thumbMediaId;
+            return this.mediaId;
+        }
+
+        @JsonIgnore
+        public String getThumbMediaUrl() {
+            return this.mediaUrl;
+        }
+
+        @JsonIgnore
+        public String getThumbMediaPath() {
+            return this.mediaPath;
         }
 
         public String getTitle() {
@@ -568,12 +561,20 @@ public class WxMessageBody {
             return this.hqMusicUrl;
         }
 
-        public void setThumbMediaId(String thumbMediaId) {
-            this.thumbMediaId = thumbMediaId;
-        }
-
         public void setTitle(String title) {
             this.title = title;
+        }
+
+        public void setThumbMediaId(String thumbMediaId) {
+            this.mediaId = thumbMediaId;
+        }
+
+        public void setThumbMediaPath(String thumbMediaPath) {
+            this.mediaPath = thumbMediaPath;
+        }
+
+        public void setThumbMediaUrl(String thumbMediaUrl) {
+            this.mediaUrl = thumbMediaUrl;
         }
 
         public void setDescription(String description) {
@@ -645,7 +646,6 @@ public class WxMessageBody {
             return result;
         }
 
-        @Override
         protected boolean canEqual(Object other) {
             return other instanceof Music;
         }

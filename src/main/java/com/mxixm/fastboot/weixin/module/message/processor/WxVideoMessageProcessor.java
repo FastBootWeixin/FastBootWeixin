@@ -47,11 +47,13 @@ public class WxVideoMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
         if (body.getThumbMediaId() == null) {
             String thumbMediaId = null;
             // 优先使用path
-            if (body.getThumbMediaPath() != null) {
-                thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
+            if (body.getMediaResource() != null) {
+                thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.THUMB, body.getThumbMediaResource());
+            } else if (body.getThumbMediaPath() != null) {
+                thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.THUMB, new FileSystemResource(body.getThumbMediaPath()));
             } else if (body.getThumbMediaUrl() != null) {
                 String url = WxUrlUtils.mediaUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
-                thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
+                thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.THUMB, url);
             }
             body.setThumbMediaId(thumbMediaId);
         }

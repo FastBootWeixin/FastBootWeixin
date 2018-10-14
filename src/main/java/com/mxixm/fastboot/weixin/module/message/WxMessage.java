@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -343,6 +344,8 @@ public class WxMessage<T extends WxMessageBody> {
 
         protected String mediaUrl;
 
+        protected Resource mediaResource;
+
         MediaBuilder() {
         }
 
@@ -358,6 +361,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public B mediaUrl(String mediaUrl) {
             this.body.mediaUrl = mediaUrl;
+            return (B) this;
+        }
+
+        public B mediaResource(Resource mediaResource) {
+            this.body.mediaResource = mediaResource;
             return (B) this;
         }
 
@@ -436,6 +444,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public VideoBuilder thumbMediaUrl(String thumbMediaUrl) {
             this.body.thumbMediaUrl = thumbMediaUrl;
+            return this;
+        }
+
+        public VideoBuilder thumbMediaResource(Resource thumbMediaResource) {
+            this.body.thumbMediaResource = thumbMediaResource;
             return this;
         }
 
@@ -546,7 +559,7 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public MusicBuilder body(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
-            this.body.thumbMediaId = thumbMediaId;
+            this.body.mediaId = thumbMediaId;
             this.body.title = title;
             this.body.description = description;
             this.body.musicUrl = musicUrl;
@@ -555,7 +568,7 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public MusicBuilder thumbMediaId(String thumbMediaId) {
-            this.body.thumbMediaId = thumbMediaId;
+            this.body.mediaId = thumbMediaId;
             return this;
         }
 
@@ -566,6 +579,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public MusicBuilder thumbMediaUrl(String thumbMediaUrl) {
             this.body.mediaUrl = thumbMediaUrl;
+            return this;
+        }
+
+        public MusicBuilder thumbMediaResource(Resource thumbMediaResource) {
+            this.body.mediaResource = thumbMediaResource;
             return this;
         }
 
