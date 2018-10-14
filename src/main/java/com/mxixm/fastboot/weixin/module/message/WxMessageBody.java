@@ -589,6 +589,15 @@ public class WxMessageBody {
             this.hqMusicUrl = hqMusicUrl;
         }
 
+        @JsonIgnore
+        public Resource getThumbMediaResource() {
+            return this.mediaResource;
+        }
+
+        public void setThumbMediaResource(Resource thumbMediaResource) {
+            this.mediaResource = thumbMediaResource;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (o == this) {
