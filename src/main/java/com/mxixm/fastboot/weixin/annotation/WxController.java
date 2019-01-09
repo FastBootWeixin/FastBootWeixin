@@ -16,13 +16,14 @@
 
 package com.mxixm.fastboot.weixin.annotation;
 
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Controller;
 
 import java.lang.annotation.*;
 
 /**
  * FastBootWeixin WxController
- *
+ * 原来标记了@WxResponseBody，现在去掉，迁移至@WxMapping中
  * @author Guangshan
  * @date 2017/08/12 22:51
  * @since 0.1.2
@@ -31,9 +32,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Controller
-@WxResponseBody
 public @interface WxController {
 
+    @AliasFor(annotation = Controller.class)
     String value() default "";
 
 }

@@ -32,6 +32,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@WxResponseBody
 public @interface WxMapping {
 
     String MATCH_ALL_WILDCARD = "*";

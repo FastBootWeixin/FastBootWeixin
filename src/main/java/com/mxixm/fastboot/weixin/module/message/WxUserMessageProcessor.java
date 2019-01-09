@@ -31,7 +31,7 @@ public class WxUserMessageProcessor implements WxMessageProcessor<WxUserMessage>
     public WxUserMessage process(WxMessageParameter wxMessageParameter, WxUserMessage wxMessage) {
         // 这个重复逻辑可以使用processInternal处理
         if (wxMessage == null) {
-            return wxMessage;
+            return null;
         }
         if (wxMessage.getToUser() == null) {
             wxMessage.setToUser(wxMessageParameter.getToUser());

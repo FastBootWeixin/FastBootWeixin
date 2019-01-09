@@ -29,14 +29,14 @@ public abstract class AbstractWxRequestCondition<T extends AbstractWxRequestCond
 
     /**
      * 实例方法不能再调用父类构造之前调用，故用static
-     * @param wildcards
+     * @param content
      * @return Collection
      */
-    protected static <U> Collection<U> convertContent(U... wildcards) {
-        if (wildcards == null || (wildcards.length == 1 && wildcards[0] == null)) {
+    protected static <U> Collection<U> convertContent(U... content) {
+        if (content == null || (content.length == 1 && content[0] == null)) {
             return Collections.unmodifiableCollection(Collections.emptyList());
         }
-        return Collections.unmodifiableCollection(Arrays.asList(wildcards));
+        return Collections.unmodifiableCollection(Arrays.asList(content));
     }
 
 }
