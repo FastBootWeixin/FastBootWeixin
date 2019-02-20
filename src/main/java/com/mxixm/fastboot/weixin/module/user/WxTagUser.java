@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.module.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -31,19 +32,19 @@ import java.util.List;
 public class WxTagUser {
 
     @JsonProperty("tagid")
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer tagId;
 
     @JsonProperty("openid_list")
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> openIdList;
 
     @JsonProperty("openid")
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String openId;
 
     @JsonProperty("next_openid")
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String nextOpenId;
 
     /**

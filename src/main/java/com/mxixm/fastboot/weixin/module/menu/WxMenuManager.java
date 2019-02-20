@@ -66,7 +66,7 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
 
     private StringValueResolver stringValueResolver;
 
-    @Value("wx.system.menuRefreshIntervalMs:3600000")
+    @Value("${wx.system.menuRefreshIntervalMs:3600000}")
     private int menuRefreshIntervalMs;
 
     public WxMenuManager(WxApiService wxApiService, WxButtonEventKeyStrategy wxButtonEventKeyStrategy, boolean autoCreate) {
@@ -302,12 +302,12 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
         @Override
         public boolean equals(Object other) {
             return (this == other || (other instanceof ButtonKey &&
-                    this.type == ((ButtonKey) other).type) && this.key.equals(((ButtonKey) other).key));
+                    this.type == ((ButtonKey) other).type) && Objects.equals(this.key, ((ButtonKey) other).key));
         }
 
         @Override
         public int hashCode() {
-            return key.hashCode();
+            return key == null ? 0 : key.hashCode();
         }
 
         @Override

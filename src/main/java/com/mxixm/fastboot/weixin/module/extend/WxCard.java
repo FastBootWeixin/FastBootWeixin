@@ -253,7 +253,7 @@ public class WxCard {
         public static class BaseInfo {
 
             /**
-             * 卡券的商户logo，建议像素为300*300。
+             * 卡券的唯一ID
              */
             @JsonInclude(JsonInclude.Include.NON_NULL)
             @JsonProperty("id")
@@ -312,6 +312,12 @@ public class WxCard {
              */
             @JsonProperty("title")
             private String title;
+
+            /**
+             * 卡券子标题，字数上限为9个汉字。(建议涵盖卡券属性、服务及金额)。
+             */
+            @JsonProperty("sub_title")
+            private String subTitle;
 
             /**
              * 券颜色。按色彩规范标注填写Color010-Color100。
@@ -432,6 +438,45 @@ public class WxCard {
                 @JsonProperty("fixed_begin_term")
                 private Integer fixedBeginTerm;
 
+                public Type getType() {
+                    return type;
+                }
+
+                public void setType(Type type) {
+                    this.type = type;
+                }
+
+                public Long getBeginTimestamp() {
+                    return beginTimestamp;
+                }
+
+                public void setBeginTimestamp(Long beginTimestamp) {
+                    this.beginTimestamp = beginTimestamp;
+                }
+
+                public Long getEndTimestamp() {
+                    return endTimestamp;
+                }
+
+                public void setEndTimestamp(Long endTimestamp) {
+                    this.endTimestamp = endTimestamp;
+                }
+
+                public Integer getFixedTerm() {
+                    return fixedTerm;
+                }
+
+                public void setFixedTerm(Integer fixedTerm) {
+                    this.fixedTerm = fixedTerm;
+                }
+
+                public Integer getFixedBeginTerm() {
+                    return fixedBeginTerm;
+                }
+
+                public void setFixedBeginTerm(Integer fixedBeginTerm) {
+                    this.fixedBeginTerm = fixedBeginTerm;
+                }
             }
 
             /**
@@ -450,6 +495,13 @@ public class WxCard {
                 @JsonProperty("quantity")
                 private Integer quantity;
 
+                public Integer getQuantity() {
+                    return quantity;
+                }
+
+                public void setQuantity(Integer quantity) {
+                    this.quantity = quantity;
+                }
             }
 
             /**
@@ -925,6 +977,14 @@ public class WxCard {
             public void setPromotionAppBrandPass(String promotionAppBrandPass) {
                 this.promotionAppBrandPass = promotionAppBrandPass;
             }
+
+            public String getSubTitle() {
+                return subTitle;
+            }
+
+            public void setSubTitle(String subTitle) {
+                this.subTitle = subTitle;
+            }
         }
 
         /**
@@ -969,6 +1029,30 @@ public class WxCard {
                  */
                 @JsonProperty("can_use_with_other_discount")
                 private Boolean canUseWithOtherDiscount;
+
+                public String getAcceptCategory() {
+                    return acceptCategory;
+                }
+
+                public void setAcceptCategory(String acceptCategory) {
+                    this.acceptCategory = acceptCategory;
+                }
+
+                public String getRejectCategory() {
+                    return rejectCategory;
+                }
+
+                public void setRejectCategory(String rejectCategory) {
+                    this.rejectCategory = rejectCategory;
+                }
+
+                public Boolean getCanUseWithOtherDiscount() {
+                    return canUseWithOtherDiscount;
+                }
+
+                public void setCanUseWithOtherDiscount(Boolean canUseWithOtherDiscount) {
+                    this.canUseWithOtherDiscount = canUseWithOtherDiscount;
+                }
             }
 
 
@@ -1010,6 +1094,21 @@ public class WxCard {
                 @JsonProperty("icon_url_list")
                 private List<String> iconUrlList;
 
+                public String getAbstracts() {
+                    return abstracts;
+                }
+
+                public void setAbstracts(String abstracts) {
+                    this.abstracts = abstracts;
+                }
+
+                public List<String> getIconUrlList() {
+                    return iconUrlList;
+                }
+
+                public void setIconUrlList(List<String> iconUrlList) {
+                    this.iconUrlList = iconUrlList;
+                }
             }
 
 
@@ -1036,6 +1135,21 @@ public class WxCard {
                 @JsonProperty("text")
                 private String text;
 
+                public String getImageUrl() {
+                    return imageUrl;
+                }
+
+                public void setImageUrl(String imageUrl) {
+                    this.imageUrl = imageUrl;
+                }
+
+                public String getText() {
+                    return text;
+                }
+
+                public void setText(String text) {
+                    this.text = text;
+                }
             }
 
             /**
@@ -1071,6 +1185,62 @@ public class WxCard {
              */
             @JsonProperty("time_limit")
             private List<TimeLimit> timeLimits;
+
+            public UseCondition getUseCondition() {
+                return useCondition;
+            }
+
+            public void setUseCondition(UseCondition useCondition) {
+                this.useCondition = useCondition;
+            }
+
+            public Integer getLeastCost() {
+                return leastCost;
+            }
+
+            public void setLeastCost(Integer leastCost) {
+                this.leastCost = leastCost;
+            }
+
+            public String getObjectUseFor() {
+                return objectUseFor;
+            }
+
+            public void setObjectUseFor(String objectUseFor) {
+                this.objectUseFor = objectUseFor;
+            }
+
+            public Abstracts getAbstracts() {
+                return abstracts;
+            }
+
+            public void setAbstracts(Abstracts abstracts) {
+                this.abstracts = abstracts;
+            }
+
+            public List<TextImage> getTextImageList() {
+                return textImageList;
+            }
+
+            public void setTextImageList(List<TextImage> textImageList) {
+                this.textImageList = textImageList;
+            }
+
+            public List<BusinessService> getBusinessService() {
+                return businessService;
+            }
+
+            public void setBusinessService(List<BusinessService> businessService) {
+                this.businessService = businessService;
+            }
+
+            public List<TimeLimit> getTimeLimits() {
+                return timeLimits;
+            }
+
+            public void setTimeLimits(List<TimeLimit> timeLimits) {
+                this.timeLimits = timeLimits;
+            }
 
             public static class TimeLimit {
 
@@ -1126,8 +1296,48 @@ public class WxCard {
                 @JsonProperty("end_minute")
                 private Integer endMinute;
 
+                public String getType() {
+                    return type;
+                }
+
+                public void setType(String type) {
+                    this.type = type;
+                }
+
+                public Integer getBeginHour() {
+                    return beginHour;
+                }
+
+                public void setBeginHour(Integer beginHour) {
+                    this.beginHour = beginHour;
+                }
+
+                public Integer getBeginMinute() {
+                    return beginMinute;
+                }
+
+                public void setBeginMinute(Integer beginMinute) {
+                    this.beginMinute = beginMinute;
+                }
+
+                public Integer getEndHour() {
+                    return endHour;
+                }
+
+                public void setEndHour(Integer endHour) {
+                    this.endHour = endHour;
+                }
+
+                public Integer getEndMinute() {
+                    return endMinute;
+                }
+
+                public void setEndMinute(Integer endMinute) {
+                    this.endMinute = endMinute;
+                }
             }
         }
+
     }
 
     /**
@@ -1146,6 +1356,22 @@ public class WxCard {
 
         WhiteList(List<String> openIds, List<String> usernames) {
             this.openIds = openIds;
+            this.usernames = usernames;
+        }
+
+        public List<String> getOpenIds() {
+            return openIds;
+        }
+
+        public void setOpenIds(List<String> openIds) {
+            this.openIds = openIds;
+        }
+
+        public List<String> getUsernames() {
+            return usernames;
+        }
+
+        public void setUsernames(List<String> usernames) {
             this.usernames = usernames;
         }
 

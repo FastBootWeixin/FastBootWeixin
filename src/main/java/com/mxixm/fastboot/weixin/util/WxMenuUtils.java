@@ -19,6 +19,9 @@ public class WxMenuUtils {
      * @return 返回eventKey
      */
     public static String getKey(WxMenu.Button button) {
+        if (button.getType() == null) {
+            return button.getKey();
+        }
         switch (button.getType()) {
             case VIEW:
                 return button.getUrl();
