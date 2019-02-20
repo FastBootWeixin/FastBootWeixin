@@ -126,6 +126,10 @@ public class WxMenu {
             return main;
         }
 
+        public WxButton.Level getLevel() {
+            return isMain() ? WxButton.Level.MAIN : WxButton.Level.SUB;
+        }
+
         public String getName() {
             return name;
         }

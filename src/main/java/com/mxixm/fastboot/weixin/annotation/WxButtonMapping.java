@@ -16,6 +16,9 @@
 
 package com.mxixm.fastboot.weixin.annotation;
 
+import com.mxixm.fastboot.weixin.module.Wx;
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -29,7 +32,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@WxMapping
+@WxMapping(category = Wx.Category.BUTTON)
 public @interface WxButtonMapping {
 
     /**
@@ -38,11 +41,11 @@ public @interface WxButtonMapping {
     WxButton.Group[] group() default {};
 
     /**
-     * 匹配name，支持通配符，默认全部
+     * 匹配name的通配符，默认全部
      *
      * @return the result
      */
-    String[] name() default {};
+    String[] names() default {};
 
     /**
      * 匹配的菜单类型，默认全部
@@ -51,6 +54,8 @@ public @interface WxButtonMapping {
 
     /**
      * 匹配的菜单层级，默认全部(也可以按上面那种写法，用数组的方式)
+     * 暂时去掉，因为WxButton中只有true和false，无法定义全部
+     * 加回来，WxButton中默认定义false，视为不区分。如果定义了true，则视为MAIN
      */
     WxButton.Level[] level() default {};
 
@@ -62,32 +67,38 @@ public @interface WxButtonMapping {
     /**
      * 匹配菜单key，支持通配符，默认全部
      */
-    String[] key() default {};
+    String[] keys() default {};
 
     /**
      * 网页 链接，用户点击菜单可打开链接，不超过1024字节。
      * type为miniprogram时，不支持小程序的老版本客户端将打开本url。
      * 同样用通配符判断
      */
-    String[] url() default {};
+    String[] urls() default {};
 
     /**
      * media_id类型和view_limited类型必须
      * 调用新增永久素材接口返回的合法media_id
      * 这里直接匹配判断
      */
-    String[] mediaId() default {};
+    String[] mediaIds() default {};
 
     /**
      * miniprogram类型必须，小程序的appid（仅认证公众号可配置）
      * 直接匹配判断
      */
-    String[] appId() default {};
+    String[] appIds() default {};
 
     /**
      * miniprogram类型必须，小程序的页面路径
      * 通配符判断
      */
-    String[] pagePath() default {};
+    String[] pagePaths() default {};
+
+    /**
+     * 映射名，注意和names区分
+     */
+    @AliasFor(annotation = WxMapping.class)
+    String name() default "";
 
 }

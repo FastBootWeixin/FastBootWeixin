@@ -14,39 +14,32 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.annotation;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
-import com.mxixm.fastboot.weixin.module.Wx;
-
-import java.lang.annotation.*;
+import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
- * FastBootWeixin WxMapping
- * 标记是微信的Mapping，包括WxButton、WxEventMapping、WxMessageMapping
+ * FastBootWeixin WxMessageTypeCondition
  *
  * @author Guangshan
- * @date 2017/09/21 23:28
+ * @date 2017/8/12 22:51
  * @since 0.1.2
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@WxResponseBody
-public @interface WxMapping {
+public final class WxMessageTypeCondition extends AbstractWxEnumCondition<WxMessage.Type> {
 
-    String MATCH_ALL_WILDCARD = "*";
+    public WxMessageTypeCondition(WxMessage.Type... types) {
+        super(types);
+    }
 
-    /**
-     * 映射类型，MESSAGE，EVENT，BUTTON，SYSTEM
-     * @return
-     */
-    Wx.Category[] category() default {};
+    @Override
+    protected WxMessage.Type getMatchEnum(WxRequest wxRequest) {
+        return wxRequest.getBody().getMessageType();
+    }
 
-    /**
-     * 映射名
-     * @return
-     */
-    String name() default "";
+    @Override
+    protected WxMessageTypeCondition instance(WxMessage.Type... enums) {
+        return new WxMessageTypeCondition(enums);
+    }
 
 }

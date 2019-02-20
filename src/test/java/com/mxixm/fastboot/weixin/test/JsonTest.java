@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.test;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.module.extend.WxCard;
 
@@ -26,7 +27,34 @@ import java.io.IOException;
 
 public class JsonTest {
 
+    public enum SS {
+
+        A, B, C
+
+    }
+
+    public static class S {
+
+        private SS ss;
+
+        public SS getSs() {
+            return ss;
+        }
+
+        public void setSs(SS ss) {
+            this.ss = ss;
+        }
+    }
+
     public static void main(String[] args) throws IOException {
+        ObjectMapper objectMapper1 = new ObjectMapper();
+        objectMapper1.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        String ss = "{\"ss\":\"a\"}";
+        S ab = objectMapper1.readValue(ss, S.class);
+
+
+        String s = null;
+        Test.test(s);
         Test test = new Test();
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(test));
@@ -104,6 +132,10 @@ public class JsonTest {
 
         @JsonProperty("b")
         private String b;
+
+        public static void test(String... ab) {
+            System.out.println(ab);
+        }
 
     }
 

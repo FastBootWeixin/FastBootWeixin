@@ -14,39 +14,30 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.annotation;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
-import com.mxixm.fastboot.weixin.module.Wx;
-
-import java.lang.annotation.*;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 
 /**
- * FastBootWeixin WxMapping
- * 标记是微信的Mapping，包括WxButton、WxEventMapping、WxMessageMapping
+ * FastBootWeixin WxButtonNameCondition
  *
  * @author Guangshan
- * @date 2017/09/21 23:28
- * @since 0.1.2
+ * @date 2018-9-16 17:36:17
+ * @since 0.7.0
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Inherited
-@WxResponseBody
-public @interface WxMapping {
+public final class WxButtonMediaIdCondition extends AbstractWxButtonWildcardCondition {
 
-    String MATCH_ALL_WILDCARD = "*";
+    public WxButtonMediaIdCondition(String... wildcards) {
+        super(wildcards);
+    }
 
-    /**
-     * 映射类型，MESSAGE，EVENT，BUTTON，SYSTEM
-     * @return
-     */
-    Wx.Category[] category() default {};
+    @Override
+    protected WxButtonMediaIdCondition instance(String... wildcards) {
+        return new WxButtonMediaIdCondition(wildcards);
+    }
 
-    /**
-     * 映射名
-     * @return
-     */
-    String name() default "";
-
+    @Override
+    protected String getMatchText(WxMenu.Button wxButton) {
+        return wxButton.getMediaId();
+    }
 }

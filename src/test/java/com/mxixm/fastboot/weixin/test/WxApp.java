@@ -39,7 +39,9 @@ import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -163,6 +165,7 @@ public class WxApp {
             order = WxButton.Order.FORTH,
             name = "图片消息")
     public WxMessage image() {
+        //String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.VIDEO, new FileSystemResource("路径"));
         return WxMessage.imageBuilder()
                 .mediaUrl("http://img.zcool.cn/community/01f09e577b85450000012e7e182cf0.jpg@1280w_1l_2o_100sh.jpg")
                 .build();
@@ -315,8 +318,8 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
     public List<WxMessage> cardMessage(String content) {
         Integer tagId = Integer.parseInt(content.substring("卡券".length()));
-        WxTagUser.UserList userList = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
-        return userList.getOpenIdList().stream().flatMap(u -> {
+        WxTagUser.PageResult pageResult = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
+        return pageResult.getOpenIdList().stream().flatMap(u -> {
             List<WxMessage> l = new ArrayList();
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xPsM7ZCw7BW1U2lRRN-J2Qg").toUser(u).build());
@@ -326,7 +329,7 @@ public class WxApp {
 
     @RequestMapping("cards")
     public List<WxCard> cards() {
-        return wxApiService.getCards(WxCard.ListSelector.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
+        return wxApiService.getCards(WxCard.PageParam.of(WxCard.Status.CARD_STATUS_NOT_VERIFY))
                 .getCardIdList().stream().map(id -> {
             return wxApiService.cardInfo(WxCard.CardSelector.info(id));
         }).collect(Collectors.toList());
@@ -346,7 +349,7 @@ public class WxApp {
     @RequestMapping("send")
     @ResponseBody
     public String testWeb(String openId) {
-        WxUserMessage wxUserMessage = WxMessage.imageBuilder().mediaUrl("http://g.hiphotos.baidu.com/image/pic/item/7dd98d1001e939018ffc7c2d71ec54e736d19623.jpg").build();
+        WxUserMessage wxUserMessage = WxMessage.imageBuilder().mediaUrl("http://wx3.sinaimg.cn/mw690/007n4kc8gy1fy9gifg8a0j30m60m70tv.jpg").build();
         wxMessageTemplate.sendMessage(openId, wxUserMessage);
         return "";
     }
@@ -387,5 +390,31 @@ public class WxApp {
     public WxJsConfig wxJsConfig() {
         return wxJsTicketManager.getWxJsConfigFromRequest(WxJsApi.getLocation);
     }
+
+    @RequestMapping("testMessage")
+    @ResponseBody
+    public WxMessage wxMessage() {
+        return WxMessage.musicBuilder().thumbMediaId("aaaaaa")
+                .description("aaaaaaaaaaaa")
+                .thumbMediaPath("aaaaaaaaa")
+                .thumbMediaUrl("aaaaaa")
+                .title("aaaaaaaaaa").build();
+    }
+
+//    @WxButton(type = WxButton.Type.VIEW,
+//            group = WxButton.Group.LEFT,
+//            order = WxButton.Order.SECOND,
+//            url = "http://vxyufx.natappfree.cc/wx/login",
+//            name = "点击链接")
+//    @WxAsyncMessage
+    public WxMessage testLogin(WxRequest wxRequest) {
+        return WxMessage.Text.builder().content("点击了菜单链接").build();
+    }
+
+    @GetMapping("wx/login")
+    public String loginWx() {
+        return "redirect:/页面地址";
+    }
+
 
 }

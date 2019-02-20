@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.mvc.condition;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
 import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * FastBootWeixin WxCategoryCondition
@@ -37,24 +32,14 @@ public final class WxCategoryCondition extends AbstractWxEnumCondition<Wx.Catego
         super(types);
     }
 
-    protected WxCategoryCondition(Collection<Wx.Category> types) {
-        super(Collections.unmodifiableSet(new LinkedHashSet<>(types)));
+    @Override
+    protected Wx.Category getMatchEnum(WxRequest wxRequest) {
+        return wxRequest.getBody().getCategory();
     }
 
     @Override
-    public WxCategoryCondition combine(AbstractWxEnumCondition other) {
-        Set<Wx.Category> set = new LinkedHashSet(this.enums);
-        set.addAll(other.enums);
-        return new WxCategoryCondition(set);
-    }
-
-    @Override
-    protected WxCategoryCondition matchEnum(WxRequest.Body wxRequestBody) {
-        Wx.Category wxCategory = wxRequestBody.getCategory();
-        if (getEnums().contains(wxCategory)) {
-            return new WxCategoryCondition(wxCategory);
-        }
-        return null;
+    protected AbstractWxEnumCondition instance(Wx.Category... enums) {
+        return new WxCategoryCondition(enums);
     }
 
 }

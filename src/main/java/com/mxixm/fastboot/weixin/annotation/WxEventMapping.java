@@ -16,7 +16,9 @@
 
 package com.mxixm.fastboot.weixin.annotation;
 
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -32,8 +34,16 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @WxAsyncMessage
-@WxMapping
+@WxMapping(category = Wx.Category.EVENT)
 public @interface WxEventMapping {
+
+    /**
+     * 名称
+     *
+     * @return name
+     */
+    @AliasFor(annotation = WxMapping.class)
+    String name() default "";
 
     /**
      * 请求事件的类型
@@ -43,10 +53,10 @@ public @interface WxEventMapping {
     WxEvent.Type[] type() default {};
 
     /**
-     * 名称
+     * 用于匹配scene的通配符
      *
-     * @return name
+     * @return scene
      */
-    String name() default "";
+    String[] scenes() default {};
 
 }

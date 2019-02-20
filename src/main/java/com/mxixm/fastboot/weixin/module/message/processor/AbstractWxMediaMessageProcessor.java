@@ -18,10 +18,14 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
+import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.core.io.FileSystemResource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * FastBootWeixin AbstractWxGroupMediaMessageProcessor
@@ -32,6 +36,15 @@ import org.springframework.core.io.FileSystemResource;
  */
 public abstract class AbstractWxMediaMessageProcessor<B extends WxMessageBody.Media> extends AbstractWxMessageBodyProcessor<B> {
 
+    private static Map<Class<? extends WxMessageBody.Media>, WxMedia.Type> typeMap = new HashMap<>();
+
+    static {
+        typeMap.put(WxMessageBody.Image.class, WxMedia.Type.IMAGE);
+        typeMap.put(WxMessageBody.Voice.class, WxMedia.Type.VOICE);
+        typeMap.put(WxMessageBody.Video.class, WxMedia.Type.VIDEO);
+        typeMap.put(WxMessageBody.Music.class, WxMedia.Type.THUMB);
+    }
+
     protected WxMediaManager wxMediaManager;
 
     public AbstractWxMediaMessageProcessor(WxMediaManager wxMediaManager) {
@@ -41,13 +54,16 @@ public abstract class AbstractWxMediaMessageProcessor<B extends WxMessageBody.Me
     @Override
     protected B processBody(WxMessageParameter wxMessageParameter, B body) {
         if (body.getMediaId() == null) {
-            // 优先使用path
-            if (body.getMediaPath() != null) {
-                String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getMediaPath()));
+            // 优先使用resource
+            if (body.getMediaResource() != null) {
+                String mediaId = wxMediaManager.addTempMedia(typeMap.get(body.getClass()), body.getMediaResource());
+                body.setMediaId(mediaId);
+            } else if (body.getMediaPath() != null) {
+                String mediaId = wxMediaManager.addTempMedia(typeMap.get(body.getClass()), new FileSystemResource(body.getMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getMediaUrl() != null) {
                 String url = WxUrlUtils.mediaUrl(wxMessageParameter.getRequestUrl(), body.getMediaUrl());
-                String mediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
+                String mediaId = wxMediaManager.addTempMediaByUrl(typeMap.get(body.getClass()), url);
                 body.setMediaId(mediaId);
             }
         }

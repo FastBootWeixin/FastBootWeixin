@@ -280,21 +280,6 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
         }
     }
 
-
-    public static void main(String[] args) {
-        CacheMap map = CacheMap.builder().cacheName("test").cacheTimeout(1000).maxSize(5).refreshOnRead().build();
-        map.put("1", "2");
-        map.put("2", "3");
-        map.put("3", "4");
-        map.put("4", "5");
-        map.put("5", "6");
-        map.get("1");
-        map.put("6", "7");
-        map.put("7", "8");
-        map.put("8", "9");
-        map.put("9", "10");
-    }
-
 }
 
 

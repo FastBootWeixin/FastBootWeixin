@@ -22,6 +22,7 @@ import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.adapter.WxXmlAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -334,6 +335,10 @@ public class WxMessage<T extends WxMessageBody> {
         return new TextBuilder();
     }
 
+    public static TextBuilder text() {
+        return new TextBuilder();
+    }
+
     public static class MediaBuilder<B extends MediaBuilder, M extends WxMessageBody.Media>
             extends Builder<B, M> {
 
@@ -342,6 +347,8 @@ public class WxMessage<T extends WxMessageBody> {
         protected String mediaPath;
 
         protected String mediaUrl;
+
+        protected Resource mediaResource;
 
         MediaBuilder() {
         }
@@ -358,6 +365,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public B mediaUrl(String mediaUrl) {
             this.body.mediaUrl = mediaUrl;
+            return (B) this;
+        }
+
+        public B mediaResource(Resource mediaResource) {
+            this.body.mediaResource = mediaResource;
             return (B) this;
         }
 
@@ -385,6 +397,9 @@ public class WxMessage<T extends WxMessageBody> {
         return new ImageBuilder();
     }
 
+    public static ImageBuilder image() {
+        return new ImageBuilder();
+    }
 
     public static class VoiceBuilder extends WxMessage.MediaBuilder<VoiceBuilder, WxMessageBody.Voice> {
 
@@ -402,6 +417,10 @@ public class WxMessage<T extends WxMessageBody> {
             return voiceBuilder();
         }
 
+    }
+
+    public static VoiceBuilder voice() {
+        return new VoiceBuilder();
     }
 
     public static VoiceBuilder voiceBuilder() {
@@ -439,6 +458,11 @@ public class WxMessage<T extends WxMessageBody> {
             return this;
         }
 
+        public VideoBuilder thumbMediaResource(Resource thumbMediaResource) {
+            this.body.thumbMediaResource = thumbMediaResource;
+            return this;
+        }
+
         public VideoBuilder title(String title) {
             this.body.title = title;
             return this;
@@ -462,6 +486,10 @@ public class WxMessage<T extends WxMessageBody> {
             return videoBuilder();
         }
 
+    }
+
+    public static VideoBuilder video() {
+        return new VideoBuilder();
     }
 
     public static VideoBuilder videoBuilder() {
@@ -532,10 +560,13 @@ public class WxMessage<T extends WxMessageBody> {
 
     }
 
-    public static MiniProgramBuilder miniProgramBuilder() {
+    public static MiniProgramBuilder miniProgram() {
         return new MiniProgramBuilder();
     }
 
+    public static MiniProgramBuilder miniProgramBuilder() {
+        return new MiniProgramBuilder();
+    }
 
     public static class MusicBuilder extends WxMessage.MediaBuilder<MusicBuilder, WxMessageBody.Music> {
 
@@ -546,7 +577,7 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public MusicBuilder body(String thumbMediaId, String title, String description, String musicUrl, String hqMusicUrl) {
-            this.body.thumbMediaId = thumbMediaId;
+            this.body.mediaId = thumbMediaId;
             this.body.title = title;
             this.body.description = description;
             this.body.musicUrl = musicUrl;
@@ -555,7 +586,7 @@ public class WxMessage<T extends WxMessageBody> {
         }
 
         public MusicBuilder thumbMediaId(String thumbMediaId) {
-            this.body.thumbMediaId = thumbMediaId;
+            this.body.mediaId = thumbMediaId;
             return this;
         }
 
@@ -566,6 +597,11 @@ public class WxMessage<T extends WxMessageBody> {
 
         public MusicBuilder thumbMediaUrl(String thumbMediaUrl) {
             this.body.mediaUrl = thumbMediaUrl;
+            return this;
+        }
+
+        public MusicBuilder thumbMediaResource(Resource thumbMediaResource) {
+            this.body.mediaResource = thumbMediaResource;
             return this;
         }
 
@@ -593,6 +629,10 @@ public class WxMessage<T extends WxMessageBody> {
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(body=" + this.body.toString() + ")";
         }
+    }
+
+    public static MusicBuilder music() {
+        return new MusicBuilder();
     }
 
     public static MusicBuilder musicBuilder() {
@@ -689,6 +729,10 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
 
+    public static NewsBuilder news() {
+        return new NewsBuilder();
+    }
+
     public static NewsBuilder newsBuilder() {
         return new NewsBuilder();
     }
@@ -703,6 +747,10 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     public static WxTemplateMessage.TemplateMessageBuilder templateBuilder() {
+        return new WxTemplateMessage.TemplateMessageBuilder();
+    }
+
+    public static WxTemplateMessage.TemplateMessageBuilder template() {
         return new WxTemplateMessage.TemplateMessageBuilder();
     }
 
@@ -744,6 +792,10 @@ public class WxMessage<T extends WxMessageBody> {
         return new MpNewsBuilder();
     }
 
+    public static MpNewsBuilder mpNews() {
+        return new MpNewsBuilder();
+    }
+
     /**
      * 发送图文消息（点击跳转到图文消息页面）
      */
@@ -770,6 +822,10 @@ public class WxMessage<T extends WxMessageBody> {
         public String toString() {
             return "com.example.myproject.module.message.WxMessage.Image.Builder(mediaId=" + this.body + ")";
         }
+    }
+
+    public static WxCardBuilder wxCard() {
+        return new WxCardBuilder();
     }
 
     public static WxCardBuilder wxCardBuilder() {
@@ -806,6 +862,10 @@ public class WxMessage<T extends WxMessageBody> {
     }
 
     public static StatusBuilder statusBuilder() {
+        return new StatusBuilder();
+    }
+
+    public static StatusBuilder status() {
         return new StatusBuilder();
     }
 

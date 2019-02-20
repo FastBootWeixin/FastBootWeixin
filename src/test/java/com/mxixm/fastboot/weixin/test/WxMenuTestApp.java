@@ -19,6 +19,7 @@ package com.mxixm.fastboot.weixin.test;
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import org.springframework.boot.SpringApplication;
+import org.springframework.util.AntPathMatcher;
 
 /**
  * FastBootWeixin WxApp
@@ -27,11 +28,13 @@ import org.springframework.boot.SpringApplication;
  * @date 2017/09/21 23:47
  * @since 0.1.2
  */
-//@WxApplication(menuAutoCreate = false)
+//@WxApplication
 //@WxController
 public class WxMenuTestApp {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        matcher.match("{a:[a-z]}{b:[1-9]}", "a3");
         SpringApplication.run(WxMenuTestApp.class, args);
     }
 
@@ -60,7 +63,7 @@ public class WxMenuTestApp {
     @WxButton(type = WxButton.Type.CLICK,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIRST,
-            name = "左1")
+            name = "点击")
     public String left1(String content) {
         return content;
     }
@@ -72,7 +75,7 @@ public class WxMenuTestApp {
             group = WxButton.Group.LEFT,
             order = WxButton.Order.SECOND,
             url = "http://vxyufx.natappfree.cc/wx/test",
-            name = "左2")
+            name = "跳转")
     public String left2() {
         return "左2";
     }
@@ -80,7 +83,7 @@ public class WxMenuTestApp {
     @WxButton(type = WxButton.Type.SCANCODE_PUSH,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.THIRD,
-            name = "左3")
+            name = "扫码")
     public String left3() {
         return "左3";
     }
@@ -88,7 +91,7 @@ public class WxMenuTestApp {
     @WxButton(type = WxButton.Type.SCANCODE_WAITMSG,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FORTH,
-            name = "左4")
+            name = "选图")
     public String left4() {
         return "左4";
     }
@@ -96,7 +99,7 @@ public class WxMenuTestApp {
     @WxButton(type = WxButton.Type.PIC_SYSPHOTO,
             group = WxButton.Group.LEFT,
             order = WxButton.Order.FIFTH,
-            name = "左5")
+            name = "位置")
     public String left5() {
         return "左5";
     }

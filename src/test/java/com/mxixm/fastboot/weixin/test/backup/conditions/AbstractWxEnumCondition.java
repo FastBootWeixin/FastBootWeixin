@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.mvc.condition;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
-import com.mxixm.fastboot.weixin.util.WxWebUtils;
-import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * FastBootWeixin AbstractWxEnumCondition
+ * FastBootWeixin WxEnumRequestCondition
  *
  * @author Guangshan
  * @date 2017/8/12 22:51
  * @since 0.1.2
  */
-public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends AbstractRequestCondition<AbstractWxEnumCondition<T>> {
+public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends AbstractWxRequestCondition<AbstractWxEnumCondition<T>> {
 
     protected final Set<T> enums;
 
@@ -46,6 +44,10 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
         return this.enums;
     }
 
+    public Set<String> getEnumStrings() {
+        return this.enums.stream().map(Enum::name).collect(Collectors.toSet());
+    }
+
     @Override
     protected Collection<T> getContent() {
         return this.enums;
@@ -57,17 +59,36 @@ public abstract class AbstractWxEnumCondition<T extends Enum<T>> extends Abstrac
     }
 
     @Override
-    public abstract AbstractWxEnumCondition combine(AbstractWxEnumCondition other);
-
-    @Override
-    public AbstractWxEnumCondition getMatchingCondition(HttpServletRequest request) {
-        return matchEnum(WxWebUtils.getWxRequestBodyFromRequest(request));
+    public AbstractWxEnumCondition getMatchingCondition(WxRequest wxRequest) {
+        T t = getMatchEnum(wxRequest);
+        if (t != null && this.getEnums().contains(t)) {
+            return instance(t);
+        }
+        return null;
     }
 
-    protected abstract AbstractWxEnumCondition matchEnum(WxRequest.Body wxRequestBody);
+    @Override
+    public AbstractWxEnumCondition combine(AbstractWxEnumCondition other) {
+        Set<T> set = new LinkedHashSet(this.enums);
+        set.addAll(other.enums);
+        return instance((T[]) set.toArray());
+    }
+
+    /**
+     * 获取用于匹配的目标
+     * @return 返回目标枚举
+     */
+    protected abstract T getMatchEnum(WxRequest wxRequest);
+
+    /**
+     * 生成子类的实例
+     * @param enums 构造参数
+     * @return 返回实例
+     */
+    protected abstract AbstractWxEnumCondition instance(T... enums);
 
     @Override
-    public int compareTo(AbstractWxEnumCondition<T> other, HttpServletRequest request) {
+    public int compareTo(AbstractWxEnumCondition<T> other, WxRequest wxRequest) {
         if (other.enums.size() != this.enums.size()) {
             return other.enums.size() - this.enums.size();
         } else if (this.enums.size() == 1) {

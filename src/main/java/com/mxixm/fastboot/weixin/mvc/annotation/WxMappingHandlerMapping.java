@@ -25,14 +25,17 @@ import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
+import com.mxixm.fastboot.weixin.mvc.condition.WxRequestCondition;
 import com.mxixm.fastboot.weixin.mvc.converter.WxXmlMessageConverter;
 import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
+import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfos;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -64,7 +67,7 @@ import java.util.stream.Collectors;
  * @date 2017/09/21 23:45
  * @since 0.1.2
  */
-public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean {
+public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMappingInfo> implements InitializingBean, EmbeddedValueResolverAware {
 
     /**
      * http://blog.csdn.net/Mr_SeaTurtle_/article/details/52992207
@@ -89,7 +92,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
      * mappingRegistry同父类完全不同，故自己创建一个
      * 也因为此，要把父类所有使用mappingRegistry的地方覆盖父类方法
      */
-    private final MappingRegistry mappingRegistry = new MappingRegistry();
+    // private final MappingRegistry mappingRegistry = new MappingRegistry();
 
     private final String path;
 
@@ -103,6 +106,8 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     private final WxAsyncHandlerFactory wxAsyncHandlerFactory;
 
     private final WxXmlMessageConverter wxXmlMessageConverter;
+
+    private StringValueResolver embeddedValueResolver;
 
     // private final WxRequestContext wxRequestContext = new WxRequestContext();
 
@@ -140,11 +145,20 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 wxRequest = new WxRequest(request, wxSessionManager);
                 WxWebUtils.setWxRequestToRequest(request, wxRequest);
                 wxRequest.setBody(wxXmlMessageConverter.read(request));
+                wxRequest.setButton(wxMenuManager.getMapping(wxRequest.getBody()));
             }
-            final HandlerMethod handlerMethod = lookupHandlerMethod(wxRequest.getBody().getCategory().name(), request);
+            final HandlerMethod handlerMethod = super.getHandlerInternal(request);
             return handlerMethod != null ? handlerMethod : defaultHandlerMethod;
         }
         return null;
+    }
+
+    /**
+     * 父类中只有getHandlerInternal方法有使用
+     */
+    @Override
+    protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
+        return super.lookupHandlerMethod(WxWebUtils.getWxRequestFromRequest(request).getBody().getCategory().name(), request);
     }
 
     /**
@@ -165,111 +179,22 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     @Override
-    public Map<WxMappingInfo, HandlerMethod> getHandlerMethods() {
-        this.mappingRegistry.acquireReadLock();
-        try {
-            return Collections.unmodifiableMap(this.mappingRegistry.getMappings());
-        } finally {
-            this.mappingRegistry.releaseReadLock();
-        }
-    }
-
-    @Override
-    public List<HandlerMethod> getHandlerMethodsForMappingName(String mappingName) {
-        return this.mappingRegistry.getHandlerMethodsByMappingName(mappingName);
-    }
-
-    MappingRegistry getMappingRegistry() {
-        return this.mappingRegistry;
-    }
-
-    @Override
-    public void registerMapping(WxMappingInfo mapping, Object handler, Method method) {
-        this.mappingRegistry.register(mapping, handler, method);
-    }
-
-    @Override
-    public void unregisterMapping(WxMappingInfo mapping) {
-        this.mappingRegistry.unregister(mapping);
-    }
-
-    /**
-     * 父类中只有getHandlerInternal方法有使用
-     */
-    /*
-    @Override
-    protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
-            return lookupHandlerMethod(WxWebUtils.getWxRequestFromRequest(request));
-    }
-
-    protected HandlerMethod lookupHandlerMethod(WxRequest wxRequest) throws Exception {
-        WxRequest.Body wxRequestBody = wxRequest.getBody();
-        if (wxRequestBody == null) {
-            return null;
-        }
-        this.mappingRegistry.acquireReadLock();
-        try {
-            HandlerMethod handlerMethod = null;
-            // switch不被推荐缺少default
-            switch (wxRequestBody.getCategory()) {
-                case BUTTON:
-                    handlerMethod = lookupButtonHandlerMethod(wxRequest);
-                    break;
-                case EVENT:
-                    handlerMethod = lookupEventHandlerMethod(wxRequest);
-                    break;
-                case MESSAGE:
-                    handlerMethod = lookupMessageHandlerMethod(wxRequest);
-                    break;
-                default:
-                    break;
-            }
-            handleMatch(handlerMethod, wxRequest.getRawRequest());
-            if (logger.isDebugEnabled() && handlerMethod != null) {
-                logger.debug("find match wx handler, handler is " + handlerMethod);
-            }
-            return handlerMethod;
-        } finally {
-            this.mappingRegistry.releaseReadLock();
-        }
-    } */
-
-    protected void handleMatch(HandlerMethod handlerMethod, HttpServletRequest request) {
+    protected void handleMatch(WxMappingInfo mapping, String lookupPath, HttpServletRequest request) {
+        super.handleMatch(mapping, lookupPath, request);
         // 返回XML
-        if (handlerMethod != null) {
+        if (mapping != null) {
             request.setAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE, Collections.singleton(MediaType.TEXT_XML));
             if (logger.isDebugEnabled()) {
-                logger.debug("find match wx handler, handler is " + handlerMethod);
+                logger.debug("find match wx handler, mapping is " + mapping);
             }
         }
     }
 
-    private HandlerMethod lookupButtonHandlerMethod(WxRequest wxRequest) {
-        WxMenu.Button button = wxMenuManager.getMapping(wxRequest.getBody());
-        wxRequest.setButton(button);
-        HandlerMethod handlerMethod = mappingRegistry.getHandlerButtonByEventKey(wxRequest.getBody().getEventKey());
-        if (handlerMethod == null) {
-            handlerMethod = mappingRegistry.getHandlerButtonByButtonType(wxRequest.getBody().getButtonType());
-        }
-        return handlerMethod;
-    }
-
-    private HandlerMethod lookupEventHandlerMethod(WxRequest wxRequest) {
-        return mappingRegistry.getHandlerEventByEventType(wxRequest.getBody().getEventType());
-    }
-
-    private HandlerMethod lookupMessageHandlerMethod(WxRequest wxRequest) {
-        WxRequest.Body wxRequestBody = wxRequest.getBody();
-        if (wxRequestBody.getMessageType() == WxMessage.Type.TEXT) {
-            List<HandlerMethod> handlerMethods = mappingRegistry.getHandlersByContent(wxRequestBody.getContent());
-            if (!handlerMethods.isEmpty()) {
-                return handlerMethods.get(0);
-            } else {
-                // 如果没有匹配的时候，返回空。因为默认的wildcard是*所以默认情况肯定是有匹配的
-                return null;
-            }
-        }
-        return mappingRegistry.getHandlerMessageByMessageType(wxRequestBody.getMessageType());
+    @Override
+    protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
+        HandlerExecutionChain chain = super.getHandlerExecutionChain(handler, request);
+        // chain.addInterceptor(wxRequestContext);
+        return chain;
     }
 
     @Override
@@ -277,14 +202,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         return AnnotatedElementUtils.hasAnnotation(beanType, WxController.class);
     }
 
-//    @Override
-//    protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
-//        this.mappingRegistry.register(mapping, handler, method);
-//    }
-
     @Override
     protected Set<String> getMappingPathPatterns(WxMappingInfo info) {
-        return Collections.singleton(info.getCategory().name());
+        return info.getCategories().getEnumStrings();
     }
 
     @Override
@@ -299,14 +219,171 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     @Override
     protected WxMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-        WxMappingInfo info = createWxMappingInfo(method);
-        if (info != null) {
-            WxMappingInfo typeInfo = createWxMappingInfo(handlerType);
-            if (typeInfo != null) {
-                info = typeInfo.combine(info);
+        return createWxMappingInfo(method, handlerType);
+    }
+
+    private WxMappingInfo createWxMappingInfo(Method method, Class<?> handlerType) {
+        WxMappingInfo wxButtonInfo = createWxButtonInfo(method, handlerType);
+        WxMappingInfo wxButtonMappingInfo = createWxButtonMappingInfo(method, handlerType);
+        WxMappingInfo wxMessageMappingInfo = createWxMessageMappingInfo(method, handlerType);
+        WxMappingInfo wxEventMappingInfo = createWxEventMappingInfo(method, handlerType);
+        int count = countNotNull(wxButtonInfo, wxButtonMappingInfo, wxMessageMappingInfo, wxEventMappingInfo);
+        if (count == 0) {
+            WxMappingInfo wxMappingInfo = createWxMappingInfo(method);
+            if (wxMappingInfo != null) {
+                WxMappingInfo typeWxMappingInfo = createWxMappingInfo(handlerType);
+                if (typeWxMappingInfo != null) {
+                    wxMappingInfo = wxMappingInfo.combine(typeWxMappingInfo);
+                }
+            }
+            return wxMappingInfo;
+        } else if (count == 1) {
+            return getNotNull(wxButtonInfo, wxButtonMappingInfo, wxMessageMappingInfo, wxEventMappingInfo);
+        } else {
+           return new WxMappingInfos(wxButtonInfo, wxButtonMappingInfo, wxMessageMappingInfo, wxEventMappingInfo);
+        }
+    }
+
+    /**
+     * 创建@WxButton的信息，这个和其他不同之处在于不需要去找类上的注解，只支持方法级注解
+     * @param method 方法
+     * @param handlerType 类
+     * @return 返回
+     */
+    private WxMappingInfo createWxButtonInfo(Method method, Class<?> handlerType) {
+        return createWxButtonInfo(method);
+    }
+
+    private WxMappingInfo createWxButtonInfo(AnnotatedElement element) {
+        WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
+        // 在这里加上菜单管理是否启用的判断
+        if (wxButton == null) {
+            return null;
+        }
+        WxMenu.Button button = wxMenuManager.addButton(wxButton);
+        // 使用WxButton定义有一些特殊性，order和group可能具有特异性，故不考虑
+        return WxMappingInfo
+                .create(Wx.Category.BUTTON)
+                .mappingName(button.getName())
+                .buttonTypes(button.getType())
+                .buttonKeys(button.getKey())
+                .buttonNames(button.getName())
+                .buttonUrls(button.getUrl())
+                .buttonLevels(button.isMain() ? WxButton.Level.MAIN : null)
+                .buttonMediaIds(button.getMediaId())
+                .buttonAppIds(button.getAppId())
+                .buttonPagePaths(button.getPagePath())
+                .build();
+    }
+
+    private WxMappingInfo createWxButtonMappingInfo(Method method, Class<?> handlerType) {
+        WxMappingInfo wxMappingInfo = createWxButtonMappingInfo(method);
+        if (wxMappingInfo != null) {
+            WxMappingInfo typeWxMappingInfo = createWxButtonMappingInfo(handlerType);
+            if (typeWxMappingInfo != null) {
+                wxMappingInfo = wxMappingInfo.combine(typeWxMappingInfo);
             }
         }
-        return info;
+        return wxMappingInfo;
+    }
+
+    private WxMappingInfo createWxButtonMappingInfo(AnnotatedElement element) {
+        WxButtonMapping wxButtonMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxButtonMapping.class);
+        if (wxButtonMapping == null) {
+            return null;
+        }
+        return WxMappingInfo
+                .create(Wx.Category.BUTTON)
+                .mappingName(wxButtonMapping.name())
+                .buttonTypes(wxButtonMapping.type())
+                .buttonKeys(resolveEmbeddedValuesInPatterns(wxButtonMapping.keys()))
+                .buttonNames(resolveEmbeddedValuesInPatterns(wxButtonMapping.names()))
+                .buttonUrls(resolveEmbeddedValuesInPatterns(wxButtonMapping.urls()))
+                .buttonMediaIds((wxButtonMapping.mediaIds()))
+                .buttonAppIds(resolveEmbeddedValuesInPatterns(wxButtonMapping.appIds()))
+                .buttonPagePaths(resolveEmbeddedValuesInPatterns(wxButtonMapping.pagePaths()))
+                .buttonGroups(wxButtonMapping.group())
+                .buttonOrders(wxButtonMapping.order())
+                .buttonLevels(wxButtonMapping.level())
+                .build();
+    }
+
+    private WxMappingInfo createWxMessageMappingInfo(Method method, Class<?> handlerType) {
+        WxMappingInfo wxMappingInfo = createWxMessageMappingInfo(method);
+        if (wxMappingInfo != null) {
+            WxMappingInfo typeWxMappingInfo = createWxMessageMappingInfo(handlerType);
+            if (typeWxMappingInfo != null) {
+                wxMappingInfo = wxMappingInfo.combine(typeWxMappingInfo);
+            }
+        }
+        return wxMappingInfo;
+    }
+
+    private WxMappingInfo createWxMessageMappingInfo(AnnotatedElement element) {
+        WxMessageMapping wxMessageMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxMessageMapping.class);
+        if (wxMessageMapping == null) {
+            return null;
+        }
+        return WxMappingInfo
+                .create(Wx.Category.MESSAGE)
+                .messageTypes(wxMessageMapping.type())
+                .messageContents(resolveEmbeddedValuesInPatterns(wxMessageMapping.contents()))
+                .mappingName(wxMessageMapping.name())
+                .build();
+    }
+
+    private WxMappingInfo createWxEventMappingInfo(Method method, Class<?> handlerType) {
+        WxMappingInfo wxMappingInfo = createWxEventMappingInfo(method);
+        if (wxMappingInfo != null) {
+            WxMappingInfo typeWxMappingInfo = createWxEventMappingInfo(handlerType);
+            if (typeWxMappingInfo != null) {
+                wxMappingInfo = wxMappingInfo.combine(typeWxMappingInfo);
+            }
+        }
+        return wxMappingInfo;
+    }
+
+    private WxMappingInfo createWxEventMappingInfo(AnnotatedElement element) {
+        WxEventMapping wxEventMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxEventMapping.class);
+        if (wxEventMapping == null) {
+            return null;
+        }
+        return WxMappingInfo
+                .create(Wx.Category.EVENT)
+                .eventTypes(wxEventMapping.type())
+                .eventScenes(resolveEmbeddedValuesInPatterns(wxEventMapping.scenes()))
+                .mappingName(wxEventMapping.name())
+                .build();
+    }
+
+    private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
+        WxMapping wxMapping = element.getAnnotation(WxMapping.class);
+        if (wxMapping == null) {
+            return null;
+        }
+        return WxMappingInfo
+                .create(wxMapping.category())
+                .mappingName(wxMapping.name())
+                .build();
+    }
+
+    private int countNotNull(WxMappingInfo... wxMappingInfos) {
+        int count = 0;
+        for (WxMappingInfo wxMappingInfo : wxMappingInfos) {
+            if (Objects.nonNull(wxMappingInfo)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private WxMappingInfo getNotNull(WxMappingInfo... wxMappingInfos) {
+        for (WxMappingInfo wxMappingInfo : wxMappingInfos) {
+            if (Objects.nonNull(wxMappingInfo)) {
+                return wxMappingInfo;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -323,295 +400,32 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     }
 
     @Override
-    protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
-        HandlerExecutionChain chain = super.getHandlerExecutionChain(handler, request);
-        // chain.addInterceptor(wxRequestContext);
-        return chain;
-    }
-
-    private WxMappingInfo createWxMappingInfo(AnnotatedElement element) {
-        WxButton wxButton = AnnotatedElementUtils.findMergedAnnotation(element, WxButton.class);
-        // 由于这个机制，所以无法为同一个方法绑定多个WxButton、WxEventMapping、WxMessageMapping
-        if (wxButton != null) {
-            return createWxButtonMappingInfo(wxButton);
-        }
-        WxMessageMapping wxMessageMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxMessageMapping.class);
-        if (wxMessageMapping != null) {
-            return createWxMessageMappingInfo(wxMessageMapping);
-        }
-        WxEventMapping wxEventMapping = AnnotatedElementUtils.findMergedAnnotation(element, WxEventMapping.class);
-        if (wxEventMapping != null) {
-            return createWxEventMappingInfo(wxEventMapping);
-        }
-        return null;
-    }
-
-    private WxMappingInfo createWxButtonMappingInfo(WxButton wxButton) {
-        // 在这里加上菜单管理是否启用的判断
-        WxMenu.Button button = wxMenuManager.addButton(wxButton);
-        return WxMappingInfo
-                .category(Wx.Category.BUTTON)
-                // eventKey是url，如果类型是VIEW的话
-                // 在builder中已处理
-                .eventKey(button.getKey())
-                .mappingName(button.getName())
-                .buttonTypes(button.getType())
-                .build();
-    }
-
-    private WxMappingInfo createWxMessageMappingInfo(WxMessageMapping wxMessageMapping) {
-        return WxMappingInfo
-                .category(Wx.Category.MESSAGE)
-                .messageTypes(wxMessageMapping.type())
-                .mappingName(wxMessageMapping.name())
-                .wildcards(wxMessageMapping.wildcard())
-                .build();
-    }
-
-    private WxMappingInfo createWxEventMappingInfo(WxEventMapping wxEventMapping) {
-        return WxMappingInfo
-                .category(Wx.Category.EVENT)
-                .eventTypes(wxEventMapping.type())
-                .mappingName(wxEventMapping.name())
-                .build();
-    }
-
-    class MappingRegistry {
-
-        private final Map<WxMappingInfo, MappingRegistration<WxMappingInfo>> registry = new HashMap<>();
-
-        private final Map<WxMappingInfo, HandlerMethod> mappingLookup = new LinkedHashMap<>();
-
-        private final Map<String, HandlerMethod> eventKeyLookup = new LinkedHashMap<>();
-
-        private final Map<WxButton.Type, HandlerMethod> buttonTypeLookup = new LinkedHashMap<>();
-
-        private final Map<WxEvent.Type, HandlerMethod> eventTypeLookup = new LinkedHashMap<>();
-
-        private final Map<WxMessage.Type, HandlerMethod> messageTypeLookup = new LinkedHashMap<>();
-
-        private final MultiValueMap<Wx.Category, WxMappingInfo> categoryLookup = new LinkedMultiValueMap<>();
-
-        private final Map<String, List<HandlerMethod>> nameLookup = new ConcurrentHashMap<>();
-
-        private final MultiValueMap<String, WxMappingInfo> wildcardLookup = new LinkedMultiValueMap<>();
-
-        private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-        public Map<WxMappingInfo, HandlerMethod> getMappings() {
-            return this.mappingLookup;
-        }
-
-        public HandlerMethod getHandlerButtonByEventKey(String eventKey) {
-            return this.eventKeyLookup.get(eventKey);
-        }
-
-        public HandlerMethod getHandlerButtonByButtonType(WxButton.Type buttonType) {
-            return this.buttonTypeLookup.get(buttonType);
-        }
-
-        public HandlerMethod getHandlerEventByEventType(WxEvent.Type eventType) {
-            return this.eventTypeLookup.get(eventType);
-        }
-
-        public HandlerMethod getHandlerMessageByMessageType(WxMessage.Type messageType) {
-            return this.messageTypeLookup.get(messageType);
-        }
-
-        public List<HandlerMethod> getHandlerMethodsByMappingName(String mappingName) {
-            return this.nameLookup.get(mappingName);
-        }
-
-        public List<HandlerMethod> getHandlersByContent(String content) {
-            List<String> matches = this.wildcardLookup.keySet().stream().filter(w -> WildcardUtils.wildcardMatch(content, w))
-                    .sorted(Comparator.comparing(String::length).reversed()).collect(Collectors.toList());
-            if (matches.isEmpty()) {
-                return Collections.emptyList();
+    protected void registerHandlerMethod(Object handler, Method method, WxMappingInfo mapping) {
+        if (mapping instanceof WxMappingInfos) {
+            WxMappingInfo[] wxMappingInfos = ((WxMappingInfos) mapping).getWxMappingInfos();
+            for (WxMappingInfo wxMappingInfo : wxMappingInfos) {
+                super.registerHandlerMethod(handler, method, wxMappingInfo);
             }
-            // 因为有*通配符的是，也会作为长度1进行判断，会和其他长度为1的比如单字符匹配的冲突，所以这里移除匹配结果里的*
-            if (matches.size() > 1 && matches.contains(WxMessageMapping.MATCH_ALL_WILDCARD)) {
-                // 有可能从列表中存在多个*通配符，这样使用时不合法的，应该最多存在一个*通配符
-                matches.remove(WxMessageMapping.MATCH_ALL_WILDCARD);
-            }
-            if (matches.size() > 1) {
-                if (matches.get(0).length() == matches.get(1).length()) {
-                    logger.error("有两个重复的通配符！以后加入通配符权重！！");
-                }
-            }
-            String selectedMatch = matches.get(0);
-            final List<HandlerMethod> handlerMethods = this.wildcardLookup.get(selectedMatch).stream().map(w -> mappingLookup.get(w)).collect(Collectors.toList());
-            if (handlerMethods.size() > 1) {
-                logger.error("有一个通配符有两个匹配的方法！");
-            }
-            return handlerMethods;
-        }
-
-        public void acquireReadLock() {
-            this.readWriteLock.readLock().lock();
-        }
-
-        public void releaseReadLock() {
-            this.readWriteLock.readLock().unlock();
-        }
-
-        public void register(WxMappingInfo mapping, Object handler, Method method) {
-            this.readWriteLock.writeLock().lock();
-            try {
-                HandlerMethod handlerMethod = createHandlerMethod(handler, method);
-                assertUniqueMethodMapping(handlerMethod, mapping);
-
-                if (logger.isInfoEnabled()) {
-                    logger.info("Mapped \"" + mapping + "\" onto " + handlerMethod);
-                }
-                this.mappingLookup.put(mapping, handlerMethod);
-
-                this.categoryLookup.add(mapping.getCategory(), mapping);
-
-                if (!StringUtils.isEmpty(mapping.getEventKey())) {
-                    eventKeyLookup.put(mapping.getEventKey(), handlerMethod);
-                }
-                // 对于button类型，暂时只支持key查找
-                if (!mapping.getWxEventTypeCondition().isEmpty()) {
-                    mapping.getWxEventTypeCondition().getEnums().forEach(
-                            e -> eventTypeLookup.put(e, handlerMethod)
-                    );
-                }
-                if (!mapping.getWxMessageTypeCondition().isEmpty()) {
-                    mapping.getWxMessageTypeCondition().getEnums().forEach(
-                            e -> messageTypeLookup.put(e, handlerMethod)
-                    );
-                }
-                if (!mapping.getWxButtonTypeCondition().isEmpty()) {
-                    mapping.getWxButtonTypeCondition().getEnums().forEach(
-                            e -> buttonTypeLookup.put(e, handlerMethod)
-                    );
-                }
-                if (!mapping.getWxMessageWildcardCondition().isEmpty()) {
-                    mapping.getWxMessageWildcardCondition().getWildcards().forEach(
-                            w -> wildcardLookup.add(w, mapping)
-                    );
-                }
-                String name = null;
-                if (getNamingStrategy() != null) {
-                    name = getNamingStrategy().getName(handlerMethod, mapping);
-                    addMappingName(name, handlerMethod);
-                }
-                this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, name));
-            } finally {
-                this.readWriteLock.writeLock().unlock();
-            }
-        }
-
-        private void assertUniqueMethodMapping(HandlerMethod newHandlerMethod, WxMappingInfo mapping) {
-            HandlerMethod handlerMethod = this.mappingLookup.get(mapping);
-            if (handlerMethod != null && !handlerMethod.equals(newHandlerMethod)) {
-                throw new IllegalStateException(
-                        "Ambiguous mapping. Cannot map '" + newHandlerMethod.getBean() + "' method \n" +
-                                newHandlerMethod + "\nto " + mapping + ": There is already '" +
-                                handlerMethod.getBean() + "' bean method\n" + handlerMethod + " mapped.");
-            }
-        }
-
-        private void addMappingName(String name, HandlerMethod handlerMethod) {
-            List<HandlerMethod> oldList = this.nameLookup.get(name);
-            if (oldList == null) {
-                oldList = Collections.<HandlerMethod>emptyList();
-            }
-
-            for (HandlerMethod current : oldList) {
-                if (handlerMethod.equals(current)) {
-                    return;
-                }
-            }
-
-            if (logger.isTraceEnabled()) {
-                logger.trace("Mapping value '" + name + "'");
-            }
-
-            List<HandlerMethod> newList = new ArrayList<HandlerMethod>(oldList.size() + 1);
-            newList.addAll(oldList);
-            newList.add(handlerMethod);
-            this.nameLookup.put(name, newList);
-
-            if (newList.size() > 1) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Mapping value clash for handlerMethods " + newList +
-                            ". Consider assigning explicit names.");
-                }
-            }
-        }
-
-        public void unregister(WxMappingInfo mapping) {
-            this.readWriteLock.writeLock().lock();
-            try {
-                MappingRegistration<WxMappingInfo> definition = this.registry.remove(mapping);
-                if (definition == null) {
-                    return;
-                }
-
-                this.mappingLookup.remove(definition.getMapping());
-
-                if (mapping.getEventKey() != null) {
-                    eventKeyLookup.remove(mapping.getEventKey());
-                }
-
-                removeMappingName(definition);
-
-            } finally {
-                this.readWriteLock.writeLock().unlock();
-            }
-        }
-
-        private void removeMappingName(MappingRegistration<WxMappingInfo> definition) {
-            String name = definition.getMappingName();
-            if (name == null) {
-                return;
-            }
-            HandlerMethod handlerMethod = definition.getHandlerMethod();
-            List<HandlerMethod> oldList = this.nameLookup.get(name);
-            if (oldList == null) {
-                return;
-            }
-            if (oldList.size() <= 1) {
-                this.nameLookup.remove(name);
-                return;
-            }
-            List<HandlerMethod> newList = new ArrayList<HandlerMethod>(oldList.size() - 1);
-            for (HandlerMethod current : oldList) {
-                if (!current.equals(handlerMethod)) {
-                    newList.add(current);
-                }
-            }
-            this.nameLookup.put(name, newList);
+        } else {
+            super.registerHandlerMethod(handler, method, mapping);
         }
     }
 
-    private static class MappingRegistration<T> {
+    @Override
+    public void setEmbeddedValueResolver(StringValueResolver stringValueResolver) {
+        this.embeddedValueResolver = stringValueResolver;
+    }
 
-        private final T mapping;
-
-        private final HandlerMethod handlerMethod;
-
-        private final String mappingName;
-
-        public MappingRegistration(T mapping, HandlerMethod handlerMethod, String mappingName) {
-            Assert.notNull(mapping, "Mapping must not be null");
-            Assert.notNull(handlerMethod, "HandlerMethod must not be null");
-            this.mapping = mapping;
-            this.handlerMethod = handlerMethod;
-            this.mappingName = mappingName;
+    protected String[] resolveEmbeddedValuesInPatterns(String[] patterns) {
+        if (this.embeddedValueResolver == null) {
+            return patterns;
         }
-
-        public T getMapping() {
-            return this.mapping;
-        }
-
-        public HandlerMethod getHandlerMethod() {
-            return this.handlerMethod;
-        }
-
-        public String getMappingName() {
-            return this.mappingName;
+        else {
+            String[] resolvedPatterns = new String[patterns.length];
+            for (int i = 0; i < patterns.length; i++) {
+                resolvedPatterns[i] = this.embeddedValueResolver.resolveStringValue(patterns[i]);
+            }
+            return resolvedPatterns;
         }
     }
 

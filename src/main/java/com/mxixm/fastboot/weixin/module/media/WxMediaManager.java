@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.module.media;
 
 import com.mxixm.fastboot.weixin.exception.WxApiException;
+import com.mxixm.fastboot.weixin.module.media.news.WxNews;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
 import com.mxixm.fastboot.weixin.util.WxMediaUtils;
@@ -91,7 +92,7 @@ public class WxMediaManager {
      * @param video
      * @return the result
      */
-    public String addVideoMedia(Resource resource, WxMedia.Video video) {
+    public String addVideo(Resource resource, WxMedia.Video video) {
         String resourcePath = WxMediaUtils.resourcePath(resource);
         Date modifiedTime = WxMediaUtils.resourceModifiedTime(resource);
         MediaEntity mediaEntity = query(resourcePath, null, WxMediaStore.Type.MATERIAL, null, modifiedTime);
@@ -104,8 +105,8 @@ public class WxMediaManager {
         return result.getMediaId();
     }
 
-    public WxMedia.Video getVideoMedia(String mediaId) {
-        return wxApiService.getVideoMedia(WxMedia.of(mediaId));
+    public WxMedia.Video getVideo(String mediaId) {
+        return wxApiService.getVideo(WxMedia.of(mediaId));
     }
 
     public Resource getTempMedia(String mediaId) {
@@ -207,7 +208,7 @@ public class WxMediaManager {
      * @param news
      * @return the result
      */
-    public WxMedia.NewsResult storeNews(WxMedia.News news) {
+    public WxNews.Result storeNews(WxNews news) {
         return wxApiService.addNews(news);
     }
 
@@ -216,7 +217,7 @@ public class WxMediaManager {
      *
      * @param news
      */
-    public void updateNews(WxMedia.New news) {
+    public void updateNews(WxNews news) {
         wxApiService.updateNews(news);
     }
 
@@ -226,8 +227,8 @@ public class WxMediaManager {
      * @param mediaId
      * @return the result
      */
-    public WxMedia.News getNews(String mediaId) {
-        return wxApiService.getNewsMedia(WxMedia.of(mediaId));
+    public WxNews getNews(String mediaId) {
+        return wxApiService.getNews(WxMedia.of(mediaId));
     }
 
     public void delMedia(String mediaId) {
@@ -238,4 +239,11 @@ public class WxMediaManager {
         return wxApiService.getMediaCount();
     }
 
+    public WxNews.PageResult batchGetNews(int offset) {
+        return wxApiService.batchGetNews(WxNews.PageParam.of(offset));
+    }
+
+    public WxMedia.PageResult batchGetMedia(WxMedia.Type type, int offset) {
+        return wxApiService.batchGetMedia(WxMedia.PageParam.of(type, offset));
+    }
 }

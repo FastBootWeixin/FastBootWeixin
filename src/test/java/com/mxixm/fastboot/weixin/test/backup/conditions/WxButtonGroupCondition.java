@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package com.mxixm.fastboot.weixin.module.message;
+package com.mxixm.fastboot.weixin.test.backup.conditions;
 
-import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
+import com.mxixm.fastboot.weixin.annotation.WxButton;
+import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 
 /**
- * FastBootWeixin WxTemplateMessageProcessor
+ * FastBootWeixin WxButtonGroupCondition
  *
  * @author Guangshan
- * @date 2017-10-13 11:17:00
- * @since 0.2.1
+ * @date 2018-9-16 16:14:08
+ * @since 0.7.0
  */
-public class WxTemplateMessageProcessor implements WxMessageProcessor<WxTemplateMessage> {
+public final class WxButtonGroupCondition extends AbstractWxButtonEnumCondition<WxButton.Group> {
 
-    @Override
-    public WxTemplateMessage process(WxMessageParameter wxMessageParameter, WxTemplateMessage wxMessage) {
-        // 这个重复逻辑可以使用processInternal处理
-        if (wxMessage == null) {
-            return null;
-        }
-        if (wxMessage.getToUser() == null) {
-            wxMessage.setToUser(wxMessageParameter.getToUser());
-        }
-        return wxMessage;
+    public WxButtonGroupCondition(WxButton.Group... groups) {
+        super(groups);
     }
 
+    @Override
+    protected AbstractWxEnumCondition instance(WxButton.Group... enums) {
+        return new WxButtonGroupCondition(enums);
+    }
+
+
+    @Override
+    protected WxButton.Group getMatchEnum(WxMenu.Button wxButton) {
+        return wxButton.getGroup();
+    }
 }
