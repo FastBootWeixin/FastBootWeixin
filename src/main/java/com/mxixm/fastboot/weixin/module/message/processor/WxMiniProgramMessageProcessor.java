@@ -52,7 +52,7 @@ public class WxMiniProgramMessageProcessor extends AbstractWxMessageBodyProcesso
                 String thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource(body.getThumbMediaPath()));
                 body.setThumbMediaId(thumbMediaId);
             } else if (body.getThumbMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
+                String url = WxUrlUtils.absoluteUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
                 String thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.IMAGE, url);
                 body.setThumbMediaId(thumbMediaId);
             }

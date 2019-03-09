@@ -240,8 +240,8 @@ public class WxMvcConfiguration implements ImportAware {
         @Override
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(wxOAuth2Interceptor)
-                    .addPathPatterns(wxProperties.getMvc().getInterceptor().getIncludePatterns().toArray(new String[wxProperties.getMvc().getInterceptor().getIncludePatterns().size()]))
-                    .excludePathPatterns(wxProperties.getMvc().getInterceptor().getExcludePatterns().toArray(new String[wxProperties.getMvc().getInterceptor().getExcludePatterns().size()]));
+                    .addPathPatterns(wxProperties.getMvc().getInterceptor().getIncludePatterns().toArray(new String[0]))
+                    .excludePathPatterns(wxProperties.getMvc().getInterceptor().getExcludePatterns().toArray(new String[0]));
         }
 
         @Override

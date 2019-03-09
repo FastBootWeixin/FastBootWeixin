@@ -147,7 +147,7 @@ public class WxWebUtils {
             return new WxRequestMessageParameter(wxRequest);
         }
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
+        if (requestAttributes instanceof ServletRequestAttributes) {
             return new HttpRequestMessageParameter(((ServletRequestAttributes) requestAttributes).getRequest());
         }
         return new HttpRequestMessageParameter(null);
@@ -155,7 +155,7 @@ public class WxWebUtils {
 
     public static HttpServletRequest getHttpServletRequest() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes != null && requestAttributes instanceof ServletRequestAttributes) {
+        if (requestAttributes instanceof ServletRequestAttributes) {
             return ((ServletRequestAttributes) requestAttributes).getRequest();
         }
         throw new WxAppException("无法获取上下文中的HttpServletRequest，请不要在异步调用中使用此方法");

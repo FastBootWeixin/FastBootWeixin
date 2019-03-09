@@ -86,8 +86,8 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
         }
         String requestUrl = getRequestUrl(request);
         logger.info("WxOAuth2Interceptor request url is : " + requestUrl);
-        // 如果重定向到授权，则肯定可以获得信息，但是如果重定向到基本，则无法获得信息，所以默认重定向到授权
-        String redirectUrl = WxRedirectUtils.redirect(requestUrl, false);
+        // 如果重定向到授权，则肯定可以获得信息，但是如果重定向到基本，则无法获得信息，所以默认重定向到授权。默认为授权。
+        String redirectUrl = WxRedirectUtils.redirect(requestUrl);
         logger.info("WxOAuth2Interceptor redirect to auth url : " + redirectUrl);
         response.sendRedirect(redirectUrl);
         return false;

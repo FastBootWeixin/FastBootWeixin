@@ -34,7 +34,7 @@ public class WxGroupNewsMessageProcessor extends AbstractWxMessageBodyProcessor<
     @Override
     protected WxMessageBody.News processBody(WxMessageParameter wxMessageParameter, WxMessageBody.News body) {
         body.getArticles().stream().forEach(i -> {
-            i.setPicUrl(WxUrlUtils.mediaUrl(wxMessageParameter.getRequestUrl(), i.getPicUrl()));
+            i.setPicUrl(WxUrlUtils.absoluteUrl(wxMessageParameter.getRequestUrl(), i.getPicUrl()));
             i.setUrl(WxRedirectUtils.redirect(wxMessageParameter.getRequestUrl(), i.getUrl()));
         });
         return body;

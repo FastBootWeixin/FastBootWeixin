@@ -36,6 +36,8 @@ public abstract class WxUrlUtils {
 
     public static String RELAX_PROTOCOL = "//";
 
+    public static String PROTOCOL_IDENTITY = "://";
+
     public static String BASE_PATH = "/";
 
     public static String HOST_DOT = ".";
@@ -45,13 +47,22 @@ public abstract class WxUrlUtils {
      */
     public static String DEFAULT_HOST = "mxixm.com";
 
-    public static String mediaUrl(String requestUrl, String targetUrl) {
+    /**
+     * 参数顺序是否调换一下？
+     * @param requestUrl 请求路径
+     * @param targetUrl 目标路径
+     * @return
+     */
+    public static String absoluteUrl(String requestUrl, String targetUrl) {
+        if (StringUtils.isEmpty(requestUrl)) {
+            requestUrl = Wx.Environment.instance().getCallbackUrl();
+        }
         String lowerUrl = targetUrl.toLowerCase();
+        int protocolIndex = lowerUrl.indexOf(PROTOCOL_IDENTITY);
         // 已经包含协议，直接返回
-        if (lowerUrl.startsWith(HTTP_PROTOCOL) || lowerUrl.startsWith(HTTPS_PROTOCOL)) {
+        if (protocolIndex > 0) {
             return targetUrl;
         }
-
         // 先解析出来protocol和host
         // 是否要考虑context-path? request.getContextPath()有可能不是/，可能会带来一些问题。可参考UrlPathHelper
         // 菜单链接可能同样有这个问题
@@ -59,35 +70,39 @@ public abstract class WxUrlUtils {
         String host = DEFAULT_HOST;
         if (!StringUtils.isEmpty(requestUrl)) {
             URI uri = URI.create(requestUrl);
-            protocol = uri.getScheme() + ":";
+            protocol = uri.getScheme();
             host = uri.getHost();
         }
 
-        // 如果是//开头，则拼接协议后返回
-        if (lowerUrl.startsWith(RELAX_PROTOCOL)) {
+        // 如果是://开头，则拼接协议后返回
+        if (lowerUrl.startsWith(PROTOCOL_IDENTITY)) {
             return protocol + targetUrl;
+        }
+        // 如果以//开头，则拼接协议与:之后返回
+        if (lowerUrl.startsWith(RELAX_PROTOCOL)) {
+            return protocol + ":" + targetUrl;
         }
 
         // 如果是/开头，则是绝对路径
         if (lowerUrl.startsWith(BASE_PATH)) {
-            return protocol + RELAX_PROTOCOL + host + targetUrl;
+            return protocol + PROTOCOL_IDENTITY + host + targetUrl;
         }
 
         // 如果是域名
-        if (lowerUrl.indexOf(HOST_DOT) > -1) {
+        if (lowerUrl.contains(HOST_DOT)) {
             // 如果包含.且(不包含/，或者包含/但.在/之前)
-            if (lowerUrl.indexOf(BASE_PATH) == -1 || lowerUrl.indexOf(HOST_DOT) < lowerUrl.indexOf(BASE_PATH)) {
+            if (!lowerUrl.contains(BASE_PATH) || lowerUrl.indexOf(HOST_DOT) < lowerUrl.indexOf(BASE_PATH)) {
                 // 则前面是域名，加上协议和//
-                return protocol + RELAX_PROTOCOL + targetUrl;
+                return protocol + PROTOCOL_IDENTITY + targetUrl;
             }
         }
 
-        // 不是域名，则是一个相对路径
-        return protocol + RELAX_PROTOCOL + host + BASE_PATH + targetUrl;
+        // 不是域名，则是一个相对路径，此处未做相对路径处理，仅仅是加了个/，因为相对路径用的很少
+        return protocol + PROTOCOL_IDENTITY + host + BASE_PATH + targetUrl;
     }
 
-    public static String mediaUrl(String targetUrl) {
-        return mediaUrl(Wx.Environment.instance().getCallbackUrl(), targetUrl);
+    public static String absoluteUrl(String targetUrl) {
+        return absoluteUrl(null, targetUrl);
     }
 
     /**

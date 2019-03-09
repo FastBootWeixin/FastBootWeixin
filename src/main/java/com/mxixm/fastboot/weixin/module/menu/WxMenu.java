@@ -351,9 +351,10 @@ public class WxMenu {
 
             public Builder setUrl(String url) {
                 // 如果是callbackUrl，则重定向，否则不重定向
-                // WxUrlUtils.mediaUrl()
+                // WxUrlUtils.absoluteUrl()
                 if (!StringUtils.isEmpty(url)) {
-                    url = WxUrlUtils.mediaUrl(url);
+                    url = WxUrlUtils.absoluteUrl(url);
+                    // 因为菜单可以在未关注时打开，所以菜单的链接也要用snsapi_userinfo方式
                     this.url = WxUrlUtils.isCallbackUrl(url) ? WxRedirectUtils.redirect(url) : url;
                 }
                 return this;

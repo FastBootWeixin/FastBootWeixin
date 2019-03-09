@@ -33,6 +33,7 @@ import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.WxRequestBody;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.service.WxApiService;
+import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
 import com.mxixm.fastboot.weixin.util.WxMessageUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
@@ -248,8 +249,10 @@ public class WxApp {
      * @return the result
      */
     @WxMessageMapping(type = WxMessage.Type.TEXT)
+    @WxAsyncMessage
     public String text(WxRequest wxRequest, String content) {
         WxSession wxSession = wxRequest.getWxSession();
+        wxMessageTemplate.sendUserMessage(wxRequest.getBody().getFromUserName(), content);
         if (wxSession != null && wxSession.getAttribute("last") != null) {
             return "上次收到消息内容为" + wxSession.getAttribute("last");
         }
@@ -414,6 +417,14 @@ public class WxApp {
     @GetMapping("wx/login")
     public String loginWx() {
         return "redirect:/页面地址";
+    }
+
+    @Autowired
+    private WxBaseService wxBaseService;
+
+    @GetMapping("test/base")
+    public void base() {
+        wxBaseService.getWxWebUserByCode("1234");
     }
 
 

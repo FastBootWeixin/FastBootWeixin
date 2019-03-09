@@ -64,7 +64,7 @@ public class WxMessageUtils {
 
         private static final String linkTemplate = "<a href=\"%s\" %s>%s</a>";
 
-        private static final String mimiProgramTemplate = "data-miniprogram-appid=\"%s\" data-miniprogram-path=\"%s\"";
+        private static final String miniProgramTemplate = "data-miniprogram-appid=\"%s\" data-miniprogram-path=\"%s\"";
 
         /**
          * 对于不支持data-miniprogram-appid 项的客户端版本，如果有herf项，则仍然保持跳href中的网页链接
@@ -97,7 +97,7 @@ public class WxMessageUtils {
         public String toString() {
             String extendAttribute = "";
             if (!StringUtils.isEmpty(appId)) {
-                extendAttribute = String.format(mimiProgramTemplate, appId, path);
+                extendAttribute = String.format(miniProgramTemplate, appId, path);
             }
             return String.format(linkTemplate, href, extendAttribute, text);
         }
@@ -116,7 +116,7 @@ public class WxMessageUtils {
             }
 
             public Builder href(String href) {
-                this.href = href;
+                this.href = WxUrlUtils.absoluteUrl(WxWebUtils.getWxMessageParameter().getRequestUrl(), href);
                 return this;
             }
 

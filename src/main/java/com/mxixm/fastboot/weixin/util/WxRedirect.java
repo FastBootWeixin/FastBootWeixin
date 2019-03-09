@@ -70,6 +70,10 @@ public class WxRedirect {
         return this.isBase;
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
 
         private String baseUrl;

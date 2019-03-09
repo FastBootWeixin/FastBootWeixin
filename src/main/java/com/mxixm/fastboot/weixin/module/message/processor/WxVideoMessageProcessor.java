@@ -43,7 +43,7 @@ public class WxVideoMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
         return body;
     }
 
-    protected WxMessageBody.Video processVideoBody(WxMessageParameter WxMessageParameter, WxMessageBody.Video body) {
+    protected WxMessageBody.Video processVideoBody(WxMessageParameter wxMessageParameter, WxMessageBody.Video body) {
         if (body.getThumbMediaId() == null) {
             String thumbMediaId = null;
             // 优先使用path
@@ -52,7 +52,7 @@ public class WxVideoMessageProcessor extends AbstractWxMediaMessageProcessor<WxM
             } else if (body.getThumbMediaPath() != null) {
                 thumbMediaId = wxMediaManager.addTempMedia(WxMedia.Type.THUMB, new FileSystemResource(body.getThumbMediaPath()));
             } else if (body.getThumbMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(WxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
+                String url = WxUrlUtils.absoluteUrl(wxMessageParameter.getRequestUrl(), body.getThumbMediaUrl());
                 thumbMediaId = wxMediaManager.addTempMediaByUrl(WxMedia.Type.THUMB, url);
             }
             body.setThumbMediaId(thumbMediaId);

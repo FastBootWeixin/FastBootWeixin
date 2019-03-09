@@ -40,14 +40,14 @@ public class ParameterNameTest {
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println(objectMapper.writeValueAsString(WxGroupMessage.mpNewsBuilder().mediaId("aa").toGroup("gs", "bb").build()));
         Wx.Environment.instance().setCallbackUrl("http://mxixm.com");
-        System.out.println(WxUrlUtils.mediaUrl("a"));
-        System.out.println(WxUrlUtils.mediaUrl("a.b"));
-        System.out.println(WxUrlUtils.mediaUrl("/a"));
-        System.out.println(WxUrlUtils.mediaUrl("/a.b"));
-        System.out.println(WxUrlUtils.mediaUrl("baidu.com"));
-        System.out.println(WxUrlUtils.mediaUrl("//baidu.com"));
-        System.out.println(WxUrlUtils.mediaUrl("https://baidu.com"));
-        System.out.println(WxUrlUtils.mediaUrl("baidu/h.c"));
+        System.out.println(WxUrlUtils.absoluteUrl("a"));
+        System.out.println(WxUrlUtils.absoluteUrl("a.b"));
+        System.out.println(WxUrlUtils.absoluteUrl("/a"));
+        System.out.println(WxUrlUtils.absoluteUrl("/a.b"));
+        System.out.println(WxUrlUtils.absoluteUrl("baidu.com"));
+        System.out.println(WxUrlUtils.absoluteUrl("//baidu.com"));
+        System.out.println(WxUrlUtils.absoluteUrl("https://baidu.com"));
+        System.out.println(WxUrlUtils.absoluteUrl("baidu/h.c"));
     }
 
 }

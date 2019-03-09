@@ -24,6 +24,8 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * FastBootWeixin WxRedirectUtils
+ * update： 2019年3月9日 BASE_REDIRECT方式不再推荐使用，因为BASE_REDIRECT会导致未关注用户打开不了页面，认证失败
+ * 而snsapi_userinfo则适用于所有用户，且对于已关注用户会静默授权，完全替代BASE_REDIRECT功能，故舍弃BASE的逻辑
  *
  * @author Guangshan
  * @date 2017/8/23 23:43
@@ -62,11 +64,11 @@ public class WxRedirectUtils {
     }
 
     public static String redirect(String url) {
-        return redirect(null, url, null, true);
+        return redirect(null, url, null, false);
     }
 
     public static String redirect(String baseUrl, String url) {
-        return redirect(baseUrl, url, null, true);
+        return redirect(baseUrl, url, null, false);
     }
 
     public static String redirect(String baseUrl, String url, boolean isBase) {
@@ -99,7 +101,7 @@ public class WxRedirectUtils {
             url = url.substring(3);
         }
 
-        String redirectUrl = WxUrlUtils.mediaUrl(baseUrl, url);
+        String redirectUrl = WxUrlUtils.absoluteUrl(baseUrl, url);
         if (!isRedirect || !WxUrlUtils.isCallbackUrl(baseUrl, redirectUrl)) {
             return redirectUrl;
         }
@@ -109,12 +111,11 @@ public class WxRedirectUtils {
             // java.io.UnsupportedEncodingException在SB2.0中不再抛出，故兼容下，处理为Exception
             // ignore it
         }
-        String finalRedirectUri = baseBuilder.cloneBuilder().queryParam("appid", Wx.Environment.instance().getWxAppId())
+        return baseBuilder.cloneBuilder().queryParam("appid", Wx.Environment.instance().getWxAppId())
                 .queryParam("redirect_uri", redirectUrl)
                 .queryParam("response_type", "code")
                 .queryParam("scope", isBase ? "snsapi_base" : "snsapi_userinfo")
                 .queryParam("state", state).build().toUriString() + "#wechat_redirect";
-        return finalRedirectUri;
     }
 
 }

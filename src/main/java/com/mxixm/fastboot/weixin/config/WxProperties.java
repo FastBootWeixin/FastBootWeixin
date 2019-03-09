@@ -99,16 +99,34 @@ public class WxProperties implements InitializingBean {
      */
     private String encodingAesKey;
 
+    /**
+     * 微信接口调用器接口
+     */
     private Invoker invoker = new Invoker();
 
+    /**
+     * 微信系统配置
+     */
     private System system = new System();
 
+    /**
+     * 微信服务相关URL配置
+     */
     private Url url = new Url();
 
+    /**
+     * 发送微信消息相关配置
+     */
     private Message message = new Message();
 
+    /**
+     * MVC相关配置
+     */
     private Mvc mvc = new Mvc();
 
+    /**
+     * 服务相关配置
+     */
     private Server server = new Server();
 
     public boolean isEncrypt() {
@@ -445,6 +463,42 @@ public class WxProperties implements InitializingBean {
         public int getConnectionRequestTimeout() {
             return this.connectionRequestTimeout;
         }
+
+        public void setEnableHttps(boolean enableHttps) {
+            this.enableHttps = enableHttps;
+        }
+
+        public void setTimeToLive(int timeToLive) {
+            this.timeToLive = timeToLive;
+        }
+
+        public void setMaxTotal(int maxTotal) {
+            this.maxTotal = maxTotal;
+        }
+
+        public void setMaxPerRoute(int maxPerRoute) {
+            this.maxPerRoute = maxPerRoute;
+        }
+
+        public void setRequestSentRetryEnabled(boolean requestSentRetryEnabled) {
+            this.requestSentRetryEnabled = requestSentRetryEnabled;
+        }
+
+        public void setRetryCount(int retryCount) {
+            this.retryCount = retryCount;
+        }
+
+        public void setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
+        }
+
+        public void setReadTimeout(int readTimeout) {
+            this.readTimeout = readTimeout;
+        }
+
+        public void setConnectionRequestTimeout(int connectionRequestTimeout) {
+            this.connectionRequestTimeout = connectionRequestTimeout;
+        }
     }
 
 
@@ -456,6 +510,13 @@ public class WxProperties implements InitializingBean {
         // 默认60分钟，菜单刷新时间
         private int menuRefreshIntervalMs = 60 * 60 * 1000;
 
+        public int getMenuRefreshIntervalMs() {
+            return menuRefreshIntervalMs;
+        }
+
+        public void setMenuRefreshIntervalMs(int menuRefreshIntervalMs) {
+            this.menuRefreshIntervalMs = menuRefreshIntervalMs;
+        }
     }
 
     /**
@@ -466,12 +527,6 @@ public class WxProperties implements InitializingBean {
         private String host = "api.weixin.qq.com";
 
         private String refreshToken = "cgi-bin/token";
-
-        private String getCallbackIp = "cgi-bin/getcallbackip";
-
-        private String getMenu = "cgi-bin/menu/get";
-
-        private String createMenu = "cgi-bin/menu/create";
 
         private String getUserAccessTokenByCode = "sns/oauth2/access_token";
 
@@ -485,24 +540,28 @@ public class WxProperties implements InitializingBean {
             return this.refreshToken;
         }
 
-        public String getGetCallbackIp() {
-            return this.getCallbackIp;
-        }
-
-        public String getGetMenu() {
-            return this.getMenu;
-        }
-
-        public String getCreateMenu() {
-            return this.createMenu;
-        }
-
         public String getGetUserAccessTokenByCode() {
             return this.getUserAccessTokenByCode;
         }
 
         public String getGetUserInfoByUserAccessToken() {
             return this.getUserInfoByUserAccessToken;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public void setRefreshToken(String refreshToken) {
+            this.refreshToken = refreshToken;
+        }
+
+        public void setGetUserAccessTokenByCode(String getUserAccessTokenByCode) {
+            this.getUserAccessTokenByCode = getUserAccessTokenByCode;
+        }
+
+        public void setGetUserInfoByUserAccessToken(String getUserInfoByUserAccessToken) {
+            this.getUserInfoByUserAccessToken = getUserInfoByUserAccessToken;
         }
     }
 
@@ -539,6 +598,22 @@ public class WxProperties implements InitializingBean {
         public int getMaxQueueSize() {
             return this.maxQueueSize;
         }
+
+        public void setPoolCoreSize(int poolCoreSize) {
+            this.poolCoreSize = poolCoreSize;
+        }
+
+        public void setPoolMaxSize(int poolMaxSize) {
+            this.poolMaxSize = poolMaxSize;
+        }
+
+        public void setPoolKeepAliveInSeconds(int poolKeepAliveInSeconds) {
+            this.poolKeepAliveInSeconds = poolKeepAliveInSeconds;
+        }
+
+        public void setMaxQueueSize(int maxQueueSize) {
+            this.maxQueueSize = maxQueueSize;
+        }
     }
 
     public static class Mvc {
@@ -548,6 +623,9 @@ public class WxProperties implements InitializingBean {
          */
         private String url;
 
+        /**
+         * 拦截器相关配置
+         */
         private Interceptor interceptor = new Interceptor();
 
         public String getUrl() {
@@ -556,6 +634,14 @@ public class WxProperties implements InitializingBean {
 
         public Interceptor getInterceptor() {
             return this.interceptor;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setInterceptor(Interceptor interceptor) {
+            this.interceptor = interceptor;
         }
 
         public static class Interceptor {
@@ -571,11 +657,22 @@ public class WxProperties implements InitializingBean {
             public List<String> getExcludePatterns() {
                 return this.excludePatterns;
             }
+
+            public void setIncludePatterns(List<String> includePatterns) {
+                this.includePatterns = includePatterns;
+            }
+
+            public void setExcludePatterns(List<String> excludePatterns) {
+                this.excludePatterns = excludePatterns;
+            }
         }
     }
 
     public static class Server {
 
+        /**
+         * SessionId生成器
+         */
         private Class<? extends WxSessionIdGenerator> wxSessionIdGeneratorClass = DefaultWxSessionIdGenerator.class;
 
         /**
@@ -598,6 +695,18 @@ public class WxProperties implements InitializingBean {
 
         public int getMaxActiveLimit() {
             return this.maxActiveLimit;
+        }
+
+        public void setWxSessionIdGeneratorClass(Class<? extends WxSessionIdGenerator> wxSessionIdGeneratorClass) {
+            this.wxSessionIdGeneratorClass = wxSessionIdGeneratorClass;
+        }
+
+        public void setSessionTimeout(int sessionTimeout) {
+            this.sessionTimeout = sessionTimeout;
+        }
+
+        public void setMaxActiveLimit(int maxActiveLimit) {
+            this.maxActiveLimit = maxActiveLimit;
         }
     }
 

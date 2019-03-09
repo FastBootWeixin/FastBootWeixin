@@ -18,7 +18,6 @@ package com.mxixm.fastboot.weixin.module.message.processor;
 
 import com.mxixm.fastboot.weixin.module.media.WxMedia;
 import com.mxixm.fastboot.weixin.module.media.WxMediaManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.util.WxUrlUtils;
@@ -62,7 +61,7 @@ public abstract class AbstractWxMediaMessageProcessor<B extends WxMessageBody.Me
                 String mediaId = wxMediaManager.addTempMedia(typeMap.get(body.getClass()), new FileSystemResource(body.getMediaPath()));
                 body.setMediaId(mediaId);
             } else if (body.getMediaUrl() != null) {
-                String url = WxUrlUtils.mediaUrl(wxMessageParameter.getRequestUrl(), body.getMediaUrl());
+                String url = WxUrlUtils.absoluteUrl(wxMessageParameter.getRequestUrl(), body.getMediaUrl());
                 String mediaId = wxMediaManager.addTempMediaByUrl(typeMap.get(body.getClass()), url);
                 body.setMediaId(mediaId);
             }

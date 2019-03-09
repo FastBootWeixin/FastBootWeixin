@@ -149,6 +149,8 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
     protected void customizeMarshaller(Marshaller marshaller) {
         super.customizeMarshaller(marshaller);
         try {
+            // 强制指定编码为UTF-8，微信仅支持UTF-8，也可在WxMappingHandlerMapping.handleMatch返回编码中指定为UTF-8，但是不能引用常量，故在此指定
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.displayName());
             marshaller.setProperty("com.sun.xml.internal.bind.marshaller.CharacterEscapeHandler", characterEscapeHandler);
         } catch (PropertyException e) {
             logger.error(e);

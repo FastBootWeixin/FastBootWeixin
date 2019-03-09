@@ -18,9 +18,7 @@ package com.mxixm.fastboot.weixin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.exception.WxAccessTokenException;
-import com.mxixm.fastboot.weixin.exception.WxApiResultException;
-import com.mxixm.fastboot.weixin.exception.WxAppException;
+import com.mxixm.fastboot.weixin.exception.*;
 import com.mxixm.fastboot.weixin.module.credential.WxAccessToken;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
@@ -49,8 +47,6 @@ public class WxBaseService {
 
     private WxProperties wxProperties;
 
-    private final ObjectMapper jsonConverter = new ObjectMapper();
-
     public WxBaseService(WxApiTemplate wxApiTemplate, WxProperties wxProperties) {
         this.wxApiTemplate = wxApiTemplate;
         this.wxProperties = wxProperties;
@@ -62,17 +58,7 @@ public class WxBaseService {
                 .queryParam("grant_type", "client_credential")
                 .queryParam("appid", wxProperties.getAppid())
                 .queryParam("secret", wxProperties.getAppsecret());
-        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxAccessTokenException.hasException(result)) {
-            throw new WxAccessTokenException(result);
-        } else {
-            try {
-                return jsonConverter.readValue(result, WxAccessToken.class);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                throw new WxAppException("获取Token时转换Json失败");
-            }
-        }
+        return wxApiTemplate.getForObject(builder.toUriString(), WxAccessToken.class);
     }
 
     public WxWebUser getWxWebUserByCode(String code) {
@@ -96,17 +82,7 @@ public class WxBaseService {
     }
 
     private WxWebUser getWxWebUserByBuilder(UriComponentsBuilder builder) {
-        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxApiResultException.hasException(result)) {
-            throw new WxApiResultException(result);
-        } else {
-            try {
-                return jsonConverter.readValue(result, WxWebUser.class);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                throw new WxAppException("获取Token时转换Json失败");
-            }
-        }
+        return wxApiTemplate.getForObject(builder.toUriString(), WxWebUser.class);
     }
 
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
@@ -116,17 +92,7 @@ public class WxBaseService {
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
-        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxApiResultException.hasException(result)) {
-            throw new WxApiResultException(result);
-        } else {
-            try {
-                return jsonConverter.readValue(result, WxUser.class);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                throw new WxAppException("获取Token时转换Json失败");
-            }
-        }
+        return wxApiTemplate.getForObject(builder.toUriString(), WxUser.class);
     }
 
     public boolean isVerifyUserAccessToken(WxWebUser wxWebUser) {
@@ -134,11 +100,11 @@ public class WxBaseService {
                 .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId());
-        String result = wxApiTemplate.getForObject(builder.toUriString(), String.class);
-        if (WxApiResultException.hasException(result)) {
-            return false;
-        } else {
+        try {
+            wxApiTemplate.getForObject(builder.toUriString(), String.class);
             return true;
+        } catch (WxException e) {
+            return false;
         }
     }
 
