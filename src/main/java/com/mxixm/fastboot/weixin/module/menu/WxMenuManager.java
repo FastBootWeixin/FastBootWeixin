@@ -164,6 +164,7 @@ public class WxMenuManager implements EmbeddedValueResolverAware, ApplicationLis
             logger.error("未扫描到有效菜单，请检查项目配置，可能是@WxController类没有被扫描到或者没有声明为@WxController",
                     new WxAppException("未检测到有效菜单，不执行创建菜单动作，强制使用远程菜单进行映射"));
             this.setMenu(remoteWxMenu);
+            executor.scheduleAtFixedRate(() -> refreshMenu(), menuRefreshIntervalMs, menuRefreshIntervalMs, TimeUnit.MILLISECONDS);
             return;
         }
         this.setMenu(localWxMenu);
