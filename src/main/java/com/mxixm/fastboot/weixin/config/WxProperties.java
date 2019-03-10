@@ -27,6 +27,8 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * FastBootWeixin WxProperties
@@ -646,7 +648,7 @@ public class WxProperties implements InitializingBean {
 
         public static class Interceptor {
 
-            List<String> includePatterns = Collections.singletonList("/wx/**");
+            List<String> includePatterns = Stream.of("/wx/**").collect(Collectors.toList());
 
             List<String> excludePatterns = new ArrayList<>();
 
