@@ -112,6 +112,7 @@ public @interface WxButton {
         MAIN, SUB
     }
 
+
     /**
      * 类型
      */
@@ -184,5 +185,4 @@ public @interface WxButton {
         MINI_PROGRAM
 
     }
-
 }

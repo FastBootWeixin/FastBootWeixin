@@ -73,6 +73,12 @@ public class WxEvent {
         LOCATION_SELECT(Wx.Category.BUTTON),
 
         /**
+         * 点击查看小程序
+         * see {@link WxButton.Type}
+         */
+        VIEW_MINIPROGRAM(Wx.Category.BUTTON),
+
+        /**
          * 订阅(关注)
          */
         SUBSCRIBE(Wx.Category.EVENT),
