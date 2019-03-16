@@ -48,7 +48,7 @@ public class JsonTest {
 
     public static void main(String[] args) throws IOException {
         ObjectMapper objectMapper1 = new ObjectMapper();
-        objectMapper1.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+//        objectMapper1.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         String ss = "{\"ss\":\"a\"}";
         S ab = objectMapper1.readValue(ss, S.class);
 

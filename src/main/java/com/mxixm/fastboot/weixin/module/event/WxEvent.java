@@ -16,6 +16,7 @@
 
 package com.mxixm.fastboot.weixin.module.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
 
@@ -61,6 +62,12 @@ public class WxEvent {
         PIC_PHOTO_OR_ALBUM(Wx.Category.BUTTON),
 
         /**
+         * 按钮事件中的弹出拍照或者相册发图
+         * see {@link WxButton.Type}
+         */
+        PIC_SYSPHOTO(Wx.Category.BUTTON),
+
+        /**
          * 按钮事件中的微信相册发图器
          * see {@link WxButton.Type}
          */
@@ -71,6 +78,16 @@ public class WxEvent {
          * see {@link WxButton.Type}
          */
         LOCATION_SELECT(Wx.Category.BUTTON),
+
+        /**
+         * 下发消息（除文本消息），不推送事件，也可能是官方文档没写
+         */
+        MEDIA_ID(Wx.Category.BUTTON),
+
+        /**
+         * 跳转图文消息URL，不推送事件，也可能是官方文档没写
+         */
+        VIEW_LIMITED(Wx.Category.BUTTON),
 
         /**
          * 点击查看小程序
@@ -119,37 +136,37 @@ public class WxEvent {
          * 理论上应该拆分个系统Category里面
          * 系统事件：资质认证成功（此时立即获得接口权限）
          */
-        QUALIFICATION_VERIFY_SUCCESS(Wx.Category.SYSTEM),
+        QUALIFICATION_VERIFY_SUCCESS(Wx.Category.EVENT),
 
         /**
          * 系统事件：资质认证失败
          */
-        QUALIFICATION_VERIFY_FAIL(Wx.Category.SYSTEM),
+        QUALIFICATION_VERIFY_FAIL(Wx.Category.EVENT),
 
         /**
          * 系统事件：名称认证成功（即命名成功）
          */
-        NAMING_VERIFY_SUCCESS(Wx.Category.SYSTEM),
+        NAMING_VERIFY_SUCCESS(Wx.Category.EVENT),
 
         /**
          * 名称认证失败（这时虽然客户端不打勾，但仍有接口权限）
          */
-        NAMING_VERIFY_FAIL(Wx.Category.SYSTEM),
+        NAMING_VERIFY_FAIL(Wx.Category.EVENT),
 
         /**
          * 年审通知
          */
-        ANNUAL_RENEW(Wx.Category.SYSTEM),
+        ANNUAL_RENEW(Wx.Category.EVENT),
 
         /**
          * 认证过期失效通知
          */
-        VERIFY_EXPIRED(Wx.Category.SYSTEM),
+        VERIFY_EXPIRED(Wx.Category.EVENT),
 
         /**
          * 不认识的类型，可能是微信接口里有，但是没有被发现的
          */
-        UNKNOWN(Wx.Category.SYSTEM);
+        UNKNOWN(Wx.Category.EVENT);
 
         /**
          * 消息类别

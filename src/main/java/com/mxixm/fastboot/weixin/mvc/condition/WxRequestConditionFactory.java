@@ -5,6 +5,7 @@ import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
+import com.mxixm.fastboot.weixin.util.WxMenuUtils;
 
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class WxRequestConditionFactory {
 
     public static WxEnumRequestCondition createWxButtonGroupsCondition(WxButton.Group... buttonGroups) {
         return new WxEnumRequestCondition(WxRequestCondition.Type.BUTTON_KEY, wxRequest ->
-                Optional.ofNullable(wxRequest.getButton()).map(wxButton -> wxButton.getGroup()).orElse(null), buttonGroups);
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getGroup).orElse(null), buttonGroups);
     }
 
     public static WxEnumRequestCondition createWxButtonOrdersCondition(WxButton.Order... buttonOrders) {
@@ -45,7 +46,8 @@ public class WxRequestConditionFactory {
 
     public static WxWildcardRequestCondition createWxButtonKeysCondition(String... buttonKeys) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.BUTTON_KEY, wxRequest ->
-                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getKey).orElse(null), buttonKeys);
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getKey)
+                        .orElseGet(() -> WxMenuUtils.getKeyFromBody(wxRequest.getBody())), buttonKeys);
     }
 
     public static WxWildcardRequestCondition createWxButtonNamesCondition(String... buttonNames) {
@@ -55,12 +57,14 @@ public class WxRequestConditionFactory {
 
     public static WxWildcardRequestCondition createWxButtonUrlsCondition(String... buttonUrls) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.BUTTON_URL, wxRequest ->
-                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getUrl).orElse(null), buttonUrls);
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getUrl)
+                        .orElseGet(() -> WxMenuUtils.getUrlFromBody(wxRequest.getBody())), buttonUrls);
     }
 
     public static WxWildcardRequestCondition createWxButtonMediaIdsCondition(String... buttonMediaIds) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.BUTTON_MEDIA_ID, wxRequest ->
-                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getMediaId).orElse(null), buttonMediaIds);
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getMediaId)
+                        .orElseGet(() -> WxMenuUtils.getMediaIdFromBody(wxRequest.getBody())), buttonMediaIds);
     }
 
     public static WxWildcardRequestCondition createWxButtonAppIdsCondition(String... buttonAppIds) {
@@ -70,7 +74,8 @@ public class WxRequestConditionFactory {
 
     public static WxWildcardRequestCondition createWxButtonPagePathsCondition(String... buttonPagePaths) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.BUTTON_PAGE_PATH, wxRequest ->
-                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getPagePath).orElse(null), buttonPagePaths);
+                Optional.ofNullable(wxRequest.getButton()).map(WxMenu.Button::getPagePath)
+                        .orElseGet(() -> WxMenuUtils.getPagePathFromBody(wxRequest.getBody())), buttonPagePaths);
     }
     public static WxEnumRequestCondition createWxMessageTypesCondition(WxMessage.Type... messageTypes) {
         return new WxEnumRequestCondition(WxRequestCondition.Type.MESSAGE_TYPE, wxRequest ->
@@ -87,9 +92,14 @@ public class WxRequestConditionFactory {
                 wxRequest.getBody().getEventType(), eventTypes);
     }
 
-    public static WxWildcardRequestCondition createWxEventSceneCondition(String... eventScenes) {
+    public static WxWildcardRequestCondition createWxEventScenesCondition(String... eventScenes) {
         return new WxWildcardRequestCondition(WxRequestCondition.Type.EVENT_SCENE, wxRequest ->
                 wxRequest.getBody().getScene(), eventScenes);
+    }
+
+    public static WxWildcardRequestCondition createWxEventKeysCondition(String... eventKeys) {
+        return new WxWildcardRequestCondition(WxRequestCondition.Type.EVENT_KEY, wxRequest ->
+                wxRequest.getBody().getEventKey(), eventKeys);
     }
 
 }

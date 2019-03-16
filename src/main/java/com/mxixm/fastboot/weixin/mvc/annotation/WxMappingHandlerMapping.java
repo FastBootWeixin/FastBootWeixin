@@ -352,6 +352,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
                 .create(Wx.Category.EVENT)
                 .eventTypes(wxEventMapping.type())
                 .eventScenes(resolveEmbeddedValuesInPatterns(wxEventMapping.scenes()))
+                .eventKeys(resolveEmbeddedValuesInPatterns(wxEventMapping.keys()))
                 .mappingName(wxEventMapping.name())
                 .build();
     }

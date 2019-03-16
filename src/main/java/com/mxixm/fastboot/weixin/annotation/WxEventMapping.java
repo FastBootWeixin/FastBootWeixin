@@ -59,4 +59,11 @@ public @interface WxEventMapping {
      */
     String[] scenes() default {};
 
+    /**
+     * 用于匹配事件key的通配符
+     *
+     * @return keys
+     */
+    String[] keys() default {};
+
 }

@@ -49,6 +49,7 @@ public interface WxRequestCondition<T> extends RequestCondition<T> {
 		MESSAGE_CONTENT(Wx.Category.MESSAGE, "messageContents"),
 		EVENT_TYPE(Wx.Category.EVENT, "eventTypes"),
 		EVENT_SCENE(Wx.Category.EVENT, "eventScenes"),
+		EVENT_KEY(Wx.Category.EVENT, "eventKeys"),
 		COMPOSITES(null, "composites"),
 		OTHER(null, "others");
 

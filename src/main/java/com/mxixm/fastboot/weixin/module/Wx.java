@@ -43,7 +43,7 @@ public class Wx {
         MESSAGE,
         /**
          * 包括按钮事件和用户事件(如关注)
-         * 后续可考虑分离按钮事件和用户时间
+         * 后续可考虑分离按钮事件和用户事件
          */
         EVENT,
         /**
@@ -52,7 +52,9 @@ public class Wx {
         BUTTON,
         /**
          * 系统事件
+         * 废弃，不再使用此类型，直接使用EVENT，因为不区分比较方便，根据三个不同Category提供三个注解
          */
+        @Deprecated
         SYSTEM
     }
 

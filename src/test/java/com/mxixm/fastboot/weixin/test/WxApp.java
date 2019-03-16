@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
  * @date 2017/09/21 23:47
  * @since 0.1.2
  */
-@WxApplication
-@WxController
+//@WxApplication
+//@WxController
 public class WxApp {
 
     @Autowired
@@ -424,6 +424,7 @@ public class WxApp {
 
     @GetMapping("test/base")
     public void base() {
+        wxApiService.deleteMenu();
         wxBaseService.getWxWebUserByCode("1234");
     }
 

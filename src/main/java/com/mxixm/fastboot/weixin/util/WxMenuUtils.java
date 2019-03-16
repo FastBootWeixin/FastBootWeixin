@@ -1,6 +1,8 @@
 package com.mxixm.fastboot.weixin.util;
 
+import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.menu.WxMenu;
+import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
 /**
  * FastBootWeixin WxMenuUtils
@@ -29,10 +31,60 @@ public class WxMenuUtils {
             case VIEW_LIMITED:
                 return button.getMediaId();
             case MINI_PROGRAM:
-                return button.getAppId();
+                return button.getPagePath();
             default:
                 return button.getKey();
         }
+    }
+
+    /**
+     * 从请求体中获取PagePath
+     * @param body 请求体
+     * @return PagePath值
+     */
+    public static String getPagePathFromBody(WxRequest.Body body) {
+        // 只有是MINI_PROGRAM时才可取到EventKey
+        if (body.getButtonType() == WxButton.Type.MINI_PROGRAM) {
+            return body.getEventKey();
+        }
+        return null;
+    }
+
+    /**
+     * 从请求体中获取MediaId
+     * @param body 请求体
+     * @return MediaId值
+     */
+    public static String getMediaIdFromBody(WxRequest.Body body) {
+        if (body.getButtonType() == WxButton.Type.MEDIA_ID || body.getButtonType() == WxButton.Type.VIEW_LIMITED) {
+            return body.getEventKey();
+        }
+        return null;
+    }
+
+    /**
+     * 从请求体中获取Url
+     * @param body 请求体
+     * @return Url值
+     */
+    public static String getUrlFromBody(WxRequest.Body body) {
+        if (body.getButtonType() == WxButton.Type.VIEW) {
+            return body.getEventKey();
+        }
+        return null;
+    }
+
+    /**
+     * 从请求体中获取Key
+     * 其实标准做法应该是排除VIEW、VIEW_LIMITED、MINI_PROGRAM和MEDIA_ID这四种的，这里为了增强兼容性所以这么做
+     * @param body 请求体
+     * @return Key值
+     */
+    public static String getKeyFromBody(WxRequest.Body body) {
+        if (body.getButtonType() != null) {
+            return body.getEventKey();
+        }
+        return null;
     }
 
 }

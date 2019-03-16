@@ -76,10 +76,11 @@ public class WxWildcardRequestCondition extends AbstractWxRequestCondition<WxWil
             return this;
         }
         String text = fun.apply(wxRequest);
-        if (this.wildcards.isEmpty() || text == null) {
+        if (text == null) {
             return null;
         }
-        List<String> matches = wildcards.stream().filter(w -> WildcardUtils.wildcardMatch(text, w)).collect(Collectors.toList());
+        // todo 字符前后有空格，暂时这么处理，待确定原因
+        List<String> matches = wildcards.stream().filter(w -> WildcardUtils.wildcardMatch(text.trim(), w)).collect(Collectors.toList());
         return matches.isEmpty() ? null : new WxWildcardRequestCondition(this.type, fun, matches.toArray(new String[0]));
     }
 

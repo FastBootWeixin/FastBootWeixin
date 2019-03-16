@@ -25,9 +25,7 @@ import com.mxixm.fastboot.weixin.mvc.condition.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.mvc.condition.RequestCondition;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.Objects;
@@ -76,6 +74,8 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
 
     private final WxWildcardRequestCondition eventScenes;
 
+    private final WxWildcardRequestCondition eventKeys;
+
     private final AbstractWxRequestCondition[] conditions;
 
     public WxMappingInfo(String name,
@@ -93,7 +93,8 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
                          WxEnumRequestCondition messageTypes,
                          WxWildcardRequestCondition messageContents,
                          WxEnumRequestCondition eventTypes,
-                         WxWildcardRequestCondition eventScenes) {
+                         WxWildcardRequestCondition eventScenes,
+                         WxWildcardRequestCondition eventKeys) {
         this.name = (name != null ? name : "");
         this.categories = categories != null ? categories : WxRequestConditionFactory.createWxCategoriesCondition();
         this.buttonTypes = buttonTypes != null ? buttonTypes : WxRequestConditionFactory.createWxButtonTypesCondition();
@@ -109,9 +110,10 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         this.messageTypes = messageTypes != null ? messageTypes : WxRequestConditionFactory.createWxMessageTypesCondition();
         this.messageContents = messageContents != null ? messageContents : WxRequestConditionFactory.createWxMessageContentsCondition();
         this.eventTypes = eventTypes != null ? eventTypes : WxRequestConditionFactory.createWxEventTypesCondition();
-        this.eventScenes = eventScenes != null ? eventScenes : WxRequestConditionFactory.createWxEventSceneCondition();
+        this.eventScenes = eventScenes != null ? eventScenes : WxRequestConditionFactory.createWxEventScenesCondition();
+        this.eventKeys = eventKeys != null ? eventScenes : WxRequestConditionFactory.createWxEventKeysCondition();
         this.conditions = new AbstractWxRequestCondition[]{categories, buttonTypes, buttonKeys, buttonNames, buttonUrls, buttonMediaIds, buttonAppIds, buttonPagePaths,
-                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes};
+                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes, eventKeys};
     }
 
     public WxEnumRequestCondition getCategories() {
@@ -174,6 +176,10 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         return buttonLevels;
     }
 
+    public WxWildcardRequestCondition getEventKeys() {
+        return eventKeys;
+    }
+
     @Override
     public WxMappingInfo combine(WxMappingInfo other) {
         String name = combineNames(other);
@@ -192,8 +198,9 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         WxWildcardRequestCondition messageContents = this.messageContents.combine(other.messageContents);
         WxEnumRequestCondition eventTypes = this.eventTypes.combine(other.eventTypes);
         WxWildcardRequestCondition eventScenes = this.eventScenes.combine(other.eventScenes);
+        WxWildcardRequestCondition eventKeys = this.eventKeys.combine(other.eventKeys);
         return new WxMappingInfo(name, categories, buttonTypes, buttonKeys, buttonNames, buttonUrls, buttonMediaIds, buttonAppIds, buttonPagePaths,
-                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes);
+                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes, eventKeys);
     }
 
     private String combineNames(WxMappingInfo other) {
@@ -224,12 +231,13 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         WxWildcardRequestCondition messageContents = this.messageContents.getMatchingCondition(wxRequest);
         WxEnumRequestCondition eventTypes = this.eventTypes.getMatchingCondition(wxRequest);
         WxWildcardRequestCondition eventScenes = this.eventScenes.getMatchingCondition(wxRequest);
+        WxWildcardRequestCondition eventKeys = this.eventKeys.getMatchingCondition(wxRequest);
         if (isAnyNull(categories, buttonTypes, buttonKeys, buttonNames, buttonUrls, buttonMediaIds, buttonAppIds, buttonPagePaths,
-                buttonGroups, buttonOrders, messageTypes, messageContents, eventTypes, eventScenes)) {
+                buttonGroups, buttonOrders, messageTypes, messageContents, eventTypes, eventScenes, eventKeys)) {
             return null;
         }
         return new WxMappingInfo(name, categories, buttonTypes, buttonKeys, buttonNames, buttonUrls, buttonMediaIds, buttonAppIds, buttonPagePaths,
-                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes);
+                buttonGroups, buttonOrders, buttonLevels, messageTypes, messageContents, eventTypes, eventScenes, eventKeys);
     }
 
     private boolean isAnyNull(AbstractWxRequestCondition... conditions) {
@@ -315,6 +323,8 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
 
         Builder eventScenes(String... eventScenes);
 
+        Builder eventKeys(String... eventKeys);
+
         Builder buttonUrls(String... buttonUrls);
 
         Builder buttonAppIds(String... buttonAppIds);
@@ -352,6 +362,8 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         private String[] buttonNames;
 
         private String[] eventScenes;
+
+        private String[] eventKeys;
 
         private String[] buttonUrls;
 
@@ -428,6 +440,12 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
         }
 
         @Override
+        public DefaultBuilder eventKeys(String... eventKeys) {
+            this.eventKeys = eventKeys;
+            return this;
+        }
+
+        @Override
         public DefaultBuilder buttonUrls(String... buttonUrls) {
             this.buttonUrls = buttonUrls;
             return this;
@@ -474,7 +492,8 @@ public class WxMappingInfo implements WxRequestCondition<WxMappingInfo> {
                     WxRequestConditionFactory.createWxMessageTypesCondition(messageTypes),
                     WxRequestConditionFactory.createWxMessageContentsCondition(messageContents),
                     WxRequestConditionFactory.createWxEventTypesCondition(eventTypes),
-                    WxRequestConditionFactory.createWxEventSceneCondition(eventScenes));
+                    WxRequestConditionFactory.createWxEventScenesCondition(eventScenes),
+                    WxRequestConditionFactory.createWxEventKeysCondition(eventKeys));
         }
 
         @Override

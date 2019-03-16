@@ -250,18 +250,16 @@ public class WxRequest {
             if (category != null) {
                 return category;
             }
-            if (this.messageType == WxMessage.Type.EVENT) {
-                // 有button类型，则是button
-                if (this.getButtonType() != null) {
-                    category = Wx.Category.BUTTON;
-                } else {
-                    // 否则是事件
-                    category = Wx.Category.EVENT;
-                }
-            } else {
-                // 否则就是消息
-                // category = this.messageType.getCategories()[0];
+            if (this.messageType != WxMessage.Type.EVENT) {
                 category = Wx.Category.MESSAGE;
+                return category;
+            }
+            // 默认使用eventType中的Category即可，理论上逻辑与下面相同
+            if (this.eventType != null) {
+                category = this.eventType.getCategory();
+            } else {
+                // 不明类型，使用EVENT
+                category = Wx.Category.EVENT;
             }
             return category;
         }
@@ -284,15 +282,11 @@ public class WxRequest {
          * button事件的类型
          */
         public WxButton.Type getButtonType() {
-            if (this.buttonType != null) {
+            if (this.buttonType != null || this.getCategory() != Wx.Category.BUTTON) {
                 return this.buttonType;
             }
             // 只有msgType是event时才是buttonType
-            if (this.messageType == WxMessage.Type.EVENT) {
-                this.buttonType = Arrays.stream(WxButton.Type.values())
-                        .filter(t -> t.name().equals(this.eventType.name()))
-                        .findFirst().orElse(null);
-            }
+            this.buttonType = WxButton.Type.ofEventType(this.eventType);
             return this.buttonType;
         }
 

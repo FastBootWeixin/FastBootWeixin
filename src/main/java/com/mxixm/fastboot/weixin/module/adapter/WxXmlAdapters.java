@@ -19,9 +19,11 @@ package com.mxixm.fastboot.weixin.module.adapter;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.WxMessageBody;
+import com.mxixm.fastboot.weixin.util.EnumUtils;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Date;
+import java.util.EnumMap;
 
 /**
  * FastBootWeixin WxXmlAdapters
@@ -49,12 +51,12 @@ public class WxXmlAdapters {
 
 
     /**
-     * 类型转换
+     * 类型转换，注意枚举的valueOf不可能为null，如果不存在则会抛出枚举异常，这里需要避免这种情况
      */
     public static class MsgTypeAdaptor extends XmlAdapter<String, WxMessage.Type> {
         @Override
         public WxMessage.Type unmarshal(String s) throws Exception {
-            return WxMessage.Type.valueOf(s.toUpperCase().trim());
+            return EnumUtils.valueOf(WxMessage.Type.class, s.toUpperCase().trim());
         }
 
         @Override
@@ -69,8 +71,8 @@ public class WxXmlAdapters {
     public static class EventAdaptor extends XmlAdapter<String, WxEvent.Type> {
         @Override
         public WxEvent.Type unmarshal(String s) throws Exception {
-            WxEvent.Type type = WxEvent.Type.valueOf(s.toUpperCase().trim());
-            return type != null ? type : WxEvent.Type.UNKNOWN;
+            WxEvent.Type type = EnumUtils.valueOf(WxEvent.Type.class, s.toUpperCase().trim());
+            return type == null ? WxEvent.Type.UNKNOWN : type;
         }
 
         @Override

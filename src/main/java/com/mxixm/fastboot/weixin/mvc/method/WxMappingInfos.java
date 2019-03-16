@@ -36,7 +36,7 @@ public class WxMappingInfos extends WxMappingInfo {
     private WxMappingInfo[] wxMappingInfos;
 
     public WxMappingInfos(WxMappingInfo... wxMappingInfos) {
-        super(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+        super(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         this.wxMappingInfos = wxMappingInfos;
     }
 
