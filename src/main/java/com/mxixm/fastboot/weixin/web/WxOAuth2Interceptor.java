@@ -103,9 +103,10 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
             sb.append(Wx.Environment.instance().getCallbackHost());
             sb.append(uri.getPath());
         }
-        // 强制移除code参数，如果不移除的话，会导致微信跳转回来带两个code参数，这样是有问题的
+        // 强制移除code参数，如果不移除的话，会导致微信跳转回来带两个code参数，这样是有问题的。
+        // 原来有 && queryString.contains(CODE_PREFIX)判断，现移除
         String queryString = request.getQueryString();
-        if (!StringUtils.isEmpty(queryString) && queryString.contains(CODE_PREFIX)) {
+        if (!StringUtils.isEmpty(queryString)) {
             String[] queryParams = queryString.split("&");
             for (String param : queryParams) {
                 if (!param.contains(CODE_PREFIX)) {
