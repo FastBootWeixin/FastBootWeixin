@@ -96,7 +96,7 @@ public class WxWildcardRequestCondition extends AbstractWxRequestCondition<WxWil
         Assert.isTrue(this.getType() == other.getType(), "比较类型必须相同");
         int thisMax = this.wildcards.stream().sorted(Comparator.comparing(String::length).reversed()).findFirst().orElse("").length();
         int thatMax = other.wildcards.stream().sorted(Comparator.comparing(String::length).reversed()).findFirst().orElse("").length();
-        return thisMax - thatMax;
+        return thatMax - thisMax;
     }
 
 }

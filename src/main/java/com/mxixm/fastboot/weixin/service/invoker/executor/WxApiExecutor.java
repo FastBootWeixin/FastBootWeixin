@@ -111,8 +111,11 @@ public class WxApiExecutor {
         Object body = null;
         if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.JSON) {
             httpHeaders = buildJsonHeaders();
-//            body = getStringBody(wxApiMethodInfo, args);
-            body = getObjectBody(wxApiMethodInfo, args);
+            // 由于内置的AbstractJackson2HttpMessageConverter中writeInternal方法，对json的解析使用默认的UTF-8编码
+            // 导致对于多字节的UTF8编码EMOJI表情进行了转义，产生了不正确的结果
+            // 但是内置功能无法被简单修改，所以这里自己转了一下
+            body = getStringBody(wxApiMethodInfo, args);
+//            body = getObjectBody(wxApiMethodInfo, args);
         } else if (wxApiMethodInfo.getRequestMethod() == WxApiRequest.Method.XML) {
             httpHeaders = buildXmlHeaders();
             // 暂时不支持xml转换。。。

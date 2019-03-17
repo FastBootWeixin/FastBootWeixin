@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -157,11 +158,37 @@ public class WxXmlMessageConverter extends Jaxb2RootElementHttpMessageConverter 
         }
     }
 
+    /**
+     * 是否应该按照com.sun.xml.bind.v2.runtime.output.Encoded中的setEscape方法执行？这里简单处理了一下
+     */
     public static class CDataCharacterEscapeHandler implements CharacterEscapeHandler {
+
         @Override
         public void escape(char[] ch, int start, int length, boolean isAttVal, Writer out) throws IOException {
             out.write("<![CDATA[");
-            out.write(ch, start, length);
+            int limit = start+length;
+            for (int i = start; i < limit; i++) {
+                switch (ch[i]) {
+                    case '&':
+                        out.write("&amp;");
+                        break;
+                    case '<':
+                        out.write("&lt;");
+                        break;
+                    case '>':
+                        out.write("&gt;");
+                        break;
+                    case '\"':
+                        if (isAttVal) {
+                            out.write("&quot;");
+                        } else {
+                            out.write('\"');
+                        }
+                        break;
+                    default:
+                        out.write(ch[i]);
+                }
+            }
             out.write("]]>");
         }
     }
