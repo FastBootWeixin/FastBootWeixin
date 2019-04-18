@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.mxixm.fastboot.weixin.module.adapter.WxJsonAdapters;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,42 @@ import java.util.List;
  * @date 2017/8/5 22:29
  * @since 0.1.2
  */
-public class WxUser {
+public class WxUser implements Serializable {
+
+    public enum SubscribeScene {
+        /**
+         * 公众号搜索
+         */
+        ADD_SCENE_SEARCH,
+        /**
+         * 公众号迁移
+         */
+        ADD_SCENE_ACCOUNT_MIGRATION,
+        /**
+         * 名片分享
+         */
+        ADD_SCENE_PROFILE_CARD,
+        /**
+         * 扫描二维码
+         */
+        ADD_SCENE_QR_CODE,
+        /**
+         * LINK 图文页内名称点击
+         */
+        ADD_SCENEPROFILE,
+        /**
+         * 图文页右上角菜单
+         */
+        ADD_SCENE_PROFILE_ITEM,
+        /**
+         * 支付后关注
+         */
+        ADD_SCENE_PAID,
+        /**
+         * 其他
+         */
+        ADD_SCENE_OTHERS
+    }
 
     /**
      * 用户是否订阅该公众号标识，值为0时，代表此用户没有关注该公众号，拉取不到其余信息。
@@ -123,6 +159,33 @@ public class WxUser {
      */
     @JsonProperty("tagid_list")
     private List<Integer> tagIdList;
+
+    /**
+     * subscribe_scene
+     * 返回用户关注的渠道来源
+     * ADD_SCENE_SEARCH 公众号搜索
+     * ADD_SCENE_ACCOUNT_MIGRATION 公众号迁移
+     * ADD_SCENE_PROFILE_CARD 名片分享
+     * ADD_SCENE_QR_CODE 扫描二维码
+     * ADD_SCENEPROFILE LINK 图文页内名称点击
+     * ADD_SCENE_PROFILE_ITEM 图文页右上角菜单
+     * ADD_SCENE_PAID 支付后关注
+     * ADD_SCENE_OTHERS 其他
+     */
+    @JsonProperty("subscribe_scene")
+    private String subscribeScene;
+
+    /**
+     * 二维码扫码场景（开发者自定义）
+     */
+    @JsonProperty("qr_scene")
+    private String qrScene;
+
+    /**
+     * 二维码扫码场景描述（开发者自定义）
+     */
+    @JsonProperty("qr_scene_str")
+    private String qrSceneStr;
 
     public WxUser() {
     }
@@ -247,139 +310,55 @@ public class WxUser {
         this.tagIdList = tagIdList;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof WxUser)) {
-            return false;
-        }
-        final WxUser other = (WxUser) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$subscribe = this.getSubscribe();
-        final Object other$subscribe = other.getSubscribe();
-        if (this$subscribe == null ? other$subscribe != null : !this$subscribe.equals(other$subscribe)) {
-            return false;
-        }
-        final Object this$openId = this.getOpenId();
-        final Object other$openId = other.getOpenId();
-        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) {
-            return false;
-        }
-        final Object this$nickName = this.getNickName();
-        final Object other$nickName = other.getNickName();
-        if (this$nickName == null ? other$nickName != null : !this$nickName.equals(other$nickName)) {
-            return false;
-        }
-        final Object this$sex = this.getSex();
-        final Object other$sex = other.getSex();
-        if (this$sex == null ? other$sex != null : !this$sex.equals(other$sex)) {
-            return false;
-        }
-        final Object this$city = this.getCity();
-        final Object other$city = other.getCity();
-        if (this$city == null ? other$city != null : !this$city.equals(other$city)) {
-            return false;
-        }
-        final Object this$country = this.getCountry();
-        final Object other$country = other.getCountry();
-        if (this$country == null ? other$country != null : !this$country.equals(other$country)) {
-            return false;
-        }
-        final Object this$province = this.getProvince();
-        final Object other$province = other.getProvince();
-        if (this$province == null ? other$province != null : !this$province.equals(other$province)) {
-            return false;
-        }
-        final Object this$language = this.getLanguage();
-        final Object other$language = other.getLanguage();
-        if (this$language == null ? other$language != null : !this$language.equals(other$language)) {
-            return false;
-        }
-        final Object this$headImgUrl = this.getHeadImgUrl();
-        final Object other$headImgUrl = other.getHeadImgUrl();
-        if (this$headImgUrl == null ? other$headImgUrl != null : !this$headImgUrl.equals(other$headImgUrl)) {
-            return false;
-        }
-        final Object this$subscribeTime = this.getSubscribeTime();
-        final Object other$subscribeTime = other.getSubscribeTime();
-        if (this$subscribeTime == null ? other$subscribeTime != null : !this$subscribeTime.equals(other$subscribeTime)) {
-            return false;
-        }
-        final Object this$unionId = this.getUnionId();
-        final Object other$unionId = other.getUnionId();
-        if (this$unionId == null ? other$unionId != null : !this$unionId.equals(other$unionId)) {
-            return false;
-        }
-        final Object this$remark = this.getRemark();
-        final Object other$remark = other.getRemark();
-        if (this$remark == null ? other$remark != null : !this$remark.equals(other$remark)) {
-            return false;
-        }
-        final Object this$groupId = this.getGroupId();
-        final Object other$groupId = other.getGroupId();
-        if (this$groupId == null ? other$groupId != null : !this$groupId.equals(other$groupId)) {
-            return false;
-        }
-        final Object this$privileges = this.getPrivileges();
-        final Object other$privileges = other.getPrivileges();
-        if (this$privileges == null ? other$privileges != null : !this$privileges.equals(other$privileges)) {
-            return false;
-        }
-        final Object this$tagIdList = this.getTagIdList();
-        final Object other$tagIdList = other.getTagIdList();
-        if (this$tagIdList == null ? other$tagIdList != null : !this$tagIdList.equals(other$tagIdList)) {
-            return false;
-        }
-        return true;
+    public String getSubscribeScene() {
+        return subscribeScene;
     }
 
-    @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $subscribe = this.getSubscribe();
-        result = result * PRIME + ($subscribe == null ? 43 : $subscribe.hashCode());
-        final Object $openId = this.getOpenId();
-        result = result * PRIME + ($openId == null ? 43 : $openId.hashCode());
-        final Object $nickName = this.getNickName();
-        result = result * PRIME + ($nickName == null ? 43 : $nickName.hashCode());
-        final Object $sex = this.getSex();
-        result = result * PRIME + ($sex == null ? 43 : $sex.hashCode());
-        final Object $city = this.getCity();
-        result = result * PRIME + ($city == null ? 43 : $city.hashCode());
-        final Object $country = this.getCountry();
-        result = result * PRIME + ($country == null ? 43 : $country.hashCode());
-        final Object $province = this.getProvince();
-        result = result * PRIME + ($province == null ? 43 : $province.hashCode());
-        final Object $language = this.getLanguage();
-        result = result * PRIME + ($language == null ? 43 : $language.hashCode());
-        final Object $headImgUrl = this.getHeadImgUrl();
-        result = result * PRIME + ($headImgUrl == null ? 43 : $headImgUrl.hashCode());
-        final Object $subscribeTime = this.getSubscribeTime();
-        result = result * PRIME + ($subscribeTime == null ? 43 : $subscribeTime.hashCode());
-        final Object $unionId = this.getUnionId();
-        result = result * PRIME + ($unionId == null ? 43 : $unionId.hashCode());
-        final Object $remark = this.getRemark();
-        result = result * PRIME + ($remark == null ? 43 : $remark.hashCode());
-        final Object $groupId = this.getGroupId();
-        result = result * PRIME + ($groupId == null ? 43 : $groupId.hashCode());
-        final Object $privileges = this.getPrivileges();
-        result = result * PRIME + ($privileges == null ? 43 : $privileges.hashCode());
-        final Object $tagIdList = this.getTagIdList();
-        result = result * PRIME + ($tagIdList == null ? 43 : $tagIdList.hashCode());
-        return result;
+    public SubscribeScene getSubscribeSceneEnum() {
+        return SubscribeScene.valueOf(this.getSubscribeScene());
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof WxUser;
+    public void setSubscribeScene(String subscribeScene) {
+        this.subscribeScene = subscribeScene;
+    }
+
+    public String getQrScene() {
+        return qrScene;
+    }
+
+    public void setQrScene(String qrScene) {
+        this.qrScene = qrScene;
+    }
+
+    public String getQrSceneStr() {
+        return qrSceneStr;
+    }
+
+    public void setQrSceneStr(String qrSceneStr) {
+        this.qrSceneStr = qrSceneStr;
     }
 
     @Override
     public String toString() {
-        return "com.mxixm.fastboot.weixin.module.user.WxUser(subscribe=" + this.getSubscribe() + ", openId=" + this.getOpenId() + ", nickName=" + this.getNickName() + ", sex=" + this.getSex() + ", city=" + this.getCity() + ", country=" + this.getCountry() + ", province=" + this.getProvince() + ", language=" + this.getLanguage() + ", headImgUrl=" + this.getHeadImgUrl() + ", subscribeTime=" + this.getSubscribeTime() + ", unionId=" + this.getUnionId() + ", remark=" + this.getRemark() + ", groupId=" + this.getGroupId() + ", privileges=" + this.getPrivileges() + ", tagIdList=" + this.getTagIdList() + ")";
+        return "WxUser{" +
+                "subscribe=" + subscribe +
+                ", openId='" + openId + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", sex=" + sex +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", province='" + province + '\'' +
+                ", language='" + language + '\'' +
+                ", headImgUrl='" + headImgUrl + '\'' +
+                ", subscribeTime=" + subscribeTime +
+                ", unionId='" + unionId + '\'' +
+                ", remark='" + remark + '\'' +
+                ", groupId=" + groupId +
+                ", privileges=" + privileges +
+                ", tagIdList=" + tagIdList +
+                ", subscribeScene='" + subscribeScene + '\'' +
+                ", qrScene='" + qrScene + '\'' +
+                ", qrSceneStr='" + qrSceneStr + '\'' +
+                '}';
     }
 }

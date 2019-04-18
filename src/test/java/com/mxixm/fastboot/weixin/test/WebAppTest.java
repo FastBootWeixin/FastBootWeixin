@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  *
  */
-@WxApplication(menuAutoCreate = false)
-@WxController
+//@WxApplication(menuAutoCreate = false)
+//@WxController
 public class WebAppTest {
 
     @Autowired

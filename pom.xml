@@ -103,6 +103,18 @@
             <optional>true</optional>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>com.sun.xml.bind</groupId>-->
+            <!--<artifactId>jaxb-impl</artifactId>-->
+            <!--<version>2.3.2</version>-->
+        <!--</dependency>-->
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.sun.istack/istack-commons-runtime &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.sun.istack</groupId>-->
+            <!--<artifactId>istack-commons-runtime</artifactId>-->
+            <!--<version>3.0.8</version>-->
+        <!--</dependency>-->
+
     </dependencies>
     <!-- Package as an executable jar -->
     <build>

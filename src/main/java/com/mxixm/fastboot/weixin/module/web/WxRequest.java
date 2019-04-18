@@ -312,6 +312,15 @@ public class WxRequest {
          * 二维码场景值
          */
         private String scene;
+
+        /**
+         * 获取扫描二维码的场景值
+         * @return
+         */
+        public String getQrScene() {
+            return this.getScene();
+        }
+
         /**
          * 获取扫描二维码的场景值
          * @return

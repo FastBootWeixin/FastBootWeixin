@@ -16,6 +16,8 @@
 
 package com.mxixm.fastboot.weixin.test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.credential.WxJsTicketManager;
 import com.mxixm.fastboot.weixin.module.event.WxEvent;
@@ -58,8 +60,8 @@ import java.util.stream.Collectors;
  * @date 2017/09/21 23:47
  * @since 0.1.2
  */
-//@WxApplication
-//@WxController
+@WxApplication
+@WxController
 public class WxApp {
 
     @Autowired
@@ -257,6 +259,34 @@ public class WxApp {
             return "上次收到消息内容为" + wxSession.getAttribute("last");
         }
         return "收到消息内容为" + content;
+    }
+
+    private String openId;
+
+    private String k = "\uD83D\uDE2C";
+
+    @RequestMapping("doText")
+    public WxMessage t(String text) {
+        WxMessage wxMessage = WxMessage.text().content(text).toUser(openId).build();
+        wxMessageTemplate.sendMessage(wxMessage);
+        try {
+            System.out.println(new ObjectMapper().writeValueAsString(wxMessage));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return wxMessage;
+    }
+
+    /**
+     * 接受用户文本消息，异步返回文本消息
+     *
+     * @param content
+     * @return the result
+     */
+    @WxMessageMapping(type = WxMessage.Type.TEXT, contents = "test")
+    public String testS(String fromUserName, String content) {
+        openId = fromUserName;
+        return "收到消息内容为" + k + content;
     }
 
     /**
