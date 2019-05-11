@@ -52,7 +52,7 @@ public class WxMessageTemplate {
         this.wxMessageProcessor = wxMessageProcessor;
     }
 
-    public void sendMessage(WxMessage wxMessage) {
+    private void sendMessageInternal(WxMessage wxMessage) {
         if (wxMessage == null) {
             return;
         }
@@ -75,8 +75,12 @@ public class WxMessageTemplate {
         }
     }
 
+    public void sendMessage(WxMessage wxMessage) {
+        this.sendMessage(WxWebUtils.getWxMessageParameter(), wxMessage);
+    }
+
     public void sendMessage(WxMessageParameter wxMessageParameter, WxMessage wxMessage) {
-        this.sendMessage(wxMessageProcessor.process(wxMessageParameter, wxMessage));
+        this.sendMessageInternal(wxMessageProcessor.process(wxMessageParameter, wxMessage));
     }
 
     /**
