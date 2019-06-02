@@ -17,6 +17,7 @@
 package com.mxixm.fastboot.weixin.web;
 
 import com.mxixm.fastboot.weixin.exception.WxApiResultException;
+import com.mxixm.fastboot.weixin.exception.WxException;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxBaseService;
@@ -104,13 +105,15 @@ public class WxUserManager {
         }
         wxUser = tokenUserCache.get(wxWebUser.getRefreshToken());
         if (wxUser == null) {
-            if (!wxBaseService.isVerifyUserAccessToken(wxWebUser)) {
+            try {
+                wxUser = wxBaseService.getWxUserByWxWebUser(wxWebUser);
+            } catch (WxException e) {
                 WxWebUser newWxWebUser = wxBaseService.getWxWebUserByRefreshToken(wxWebUser.getRefreshToken());
                 wxWebUser.setAccessToken(newWxWebUser.getAccessToken());
                 wxWebUser.setExpiresIn(newWxWebUser.getExpiresIn());
                 wxWebUser.setCreateTime(new Date());
+                wxUser = wxBaseService.getWxUserByWxWebUser(wxWebUser);
             }
-            wxUser = wxBaseService.getWxUserByWxWebUser(wxWebUser);
             tokenUserCache.put(wxWebUser.getRefreshToken(), wxUser);
             openIdUserCache.put(wxWebUser.getOpenId(), wxUser);
         }
