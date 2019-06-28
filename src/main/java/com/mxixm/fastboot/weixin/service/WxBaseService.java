@@ -74,9 +74,8 @@ public class WxBaseService {
     public WxWebUser getWxWebUserByRefreshToken(String refreshToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
                 .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
-                .queryParam("grant_type", "authorization_code")
+                .queryParam("grant_type", "refresh_token")
                 .queryParam("appid", wxProperties.getAppid())
-                .queryParam("secret", wxProperties.getAppsecret())
                 .queryParam("refresh_token", refreshToken);
         return getWxWebUserByBuilder(builder);
     }
@@ -87,8 +86,7 @@ public class WxBaseService {
 
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
-                .queryParam("appid", wxProperties.getAppid())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserInfoByUserAccessToken())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId())
                 .queryParam("lang", "zh_CN");
@@ -97,7 +95,7 @@ public class WxBaseService {
 
     public boolean isVerifyUserAccessToken(WxWebUser wxWebUser) {
         UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
-                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getGetUserAccessTokenByCode())
+                .scheme("https").host(wxProperties.getUrl().getHost()).path(wxProperties.getUrl().getVerifyUserAccessToken())
                 .queryParam("access_token", wxWebUser.getAccessToken())
                 .queryParam("openid", wxWebUser.getOpenId());
         try {

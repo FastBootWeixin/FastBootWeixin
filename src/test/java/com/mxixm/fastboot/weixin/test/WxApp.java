@@ -39,6 +39,7 @@ import com.mxixm.fastboot.weixin.service.WxBaseService;
 import com.mxixm.fastboot.weixin.service.WxExtendService;
 import com.mxixm.fastboot.weixin.util.WxMessageUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
+import com.mxixm.fastboot.weixin.web.WxUserManager;
 import com.mxixm.fastboot.weixin.web.WxWebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -78,6 +79,9 @@ public class WxApp {
 
     @Autowired
     WxJsTicketManager wxJsTicketManager;
+
+    @Autowired
+    WxUserManager wxUserManager;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WxApp.class, args);
@@ -409,6 +413,7 @@ public class WxApp {
     @ResponseBody
     public String login() {
         WxWebUser wxWebUser = WxWebUtils.getWxWebUserFromSession();
+        WxUser wxUser = wxUserManager.getWxUserByWxWebUser(wxWebUser);
         return wxWebUser.getOpenId();
     }
 

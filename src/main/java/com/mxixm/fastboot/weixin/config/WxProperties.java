@@ -532,7 +532,11 @@ public class WxProperties implements InitializingBean {
 
         private String getUserAccessTokenByCode = "sns/oauth2/access_token";
 
+        private String verifyUserAccessToken = "sns/auth";
+
         private String getUserInfoByUserAccessToken = "sns/userinfo";
+
+        private String getUserAccessTokenByRefreshToken = "sns/oauth2/refresh_token";
 
         public String getHost() {
             return this.host;
@@ -564,6 +568,22 @@ public class WxProperties implements InitializingBean {
 
         public void setGetUserInfoByUserAccessToken(String getUserInfoByUserAccessToken) {
             this.getUserInfoByUserAccessToken = getUserInfoByUserAccessToken;
+        }
+
+        public String getGetUserAccessTokenByRefreshToken() {
+            return getUserAccessTokenByRefreshToken;
+        }
+
+        public void setGetUserAccessTokenByRefreshToken(String getUserAccessTokenByRefreshToken) {
+            this.getUserAccessTokenByRefreshToken = getUserAccessTokenByRefreshToken;
+        }
+
+        public String getVerifyUserAccessToken() {
+            return verifyUserAccessToken;
+        }
+
+        public void setVerifyUserAccessToken(String verifyUserAccessToken) {
+            this.verifyUserAccessToken = verifyUserAccessToken;
         }
     }
 
