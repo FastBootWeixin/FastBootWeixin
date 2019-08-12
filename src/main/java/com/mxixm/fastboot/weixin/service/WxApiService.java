@@ -157,7 +157,9 @@ public interface WxApiService {
     // WxMediaResource showQrCode(@WxApiParam("ticket") String ticket);
     // batchGetMedia();
 
-    WxTagUser.PageResult listUserByTag(WxTagUser wxTagUser);
+    WxUser.PageResult listUserByTag(WxTagUser wxTagUser);
+
+    WxUser.PageResult listUser(@WxApiParam("next_openid") String nextOpenId);
 
     WxTag createTag(WxTag wxTag);
 

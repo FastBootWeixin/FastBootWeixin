@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -355,7 +356,7 @@ public class WxApp {
     @WxMessageMapping(type = WxMessage.Type.TEXT, wildcard = "卡券*")
     public List<WxMessage> cardMessage(String content) {
         Integer tagId = Integer.parseInt(content.substring("卡券".length()));
-        WxTagUser.PageResult pageResult = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
+        WxUser.PageResult pageResult = wxApiService.listUserByTag(WxTagUser.listUser(tagId));
         return pageResult.getOpenIdList().stream().flatMap(u -> {
             List<WxMessage> l = new ArrayList();
             l.add(WxMessage.WxCard.builder().cardId("pKS9_xMBmNqlcWD-uAkD1pOy09Qw").toUser(u).build());
@@ -459,8 +460,13 @@ public class WxApp {
 
     @GetMapping("test/base")
     public void base() {
-        wxApiService.deleteMenu();
-        wxBaseService.getWxWebUserByCode("1234");
+//        wxApiService.deleteMenu();
+//        wxBaseService.getWxWebUserByCode("1234");
+        String openId = null;
+        WxUser.PageResult result;
+        while (!StringUtils.isEmpty(openId = (result = wxApiService.listUser(openId)).getNextOpenId())) {
+            System.out.println(result.getOpenIdList());
+        }
     }
 
 

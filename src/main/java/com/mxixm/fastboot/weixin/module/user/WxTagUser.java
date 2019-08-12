@@ -127,42 +127,7 @@ public class WxTagUser {
         this.nextOpenId = nextOpenId;
     }
 
-    public static class PageResult {
-
-        @JsonProperty("count")
-        private Integer count;
-
-        @JsonProperty("data")
-        private Data data;
-
-        public static class Data {
-            @JsonProperty("openid")
-            private List<String> openIdList;
-
-        }
-
-        @JsonProperty("next_openid")
-        private String nextOpenId;
-
-        public Integer getCount() {
-            return count;
-        }
-
-        public Data getData() {
-            return data;
-        }
-
-        public String getNextOpenId() {
-            return nextOpenId;
-        }
-
-        public List<String> getOpenIdList() {
-            return data.openIdList;
-        }
-
-    }
-
-    public static class TagIdList{
+    public static class TagIdList {
 
         @JsonProperty("tagid_list")
         private List<Integer> tagIdList;

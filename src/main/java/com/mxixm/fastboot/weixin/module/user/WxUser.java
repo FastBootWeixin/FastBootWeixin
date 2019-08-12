@@ -361,4 +361,50 @@ public class WxUser implements Serializable {
                 ", qrSceneStr='" + qrSceneStr + '\'' +
                 '}';
     }
+
+    public static class PageResult {
+
+        @JsonProperty("count")
+        private Integer count;
+
+        @JsonProperty("total")
+        private Integer total;
+
+        @JsonProperty("data")
+        private Data data;
+
+        @JsonProperty("next_openid")
+        private String nextOpenId;
+
+        public static class Data {
+            @JsonProperty("openid")
+            private List<String> openIdList;
+
+            public List<String> getOpenIdList() {
+                return openIdList;
+            }
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public Data getData() {
+            return data;
+        }
+
+        public String getNextOpenId() {
+            return nextOpenId;
+        }
+
+        public List<String> getOpenIdList() {
+            return data.openIdList;
+        }
+
+        public Integer getTotal() {
+            return total;
+        }
+
+    }
+
 }
