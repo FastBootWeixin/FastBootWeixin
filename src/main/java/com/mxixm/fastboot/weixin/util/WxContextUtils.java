@@ -17,12 +17,16 @@
 package com.mxixm.fastboot.weixin.util;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.config.BeanExpressionContext;
 import org.springframework.beans.factory.config.BeanExpressionResolver;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.Ordered;
+import org.springframework.util.StringValueResolver;
 
 /**
  * FastBootWeixin WxContextUtils
@@ -31,43 +35,47 @@ import org.springframework.core.Ordered;
  * @date 2017/8/11 21:03
  * @since 0.1.2
  */
-public class WxContextUtils implements ApplicationListener<ApplicationReadyEvent>, Ordered {
+public class WxContextUtils implements BeanFactoryAware, EmbeddedValueResolverAware, Ordered {
 
-    private static ConfigurableBeanFactory configurableBeanFactory;
+    private static BeanFactory beanFactory;
 
-    private static BeanExpressionContext expressionContext;
+    private static StringValueResolver stringValueResolver;
 
     /**
      * 解析参数值并执行spel表达式，得到最终结果
      * Spring的@Value也是这样做的
      */
     public static String resolveStringValue(String value) {
-        String placeholdersResolved = configurableBeanFactory.resolveEmbeddedValue(value);
-        BeanExpressionResolver exprResolver = configurableBeanFactory.getBeanExpressionResolver();
-        if (exprResolver == null) {
-            return value;
-        }
-        return exprResolver.evaluate(placeholdersResolved, expressionContext).toString();
+        return stringValueResolver.resolveStringValue(value);
     }
 
     public static <T> T getBean(Class<T> clazz) {
-        return configurableBeanFactory.getBean(clazz);
+        return beanFactory.getBean(clazz);
     }
 
     /**
      * 本来想用Prepared的，但是发现prepared没有地方发布这个事件，可恶
+     * 这个事件时机太靠后，configurableBeanFactory可能很早就要使用了
      *
-     * @param applicationReadyEvent
      */
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        configurableBeanFactory = applicationReadyEvent.getApplicationContext().getBeanFactory();
-        expressionContext = new BeanExpressionContext(configurableBeanFactory, null);
-    }
+//    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+//        beanFactory = applicationReadyEvent.getApplicationContext().getBeanFactory();
+//        expressionContext = new BeanExpressionContext(beanFactory, null);
+//    }
 
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
+    }
+
+    @Override
+    public void setEmbeddedValueResolver(StringValueResolver stringValueResolver) {
+        WxContextUtils.stringValueResolver = stringValueResolver;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        WxContextUtils.beanFactory = beanFactory;
     }
 
     /**
