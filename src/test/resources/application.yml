@@ -3,7 +3,7 @@ wx:
 #  path: wx
   appsecret: 019f8bef3d15cbf787b1875475fab7de
   token: 0438a06a0f8b41b1b4c248c741fec81e
-  callback-url: http://4sficv.natappfree.cc
+  callback-url: http://6np88r.natappfree.cc
   mvc:
     interceptor:
       include-patterns:

@@ -100,7 +100,7 @@ public class WxUserManager {
      */
     public WxUser getWxUserByWxWebUser(WxWebUser wxWebUser) {
         WxUser wxUser = this.getWxUser(wxWebUser.getOpenId());
-        if (wxUser != null && !wxUser.getSubscribe().equals(0)) {
+        if (wxUser != null && wxUser.getSubscribe() != null && !wxUser.getSubscribe().equals(0)) {
             return wxUser;
         }
         wxUser = tokenUserCache.get(wxWebUser.getRefreshToken());
