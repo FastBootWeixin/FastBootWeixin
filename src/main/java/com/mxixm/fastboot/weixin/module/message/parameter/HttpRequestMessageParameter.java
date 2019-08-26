@@ -20,11 +20,15 @@ public class HttpRequestMessageParameter implements WxMessageParameter {
 
     private Date createTime;
 
+    public HttpRequestMessageParameter() {
+        this.createTime = new Date();
+    }
+
     public HttpRequestMessageParameter(HttpServletRequest request) {
+        this();
         if (request != null && request.getScheme() != null) {
             this.requestUrl = request.getRequestURL().toString();
         }
-        this.createTime = new Date();
     }
 
     @Override

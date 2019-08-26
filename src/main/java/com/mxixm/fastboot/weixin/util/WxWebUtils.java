@@ -150,7 +150,7 @@ public class WxWebUtils {
         if (requestAttributes instanceof ServletRequestAttributes) {
             return new HttpRequestMessageParameter(((ServletRequestAttributes) requestAttributes).getRequest());
         }
-        return new HttpRequestMessageParameter(null);
+        return new HttpRequestMessageParameter();
     }
 
     public static HttpServletRequest getHttpServletRequest() {

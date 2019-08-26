@@ -137,6 +137,10 @@ public abstract class WxUrlUtils {
     public static boolean isCallbackUrl(String requestUrl, String targetUrl) {
         String callbackHost = Wx.Environment.instance().getCallbackHost();
         if (StringUtils.isEmpty(callbackHost)) {
+            // 请求地址是空，直接返回false
+            if (StringUtils.isEmpty(requestUrl)) {
+                return false;
+            }
             callbackHost = URI.create(requestUrl).getHost();
         }
         return isCallbackUrlInternal(targetUrl, callbackHost);
