@@ -81,7 +81,7 @@ public class WxApiMethodInfo {
         this.wxApiTypeInfo = wxApiTypeInfo;
         String methodPath = getMethodWxApiRequestPath(method);
         // 带有参数时，分别处理
-        if (methodPath.indexOf("?") >= 0) {
+        if (methodPath.contains("?")) {
             String path = methodPath.substring(0, methodPath.indexOf("?"));
             String query = methodPath.substring(methodPath.indexOf("?") + 1);
             this.baseBuilder = wxApiTypeInfo.getBaseBuilder().path(path).query(query);
