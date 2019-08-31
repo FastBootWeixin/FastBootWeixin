@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * FastBootWeixin WxWebUser
@@ -60,6 +61,12 @@ public class WxWebUser implements Serializable {
      */
     @JsonProperty("scope")
     private String scope;
+
+    /**
+     * 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+     */
+    @JsonProperty("unionid")
+    private String unionId;
 
     @JsonIgnore
     private Date createTime = new Date();
@@ -115,76 +122,43 @@ public class WxWebUser implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof WxWebUser)) {
-            return false;
-        }
-        final WxWebUser other = (WxWebUser) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$accessToken = this.getAccessToken();
-        final Object other$accessToken = other.getAccessToken();
-        if (this$accessToken == null ? other$accessToken != null : !this$accessToken.equals(other$accessToken)) {
-            return false;
-        }
-        final Object this$expiresIn = this.getExpiresIn();
-        final Object other$expiresIn = other.getExpiresIn();
-        if (this$expiresIn == null ? other$expiresIn != null : !this$expiresIn.equals(other$expiresIn)) {
-            return false;
-        }
-        final Object this$refreshToken = this.getRefreshToken();
-        final Object other$refreshToken = other.getRefreshToken();
-        if (this$refreshToken == null ? other$refreshToken != null : !this$refreshToken.equals(other$refreshToken)) {
-            return false;
-        }
-        final Object this$openId = this.getOpenId();
-        final Object other$openId = other.getOpenId();
-        if (this$openId == null ? other$openId != null : !this$openId.equals(other$openId)) {
-            return false;
-        }
-        final Object this$scope = this.getScope();
-        final Object other$scope = other.getScope();
-        if (this$scope == null ? other$scope != null : !this$scope.equals(other$scope)) {
-            return false;
-        }
-        final Object this$createTime = this.getCreateTime();
-        final Object other$createTime = other.getCreateTime();
-        if (this$createTime == null ? other$createTime != null : !this$createTime.equals(other$createTime)) {
-            return false;
-        }
-        return true;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WxWebUser wxWebUser = (WxWebUser) o;
+        return Objects.equals(getAccessToken(), wxWebUser.getAccessToken()) &&
+                Objects.equals(getExpiresIn(), wxWebUser.getExpiresIn()) &&
+                Objects.equals(getRefreshToken(), wxWebUser.getRefreshToken()) &&
+                Objects.equals(getOpenId(), wxWebUser.getOpenId()) &&
+                Objects.equals(getScope(), wxWebUser.getScope()) &&
+                Objects.equals(getUnionId(), wxWebUser.getUnionId()) &&
+                Objects.equals(getCreateTime(), wxWebUser.getCreateTime());
     }
 
     @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $accessToken = this.getAccessToken();
-        result = result * PRIME + ($accessToken == null ? 43 : $accessToken.hashCode());
-        final Object $expiresIn = this.getExpiresIn();
-        result = result * PRIME + ($expiresIn == null ? 43 : $expiresIn.hashCode());
-        final Object $refreshToken = this.getRefreshToken();
-        result = result * PRIME + ($refreshToken == null ? 43 : $refreshToken.hashCode());
-        final Object $openId = this.getOpenId();
-        result = result * PRIME + ($openId == null ? 43 : $openId.hashCode());
-        final Object $scope = this.getScope();
-        result = result * PRIME + ($scope == null ? 43 : $scope.hashCode());
-        final Object $createTime = this.getCreateTime();
-        result = result * PRIME + ($createTime == null ? 43 : $createTime.hashCode());
-        return result;
-    }
-
-    protected boolean canEqual(Object other) {
-        return other instanceof WxWebUser;
+        return Objects.hash(getAccessToken(), getExpiresIn(), getRefreshToken(), getOpenId(), getScope(), getUnionId(), getCreateTime());
     }
 
     @Override
     public String toString() {
-        return "com.mxixm.fastboot.weixin.web.WxWebUser(accessToken=" + this.getAccessToken() + ", expiresIn=" + this.getExpiresIn() + ", refreshToken=" + this.getRefreshToken() + ", openId=" + this.getOpenId() + ", scope=" + this.getScope() + ", createTime=" + this.getCreateTime() + ")";
+        return "WxWebUser{" +
+                "accessToken='" + accessToken + '\'' +
+                ", expiresIn=" + expiresIn +
+                ", refreshToken='" + refreshToken + '\'' +
+                ", openId='" + openId + '\'' +
+                ", scope='" + scope + '\'' +
+                ", unionId='" + unionId + '\'' +
+                ", createTime=" + createTime +
+                '}';
     }
 }
