@@ -504,7 +504,7 @@ public class WxRequest {
          * 用户群发消息类型才有
          * 消息id，64位整型
          */
-        @XmlElement(name = "MsgID")
+        @XmlElement(name = "MsgId")
         private Long msgId;
 
         /**
