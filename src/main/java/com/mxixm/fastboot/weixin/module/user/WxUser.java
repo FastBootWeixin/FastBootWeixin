@@ -57,7 +57,7 @@ public class WxUser implements Serializable {
         /**
          * 图文页右上角菜单
          */
-        ADD_SCENE_PROFILE_ITEM,
+        ADD_SCENE_PROFILE_LINK,
         /**
          * 支付后关注
          */
