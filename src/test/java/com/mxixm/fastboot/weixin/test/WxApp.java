@@ -45,12 +45,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -175,7 +177,7 @@ public class WxApp {
     public WxMessage image() {
         //String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.VIDEO, new FileSystemResource("路径"));
         return WxMessage.imageBuilder()
-                .mediaUrl("http://img.zcool.cn/community/01f09e577b85450000012e7e182cf0.jpg@1280w_1l_2o_100sh.jpg")
+                .mediaUrl("http://pkfpay.oss-cn-shenzhen.aliyuncs.com/upload/newretail/cusSerQrCode/b556fda9728f409d849769bc56b88e24/picture/2c92af5d712ff615017134890e94000b.jpg?Expires=4212716366&OSSAccessKeyId=LTAI4Fe89Vjx6KkqC68ReXQ6&Signature=%2BcxNylARLKX%2FdI7kAZZNHq1RKx4%3D")
                 .build();
     }
 
@@ -381,7 +383,14 @@ public class WxApp {
 
     @RequestMapping("mediaUpload")
     public String mediaUpload() {
-        return wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource("E:/test.png"));
+        return wxMediaManager.addTempMedia(WxMedia.Type.IMAGE, new FileSystemResource("D:/test.jpg"));
+    }
+
+    @RequestMapping("mediaDownload")
+    public String mediaUpload(String mediaId) throws IOException {
+        Resource resource = wxMediaManager.getTempMedia(mediaId);
+        System.out.println(resource.getURL().toString());
+        return resource.getURI().toString();
     }
 
     @RequestMapping("send")
