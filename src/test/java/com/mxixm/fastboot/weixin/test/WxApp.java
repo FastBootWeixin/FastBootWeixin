@@ -177,7 +177,7 @@ public class WxApp {
     public WxMessage image() {
         //String mediaId = wxMediaManager.addTempMedia(WxMedia.Type.VIDEO, new FileSystemResource("路径"));
         return WxMessage.imageBuilder()
-                .mediaUrl("http://pkfpay.oss-cn-shenzhen.aliyuncs.com/upload/newretail/cusSerQrCode/b556fda9728f409d849769bc56b88e24/picture/2c92af5d712ff615017134890e94000b.jpg?Expires=4212716366&OSSAccessKeyId=LTAI4Fe89Vjx6KkqC68ReXQ6&Signature=%2BcxNylARLKX%2FdI7kAZZNHq1RKx4%3D")
+                .mediaUrl("https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/logo_white.png")
                 .build();
     }
 
