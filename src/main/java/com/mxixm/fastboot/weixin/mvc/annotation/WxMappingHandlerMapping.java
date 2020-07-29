@@ -34,6 +34,7 @@ import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfos;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
+import com.mxixm.fastboot.weixin.web.WxHandlerInterceptor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -46,6 +47,7 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
 
@@ -107,13 +109,15 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     private final WxXmlMessageConverter wxXmlMessageConverter;
 
+    private final List<WxHandlerInterceptor> wxHandlerInterceptors;
+
     private StringValueResolver embeddedValueResolver;
 
     // private final WxRequestContext wxRequestContext = new WxRequestContext();
 
     public WxMappingHandlerMapping(String path, WxBuildinVerifyService wxBuildinVerifyService, WxMenuManager wxMenuManager,
                                    WxSessionManager wxSessionManager, WxAsyncMessageTemplate wxAsyncMessageTemplate,
-                                   WxXmlMessageConverter wxXmlMessageConverter) {
+                                   WxXmlMessageConverter wxXmlMessageConverter, List<WxHandlerInterceptor> wxHandlerInterceptors) {
         super();
         this.path = (path.startsWith("/") ? "" : "/") + path;
         this.wxVerifyMethodHandler = new HandlerMethod(wxBuildinVerifyService, WX_VERIFY_METHOD);
@@ -123,6 +127,7 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
         this.defaultHandlerMethod = new HandlerMethod((Supplier)(() -> HttpEntity.EMPTY), SUPPLIER_METHOD);
         this.setHandlerMethodMappingNamingStrategy(new WxMappingHandlerMethodNamingStrategy());
         this.wxXmlMessageConverter = wxXmlMessageConverter;
+        this.wxHandlerInterceptors = wxHandlerInterceptors;
     }
 
     @Override
@@ -192,8 +197,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
 
     @Override
     protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
-        HandlerExecutionChain chain = super.getHandlerExecutionChain(handler, request);
-        // chain.addInterceptor(wxRequestContext);
+        HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
+                (HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
+        chain.addInterceptors(wxHandlerInterceptors.toArray(new WxHandlerInterceptor[0]));
         return chain;
     }
 

@@ -18,6 +18,7 @@ package com.mxixm.fastboot.weixin.config.server;
 
 import com.mxixm.fastboot.weixin.annotation.EnableWxMvc;
 import com.mxixm.fastboot.weixin.config.WxProperties;
+import com.mxixm.fastboot.weixin.module.Wx;
 import com.mxixm.fastboot.weixin.module.menu.DefaultWxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.menu.WxButtonEventKeyStrategy;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
@@ -36,6 +37,7 @@ import com.mxixm.fastboot.weixin.service.WxApiService;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
 import com.mxixm.fastboot.weixin.service.WxXmlCryptoService;
 import com.mxixm.fastboot.weixin.service.invoker.common.WxMediaResourceMessageConverter;
+import com.mxixm.fastboot.weixin.web.WxHandlerInterceptor;
 import com.mxixm.fastboot.weixin.web.WxOAuth2Interceptor;
 import com.mxixm.fastboot.weixin.web.WxUserManager;
 import org.apache.commons.logging.Log;
@@ -44,8 +46,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
@@ -103,8 +107,8 @@ public class WxMvcConfiguration implements ImportAware {
     }
 
     @Bean
-    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate, @Lazy WxMenuManager wxMenuManager, WxXmlMessageConverter wxXmlMessageConverter) {
-        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager, wxSessionManager, wxAsyncMessageTemplate, wxXmlMessageConverter);
+    public WxMappingHandlerMapping wxRequestMappingHandlerMapping(@Lazy WxSessionManager wxSessionManager, @Lazy WxAsyncMessageTemplate wxAsyncMessageTemplate, @Lazy WxMenuManager wxMenuManager, WxXmlMessageConverter wxXmlMessageConverter, ObjectProvider<List<WxHandlerInterceptor>> wxHandlerInterceptors) {
+        WxMappingHandlerMapping wxMappingHandlerMapping = new WxMappingHandlerMapping(wxProperties.getPath(), wxBuildinVerify(), wxMenuManager, wxSessionManager, wxAsyncMessageTemplate, wxXmlMessageConverter, wxHandlerInterceptors.getIfAvailable());
         wxMappingHandlerMapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
         return wxMappingHandlerMapping;
     }
