@@ -38,9 +38,9 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
     private static final Map<String, CacheMap> cacheNameMap = new ConcurrentHashMap<>();
 
     /**
-     * 十分钟扫一次缓存
+     * 五分钟扫一次缓存
      */
-    private static final long DEFAULT_CLEAR_PERIOD = 10 * 60 * 1000;
+    private static final long DEFAULT_CLEAR_PERIOD = 5 * 60 * 1000;
 
     /**
      * 守护线程timer
@@ -219,14 +219,34 @@ public class CacheMap<K, V> extends AbstractMap<K, V> {
 
     @Override
     public V get(Object key) {
+        long now = System.currentTimeMillis();
         CacheEntry<K, V> entry = entryMap.get(key);
         if (entry == null) {
             return null;
         }
-        if (refreshOnRead) {
-            entry.time = System.currentTimeMillis();
+        if (now - entry.time >= cacheTimeout) {
+            this.entryMap.remove(key);
+            return null;
         }
-        return entry == null ? null : entry.value;
+        if (refreshOnRead) {
+            entry.time = now;
+        }
+        return entry.value;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @implSpec This implementation calls <tt>entrySet().clear()</tt>.
+     *
+     * <p>Note that this implementation throws an
+     * <tt>UnsupportedOperationException</tt> if the <tt>entrySet</tt>
+     * does not support the <tt>clear</tt> operation.
+     */
+    @Override
+    public void clear() {
+        entryMap.clear();
     }
 
     @Override
