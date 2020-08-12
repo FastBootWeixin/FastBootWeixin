@@ -48,14 +48,22 @@ public abstract class WxUrlUtils {
     public static String DEFAULT_HOST = "mxixm.com";
 
     /**
+     * 默认端口
+     */
+    public static String DEFAULT_PORT = "";
+
+    /**
      * 参数顺序是否调换一下？
      * @param requestUrl 请求路径
      * @param targetUrl 目标路径
      * @return
      */
     public static String absoluteUrl(String requestUrl, String targetUrl) {
-        if (StringUtils.isEmpty(requestUrl)) {
-            requestUrl = Wx.Environment.instance().getCallbackUrl();
+        URI requestUri;
+        if (!StringUtils.isEmpty(requestUrl)) {
+            requestUri = URI.create(requestUrl);
+        } else {
+            requestUri = Wx.Environment.instance().getCallbackUri();
         }
         String lowerUrl = targetUrl.toLowerCase();
         int protocolIndex = lowerUrl.indexOf(PROTOCOL_IDENTITY);
@@ -68,10 +76,11 @@ public abstract class WxUrlUtils {
         // 菜单链接可能同样有这个问题
         String protocol = HTTP_PROTOCOL;
         String host = DEFAULT_HOST;
-        if (!StringUtils.isEmpty(requestUrl)) {
-            URI uri = URI.create(requestUrl);
-            protocol = uri.getScheme();
-            host = uri.getHost();
+        String port = DEFAULT_PORT;
+        if (requestUri != null) {
+            protocol = requestUri.getScheme();
+            host = requestUri.getHost();
+            port = requestUri.getPort() == -1 ? DEFAULT_PORT : ":" + requestUri.getPort();
         }
 
         // 如果是://开头，则拼接协议后返回
@@ -85,7 +94,7 @@ public abstract class WxUrlUtils {
 
         // 如果是/开头，则是绝对路径
         if (lowerUrl.startsWith(BASE_PATH)) {
-            return protocol + PROTOCOL_IDENTITY + host + targetUrl;
+            return protocol + PROTOCOL_IDENTITY + host + port + targetUrl;
         }
 
         // 如果是域名
@@ -98,7 +107,7 @@ public abstract class WxUrlUtils {
         }
 
         // 不是域名，则是一个相对路径，此处未做相对路径处理，仅仅是加了个/，因为相对路径用的很少
-        return protocol + PROTOCOL_IDENTITY + host + BASE_PATH + targetUrl;
+        return protocol + PROTOCOL_IDENTITY + host + port + BASE_PATH + targetUrl;
     }
 
     public static String absoluteUrl(String targetUrl) {

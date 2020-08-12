@@ -84,14 +84,16 @@ public class Wx {
 
         private URI callbackUri;
 
-        private String callbackUrl;
-
         private boolean encrypt = false;
 
         private String encodingAesKey;
 
         public String getCallbackHost() {
             return callbackUri != null ? callbackUri.getHost() : null;
+        }
+
+        public String getCallbackPort() {
+            return callbackUri != null && callbackUri.getPort() != -1 ? ":" + callbackUri.getPort() : "";
         }
 
         public void setCallbackUrl(String callbackUrl) {
@@ -104,15 +106,10 @@ public class Wx {
                 callbackUrl = WxUrlUtils.HTTP_PROTOCOL + WxUrlUtils.RELAX_PROTOCOL + callbackUrl;
             }
             this.callbackUri = URI.create(callbackUrl);
-            this.callbackUrl = callbackUrl;
         }
 
         public URI getCallbackUri() {
             return callbackUri;
-        }
-
-        public String getCallbackUrl() {
-            return this.callbackUrl;
         }
 
         public String getWxToken() {

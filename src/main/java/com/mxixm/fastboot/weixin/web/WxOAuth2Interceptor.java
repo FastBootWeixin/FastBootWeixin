@@ -99,8 +99,9 @@ public class WxOAuth2Interceptor implements HandlerInterceptor {
             sb.append(request.getRequestURL().toString());
         } else {
             URI uri = URI.create(request.getRequestURL().toString());
-            sb.append(uri.getScheme() + "://");
+            sb.append(uri.getScheme()).append("://");
             sb.append(Wx.Environment.instance().getCallbackHost());
+            sb.append(Wx.Environment.instance().getCallbackPort());
             sb.append(uri.getPath());
         }
         // 强制移除code参数，如果不移除的话，会导致微信跳转回来带两个code参数，这样是有问题的。
