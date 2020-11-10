@@ -199,7 +199,9 @@ public class WxMappingHandlerMapping extends AbstractHandlerMethodMapping<WxMapp
     protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
         HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain ?
                 (HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
-        chain.addInterceptors(wxHandlerInterceptors.toArray(new WxHandlerInterceptor[0]));
+        if (wxHandlerInterceptors != null) {
+            chain.addInterceptors(wxHandlerInterceptors.toArray(new WxHandlerInterceptor[0]));   
+        }
         return chain;
     }
 
