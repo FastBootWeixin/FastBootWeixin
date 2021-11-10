@@ -16,18 +16,15 @@
 
 package com.mxixm.fastboot.weixin.module.media;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mxixm.fastboot.weixin.module.adapter.WxJsonAdapters;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

@@ -18,21 +18,9 @@ package com.mxixm.fastboot.weixin.module.message.support;
 
 import com.mxixm.fastboot.weixin.annotation.WxAsyncMessage;
 import com.mxixm.fastboot.weixin.annotation.WxMapping;
-import com.mxixm.fastboot.weixin.module.message.WxGroupMessage;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
-import com.mxixm.fastboot.weixin.module.message.WxTemplateMessage;
-import com.mxixm.fastboot.weixin.module.message.WxUserMessage;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
-import com.mxixm.fastboot.weixin.util.WxMessageUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
-import org.springframework.web.method.support.ModelAndViewContainer;
-
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.ParameterizedType;
 
 /**
  * FastBootWeixin WxSyncMessageReturnValueHandler

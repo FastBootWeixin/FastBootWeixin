@@ -25,12 +25,9 @@ import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.web.session.WxSession;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
-import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +36,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * FastBootWeixin WxRequest

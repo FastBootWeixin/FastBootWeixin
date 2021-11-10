@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**

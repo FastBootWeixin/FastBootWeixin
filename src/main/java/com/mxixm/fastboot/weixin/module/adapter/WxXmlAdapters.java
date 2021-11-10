@@ -23,7 +23,6 @@ import com.mxixm.fastboot.weixin.util.EnumUtils;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Date;
-import java.util.EnumMap;
 
 /**
  * FastBootWeixin WxXmlAdapters

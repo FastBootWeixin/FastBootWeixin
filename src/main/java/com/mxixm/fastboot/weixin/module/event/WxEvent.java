@@ -16,7 +16,6 @@
 
 package com.mxixm.fastboot.weixin.module.event;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mxixm.fastboot.weixin.annotation.WxButton;
 import com.mxixm.fastboot.weixin.module.Wx;
 

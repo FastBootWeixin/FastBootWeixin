@@ -23,12 +23,6 @@ import com.mxixm.fastboot.weixin.module.message.WxMessageTemplate;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.ModelAndViewContainer;
-
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.ParameterizedType;
 
 /**
  * FastBootWeixin WxSyncMessageReturnValueHandler

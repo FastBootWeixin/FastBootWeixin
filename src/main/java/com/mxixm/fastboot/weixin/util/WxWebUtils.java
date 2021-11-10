@@ -17,7 +17,6 @@
 package com.mxixm.fastboot.weixin.util;
 
 import com.mxixm.fastboot.weixin.exception.WxAppException;
-import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.message.parameter.HttpRequestMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxMessageParameter;
 import com.mxixm.fastboot.weixin.module.message.parameter.WxRequestMessageParameter;

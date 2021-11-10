@@ -20,7 +20,6 @@ import com.mxixm.fastboot.weixin.util.WxUrlUtils;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
-import java.util.Dictionary;
 
 /**
  * FastBootWeixin Wx 微信常量类

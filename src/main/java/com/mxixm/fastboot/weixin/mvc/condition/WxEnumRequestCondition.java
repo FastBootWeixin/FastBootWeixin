@@ -18,7 +18,10 @@ package com.mxixm.fastboot.weixin.mvc.condition;
 
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

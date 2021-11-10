@@ -16,9 +16,8 @@
 
 package com.mxixm.fastboot.weixin.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mxixm.fastboot.weixin.config.WxProperties;
-import com.mxixm.fastboot.weixin.exception.*;
+import com.mxixm.fastboot.weixin.exception.WxException;
 import com.mxixm.fastboot.weixin.module.credential.WxAccessToken;
 import com.mxixm.fastboot.weixin.module.user.WxUser;
 import com.mxixm.fastboot.weixin.service.invoker.executor.WxApiTemplate;
@@ -27,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 
 /**

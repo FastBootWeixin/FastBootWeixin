@@ -18,21 +18,17 @@ package com.mxixm.fastboot.weixin.mvc.annotation;
 
 import com.mxixm.fastboot.weixin.annotation.*;
 import com.mxixm.fastboot.weixin.module.Wx;
-import com.mxixm.fastboot.weixin.module.event.WxEvent;
 import com.mxixm.fastboot.weixin.module.menu.WxMenu;
 import com.mxixm.fastboot.weixin.module.menu.WxMenuManager;
-import com.mxixm.fastboot.weixin.module.message.WxMessage;
 import com.mxixm.fastboot.weixin.module.message.support.WxAsyncMessageTemplate;
 import com.mxixm.fastboot.weixin.module.web.WxRequest;
 import com.mxixm.fastboot.weixin.module.web.session.WxSessionManager;
-import com.mxixm.fastboot.weixin.mvc.condition.WxRequestCondition;
 import com.mxixm.fastboot.weixin.mvc.converter.WxXmlMessageConverter;
 import com.mxixm.fastboot.weixin.mvc.method.WxAsyncHandlerFactory;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingHandlerMethodNamingStrategy;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfo;
 import com.mxixm.fastboot.weixin.mvc.method.WxMappingInfos;
 import com.mxixm.fastboot.weixin.service.WxBuildinVerifyService;
-import com.mxixm.fastboot.weixin.util.WildcardUtils;
 import com.mxixm.fastboot.weixin.util.WxWebUtils;
 import com.mxixm.fastboot.weixin.web.WxHandlerInterceptor;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,13 +37,13 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.util.*;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringValueResolver;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
-import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
 
@@ -57,10 +53,7 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * FastBootWeixin WxMappingHandlerMapping
